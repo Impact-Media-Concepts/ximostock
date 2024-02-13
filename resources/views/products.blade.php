@@ -8,5 +8,13 @@
 </head>
 <body>
     <h1>product page</h1>
+    <ul>
+    @foreach ($products as $product)
+        <li>
+            {{$product->title}}
+        </li>
+    @endforeach
+    </ul>
+   
 </body>
 </html>
