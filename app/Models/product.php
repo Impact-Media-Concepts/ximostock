@@ -14,4 +14,10 @@ class Product extends Model
         ->using(CategoryProduct::class)
         ->withPivot('primary');
     }
+
+    public function inventory(){
+        return $this->belongsToMany(LocationZone::class,'inventories')
+        ->using(Inventory::class)
+        ->withPivot('stock');
+    }
 }

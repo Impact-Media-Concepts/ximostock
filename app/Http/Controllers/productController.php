@@ -20,4 +20,23 @@ class ProductController extends Controller
             'categories'=> Category::all()
         ]);
     }
+
+    public function store(Product $product){
+        //validation
+        request()->validate([
+            'artical_number' => 'required',
+            'title' => 'required',
+            'price' => 'required'
+        ]);
+
+        //create product
+        $product->create([
+            'artical_number' => request('artical_number'),
+            'ean' => request('ean'),
+            'title' => request('title'),
+            'short_description' => request('short_description'),
+            'long_description' => request('long_description'),
+            'price' => request('price')
+        ]);
+    }
 }
