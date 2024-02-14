@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
-use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//product
 Route::get('/products', [ProductController::class, 'index']);
-
 Route::get('/products/{product}', [ProductController::class, 'show']);
+
+//categories
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{category}', [CategoryController::class, 'show']);

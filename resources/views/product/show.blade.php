@@ -13,6 +13,10 @@
     <p>
         {{$product->short_description}}
     </p>
-    
+    @foreach ($product->categories as $category)
+        @if ($category->pivot->primary)
+            <h2>primary category {{$category->name}}</h2>
+        @endif
+    @endforeach
 </body>
 </html>
