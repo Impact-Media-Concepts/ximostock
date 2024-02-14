@@ -13,5 +13,6 @@
     <p>
         {{$product->short_description}}
     </p>
+    
 </body>
 </html>

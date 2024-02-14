@@ -17,7 +17,6 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'primary_category_id' => 0,
             'artical_number' => fake()->unique()->numberBetween(1000,9999),
             'ean'=> fake()->unique()->ean13(),
             'title' => fake()->word(),
