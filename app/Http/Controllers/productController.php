@@ -14,6 +14,10 @@ class ProductController extends Controller
         ]);
     }
 
+    public function create(){
+        return view('product.create',[]);
+    }
+
     public function show(Product $product){
         return view('product.show',[
             'product' => $product,
@@ -21,22 +25,27 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Product $product){
-        //validation
-        request()->validate([
-            'artical_number' => 'required',
-            'title' => 'required',
-            'price' => 'required'
+    public function store(){
+
+        //validate request
+        $attributes = request()->validate([
+            'sku' => ['required','max:255'],
+            'ean' => ['Digits:13','nullable'],
+            'title' => ['required','max:255'],
+            'price' => ['required'],
+            'long_description' => ['max:32000', 'nullable'],
+            'short_description' => ['max:32000', 'nullable']
         ]);
 
         //create product
-        $product->create([
-            'artical_number' => request('artical_number'),
-            'ean' => request('ean'),
-            'title' => request('title'),
-            'short_description' => request('short_description'),
-            'long_description' => request('long_description'),
-            'price' => request('price')
-        ]);
+        Product::create($attributes);
+
+        return redirect('/products');
     }
+
+    public function destroy(Product $product){
+        //TO DO
+    }
+
+  
 }
