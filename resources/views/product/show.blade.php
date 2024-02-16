@@ -18,5 +18,8 @@
             <h2>primary category {{$category->name}}</h2>
         @endif
     @endforeach
+    @foreach ($product->photos as $photo)
+        <img src="{{$photo->url}}" width="200" height="200"/>
+    @endforeach
 </body>
 </html>

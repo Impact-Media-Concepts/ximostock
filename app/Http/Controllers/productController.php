@@ -42,10 +42,4 @@ class ProductController extends Controller
 
         return redirect('/products');
     }
-
-    public function destroy(Product $product){
-        //TO DO
-    }
-
-  
 }

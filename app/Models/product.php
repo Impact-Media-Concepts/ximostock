@@ -17,6 +17,12 @@ class Product extends Model
         ->withPivot('primary');
     }
 
+    public function photos(){
+        return $this->belongsToMany(Photo::class)
+        ->using(PhotoProduct::class)
+        ->withPivot('primary');
+    }
+
     public function inventory(){
         return $this->belongsToMany(LocationZone::class,'inventories')
         ->using(Inventory::class)

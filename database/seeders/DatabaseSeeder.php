@@ -9,6 +9,8 @@ use App\Models\CategoryProduct;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\LocationZone;
+use App\Models\Photo;
+use App\Models\PhotoProduct;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 use PhpParser\Node\Stmt\Foreach_;
@@ -53,6 +55,11 @@ class DatabaseSeeder extends Seeder
                     'location_zone_id' => $x
                 ]);
             }
+            PhotoProduct::create([
+                'photo_id' => Photo::factory()->create()->id,
+                'product_id' => $product->id,
+                'primary' => true
+            ]);
         }
     }
 }
