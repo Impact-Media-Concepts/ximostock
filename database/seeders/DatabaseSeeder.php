@@ -12,6 +12,7 @@ use App\Models\LocationZone;
 use App\Models\Photo;
 use App\Models\PhotoProduct;
 use App\Models\Product;
+use App\Models\Property;
 use Illuminate\Database\Seeder;
 use PhpParser\Node\Stmt\Foreach_;
 
@@ -60,6 +61,15 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $product->id,
                 'primary' => true
             ]);
+            for($x = 1; $x <= 4; $x++){
+                PhotoProduct::create([
+                    'photo_id' => Photo::factory()->create()->id,
+                    'product_id' => $product->id,
+                    'primary' => false
+                ]);
+            }
         }
+
+        $properties = Property::factory(10)->create();
     }
 }

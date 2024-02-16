@@ -13,13 +13,8 @@
     <p>
         {{$product->short_description}}
     </p>
-    @foreach ($product->categories as $category)
-        @if ($category->pivot->primary)
-            <h2>primary category {{$category->name}}</h2>
-        @endif
-    @endforeach
-    @foreach ($product->photos as $photo)
-        <img src="{{$photo->url}}" width="200" height="200"/>
-    @endforeach
+    <h2>primary category {{$product->primaryCategory[0]->name}}</h2>
+    <img src="{{$product->primaryPhoto[0]->url}}" width="200" height="200"/>
+
 </body>
 </html>

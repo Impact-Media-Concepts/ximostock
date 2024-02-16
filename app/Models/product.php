@@ -17,10 +17,22 @@ class Product extends Model
         ->withPivot('primary');
     }
 
+    public function primaryCategory(){
+        return $this->belongsToMany(Category::class)
+        ->using(CategoryProduct::class)
+        ->wherePivot('primary', 1);
+    }
+
     public function photos(){
         return $this->belongsToMany(Photo::class)
         ->using(PhotoProduct::class)
         ->withPivot('primary');
+    }
+
+    public function primaryPhoto(){
+        return $this->belongsToMany(Photo::class)
+        ->using(PhotoProduct::class)
+        ->wherePivot('primary', 1);
     }
 
     public function inventory(){

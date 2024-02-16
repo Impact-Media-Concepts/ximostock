@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Property;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index(){
+        $properties = Property::all();
+        foreach($properties as $prop){
+            $prop->values = json_decode($prop->values);
+        }
         return view('product.index', [
-            'products' => Product::all()
+            'products' => Product::with('primaryPhoto')->get(),
+            'categories' => Category::with(['parent_category', 'child_categories'])->get(),
+            'properties' => $properties
         ]);
     }
 
@@ -20,8 +27,7 @@ class ProductController extends Controller
 
     public function show(Product $product){
         return view('product.show',[
-            'product' => $product,
-            'categories'=> Category::all()
+            'product' => $product
         ]);
     }
 
