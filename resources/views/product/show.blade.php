@@ -13,8 +13,8 @@
     <p>
         {{$product->short_description}}
     </p>
-    <h2>primary category {{$product->primaryCategory[0]->name}}</h2>
-    <img src="{{$product->primaryPhoto[0]->url}}" width="200" height="200"/>
-
+    <h2>primary category {{$product->primaryCategory->name}}</h2>
+    <img src="{{$product->primaryPhoto->url}}" width="200" height="200"/>
+    
 </body>
 </html>

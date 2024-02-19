@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Ramsey\Uuid\Type\Integer;
 
 class Product extends Model
 {
@@ -16,11 +18,15 @@ class Product extends Model
         ->using(CategoryProduct::class)
         ->withPivot('primary');
     }
-
-    public function primaryCategory(){
-        return $this->belongsToMany(Category::class)
-        ->using(CategoryProduct::class)
-        ->wherePivot('primary', 1);
+    
+    public function primaryCategory(): Attribute{
+        return new Attribute(
+            get: function(){
+                return $this->belongsToMany(Category::class)
+                ->using(CategoryProduct::class)
+                ->wherePivot('primary', 1)->first();
+            }
+        );
     }
 
     public function photos(){
@@ -29,15 +35,39 @@ class Product extends Model
         ->withPivot('primary');
     }
 
-    public function primaryPhoto(){
-        return $this->belongsToMany(Photo::class)
-        ->using(PhotoProduct::class)
-        ->wherePivot('primary', 1);
+    public function primaryPhoto(): Attribute{
+        return new Attribute(
+            get: function(){
+                return $this->belongsToMany(Photo::class)
+                ->using(PhotoProduct::class)
+                ->wherePivot('primary', 1)
+                ->first();
+            }
+        );
     }
 
-    public function inventory(){
+    public function properties(){
+        return $this->belongsToMany(Property::class)
+        ->using(ProductProperty::class)
+        ->withPivot('property_value');
+    }
+
+    public function locationZones(){
         return $this->belongsToMany(LocationZone::class,'inventories')
         ->using(Inventory::class)
         ->withPivot('stock');
+    }
+
+    public function stock() : Attribute {
+        return new Attribute(
+            get: function(){
+                $inventories = $this->locationZones()->get();
+                $stock = 0;
+                foreach($inventories as $inventory){
+                    $stock = $stock + $inventory->relations['pivot']->attributes['stock'];
+                }
+                return $stock;
+            }
+        );
     }
 }

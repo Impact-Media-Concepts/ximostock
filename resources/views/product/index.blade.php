@@ -15,7 +15,7 @@
             <li>
                 {{ $product->title }}
                 <img src="{{ $product->primaryPhoto[0]->url }}" width="200" height="200" />
-                {{ $product->sku . ' €' . $product->price }}
+                {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock}}
             </li>
         @endforeach
     </ul>
@@ -39,8 +39,8 @@
     <ul>
         @foreach ($properties as $property)
             <li>
-                {{$property->name}}
-                @if ($property->values->type == 'multiselect')
+                {{$property->name . '  ' . $property->values->type}}
+                @if ($property->values->type == 'multiselect'|| $property->values->type == 'singelselect')
                     <ol>
                         @foreach ($property->values->options as $option)
                             <li>
@@ -52,7 +52,5 @@
             </li>
         @endforeach
     </ul>
-
 </body>
-
 </html>

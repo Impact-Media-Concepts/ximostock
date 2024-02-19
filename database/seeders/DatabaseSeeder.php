@@ -27,6 +27,15 @@ class DatabaseSeeder extends Seeder
 
         $products = Product::factory(10)->create();
 
+        $properties = Property::factory(20)->create();
+
+        foreach ($properties as $prop){
+            $propvalue = json_decode($prop->values);
+            if($propvalue->type == 'multiselect'){
+                //TO DO
+            }
+        }
+
         foreach($categories as $category){
             Category::factory(5)->create([
                 'parent_category_id'=>$category
@@ -69,7 +78,5 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-
-        $properties = Property::factory(10)->create();
     }
 }
