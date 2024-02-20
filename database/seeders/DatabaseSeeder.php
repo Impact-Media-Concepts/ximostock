@@ -12,9 +12,9 @@ use App\Models\LocationZone;
 use App\Models\Photo;
 use App\Models\PhotoProduct;
 use App\Models\Product;
+use App\Models\ProductProperty;
 use App\Models\Property;
 use Illuminate\Database\Seeder;
-use PhpParser\Node\Stmt\Foreach_;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,8 +31,30 @@ class DatabaseSeeder extends Seeder
 
         foreach ($properties as $prop){
             $propvalue = json_decode($prop->values);
-            if($propvalue->type == 'multiselect'){
-                //TO DO
+            foreach($products as $product){
+                $value ='';
+                switch ($propvalue->type){
+                    case 'multiselect':
+                        $value = fake()->randomElement($propvalue->options);
+                        break;
+                    case 'singelselect':
+                        $value = fake()->randomElement($propvalue->options);
+                        break;        
+                    case 'number':
+                        $value = fake()->numberBetween(0,16);
+                        break;
+                    case 'text':
+                        $value = fake()->word();
+                        break;
+                    case 'bool':
+                        $value = fake()->boolean();
+                        break;
+                }
+                ProductProperty::create([
+                    'product_id'=>$product->id,
+                    'property_id'=>$prop->id,
+                    'property_value' => json_encode(['value' => $value]) 
+                ]);
             }
         }
 

@@ -17,7 +17,7 @@ class ProductController extends Controller
         }      
 
         return view('product.index', [
-            'products' => Product::with('primaryPhoto')->get(),
+            'products' => Product::with('photos', 'locationZones')->get(),
             'categories' => Category::with(['parent_category', 'child_categories'])->get(),
             'properties' => $properties
         ]);
@@ -28,6 +28,9 @@ class ProductController extends Controller
     }
 
     public function show(Product $product){
+        foreach($product->properties as $prop){
+            $prop->pivot->property_value = json_decode($prop->pivot->property_value);
+        }
         return view('product.show',[
             'product' => $product
         ]);

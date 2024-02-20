@@ -4,29 +4,37 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Ramsey\Uuid\Type\Integer;
+
 
 class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'sku', 'ean', 'short_description', 'long_description', 'price'];
+    protected $fillable = ['title', 'sku', 'ean', 'parent_product_id', 'short_description', 'long_description', 'price'];
+
+    // haal de varianten van een variabel product op
+    public function childProducts(){
+        return $this->hasMany(Product::class,'parent_product_id');
+    }
+ 
+    //haal het hoofdproduct op van een variable product
+    public function parentProduct(){
+        return $this->belongsTo(Product::class, 'parent_product_id');
+    }
 
     public function categories(){
         return $this->belongsToMany(Category::class)
         ->using(CategoryProduct::class)
         ->withPivot('primary');
     }
-    
-    public function primaryCategory(): Attribute{
-        return new Attribute(
-            get: function(){
-                return $this->belongsToMany(Category::class)
-                ->using(CategoryProduct::class)
-                ->wherePivot('primary', 1)->first();
-            }
-        );
+
+    public function getPrimaryCategoryAttribute()
+    {
+        $primaryCategory = $this->categories->first(function ($category) {
+            return $category->pivot->primary == 1;
+        });
+
+        return $primaryCategory;
     }
 
     public function photos(){
@@ -35,15 +43,13 @@ class Product extends Model
         ->withPivot('primary');
     }
 
-    public function primaryPhoto(): Attribute{
-        return new Attribute(
-            get: function(){
-                return $this->belongsToMany(Photo::class)
-                ->using(PhotoProduct::class)
-                ->wherePivot('primary', 1)
-                ->first();
-            }
-        );
+    public function getPrimaryPhotoAttribute()
+    {
+        $primaryPhoto = $this->photos->first(function ($photo) {
+            return $photo->pivot->primary == 1;
+        });
+
+        return $primaryPhoto;
     }
 
     public function properties(){
@@ -52,22 +58,22 @@ class Product extends Model
         ->withPivot('property_value');
     }
 
-    public function locationZones(){
+    public function locationZones()
+    {
         return $this->belongsToMany(LocationZone::class,'inventories')
         ->using(Inventory::class)
         ->withPivot('stock');
     }
 
-    public function stock() : Attribute {
-        return new Attribute(
-            get: function(){
-                $inventories = $this->locationZones()->get();
-                $stock = 0;
-                foreach($inventories as $inventory){
-                    $stock = $stock + $inventory->relations['pivot']->attributes['stock'];
-                }
-                return $stock;
-            }
-        );
+    public function getStockAttribute()
+    {
+        $inventories = $this->locationZones;
+
+        // Calculate the total stock
+        $stock = $inventories->sum(function ($inventory) {
+            return $inventory->pivot->stock ?? 0;
+        });
+
+        return $stock;
     }
 }
