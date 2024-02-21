@@ -13,7 +13,10 @@ use App\Models\Photo;
 use App\Models\PhotoProduct;
 use App\Models\Product;
 use App\Models\ProductProperty;
+use App\Models\ProductSalesChannel;
 use App\Models\Property;
+use App\Models\Sale;
+use App\Models\SalesChannel;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -29,6 +32,9 @@ class DatabaseSeeder extends Seeder
 
         $properties = Property::factory(20)->create();
 
+        $saleschannels = SalesChannel::factory(5)->create();
+
+        //link properties
         foreach ($properties as $prop){
             $propvalue = json_decode($prop->values);
             foreach($products as $product){
@@ -58,12 +64,14 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        //create subcategories
         foreach($categories as $category){
             Category::factory(5)->create([
                 'parent_category_id'=>$category
             ]);
         }
 
+        //link categories
         foreach($products as $product){
             CategoryProduct::create([
                 'product_id'=>$product->id,
@@ -71,7 +79,8 @@ class DatabaseSeeder extends Seeder
                 'primary'=>1
             ]);
         }
-
+        
+        //link location zones
         $locations = InventoryLocation::factory(4)->create();
         $zones = [];
         foreach($locations as $location){
@@ -80,6 +89,7 @@ class DatabaseSeeder extends Seeder
             ]))) ;
         }
 
+        //link stock and photos
         foreach($products as $product){
             for($x = 1; $x <= 8; $x++){
                 Inventory::factory()->create([
@@ -99,6 +109,24 @@ class DatabaseSeeder extends Seeder
                     'primary' => false
                 ]);
             }
+        }
+
+        //link salesChannels
+        $productSalesChannels = [];
+        for($x = 1; $x <= 5; $x++) {
+            for($y = 1; $y <= 3; $y++)
+            array_push($productSalesChannels ,ProductSalesChannel::create([
+                'product_id' => $x,
+                'sales_channel_id' => $y
+            ])) ;
+        }
+        
+        foreach($productSalesChannels as $sale){
+            Sale::create([
+                'product_sales_channel_id' => $sale->id,
+                'price' => fake()->numberBetween(10,30),
+                'stock' => fake()->numberBetween(0,20)
+            ]);
         }
     }
 }

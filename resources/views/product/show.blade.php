@@ -17,7 +17,9 @@
         {{$product->short_description}}
     </p>
     <h2>primary category {{$product->primaryCategory->name}}</h2>
-    <img src="{{$product->primaryPhoto->url}}" width="200" height="200"/>
+    @foreach ($product->photos as $photo)
+        <img src="{{$photo->url}}" width="200" height="200"/>
+    @endforeach
     <ul>
         @foreach ($product->properties as $property)
         <li>

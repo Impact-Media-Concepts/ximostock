@@ -33,7 +33,6 @@ class Product extends Model
         $primaryCategory = $this->categories->first(function ($category) {
             return $category->pivot->primary == 1;
         });
-
         return $primaryCategory;
     }
 
@@ -75,5 +74,21 @@ class Product extends Model
         });
 
         return $stock;
+    }
+
+    public function salesChannels()
+    {
+        return $this->hasMany(ProductSalesChannel::class);
+    }
+
+    public function getOnlineAttribute(){
+        return $this->salesChannels()->exists();
+    }
+
+    //calulate the total sales of this product
+    public function getSalesAttribute(){
+        return $this->salesChannels->sum(function ($salesChannel) {
+            return $salesChannel->sales->sum('stock');
+        });
     }
 }

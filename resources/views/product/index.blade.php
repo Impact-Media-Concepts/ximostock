@@ -14,8 +14,15 @@
         @foreach ($products as $product)
             <li>
                 {{ $product->title }}
-                <img src="{{ $product->primaryPhoto->url }}" width="200" height="200" />
-                {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock}}
+                <img src="{{$product->primaryPhoto->url }}" width="200" height="200" />
+                {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales. '   laatst aangepast:' .  $product->updated_at->diffForHumans() }}
+                @if ($product->online)
+                    online
+                @else
+                    offline
+                @endif
+
+
             </li>
         @endforeach
     </ul>

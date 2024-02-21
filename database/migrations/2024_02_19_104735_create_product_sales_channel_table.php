@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained();
             $table->foreignId('sales_channel_id')->constrained();
-            $table->decimal('price');
-            $table->string('title');
-            $table->text('short_description');
-            $table->text('long_description');
+            $table->decimal('price')->nullable();
+            $table->string('title')->nullable();
+            $table->text('short_description')->nullable();
+            $table->text('long_description')->nullable();
             $table->timestamps();
         });
     }
