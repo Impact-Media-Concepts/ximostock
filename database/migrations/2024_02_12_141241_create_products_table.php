@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('short_description')->nullable();
             $table->text('long_description')->nullable();
             $table->decimal('price')->nullable();
+            $table->boolean('backorders')->default(false);
+            $table->boolean('communicate_stock')->default(true);
             $table->timestamps();
         });
     }

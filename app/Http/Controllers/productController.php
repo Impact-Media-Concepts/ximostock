@@ -10,7 +10,9 @@ use App\Models\Photo;
 use App\Models\PhotoProduct;
 use App\Models\Product;
 use App\Models\ProductProperty;
+use App\Models\ProductSalesChannel;
 use App\Models\Property;
+use App\Models\SalesChannel;
 
 class ProductController extends Controller
 {
@@ -39,7 +41,8 @@ class ProductController extends Controller
         return view('product.create', [
             'categories' => Category::with(['parent_category', 'child_categories'])->get(),
             'properties' => $properties,
-            'locations' => InventoryLocation::with(['location_zones'])->get()
+            'locations' => InventoryLocation::with(['location_zones'])->get(),
+            'salesChannels' => SalesChannel::all()
         ]);
     }
 
@@ -53,6 +56,17 @@ class ProductController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        
+        // Delete the product
+        $product->delete();
+
+        // Redirect back to the product index page
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
+    }
+
     public function store()
     {
         //validate request
@@ -62,13 +76,20 @@ class ProductController extends Controller
             'title' => ['required', 'max:255'],
             'price' => ['required','numeric'],
             'long_description' => ['max:32000', 'nullable'],
-            'short_description' => ['max:32000', 'nullable']
+            'short_description' => ['max:32000', 'nullable'],
+            'backorders' => ['required', 'numeric'],
+            'communicate_stock' => ['required', 'numeric']
         ]);
 
         $categoryAttributes = request()->validate([
             'categories' => ['required','array'],
             'categories.*' => ['required','numeric'],
             'primaryCategory' => ['required','numeric']
+        ]);
+
+        $saleschannelAttributes = request()->validate([
+            'salesChannels' => ['array'],
+            'salesChannels.*' => ['numeric']
         ]);
 
         request()->validate([
@@ -80,8 +101,10 @@ class ProductController extends Controller
             'properties.*' => ['required','string'],
 
             'location_zones' => ['required','array'],
-            'lacation_zones.*' => ['required', 'numeric']
+            'lacation_zones.*' => ['required', 'numeric'],
         ]);
+
+
 
         //create product
         $product = Product::create($productAttributes);        
@@ -149,7 +172,13 @@ class ProductController extends Controller
             ]);
         }
 
-
+        foreach($saleschannelAttributes['salesChannels'] as $salesChannel){
+            ProductSalesChannel::create([
+                'product_id' => $product->id,
+                'sales_channel_id' => $salesChannel
+            ]);
+        }
         return redirect('/products');
     }
+
 }

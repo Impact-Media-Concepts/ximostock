@@ -17,12 +17,16 @@
                 <img src="{{$product->primaryPhoto->url }}" width="200" height="200" />
                 {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales. '   laatst aangepast:' .  $product->updated_at->diffForHumans() }}
                 @if ($product->online)
-                    online
+                    <strong>online</strong>
                 @else
-                    offline
+                    <strong>offline</strong> 
                 @endif
 
-
+                <form action="{{ route('products.destroy', ['id' => $product->id]) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">Delete</button>
+                </form>
             </li>
         @endforeach
     </ul>
@@ -42,6 +46,7 @@
             </ul>
         @endif
     @endforeach
+    
     <h1>eigenschappen/filters</h1>
     <ul>
         @foreach ($properties as $property)

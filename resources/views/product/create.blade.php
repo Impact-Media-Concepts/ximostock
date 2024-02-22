@@ -58,6 +58,18 @@
             <input type="number" id="primaryCategory" name="primaryCategory" />
         </div>
 
+        <ul>
+            <li>
+                <label for="backorders">backorders</label>
+                <input type="number" id="backorders" value="0" name="backorders">
+            </li>
+            <li>
+                <label for="communicate_stock">communicate stock</label>
+                <input type="number" checked id="communicate_stock" value="1" name="communicate_stock">
+            </li>
+        </ul>
+
+        {{-- Photos --}}
         <div>
             <label for="primaryPhoto">primary Photo</label>
             <input type="file" id="primaryPhoto" name="primaryPhoto" />
@@ -91,6 +103,20 @@
                 {{ $locations[0]->location_zones[1]->name }}
             </label>
             <input type="number" name="location_zones[{{ $locations[0]->location_zones[1]->id }}]">
+        </div>
+
+        <div>
+            <h3>sales channels</h3>
+            <ul>
+                @foreach ($salesChannels as $channel)
+                    <li>
+                        <label for="salesChannel[{{ $channel->id }}]">{{ $channel->name }}</label>
+                        <input type="checkbox" name="salesChannels[]" value="{{ $channel->id }}" id="salesChannel[{{ $channel->id }}]">
+                    </li>
+                @endforeach
+            </ul>
+
+
         </div>
 
         <input type="submit" value="Submit"></input>

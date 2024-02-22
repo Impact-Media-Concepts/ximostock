@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'sku', 'ean', 'parent_product_id', 'short_description', 'long_description', 'price'];
+    protected $guarded =['id'];
 
     // haal de varianten van een variabel product op
     public function childProducts(){
