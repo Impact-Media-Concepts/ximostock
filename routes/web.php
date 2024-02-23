@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductVariationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,7 +24,13 @@ Route::get('/', function () {
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/create', [ProductController::class, 'create']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
-Route::Post('/products',[ProductController::class, 'store'])->name('product_store');
+Route::post('/products',[ProductController::class, 'store']);
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
+//variant product
+Route::get('/products/variant/create' , [ProductVariationController::class, 'create']);
+Route::post('/products/variant',[ProductVariationController::class, 'store']);
+
 
 //categories
 Route::get('/categories', [CategoryController::class, 'index']);

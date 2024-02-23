@@ -13,13 +13,17 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('sku')->unique();
+            $table->foreignId('parent_product_id')->nullable()->constrained('products');
+            $table->string('sku')->unique()->nullable();
             $table->bigInteger('ean')->unique()->nullable();
             $table->string('title');
             $table->text('short_description')->nullable();
             $table->text('long_description')->nullable();
-            $table->decimal('price');
+            $table->decimal('price')->nullable();
+            $table->boolean('backorders')->default(false);
+            $table->boolean('communicate_stock')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
