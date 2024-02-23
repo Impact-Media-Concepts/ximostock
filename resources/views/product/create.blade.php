@@ -29,7 +29,7 @@
         <input type="text" name="long_description" id="long_description" value="{{ old('long_description') }}">
 
         <label for="price">price: </label>
-        <input type="number" name="price" id="price" value="{{ old('price') }}">
+        <input type="number" value="0.00" step="0.01" name="price" id="price" value="{{ old('price') }}">
 
         <div>
             <h3>Select Categories:</h3>
@@ -115,8 +115,6 @@
                     </li>
                 @endforeach
             </ul>
-
-
         </div>
 
         <input type="submit" value="Submit"></input>

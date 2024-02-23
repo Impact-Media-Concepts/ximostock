@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('backorders')->default(false);
             $table->boolean('communicate_stock')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

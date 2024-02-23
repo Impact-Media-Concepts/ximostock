@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded =['id'];
 
@@ -28,7 +28,7 @@ class Product extends Model
         ->withPivot('primary');
     }
 
-    public function getPrimaryCategoryAttribute()
+    public function getPrimaryCategoryAttribute():Category
     {
         $primaryCategory = $this->categories->first(function ($category) {
             return $category->pivot->primary == 1;
@@ -42,7 +42,7 @@ class Product extends Model
         ->withPivot('primary');
     }
 
-    public function getPrimaryPhotoAttribute()
+    public function getPrimaryPhotoAttribute():Photo
     {
         $primaryPhoto = $this->photos->first(function ($photo) {
             return $photo->pivot->primary == 1;
@@ -64,7 +64,7 @@ class Product extends Model
         ->withPivot('stock');
     }
 
-    public function getStockAttribute()
+    public function getStockAttribute():int
     {
         $inventories = $this->locationZones;
 
@@ -81,14 +81,31 @@ class Product extends Model
         return $this->hasMany(ProductSalesChannel::class);
     }
 
-    public function getOnlineAttribute(){
+    public function getOnlineAttribute():bool {
         return $this->salesChannels()->exists();
     }
 
     //calulate the total sales of this product
-    public function getSalesAttribute(){
+    public function getSalesAttribute(): int{
         return $this->salesChannels->sum(function ($salesChannel) {
             return $salesChannel->sales->sum('stock');
         });
     }
+
+    public function getConceptAttribute(): bool{
+
+        if($this->parentProduct == null){
+            //validate simple product
+            if($this->sku == null || $this->title == null || $this->price == null || $this->primaryPhoto == null){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            // logic for varation product
+        }
+
+        return false;
+    }
+
 }

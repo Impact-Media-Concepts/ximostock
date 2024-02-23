@@ -10,26 +10,28 @@
 
 <body>
     <h1>product page</h1>
-    <ul>
-        @foreach ($products as $product)
-            <li>
-                {{ $product->title }}
-                <img src="{{$product->primaryPhoto->url }}" width="200" height="200" />
-                {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales. '   laatst aangepast:' .  $product->updated_at->diffForHumans() }}
-                @if ($product->online)
-                    <strong>online</strong>
-                @else
-                    <strong>offline</strong> 
-                @endif
-
-                <form action="{{ route('products.destroy', ['id' => $product->id]) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        @endforeach
-    </ul>
+    <form action="{{ route('products.bulkDelete') }}" method="POST">
+        @csrf
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" />
+                    {{ $product->title }}
+                    <img src="{{ $product->primaryPhoto->url }}" width="200" height="200" />
+                    {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales . '   laatst aangepast:' . $product->updated_at->diffForHumans() }}
+                    @if ($product->online)
+                        <strong>online</strong>
+                    @else
+                        <strong>offline</strong>
+                    @endif
+                    @if ($product->concept)
+                        <strong>Concept</strong>
+                    @endif
+                </li>
+            @endforeach
+        </ul>
+        <button type="submit">Delete Selected Products</button>
+    </form>
     {{-- categories --}}
 
     @foreach ($categories as $category)
@@ -46,18 +48,18 @@
             </ul>
         @endif
     @endforeach
-    
+
     <h1>eigenschappen/filters</h1>
     <ul>
         @foreach ($properties as $property)
             <li>
-                {{$property->name . '  ' . $property->values->type}}
-                @if ($property->values->type == 'multiselect'|| $property->values->type == 'singelselect')
+                {{ $property->name . '  ' . $property->values->type }}
+                @if ($property->values->type == 'multiselect' || $property->values->type == 'singelselect')
                     <ol>
                         @foreach ($property->values->options as $option)
                             <li>
-                                {{$option}}
-                            </li>    
+                                {{ $option }}
+                            </li>
                         @endforeach
                     </ol>
                 @endif
@@ -65,4 +67,5 @@
         @endforeach
     </ul>
 </body>
+
 </html>

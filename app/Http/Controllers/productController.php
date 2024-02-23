@@ -58,91 +58,86 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
+        // Find the product by its ID
         $product = Product::findOrFail($id);
-        
-        // Delete the product
+
+        // Soft delete the product
         $product->delete();
 
-        // Redirect back to the product index page
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
+        // Redirect back to the product index page with a success message
+        return redirect('/products');
+    }
+
+    public function bulkDelete()
+    {
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric'],
+        ]);
+
+        // Delete selected products
+        Product::whereIn('id', $validatedData['product_ids'])->delete();
+
+        return redirect('/products');
     }
 
     public function store()
     {
-        //validate request
-        $productAttributes = request()->validate([
-            'sku' => ['required', 'max:255'],
-            'ean' => ['Digits:13', 'nullable'],
-            'title' => ['required', 'max:255'],
-            'price' => ['required','numeric'],
-            'long_description' => ['max:32000', 'nullable'],
-            'short_description' => ['max:32000', 'nullable'],
-            'backorders' => ['required', 'numeric'],
-            'communicate_stock' => ['required', 'numeric']
-        ]);
+        $request = request();
+        //valid$ate inp
+        $productAttributes = $this->validateProductAttributes($request);
+        $categoryAttributes = $this->validateCategoryAttributes($request);
+        $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
+        $this->validatePhotoAttributes($request);
+        $this->validatePropertyAttributes($request);
+        $this->validateInventoryAttributes($request);
 
-        $categoryAttributes = request()->validate([
-            'categories' => ['required','array'],
-            'categories.*' => ['required','numeric'],
-            'primaryCategory' => ['required','numeric']
-        ]);
+        //create product and links
+        $product = Product::create($productAttributes);
+        $this->linkCategoriesToProduct($product, $categoryAttributes);
+        $this->uploadAndLinkPhotosToProduct($product, $request);
+        $this->linkPropertiesToProduct($product, $request);
+        $this->createInventories($product, $request);
 
-        $saleschannelAttributes = request()->validate([
-            'salesChannels' => ['array'],
-            'salesChannels.*' => ['numeric']
-        ]);
+        if ($saleschannelAttributes['salesChannels'] != null) {
+            $this->linkSalesChannelsToProduct($product, $saleschannelAttributes);
+        }
+        return redirect('/products');
+    }
 
-        request()->validate([
-            'primaryPhoto' => ['required', 'image'],
-            'photos' => ['required', 'array'],
-            'photos.*' => ['required', 'image'],
-
-            'properties' => ['required','array'],
-            'properties.*' => ['required','string'],
-
-            'location_zones' => ['required','array'],
-            'lacation_zones.*' => ['required', 'numeric'],
-        ]);
-
-
-
-        //create product
-        $product = Product::create($productAttributes);        
-
-        //link primary category
+    protected function linkCategoriesToProduct($product, $attributes)
+    {
+        //link primary
         CategoryProduct::create([
-            'category_id' => $categoryAttributes['primaryCategory'],
+            'category_id' => $attributes['primaryCategory'],
             'product_id' => $product->id,
             'primary' => true
         ]);
-        //link categories to product
-        foreach ($categoryAttributes['categories'] as $categoryId) {
+        //link all other categories
+        foreach ($attributes['categories'] as $categoryId) {
             CategoryProduct::create([
                 'category_id' => $categoryId,
                 'product_id' => $product->id,
                 'primary' => false
             ]);
         }
+    }
 
-        //upload photo
-        $path = request()->file('primaryPhoto')->store('public/photos');
-
-        //add photos to product
+    protected function uploadAndLinkPhotosToProduct($product, $request)
+    {
+        $path = $request->file('primaryPhoto')->store('public/photos');
         $primaryPhoto = Photo::create([
             'url' => str_replace('public', 'http://localhost:8000/storage', $path)
         ]);
 
-        //link primary photo
         PhotoProduct::create([
             'photo_id' => $primaryPhoto->id,
             'product_id' => $product->id,
             'primary' => true
         ]);
 
-        //link photos
-        foreach (request()->file('photos') as $photoFile) {
+        foreach ($request->file('photos') as $photoFile) {
             $photoPath = $photoFile->store('public/photos');
-            //upload photos
             $photo = Photo::create([
                 'url' => str_replace('public', 'http://localhost:8000/storage', $photoPath)
             ]);
@@ -153,32 +148,97 @@ class ProductController extends Controller
                 'primary' => false
             ]);
         }
+    }
 
-        //link properties
-        foreach (request()->input('properties') as $propertyId => $propertyValue) {
-            // Create or update the PropertyProduct entry
+    protected function linkPropertiesToProduct($product, $request)
+    {
+        foreach ($request->input('properties') as $propertyId => $propertyValue) {
             ProductProperty::create([
                 'product_id' => $product->id,
                 'property_id' => $propertyId,
                 'property_value' => json_encode(['value' => $propertyValue])
             ]);
         }
+    }
 
-        foreach (request()->input('location_zones') as $location_zone_id => $stock){
+    protected function createInventories($product, $request)
+    {
+        foreach ($request->input('location_zones') as $location_zone_id => $stock) {
             Inventory::create([
                 'product_id' => $product->id,
                 'location_zone_id' => $location_zone_id,
                 'stock' => $stock
             ]);
         }
+    }
 
-        foreach($saleschannelAttributes['salesChannels'] as $salesChannel){
+    protected function linkSalesChannelsToProduct($product, $attributes)
+    {
+        foreach ($attributes['salesChannels'] as $salesChannel) {
             ProductSalesChannel::create([
                 'product_id' => $product->id,
                 'sales_channel_id' => $salesChannel
             ]);
         }
-        return redirect('/products');
     }
 
+    protected function validateProductAttributes($request)
+    {
+        return $request->validate([
+            'sku' => ['required', 'max:255'],
+            'ean' => ['digits:13', 'nullable'],
+            'title' => ['required', 'max:255'],
+            'price' => ['required', 'numeric'],
+            'long_description' => ['max:32000', 'nullable'],
+            'short_description' => ['max:32000', 'nullable'],
+            'backorders' => ['required', 'numeric'],
+            'communicate_stock' => ['required', 'numeric']
+        ]);
+    }
+
+    protected function validateCategoryAttributes($request)
+    {
+        return $request->validate([
+            'categories' => ['required', 'array'],
+            'categories.*' => ['required', 'numeric'],
+            'primaryCategory' => ['required', 'numeric']
+        ]);
+    }
+
+    protected function validateSalesChannelAttributes($request)
+    {
+        $attributes = $request->validate([
+            'salesChannels' => ['array'],
+            'salesChannels.*' => ['numeric']
+        ]);
+        if ($request['salesChannels'] == null) {
+            $attributes['salesChannels'] = [];
+        }
+        return $attributes;
+    }
+
+    protected function validatePhotoAttributes($request)
+    {
+        return $request->validate([
+            'primaryPhoto' => ['required', 'image'],
+            'photos' => ['required', 'array'],
+            'photos.*' => ['required', 'image']
+        ]);
+    }
+
+    protected function validatePropertyAttributes($request)
+    {
+        return $request->validate([
+            'properties' => ['required', 'array'],
+            'properties.*' => ['required', 'string']
+        ]);
+    }
+
+    protected function validateInventoryAttributes($request)
+    {
+        return $request->validate([
+            'location_zones' => ['required', 'array'],
+            'location_zones.*' => ['required', 'numeric']
+        ]);
+    }
 }
