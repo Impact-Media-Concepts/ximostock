@@ -109,6 +109,17 @@
         <input type="text" id="variants[1]ean" name="variants[1][ean]">
         <label for="variants[1]price">price: </label>
         <input type="number" step="0.01" value="0.00" name="variants[1][price]" id="variants[1]price">
+        <div>
+            <h3>voorraden</h3>
+            <label>
+                {{ $locations[0]->location_zones[0]->name }}
+            </label>
+            <input type="number" name="variants[1][location_zones][{{ $locations[0]->location_zones[0]->id }}]">
+            <label>
+                {{ $locations[0]->location_zones[1]->name }}
+            </label>
+            <input type="number" name="variants[1][location_zones][{{ $locations[0]->location_zones[1]->id }}]">
+        </div>
 
         <h3>variant 2</h3>
         <label for="variants[2]property_id">property id</label>
@@ -121,6 +132,17 @@
         <input type="text" id="variants[2]ean" name="variants[2][ean]">
         <label for="variants[2]price">price: </label>
         <input type="number" step="0.01" value="0.00" name="variants[2][price]" id="variant[2]price">
+        <div>
+            <h3>voorraden</h3>
+            <label for="{{ $locations[0]->location_zones[0]->id }}">
+                {{ $locations[0]->location_zones[0]->name }}
+            </label>
+            <input type="number" name="variants[2][location_zones][{{ $locations[0]->location_zones[0]->id }}]">
+            <label for="{{ $locations[0]->location_zones[1]->id }}">
+                {{ $locations[0]->location_zones[1]->name }}
+            </label>
+            <input type="number" name="variants[2][location_zones][{{ $locations[1]->location_zones[1]->id }}]">
+        </div>
 
         <input type="submit" value="Submit"></input>
     </form>

@@ -19,7 +19,7 @@
                     {{ $product->title }}
                     <img src="{{ $product->primaryPhoto->url }}" width="200" height="200" />
                     {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales . '   laatst aangepast:' . $product->updated_at->diffForHumans() }}
-                    @if ($product->online)
+                    @if ($product->sales_channels_exists)
                         <strong>online</strong>
                     @else
                         <strong>offline</strong>

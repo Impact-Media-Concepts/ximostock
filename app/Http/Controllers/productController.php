@@ -13,6 +13,8 @@ use App\Models\ProductProperty;
 use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\SalesChannel;
+use App\Models\Sale;
+
 
 class ProductController extends Controller
 {
@@ -25,7 +27,7 @@ class ProductController extends Controller
         }
 
         return view('product.index', [
-            'products' => Product::with('photos', 'locationZones')->get(),
+            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales')->withExists(['salesChannels'])->whereNull('parent_product_id')->get(),
             'categories' => Category::with(['parent_category', 'child_categories'])->get(),
             'properties' => $properties
         ]);
@@ -48,6 +50,10 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        //if the product is a variant product return 404
+        if($product->parent_product_id != null){
+            return abort(404);
+        }
         foreach ($product->properties as $prop) {
             $prop->pivot->property_value = json_decode($prop->pivot->property_value);
         }
