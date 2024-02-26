@@ -29,13 +29,18 @@
     </ul>
     <ul>
         @foreach ($product->childProducts as $child)
-            <h1>
-                {{$child->title}}
-            </h1>
-            <h4>
-                {{$child->ean . '  ' . $child->sku}}
-            </h4>
-            <img src="{{$child->primaryPhoto->url}}" width="200" height="200"/>
+            <li>
+                <strong>
+                    {{$child->title.'  '.$child->sku.'  '.$child->ean}}
+                </strong>
+                <ul>
+                    @foreach ($child->decodedProps as $prop)
+                        <li>
+                            {{$prop['name'].'   '. $prop['value']}}
+                        </li>
+                    @endforeach
+                </ul>
+            </li>
 
         @endforeach
     </ul>

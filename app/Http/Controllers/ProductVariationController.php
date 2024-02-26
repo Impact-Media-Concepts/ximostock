@@ -10,6 +10,7 @@ use App\Models\Property;
 use App\Models\Product;
 use App\Models\ProductSalesChannel;
 use App\Models\CategoryProduct;
+use App\Models\Inventory;
 use App\Models\Photo;
 use App\Models\PhotoProduct;
 use App\Models\ProductProperty;
@@ -37,25 +38,30 @@ class ProductVariationController extends Controller
     public function store()
     {
         $request = request();
+        //dd($request);
         // Validate the incoming request data
-
         $mainProductAttributes = $this->validateMainProductAttributes($request);
         $categoryAttributes = $this->validateCategoryAttributes($request);
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $this->validatePhotoAttributes($request);
         $this->validatePropertyAttributes($request);
+        $variants = $this->validateVariantAttributes($request);
 
+        
+        //create main product
         $mainProduct = Product::create($mainProductAttributes);
         $this->linkCategoriesToProduct($mainProduct, $categoryAttributes);
         $this->uploadAndLinkPhotosToProduct($mainProduct, $request);
         $this->linkPropertiesToProduct($mainProduct, $request);
-
         if ($saleschannelAttributes['salesChannels'] != null) {
             $this->linkSalesChannelsToProduct($mainProduct, $saleschannelAttributes);
         }
+        //ceate product variants
+        $this->createVariantProducts($mainProduct, $variants['variants']);
 
         return redirect('/products');
     }
+
 
     protected function validateSalesChannelAttributes($request):array
     {
@@ -107,9 +113,18 @@ class ProductVariationController extends Controller
     }
 
     protected function validateVariantAttributes($request){
-        $request->validate([
-            'variants.*'=>['required','array'],
-            
+        return $request->validate([
+            'variants' => ['required','array'],
+            'variants.*' => ['required','array'],
+            'variants.*.property_id' => ['required', 'array'],
+            'variants.*.property_id.*' => ['required', 'numeric'],
+            'variants.*.property_value' => ['required', 'array'],
+            'variants.*.property_value.*' => ['required','string'],
+            'variants.*.sku' => ['required', 'string'],
+            'variants.*.ean' => ['digits:13', 'nullable'],
+            'variants.*.price' => ['nullable'],
+            'variants.*.location_zones' => ['array'],
+            'variants.*.location_zones.*' => ['numeric']
         ]);
     }
 
@@ -176,6 +191,41 @@ class ProductVariationController extends Controller
                 'product_id' => $product->id,
                 'primary' => false
             ]);
+        }
+    }
+
+    protected function createVariantProducts($product, $variants){
+        foreach($variants as $variant){
+            //create variant product
+            $attributes = [
+            'parent_product_id' => $product->id,
+            'sku' => $variant['sku'],
+            'ean' => $variant['ean']
+            ];
+            if($variant['price'] != null && $variant['price']  != 0.00){
+                array_push($attributes, ['price' => $variant['price']] );
+            }
+            $vProduct = Product::create(
+                $attributes
+            );
+
+            //add variant properties
+            for($x = 1; $x <= sizeof($variant['property_id']); $x++){
+                ProductProperty::create([
+                    'product_id' => $vProduct->id,
+                    'property_id' => $variant['property_id'][$x],
+                    'property_value' => json_encode(['value' => $variant['property_value'][$x]]) 
+                ]);
+            }
+
+            //add stock
+            foreach($variant['location_zones'] as $zone => $stock){
+                Inventory::create([
+                    'product_id' =>  $vProduct->id,
+                    'location_zone_id'=> $zone,
+                    'stock' => $stock
+                ]);
+            }
         }
     }
 }

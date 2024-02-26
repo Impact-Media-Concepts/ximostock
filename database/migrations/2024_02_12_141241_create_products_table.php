@@ -16,12 +16,12 @@ return new class extends Migration
             $table->foreignId('parent_product_id')->nullable()->constrained('products');
             $table->string('sku')->unique()->nullable();
             $table->bigInteger('ean')->unique()->nullable();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('short_description')->nullable();
             $table->text('long_description')->nullable();
             $table->decimal('price')->nullable();
-            $table->boolean('backorders')->default(false);
-            $table->boolean('communicate_stock')->default(true);
+            $table->boolean('backorders')->default(false)->nullable();
+            $table->boolean('communicate_stock')->default(true)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
