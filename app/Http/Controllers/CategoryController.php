@@ -9,7 +9,7 @@ class CategoryController extends Controller
 {
     public function index(){
         return view('category.index',[
-            'categories' => Category::with(['child_categories', 'parent_category'])->get()
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get()
         ]);
     }
 
@@ -17,5 +17,24 @@ class CategoryController extends Controller
         return view('category.show',[
             'category' => $category
         ]);
+    }
+
+    public function create(){
+        return view('category.create',[
+            'categories' => Category::all()
+        ]);
+    }
+
+    public function store(){
+        $request = request();
+
+        $attributes = $request->validate([
+            'name' => ['required'],
+            'parent_category_id' => ['nullable', 'numeric']
+        ]);
+
+        Category::create($attributes);
+
+        return redirect('/categories');
     }
 }
