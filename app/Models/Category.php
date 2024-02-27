@@ -9,7 +9,9 @@ class Category extends Model
 {
     use HasFactory;
 
-    public function product(){
+    protected $guarded = ['id'];
+
+    public function products(){
         return $this->belongsToMany(Product::class)
         ->using(CategoryProduct::class);
     }
@@ -20,5 +22,9 @@ class Category extends Model
 
     public function child_categories(){
         return $this->hasMany(Category::class,'parent_category_id');
+    }
+
+    public function getProductTotalAttribute(){
+        return sizeof($this->products);
     }
 }

@@ -34,4 +34,6 @@ Route::post('/products/variant',[ProductVariationController::class, 'store']);
 
 //categories
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/create', [CategoryController::class, 'create']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
+Route::post('/categories', [CategoryController::class, 'store']);

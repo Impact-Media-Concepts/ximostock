@@ -7,20 +7,8 @@
     <title>Document</title>
 </head>
 <body>
-    @foreach ($categories as $category)
-        @if ($category->parent_category == null)
-            <h1>
-                {{$category->name}}
-            </h1>
-            <ul>
-                @foreach ($category->child_categories as $child)
-                <li>
-                    {{$child->name}}
-                </li>
-                @endforeach
-            </ul>
-            
-        @endif
-    @endforeach
+    <h1>All Categories</h1>
+    @include('partials.child_categories', ['childCategories' => $categories])
+
 </body>
 </html>

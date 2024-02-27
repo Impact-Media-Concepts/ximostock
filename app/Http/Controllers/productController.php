@@ -14,7 +14,7 @@ use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Models\Sale;
-
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -41,7 +41,7 @@ class ProductController extends Controller
             $prop->values = json_decode($prop->values);
         }
         return view('product.create', [
-            'categories' => Category::with(['parent_category', 'child_categories'])->get(),
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'locations' => InventoryLocation::with(['location_zones'])->get(),
             'salesChannels' => SalesChannel::all()
@@ -90,25 +90,47 @@ class ProductController extends Controller
     public function store()
     {
         $request = request();
-        //valid$ate inp
-        $productAttributes = $this->validateProductAttributes($request);
-        $categoryAttributes = $this->validateCategoryAttributes($request);
+        //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
-        $this->validatePhotoAttributes($request);
-        $this->validatePropertyAttributes($request);
-        $this->validateInventoryAttributes($request);
+        $forOnline = false;
+        if(Count($saleschannelAttributes['salesChannels']) > 0){
+            $forOnline = true;
+        }
+        $validationRules = [];
+        $validationRules += $this->validateProductAttributes($forOnline);
+        $validationRules += $this->validateCategoryAttributes();
+        $validationRules += $this->validatePhotoAttributes($forOnline);
+        $validationRules += $this->validatePropertyAttributes();
+        $validationRules += $this->validateInventoryAttributes();
+        $attributes =  $request->validate($validationRules);
 
         //create product and links
-        $product = Product::create($productAttributes);
-        $this->linkCategoriesToProduct($product, $categoryAttributes);
+        $product = $this->createProduct($attributes);
+        $this->linkCategoriesToProduct($product, $attributes);
         $this->uploadAndLinkPhotosToProduct($product, $request);
         $this->linkPropertiesToProduct($product, $request);
         $this->createInventories($product, $request);
 
-        if ($saleschannelAttributes['salesChannels'] != null) {
+        //link sales channels if there are any.
+        if ($forOnline) {
             $this->linkSalesChannelsToProduct($product, $saleschannelAttributes);
         }
+
+        //return to product page
         return redirect('/products');
+    }
+
+    protected function createProduct($attributes):Product{
+        return Product::create([
+            'sku' => $attributes['sku'],
+            'ean' => $attributes['ean'],
+            'title' => $attributes['title'],
+            'price' => $attributes['price'],
+            'long_description' => $attributes['long_description'],
+            'short_description' => $attributes['short_description'],
+            'backorders' => $attributes['backorders'],
+            'communicate_stock' => $attributes['communicate_stock']
+         ]);
     }
 
     protected function linkCategoriesToProduct($product, $attributes)
@@ -188,34 +210,47 @@ class ProductController extends Controller
         }
     }
 
-    protected function validateProductAttributes($request)
+    protected function validateProductAttributes( bool $forOnline)
     {
-        return $request->validate([
-            'sku' => ['required', 'max:255'],
-            'ean' => ['digits:13', 'nullable'],
-            'title' => ['required', 'max:255'],
-            'price' => ['required', 'numeric'],
-            'long_description' => ['max:32000', 'nullable'],
-            'short_description' => ['max:32000', 'nullable'],
-            'backorders' => ['required', 'numeric'],
-            'communicate_stock' => ['required', 'numeric']
-        ]);
+        if($forOnline){
+            return [
+                'sku' => ['required', 'max:255', 'unique:products,sku'],
+                'ean' => ['digits:13', 'nullable', 'unique:products,ean'],
+                'title' => ['required', 'max:255'],
+                'price' => ['required', 'numeric'],
+                'long_description' => ['max:32000', 'nullable'],
+                'short_description' => ['max:32000', 'nullable'],
+                'backorders' => ['required', 'numeric'],
+                'communicate_stock' => ['required', 'numeric']
+            ];
+        }else{
+            return [
+                'sku' => ['nullable', 'max:255'],
+                'ean' => ['digits:13', 'nullable'],
+                'title' => ['nullable', 'max:255'],
+                'price' => ['nullable', 'numeric'],
+                'long_description' => ['max:32000', 'nullable'],
+                'short_description' => ['max:32000', 'nullable'],
+                'backorders' => ['nullable', 'numeric'],
+                'communicate_stock' => ['nullable', 'numeric']
+            ];
+        }
     }
 
-    protected function validateCategoryAttributes($request)
+    protected function validateCategoryAttributes()
     {
-        return $request->validate([
+        return [
             'categories' => ['required', 'array'],
-            'categories.*' => ['required', 'numeric'],
-            'primaryCategory' => ['required', 'numeric']
-        ]);
+            'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
+            'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
+        ];
     }
 
     protected function validateSalesChannelAttributes($request)
     {
         $attributes = $request->validate([
             'salesChannels' => ['array'],
-            'salesChannels.*' => ['numeric']
+            'salesChannels.*' => ['numeric', Rule::exists('sales_channels', 'id')]
         ]);
         if ($request['salesChannels'] == null) {
             $attributes['salesChannels'] = [];
@@ -223,28 +258,36 @@ class ProductController extends Controller
         return $attributes;
     }
 
-    protected function validatePhotoAttributes($request)
+    protected function validatePhotoAttributes(bool $forOnline)
     {
-        return $request->validate([
-            'primaryPhoto' => ['required', 'image'],
-            'photos' => ['required', 'array'],
-            'photos.*' => ['required', 'image']
-        ]);
+        if($forOnline){
+            return [
+                'primaryPhoto' => ['required', 'image'],
+                'photos' => ['nullable', 'array'],
+                'photos.*' => ['image']
+            ];
+        }else{
+            return [
+                'primaryPhoto' => ['nullable', 'image'],
+                'photos' => ['nullable', 'array'],
+                'photos.*' => ['image']
+            ];
+        }
     }
 
-    protected function validatePropertyAttributes($request)
+    protected function validatePropertyAttributes()
     {
-        return $request->validate([
-            'properties' => ['required', 'array'],
-            'properties.*' => ['required', 'string']
-        ]);
+        return [
+            'properties' => ['nullable', 'array'],
+            'properties.*' => ['string']//to do exists
+        ];
     }
 
-    protected function validateInventoryAttributes($request)
+    protected function validateInventoryAttributes()
     {
-        return $request->validate([
-            'location_zones' => ['required', 'array'],
-            'location_zones.*' => ['required', 'numeric']
-        ]);
+        return [
+            'location_zones' => ['nullable', 'array'],
+            'location_zones.*' => ['numeric'] // to do exists
+        ];
     }
 }
