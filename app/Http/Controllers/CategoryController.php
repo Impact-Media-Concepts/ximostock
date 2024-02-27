@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -30,7 +31,7 @@ class CategoryController extends Controller
 
         $attributes = $request->validate([
             'name' => ['required'],
-            'parent_category_id' => ['nullable', 'numeric']
+            'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
 
         Category::create($attributes);
