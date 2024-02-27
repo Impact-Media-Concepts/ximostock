@@ -27,7 +27,7 @@ class ProductController extends Controller
         }
 
         return view('product.index', [
-            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales')->withExists(['salesChannels'])->whereNull('parent_product_id')->get(),
+            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->get(),
             'categories' => Category::with(['parent_category', 'child_categories'])->get(),
             'properties' => $properties
         ]);
@@ -225,8 +225,8 @@ class ProductController extends Controller
             ];
         }else{
             return [
-                'sku' => ['nullable', 'max:255'],
-                'ean' => ['digits:13', 'nullable'],
+                'sku' => ['nullable', 'max:255', 'unique:products,sku'],
+                'ean' => ['digits:13', 'nullable', 'unique:products,ean'],
                 'title' => ['nullable', 'max:255'],
                 'price' => ['nullable', 'numeric'],
                 'long_description' => ['max:32000', 'nullable'],

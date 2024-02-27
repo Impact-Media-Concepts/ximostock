@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\InventoryLocation;
 use App\Models\SalesChannel;
@@ -14,8 +13,7 @@ use App\Models\Inventory;
 use App\Models\Photo;
 use App\Models\PhotoProduct;
 use App\Models\ProductProperty;
-use OCILob;
-use PHPUnit\Framework\MockObject\Stub\ReturnCallback;
+use Illuminate\Validation\Rule;
 
 class ProductVariationController extends Controller
 {
@@ -38,7 +36,6 @@ class ProductVariationController extends Controller
     public function store()
     {
         $request = request();
-        //dd($request);
         // Validate the incoming request data
         $mainProductAttributes = $this->validateMainProductAttributes($request);
         $categoryAttributes = $this->validateCategoryAttributes($request);
@@ -47,7 +44,6 @@ class ProductVariationController extends Controller
         $this->validatePropertyAttributes($request);
         $variants = $this->validateVariantAttributes($request);
 
-        
         //create main product
         $mainProduct = Product::create($mainProductAttributes);
         $this->linkCategoriesToProduct($mainProduct, $categoryAttributes);
@@ -67,7 +63,7 @@ class ProductVariationController extends Controller
     {
         $attributes = $request->validate([
             'salesChannels' => ['array'],
-            'salesChannels.*' => ['numeric']
+            'salesChannels.*' => ['numeric', Rule::exists('sales_channels', 'id')]
         ]);
         if ($request['salesChannels'] == null) {
             $attributes['salesChannels'] = [];
@@ -90,8 +86,8 @@ class ProductVariationController extends Controller
     {
         return $request->validate([
             'categories' => ['required', 'array'],
-            'categories.*' => ['required', 'numeric'],
-            'primaryCategory' => ['required', 'numeric']
+            'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
+            'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
         ]);
     }
 
@@ -108,7 +104,7 @@ class ProductVariationController extends Controller
     {
         return $request->validate([
             'properties' => ['required', 'array'],
-            'properties.*' => ['required', 'string']
+            'properties.*' => ['required', 'string'] //to do exists
         ]);
     }
 
@@ -117,11 +113,11 @@ class ProductVariationController extends Controller
             'variants' => ['required','array'],
             'variants.*' => ['required','array'],
             'variants.*.property_id' => ['required', 'array'],
-            'variants.*.property_id.*' => ['required', 'numeric'],
+            'variants.*.property_id.*' => ['required', 'numeric', Rule::exists('properties', 'id')],
             'variants.*.property_value' => ['required', 'array'],
             'variants.*.property_value.*' => ['required','string'],
-            'variants.*.sku' => ['required', 'string'],
-            'variants.*.ean' => ['digits:13', 'nullable'],
+            'variants.*.sku' => ['required', 'string', 'unique:products,sku'],
+            'variants.*.ean' => ['digits:13', 'nullable', 'unique:products,ean'],
             'variants.*.price' => ['nullable'],
             'variants.*.location_zones' => ['array'],
             'variants.*.location_zones.*' => ['numeric']

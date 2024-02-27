@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>All Categories</h1>
-    @include('partials.child_categories', ['childCategories' => $categories])
+    <x-categories :categories="$categories"/>
 
 </body>
 </html>
