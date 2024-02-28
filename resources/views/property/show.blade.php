@@ -14,7 +14,7 @@
         {{ $property->name . '  ' . $property->type }}
     </h4>
 
-    @if ($property->type == 'multiselect' || $property->type == 'singelselect')
+    @if ($property->type == 'multiselect' || $property->type == 'singleselect')
         <h2>options</h2>
         <ul>
             @foreach ($property->options as $option)

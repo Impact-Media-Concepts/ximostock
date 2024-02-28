@@ -17,7 +17,6 @@ use Illuminate\Validation\Rule;
 
 class ProductVariationController extends Controller
 {
-
     public function create()
     {
         $properties = Property::all();
@@ -26,7 +25,7 @@ class ProductVariationController extends Controller
             $prop->values = json_decode($prop->values);
         }
         return view('product.createVariant', [
-            'categories' => Category::with(['parent_category', 'child_categories'])->get(),
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'locations' => InventoryLocation::with(['location_zones'])->get(),
             'salesChannels' => SalesChannel::all()
@@ -37,27 +36,31 @@ class ProductVariationController extends Controller
     {
         $request = request();
         // Validate the incoming request data
-        $mainProductAttributes = $this->validateMainProductAttributes($request);
-        $categoryAttributes = $this->validateCategoryAttributes($request);
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
-        $this->validatePhotoAttributes($request);
-        $this->validatePropertyAttributes($request);
-        $variants = $this->validateVariantAttributes($request);
-
+        $forOnline = false;
+        if(count($saleschannelAttributes) >0){
+            $forOnline = true;
+        }
+        $validationRules = [];
+        $validationRules += $this->validateMainProductAttributes($forOnline);
+        $validationRules += $this->validateCategoryAttributes();
+        $validationRules += $this->validatePhotoAttributes($forOnline);
+        $validationRules += $this->validatePropertyAttributes();
+        $validationRules += $this->validateVariantAttributes($forOnline);
+        $attributes = $request->validate($validationRules);
         //create main product
-        $mainProduct = Product::create($mainProductAttributes);
-        $this->linkCategoriesToProduct($mainProduct, $categoryAttributes);
+        $mainProduct = $this->createMainProduct($attributes);
+        $this->linkCategoriesToProduct($mainProduct, $attributes);
         $this->uploadAndLinkPhotosToProduct($mainProduct, $request);
         $this->linkPropertiesToProduct($mainProduct, $request);
         if ($saleschannelAttributes['salesChannels'] != null) {
             $this->linkSalesChannelsToProduct($mainProduct, $saleschannelAttributes);
         }
         //ceate product variants
-        $this->createVariantProducts($mainProduct, $variants['variants']);
+        $this->createVariantProducts($mainProduct, $attributes['variants']);
 
         return redirect('/products');
     }
-
 
     protected function validateSalesChannelAttributes($request):array
     {
@@ -71,56 +74,104 @@ class ProductVariationController extends Controller
         return $attributes;
     }
 
-    protected function validateMainProductAttributes($request):array{
-        return $request->validate([
-            'title' => ['required', 'string'],
-            'short_description' => ['required', 'string'],
-            'long_description' => ['required', 'string'],
-            'price' => ['required', 'numeric'],
-            'backorders'=>['boolean'],
-            'communicate_stock'=>['boolean']
-        ]);
+    protected function validateMainProductAttributes(bool $forOnline):array{
+        if($forOnline){
+            return [
+                'title' => ['required', 'string'],
+                'short_description' => ['nullable', 'string'],
+                'long_description' => ['nullable', 'string'],
+                'price' => ['required', 'numeric'],
+                'backorders'=>['boolean'],
+                'communicate_stock'=>['boolean']
+            ];
+        }
+        else{
+            return [
+                'title' => ['nullable', 'string'],
+                'short_description' => ['nullable', 'string'],
+                'long_description' => ['nullable', 'string'],
+                'price' => ['nullable', 'numeric'],
+                'backorders'=>['boolean'],
+                'communicate_stock'=>['boolean']
+            ];
+        }
     }
 
-    protected function validateCategoryAttributes($request):array
+    protected function validateCategoryAttributes():array
     {
-        return $request->validate([
-            'categories' => ['required', 'array'],
+        return [
+            'categories' => ['nullable', 'array'],
             'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
             'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
-        ]);
+        ];
     }
 
-    protected function validatePhotoAttributes($request)
+    protected function validatePhotoAttributes(bool $forOnline)
     {
-        return $request->validate([
-            'primaryPhoto' => ['required', 'image'],
-            'photos' => ['required', 'array'],
-            'photos.*' => ['required', 'image']
-        ]);
+        if($forOnline){
+            return [
+                'primaryPhoto' => ['required', 'image'],
+                'photos' => ['nullable', 'array'],
+                'photos.*' => ['image']
+            ];
+        }else{
+            return [
+                'primaryPhoto' => ['nullable', 'image'],
+                'photos' => ['nullable', 'array'],
+                'photos.*' => ['image']
+            ];
+        }
     }
     
-    protected function validatePropertyAttributes($request)
+    protected function validatePropertyAttributes()
     {
-        return $request->validate([
-            'properties' => ['required', 'array'],
+        return [
+            'properties' => ['nullable', 'array'],
             'properties.*' => ['required', 'string'] //to do exists
-        ]);
+        ];
     }
 
-    protected function validateVariantAttributes($request){
-        return $request->validate([
-            'variants' => ['required','array'],
-            'variants.*' => ['required','array'],
-            'variants.*.property_id' => ['required', 'array'],
-            'variants.*.property_id.*' => ['required', 'numeric', Rule::exists('properties', 'id')],
-            'variants.*.property_value' => ['required', 'array'],
-            'variants.*.property_value.*' => ['required','string'],
-            'variants.*.sku' => ['required', 'string', 'unique:products,sku'],
-            'variants.*.ean' => ['digits:13', 'nullable', 'unique:products,ean'],
-            'variants.*.price' => ['nullable'],
-            'variants.*.location_zones' => ['array'],
-            'variants.*.location_zones.*' => ['numeric']
+    protected function validateVariantAttributes(bool $forOnline) :array
+    {
+        if($forOnline){
+            return [
+                'variants' => ['required','array'],
+                'variants.*' => ['required','array'],
+                'variants.*.property_id' => ['required', 'array'],
+                'variants.*.property_id.*' => ['required', 'numeric', Rule::exists('properties', 'id')],
+                'variants.*.property_value' => ['required', 'array'],
+                'variants.*.property_value.*' => ['required','string'],
+                'variants.*.sku' => ['required', 'string', 'unique:products,sku'],
+                'variants.*.ean' => ['digits:13', 'nullable', 'unique:products,ean'],
+                'variants.*.price' => ['nullable'],
+                'variants.*.location_zones' => ['array','nullable'],
+                'variants.*.location_zones.*' => ['numeric', 'required']
+            ];
+        }else{
+            return [
+                'variants' => ['required','array'],
+                'variants.*' => ['required','array'],
+                'variants.*.property_id' => ['required', 'array'],
+                'variants.*.property_id.*' => ['required', 'numeric', Rule::exists('properties', 'id')],
+                'variants.*.property_value' => ['required', 'array'],
+                'variants.*.property_value.*' => ['required','string'],
+                'variants.*.sku' => ['nullable', 'string', 'unique:products,sku'],
+                'variants.*.ean' => ['digits:13', 'nullable', 'unique:products,ean'],
+                'variants.*.price' => ['nullable'],
+                'variants.*.location_zones' => ['array', 'nullable'],
+                'variants.*.location_zones.*' => ['numeric','required']
+            ];
+        }
+    }
+
+    protected function createMainProduct($attributes){
+        return Product::create([
+            'title' => $attributes['title'],
+            'price' => $attributes['price'],
+            'long_description' => $attributes['long_description'],
+            'short_description' => $attributes['short_description'],
+            'backorders' => $attributes['backorders'],
+            'communicate_stock' => $attributes['communicate_stock']
         ]);
     }
 

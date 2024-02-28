@@ -14,6 +14,7 @@
         @csrf
         <ul>
             @foreach ($products as $product)
+            <a href="/products/{{$product->id}}">
                 <li>
                     <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" />
                     {{ $product->title }}
@@ -28,6 +29,7 @@
                         <strong>Concept</strong>
                     @endif
                 </li>
+            </a>    
             @endforeach
         </ul>
         <button type="submit">Delete Selected Products</button>

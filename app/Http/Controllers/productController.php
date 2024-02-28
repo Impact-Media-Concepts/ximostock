@@ -240,7 +240,7 @@ class ProductController extends Controller
     protected function validateCategoryAttributes()
     {
         return [
-            'categories' => ['required', 'array'],
+            'categories' => ['nullable', 'array'],
             'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
             'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
         ];
