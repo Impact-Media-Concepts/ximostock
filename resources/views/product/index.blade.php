@@ -14,42 +14,110 @@
         @csrf
         <ul>
             @foreach ($products as $product)
-            <a href="/products/{{$product->id}}">
                 <li>
                     <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" />
-                    {{ $product->title }}
-                    <img src="{{ $product->primaryPhoto->url }}" width="200" height="200" />
-                    {{ $product->sku . ' €' . $product->price . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales . '   laatst aangepast:' . $product->updated_at->diffForHumans() }}
-                    @if ($product->sales_channels_exists)
-                        <strong>online</strong>
-                    @else
-                        <strong>offline</strong>
-                    @endif
-                    @if ($product->concept)
-                        <strong>Concept</strong>
-                    @endif
+                    <a href="/products/{{ $product->id }}">
+                        {{ $product->title }}
+                        <img src="{{ $product->primaryPhoto->url }}" width="200" height="200" />
+                        {{ $product->sku . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales . '   laatst aangepast:' . $product->updated_at->diffForHumans() }}
+                        @if ($product->discount != null)
+                            <del>
+                                {{ ' €' . $product->price }}
+                            </del>
+                            {{ '€' . $product->discount }}
+                        @else{
+                            {{ ' €' . $product->price }}
+                            }
+                        @endif
+                        @if ($product->sales_channels_exists)
+                            <strong>online</strong>
+                        @else
+                            <strong>offline</strong>
+                        @endif
+                        @if ($product->concept)
+                            <strong>Concept</strong>
+                        @endif
+                    </a>
                 </li>
-            </a>    
             @endforeach
         </ul>
         <button type="submit">Delete Selected Products</button>
     </form>
-    {{-- categories --}}
 
-    @foreach ($categories as $category)
-        @if ($category->parent_category == null)
-            <h1>
-                {{ $category->name }}
-            </h1>
-            <ul>
-                @foreach ($category->child_categories as $child)
-                    <li>
-                        {{ $child->name }}
-                    </li>
-                @endforeach
-            </ul>
+    {{-- Test Bulk discount --}}
+    <h2>discount test</h2>
+    <form action="{{route('products.bulkDiscount')}}" method="POST">
+        @csrf
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[{{ $product->id }}][discount]" value='17.00'>
+                    {{$product->title}}
+                </li>
+            @endforeach
+        </ul>
+        <input type="submit" value="discount selected products">
+        @if ($errors->any())
+            <div>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
-    @endforeach
+    </form>
+    <h2>test bulk link verkoop kanaal</h2>
+    <form action="{{route('products.bulkLinkSalesChannel')}}" method="POST">
+        @csrf
+        <h3>products</h3>
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
+                    {{$product->title}}
+                </li>
+            @endforeach
+        </ul>
+        <h3>sales channels</h3>
+        <ul>
+            @foreach ($sales_channels as $sales_channel)
+                <li>
+                    <input type="checkbox" name="sales_channel_ids[]" value='{{ $sales_channel->id }}'>
+                    {{$sales_channel->name}}
+                </li>
+            @endforeach
+        </ul>
+        <input type="submit" value="bulk link saleschannels">
+    </form>
+    
+    {{-- test --}}
+    <h2>test bulk unlink verkoop kanaal</h2>
+    <form action="{{route('products.bulkUnlinkSalesChannel')}}" method="POST">
+        @csrf
+        <h3>products</h3>
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
+                    {{$product->title}}
+                </li>
+            @endforeach
+        </ul>
+        <h3>sales channels</h3>
+        <ul>
+            @foreach ($sales_channels as $sales_channel)
+                <li>
+                    <input type="checkbox" name="sales_channel_ids[]" value='{{ $sales_channel->id }}'>
+                    {{$sales_channel->name}}
+                </li>
+            @endforeach
+        </ul>
+        <input type="submit" value="bulk unlink saleschannels">
+    </form>
+
+    {{-- categories --}}
+    <x-categories :categories="$categories" />
 
     <h1>eigenschappen/filters</h1>
     <ul>

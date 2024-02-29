@@ -26,8 +26,12 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/create', [ProductController::class, 'create']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::post('/products',[ProductController::class, 'store']);
+Route::patch('/products/{product}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
+Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
+Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
+Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
 //variant product
 Route::get('/products/variant/create' , [ProductVariationController::class, 'create']);
 Route::post('/products/variant',[ProductVariationController::class, 'store']);

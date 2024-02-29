@@ -14,7 +14,9 @@ use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Models\Sale;
+use App\Rules\ValidProductKeys;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -28,8 +30,9 @@ class ProductController extends Controller
 
         return view('product.index', [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->get(),
-            'categories' => Category::with(['parent_category', 'child_categories'])->get(),
-            'properties' => $properties
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
+            'properties' => $properties,
+            'sales_channels' => SalesChannel::all()
         ]);
     }
 
@@ -51,7 +54,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //if the product is a variant product return 404
-        if($product->parent_product_id != null){
+        if ($product->parent_product_id != null) {
             return abort(404);
         }
         foreach ($product->properties as $prop) {
@@ -78,11 +81,81 @@ class ProductController extends Controller
     {
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
-            'product_ids.*' => ['required', 'numeric'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
         ]);
 
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();
+
+        return redirect('/products');
+    }
+
+    public function bulkDiscount()
+    {
+        //validate request
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array', new ValidProductKeys],
+            'product_ids.*' => ['required', 'array'],
+            'product_ids.*.discount' => ['required', 'numeric']
+        ]);
+        // Apply the discount to each product
+        foreach ($validatedData['product_ids'] as $productId => $discount) {
+            $product = Product::findOrFail($productId);
+            $product->discount = $discount['discount'];
+            $product->save();
+        }
+        return redirect('/products');
+    }
+
+    public function bulkLinkSalesChannel()
+    {
+        //validate request
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric'],
+            'sales_channel_ids' => ['required', 'array'],
+            'sales_channel_ids.*' => ['required', 'numeric']
+        ]);
+
+        // link saleschannels to product
+        foreach ($validatedData['product_ids'] as $product) {
+            foreach ($validatedData['sales_channel_ids'] as $salesChannel) {
+                ProductSalesChannel::create([
+                    'product_id' => $product,
+                    'sales_channel_id' => $salesChannel
+                ]);
+            }
+        }
+        return redirect('/products');
+    }
+
+    public function bulkUnlinkSalesChannel()
+    {
+        // Validate request
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric'],
+            'sales_channel_ids' => ['required', 'array'],
+            'sales_channel_ids.*' => ['required', 'numeric']
+        ]);
+
+        // Unlink sales channels from products
+        ProductSalesChannel::whereIn('product_id', $validatedData['product_ids'])
+            ->whereIn('sales_channel_id', $validatedData['sales_channel_ids'])
+            ->delete();
+
+        return redirect('/products');
+    }
+
+    // TODO
+    public function update(Product $product)
+    {
+        $request = request();
+
+        $attributes = $request->validate([
+            'discount' => ['nullable', 'numeric']
+        ]);
+        $product->update($attributes);
 
         return redirect('/products');
     }
@@ -93,7 +166,7 @@ class ProductController extends Controller
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
-        if(Count($saleschannelAttributes['salesChannels']) > 0){
+        if (Count($saleschannelAttributes['salesChannels']) > 0) {
             $forOnline = true;
         }
         $validationRules = [];
@@ -120,7 +193,8 @@ class ProductController extends Controller
         return redirect('/products');
     }
 
-    protected function createProduct($attributes):Product{
+    protected function createProduct($attributes): Product
+    {
         return Product::create([
             'sku' => $attributes['sku'],
             'ean' => $attributes['ean'],
@@ -130,7 +204,7 @@ class ProductController extends Controller
             'short_description' => $attributes['short_description'],
             'backorders' => $attributes['backorders'],
             'communicate_stock' => $attributes['communicate_stock']
-         ]);
+        ]);
     }
 
     protected function linkCategoriesToProduct($product, $attributes)
@@ -210,9 +284,9 @@ class ProductController extends Controller
         }
     }
 
-    protected function validateProductAttributes( bool $forOnline)
+    protected function validateProductAttributes(bool $forOnline)
     {
-        if($forOnline){
+        if ($forOnline) {
             return [
                 'sku' => ['required', 'max:255', 'unique:products,sku'],
                 'ean' => ['digits:13', 'nullable', 'unique:products,ean'],
@@ -223,7 +297,7 @@ class ProductController extends Controller
                 'backorders' => ['required', 'numeric'],
                 'communicate_stock' => ['required', 'numeric']
             ];
-        }else{
+        } else {
             return [
                 'sku' => ['nullable', 'max:255', 'unique:products,sku'],
                 'ean' => ['digits:13', 'nullable', 'unique:products,ean'],
@@ -260,13 +334,13 @@ class ProductController extends Controller
 
     protected function validatePhotoAttributes(bool $forOnline)
     {
-        if($forOnline){
+        if ($forOnline) {
             return [
                 'primaryPhoto' => ['required', 'image'],
                 'photos' => ['nullable', 'array'],
                 'photos.*' => ['image']
             ];
-        }else{
+        } else {
             return [
                 'primaryPhoto' => ['nullable', 'image'],
                 'photos' => ['nullable', 'array'],
@@ -279,7 +353,7 @@ class ProductController extends Controller
     {
         return [
             'properties' => ['nullable', 'array'],
-            'properties.*' => ['string']//to do exists
+            'properties.*' => ['string'] //to do exists
         ];
     }
 
