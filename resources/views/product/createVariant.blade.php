@@ -64,25 +64,7 @@
         <div>
             <h3>Select Categories:</h3>
             <ul>
-                @foreach ($categories as $category)
-                    @if ($category->parent_category == null)
-                        <li>
-                            <input type="checkbox" id="category_{{ $category->id }}" name="categories[]"
-                                value="{{ $category->id }}">
-                            <label for="category_{{ $category->id }}">{{ $category->name }}</label>
-                        </li>
-
-                        <ul>
-                            @foreach ($category->child_categories as $child)
-                                <li>
-                                    <input type="checkbox" id="category_{{ $child->id }}" name="categories[]"
-                                        value="{{ $child->id }}">
-                                    <label for="category_{{ $child->id }}">{{ $child->name }}</label>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                @endforeach
+                <x-categories-input :categories="$categories"/>
             </ul>
             <label for='primaryCategory'>primaryCategory</label>
             <input type="number" id="primaryCategory" name="primaryCategory" />
@@ -143,6 +125,16 @@
             </label>
             <input type="number" name="variants[2][location_zones][{{ $locations[1]->location_zones[1]->id }}]">
         </div>
+
+        @if ($errors->any())
+            <div>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <input type="submit" value="Submit"></input>
     </form>

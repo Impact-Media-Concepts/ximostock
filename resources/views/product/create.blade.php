@@ -29,33 +29,14 @@
         <input type="text" name="long_description" id="long_description" value="{{ old('long_description') }}">
 
         <label for="price">price: </label>
-        <input type="number" value="0.00" step="0.01" name="price" id="price" value="{{ old('price') }}">
+        <input type="number" step="0.01" name="price" id="price" value="{{ old('price') }}">
 
         <div>
             <h3>Select Categories:</h3>
-            <ul>
-                @foreach ($categories as $category)
-                    @if ($category->parent_category == null)
-                        <li>
-                            <input type="checkbox" id="category_{{ $category->id }}" name="categories[]"
-                                value="{{ $category->id }}">
-                            <label for="category_{{ $category->id }}">{{ $category->name }}</label>
-                        </li>
-
-                        <ul>
-                            @foreach ($category->child_categories as $child)
-                                <li>
-                                    <input type="checkbox" id="category_{{ $child->id }}" name="categories[]"
-                                        value="{{ $child->id }}">
-                                    <label for="category_{{ $child->id }}">{{ $child->name }}</label>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                @endforeach
-            </ul>
+            <x-categories-input :categories="$categories"/>
+            
             <label for='primaryCategory'>primaryCategory</label>
-            <input type="number" id="primaryCategory" name="primaryCategory" />
+            <input type="number" id="primaryCategory" value="{{old('primaryCategory')}}" name="primaryCategory" />
         </div>
 
         <ul>
@@ -72,7 +53,7 @@
         {{-- Photos --}}
         <div>
             <label for="primaryPhoto">primary Photo</label>
-            <input type="file" id="primaryPhoto" name="primaryPhoto" />
+            <input type="file" id="primaryPhoto" name="primaryPhoto"/>
         </div>
 
         <ul>
@@ -86,7 +67,7 @@
                 @if ($property->values->type == 'text')
                     <div>
                         <label for="property_{{ $property->id }}">{{ $property->name }}</label>
-                        <input type="text" id="property_{{ $property->id }}"
+                        <input  type="text" id="property_{{ $property->id }}"
                             name="properties[{{ $property->id }}]">
                     </div>
                 @endif
@@ -111,17 +92,26 @@
                 @foreach ($salesChannels as $channel)
                     <li>
                         <label for="salesChannel[{{ $channel->id }}]">{{ $channel->name }}</label>
-                        <input type="checkbox" name="salesChannels[]" value="{{ $channel->id }}" id="salesChannel[{{ $channel->id }}]">
+                        <input type="checkbox" name="salesChannels[]" value="{{ $channel->id }}"
+                            id="salesChannel[{{ $channel->id }}]">
                     </li>
                 @endforeach
             </ul>
         </div>
 
+        @if ($errors->any())
+            <div>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <input type="submit" value="Submit"></input>
     </form>
 
 </body>
-
-</script>
 
 </html>

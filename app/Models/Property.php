@@ -18,4 +18,14 @@ class Property extends Model
         ->withPivot('property_value');
     }
 
+    public function getTypeAttribute(){
+        $json = json_decode($this->values);
+        return $json->type;
+    }
+
+    public function getOptionsAttribute(){
+        $json = json_decode($this->values);
+        return $json->options;
+    }
+
 }

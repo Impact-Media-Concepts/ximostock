@@ -9,7 +9,9 @@ class Category extends Model
 {
     use HasFactory;
 
-    public function product(){
+    protected $guarded = ['id'];
+
+    public function products(){
         return $this->belongsToMany(Product::class)
         ->using(CategoryProduct::class);
     }
