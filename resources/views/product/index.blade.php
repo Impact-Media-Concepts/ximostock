@@ -37,6 +37,18 @@
                         @if ($product->concept)
                             <strong>Concept</strong>
                         @endif
+                        allow backorders:
+                        @if ($product->backorders)
+                            <strong>true</strong>
+                        @else
+                            <strong>false</strong>
+                        @endif
+                        keep stock:
+                        @if ($product->communicate_stock)
+                            <strong>true</strong>
+                        @else
+                            <strong>false</strong>
+                        @endif
                     </a>
                 </li>
             @endforeach
@@ -46,13 +58,13 @@
 
     {{-- Test Bulk discount --}}
     <h2>discount test</h2>
-    <form action="{{route('products.bulkDiscount')}}" method="POST">
+    <form action="{{ route('products.bulkDiscount') }}" method="POST">
         @csrf
         <ul>
             @foreach ($products as $product)
                 <li>
                     <input type="checkbox" name="product_ids[{{ $product->id }}][discount]" value='17.00'>
-                    {{$product->title}}
+                    {{ $product->title }}
                 </li>
             @endforeach
         </ul>
@@ -68,14 +80,14 @@
         @endif
     </form>
     <h2>test bulk link verkoop kanaal</h2>
-    <form action="{{route('products.bulkLinkSalesChannel')}}" method="POST">
+    <form action="{{ route('products.bulkLinkSalesChannel') }}" method="POST">
         @csrf
         <h3>products</h3>
         <ul>
             @foreach ($products as $product)
                 <li>
                     <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
-                    {{$product->title}}
+                    {{ $product->title }}
                 </li>
             @endforeach
         </ul>
@@ -84,23 +96,23 @@
             @foreach ($sales_channels as $sales_channel)
                 <li>
                     <input type="checkbox" name="sales_channel_ids[]" value='{{ $sales_channel->id }}'>
-                    {{$sales_channel->name}}
+                    {{ $sales_channel->name }}
                 </li>
             @endforeach
         </ul>
         <input type="submit" value="bulk link saleschannels">
     </form>
-    
+
     {{-- test --}}
     <h2>test bulk unlink verkoop kanaal</h2>
-    <form action="{{route('products.bulkUnlinkSalesChannel')}}" method="POST">
+    <form action="{{ route('products.bulkUnlinkSalesChannel') }}" method="POST">
         @csrf
         <h3>products</h3>
         <ul>
             @foreach ($products as $product)
                 <li>
                     <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
-                    {{$product->title}}
+                    {{ $product->title }}
                 </li>
             @endforeach
         </ul>
@@ -109,11 +121,72 @@
             @foreach ($sales_channels as $sales_channel)
                 <li>
                     <input type="checkbox" name="sales_channel_ids[]" value='{{ $sales_channel->id }}'>
-                    {{$sales_channel->name}}
+                    {{ $sales_channel->name }}
                 </li>
             @endforeach
         </ul>
         <input type="submit" value="bulk unlink saleschannels">
+    </form>
+
+    {{-- test enable backorders --}}
+    <h3>bulk enable backorders</h3>
+    <form action="{{ route('products.bulkEnableBackorders') }}" method="POST">
+        @csrf
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
+                    {{ $product->title }}
+                </li>
+            @endforeach
+        </ul>
+        <input type="submit" value="bulk enable backorder">
+    </form>
+
+    {{-- test disable backorders --}}
+    <h3>bulk disable backorders</h3>
+    <form action="{{ route('products.bulkDisableBackorders') }}" method="POST">
+        @csrf
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
+                    {{ $product->title }}
+                </li>
+            @endforeach
+        </ul>
+        <input type="submit" value="bulk disable backorder">
+    </form>
+
+
+    {{-- test disable backorders --}}
+    <h3>bulk disable communicate stock</h3>
+    <form action="{{ route('products.bulkEnableCommunicateStock') }}" method="POST">
+        @csrf
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
+                    {{ $product->title }}
+                </li>
+            @endforeach
+        </ul>
+        <input type="submit" value="bulk enable keep stock ">
+    </form>
+
+    {{-- test disable backorders --}}
+    <h3>bulk disable communicate stock</h3>
+    <form action="{{ route('products.bulkDisableCommunicateStock') }}" method="POST">
+        @csrf
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <input type="checkbox" name="product_ids[]" value='{{ $product->id }}'>
+                    {{ $product->title }}
+                </li>
+            @endforeach
+        </ul>
+        <input type="submit" value="bulk disable keep stock ">
     </form>
 
     {{-- categories --}}

@@ -112,9 +112,9 @@ class ProductController extends Controller
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
-            'product_ids.*' => ['required', 'numeric'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
             'sales_channel_ids' => ['required', 'array'],
-            'sales_channel_ids.*' => ['required', 'numeric']
+            'sales_channel_ids.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
 
         // link saleschannels to product
@@ -134,18 +134,70 @@ class ProductController extends Controller
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
-            'product_ids.*' => ['required', 'numeric'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
             'sales_channel_ids' => ['required', 'array'],
-            'sales_channel_ids.*' => ['required', 'numeric']
+            'sales_channel_ids.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
 
         // Unlink sales channels from products
         ProductSalesChannel::whereIn('product_id', $validatedData['product_ids'])
             ->whereIn('sales_channel_id', $validatedData['sales_channel_ids'])
             ->delete();
-
-        return redirect('/products');
+        return redirect()->back();
     }
+
+    public function bulkEnableBackorders()
+    {
+        // Validate request
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
+        ]);
+
+        Product::whereIn('id', $validatedData['product_ids'])->update(['backorders'=> true]);
+
+        return redirect()->back();
+    }
+
+    public function bulkDisableBackorders()
+    {
+        // Validate request
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
+        ]);
+
+        Product::whereIn('id', $validatedData['product_ids'])->update(['backorders'=> false]);
+
+        return redirect()->back();
+    }
+
+    public function bulkEnableCommunicateStock()
+    {
+        // Validate request
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
+        ]);
+
+        Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock'=> true]);
+
+        return redirect()->back();
+    }
+
+    public function bulkDisableCommunicateStock()
+    {
+        // Validate request
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
+        ]);
+
+        Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock'=> false]);
+
+        return redirect()->back();
+    }
+
 
     // TODO
     public function update(Product $product)
