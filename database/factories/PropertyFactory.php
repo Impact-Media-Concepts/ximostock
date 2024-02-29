@@ -17,9 +17,9 @@ class PropertyFactory extends Factory
      */
     public function definition(): array
     {
-        $type = fake()->randomElement(['multiselect','singelselect','number','text','bool']);
+        $type = fake()->randomElement(['multiselect','singleselect','number','text','bool']);
         $options= [];
-        if($type === 'multiselect' || $type == 'singelselect'){
+        if($type === 'multiselect' || $type == 'singleselect'){
             $options = fake()->words(4);
         }
         $values = json_encode([ 'type' => $type, 'options' => $options]);

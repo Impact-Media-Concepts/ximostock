@@ -88,7 +88,7 @@ class Product extends Model
         $stock = $this->calculateStock();
 
         // If there are child products, add their stock
-        if ($this->childProducts()->exists()) {
+        if (Count($this->childProducts) > 0) {
             $childStock = $this->childProducts->sum(function ($childProduct) {
                 return $childProduct->stock;
             });
@@ -97,6 +97,7 @@ class Product extends Model
 
         return $stock;
     }
+    
     protected function calculateStock(): int
     {
         $inventories = $this->locationZones;
