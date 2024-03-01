@@ -196,17 +196,24 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-    // TODO
     public function update(Product $product)
     {
         $request = request();
+        //validate
+        $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
+        $forOnline = false;
+        if (Count($saleschannelAttributes['salesChannels']) > 0 || ProductSalesChannel::where('product_id', $product->id)->exists()) {
+            $forOnline = true;
+        }
+        
+        $attributes = $request->validate($this->validateProductAttributesUpdate($forOnline, $product->id));
 
-        $attributes = $request->validate([
-            'discount' => ['nullable', 'numeric']
-        ]);
+        
+
+        //update product
         $product->update($attributes);
 
-        return redirect('/products');
+        return redirect()->back();
     }
 
     public function store()
@@ -278,7 +285,8 @@ class ProductController extends BaseProductController
                 'long_description' => ['max:32000', 'nullable'],
                 'short_description' => ['max:32000', 'nullable'],
                 'backorders' => ['required', 'numeric'],
-                'communicate_stock' => ['required', 'numeric']
+                'communicate_stock' => ['required', 'numeric'],
+                'discount' => ['nullable', 'numeric']
             ];
         } else {
             return [
@@ -289,11 +297,42 @@ class ProductController extends BaseProductController
                 'long_description' => ['max:32000', 'nullable'],
                 'short_description' => ['max:32000', 'nullable'],
                 'backorders' => ['nullable', 'numeric'],
-                'communicate_stock' => ['nullable', 'numeric']
+                'communicate_stock' => ['nullable', 'numeric'],
+                'discount' => ['nullable', 'numeric']
             ];
         }
     }
     
+    //stock and backorders todo
+    protected function validateProductAttributesUpdate(bool $forOnline, int $productId)
+    {
+        if ($forOnline) {
+            return [
+                'sku' => ['required', 'max:255', Rule::unique('products', 'sku')->ignore($productId)],
+                'ean' => ['digits:13', 'nullable', Rule::unique('products', 'ean')->ignore($productId)],
+                'title' => ['required', 'max:255'],
+                'price' => ['required', 'numeric'],
+                'long_description' => ['max:32000', 'nullable'],
+                'short_description' => ['max:32000', 'nullable'],
+                'backorders' => ['nullable', 'numeric'],
+                'communicate_stock' => ['nullable', 'numeric'],
+                'discount' => ['nullable', 'numeric']
+            ];
+        } else {
+            return [
+                'sku' => ['nullable', 'max:255', Rule::unique('products', 'sku')->ignore($productId)],
+                'ean' => ['digits:13', 'nullable', Rule::unique('products', 'ean')->ignore($productId)],
+                'title' => ['nullable', 'max:255'],
+                'price' => ['nullable', 'numeric'],
+                'long_description' => ['max:32000', 'nullable'],
+                'short_description' => ['max:32000', 'nullable'],
+                'backorders' => ['nullable', 'numeric'],
+                'communicate_stock' => ['nullable', 'numeric'],
+                'discount' => ['nullable', 'numeric']
+            ];
+        }
+    }
+
     protected function validateInventoryAttributes()
     {
         return [
