@@ -7,15 +7,12 @@ use App\Models\InventoryLocation;
 use App\Models\SalesChannel;
 use App\Models\Property;
 use App\Models\Product;
-use App\Models\ProductSalesChannel;
-use App\Models\CategoryProduct;
 use App\Models\Inventory;
-use App\Models\Photo;
-use App\Models\PhotoProduct;
 use App\Models\ProductProperty;
+use App\Rules\ValidLocationZoneKeys;
 use Illuminate\Validation\Rule;
 
-class ProductVariationController extends Controller
+class ProductVariationController extends BaseProductController
 {
     public function create()
     {
@@ -62,19 +59,8 @@ class ProductVariationController extends Controller
         return redirect('/products');
     }
 
-    protected function validateSalesChannelAttributes($request):array
+    protected function validateMainProductAttributes(bool $forOnline):array
     {
-        $attributes = $request->validate([
-            'salesChannels' => ['array'],
-            'salesChannels.*' => ['numeric', Rule::exists('sales_channels', 'id')]
-        ]);
-        if ($request['salesChannels'] == null) {
-            $attributes['salesChannels'] = [];
-        }
-        return $attributes;
-    }
-
-    protected function validateMainProductAttributes(bool $forOnline):array{
         if($forOnline){
             return [
                 'title' => ['required', 'string'],
@@ -97,40 +83,6 @@ class ProductVariationController extends Controller
         }
     }
 
-    protected function validateCategoryAttributes():array
-    {
-        return [
-            'categories' => ['nullable', 'array'],
-            'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
-            'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
-        ];
-    }
-
-    protected function validatePhotoAttributes(bool $forOnline)
-    {
-        if($forOnline){
-            return [
-                'primaryPhoto' => ['required', 'image'],
-                'photos' => ['nullable', 'array'],
-                'photos.*' => ['image']
-            ];
-        }else{
-            return [
-                'primaryPhoto' => ['nullable', 'image'],
-                'photos' => ['nullable', 'array'],
-                'photos.*' => ['image']
-            ];
-        }
-    }
-    
-    protected function validatePropertyAttributes()
-    {
-        return [
-            'properties' => ['nullable', 'array'],
-            'properties.*' => ['required', 'string'] //to do exists
-        ];
-    }
-
     protected function validateVariantAttributes(bool $forOnline) :array
     {
         if($forOnline){
@@ -144,7 +96,7 @@ class ProductVariationController extends Controller
                 'variants.*.sku' => ['required', 'string', 'unique:products,sku'],
                 'variants.*.ean' => ['digits:13', 'nullable', 'unique:products,ean'],
                 'variants.*.price' => ['nullable'],
-                'variants.*.location_zones' => ['array','nullable'],
+                'variants.*.location_zones' => ['array','nullable', new ValidLocationZoneKeys],
                 'variants.*.location_zones.*' => ['numeric', 'required']
             ];
         }else{
@@ -158,7 +110,7 @@ class ProductVariationController extends Controller
                 'variants.*.sku' => ['nullable', 'string', 'unique:products,sku'],
                 'variants.*.ean' => ['digits:13', 'nullable', 'unique:products,ean'],
                 'variants.*.price' => ['nullable'],
-                'variants.*.location_zones' => ['array', 'nullable'],
+                'variants.*.location_zones' => ['array', 'nullable', new ValidLocationZoneKeys],
                 'variants.*.location_zones.*' => ['numeric','required']
             ];
         }
@@ -173,72 +125,6 @@ class ProductVariationController extends Controller
             'backorders' => $attributes['backorders'],
             'communicate_stock' => $attributes['communicate_stock']
         ]);
-    }
-
-    protected function linkSalesChannelsToProduct($product, $attributes)
-    {
-        foreach ($attributes['salesChannels'] as $salesChannel) {
-            ProductSalesChannel::create([
-                'product_id' => $product->id,
-                'sales_channel_id' => $salesChannel
-            ]);
-        }
-    }
-
-    protected function linkCategoriesToProduct($product, $attributes)
-    {
-        //link primary
-        CategoryProduct::create([
-            'category_id' => $attributes['primaryCategory'],
-            'product_id' => $product->id,
-            'primary' => true
-        ]);
-        //link all other categories
-        foreach ($attributes['categories'] as $categoryId) {
-            CategoryProduct::create([
-                'category_id' => $categoryId,
-                'product_id' => $product->id,
-                'primary' => false
-            ]);
-        }
-    }
-
-    protected function linkPropertiesToProduct($product, $request)
-    {
-        foreach ($request->input('properties') as $propertyId => $propertyValue) {
-            ProductProperty::create([
-                'product_id' => $product->id,
-                'property_id' => $propertyId,
-                'property_value' => json_encode(['value' => $propertyValue])
-            ]);
-        }
-    }
-
-    protected function uploadAndLinkPhotosToProduct($product, $request)
-    {
-        $path = $request->file('primaryPhoto')->store('public/photos');
-        $primaryPhoto = Photo::create([
-            'url' => str_replace('public', 'http://localhost:8000/storage', $path)
-        ]);
-
-        PhotoProduct::create([
-            'photo_id' => $primaryPhoto->id,
-            'product_id' => $product->id,
-            'primary' => true
-        ]);
-
-        foreach ($request->file('photos') as $photoFile) {
-            $photoPath = $photoFile->store('public/photos');
-            $photo = Photo::create([
-                'url' => str_replace('public', 'http://localhost:8000/storage', $photoPath)
-            ]);
-
-            PhotoProduct::create([
-                'photo_id' => $photo->id,
-                'product_id' => $product->id,
-                'primary' => false
-            ]);
-        }
     }
 
     protected function createVariantProducts($product, $variants){
