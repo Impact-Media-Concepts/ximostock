@@ -2,11 +2,11 @@
 
 namespace App\Rules;
 
-use App\Models\Product;
+use App\Models\LocationZone;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class ValidProductKeys implements ValidationRule
+class ValidLocationZoneKeys implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -15,10 +15,10 @@ class ValidProductKeys implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $productIds = Product::pluck('id')->toArray();
+        $locationZoneIds = LocationZone::pluck('id')->toArray();
         foreach ($value as $key => $data) {
-            if (!in_array($key, $productIds)) {
-                $fail("The key $key does not correspond to a valid product ID.");
+            if (!in_array($key, $locationZoneIds)) {
+                $fail("The key $key does not correspond to a valid location zone.");
             }
         }
     }

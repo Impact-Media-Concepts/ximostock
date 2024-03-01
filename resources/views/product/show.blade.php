@@ -63,14 +63,14 @@
                 <input type="text" value="{{ $product->ean }}" name="ean">
             </li>
             <li>
-                <label for="price">actieprijs: </label>
+                <label for="price">prijs: </label>
                 <input type="number" step="0.01" value="{{ $product->price == null ? '0.00' : $product->price }}"
                     name="price" id="price">
             </li>
             <li>
                 <label for="discount">actieprijs: </label>
                 <input type="number" step="0.01"
-                    value="{{ $product->discount == null ? '0.00' : $product->discount }}" name="discount"
+                    value="{{ $product->discount  }}" name="discount"
                     id="discount">
             </li>
             <li>
@@ -82,18 +82,30 @@
                 <textarea id="long_description" name="long_description" rows="10" cols="80">{{ $product->long_description }}</textarea><br><br>
             </li>
             <li>
-                <input type="checkbox" id="enable_backorders" {{($product->backorders) ? 'checked' : ''}} name="enable_backorders" value="1">
+                <input type="checkbox" id="enable_backorders" {{ $product->backorders ? 'checked' : '' }}
+                    name="enable_backorders" value="1">
                 <label for="enable_backorders">enable backorders</label>
             </li>
             <li>
-                <input type="checkbox" id="communicate_stock" {{($product->communicate_stock) ? 'checked' : ''}} name="communicate_stock" value="1">
+                <input type="checkbox" id="communicate_stock" {{ $product->communicate_stock ? 'checked' : '' }}
+                    name="communicate_stock" value="1">
                 <label for="communicate_stock">communicate stock</label>
             </li>
 
         </ul>
-
+        @if ($errors->any())
+            <div>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <input type="submit" value="enter" />
     </form>
+    <a href="/products">terug</a>
+
 </body>
 
 </html>
