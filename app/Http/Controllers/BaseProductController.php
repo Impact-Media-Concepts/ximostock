@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\Photo;
 use App\Models\PhotoProduct;
@@ -57,7 +58,7 @@ abstract class BaseProductController extends Controller
             'properties.*' => ['string', 'required']
         ];
     }
-
+    
     protected function linkCategoriesToProduct($product, $attributes)
     {
         // Link primary category
@@ -66,27 +67,28 @@ abstract class BaseProductController extends Controller
             'product_id' => $product->id,
             'primary' => true
         ]);
-
-        // Check if the primary category exists in the list of other categories
-        $otherCategories = collect($attributes['categories'])->filter(function ($categoryId) use ($attributes) {
-            return $categoryId !== $attributes['primaryCategory'];
-        });
-
-        // Link all other categories if they are not the primary category
-        foreach ($otherCategories as $categoryId) {
-            // Check if the category is already linked as a primary category
-            $existingCategory = CategoryProduct::where('category_id', $categoryId)
-                ->where('product_id', $product->id)
-                ->where('primary', true)
-                ->exists();
-
-            if (!$existingCategory) {
-                CategoryProduct::create([
-                    'category_id' => $categoryId,
-                    'product_id' => $product->id,
-                    'primary' => false
-                ]);
-            }
+    
+        // Link all other categories and their parents
+        foreach ($attributes['categories'] as $categoryId) {
+            $this->linkCategoryAndParentsToProduct($categoryId, $product->id);
+        }
+    }
+    
+    protected function linkCategoryAndParentsToProduct($categoryId, $productId)
+    {
+        // Link the category itself
+        CategoryProduct::create([
+            'category_id' => $categoryId,
+            'product_id' => $productId,
+            'primary' => false
+        ]);
+    
+        // Fetch the category
+        $category = Category::find($categoryId);
+    
+        // If the category has a parent, recursively link the parent categories
+        if ($category->parent_category_id !== null) {
+            $this->linkCategoryAndParentsToProduct($category->parent_category_id, $productId);
         }
     }
 
