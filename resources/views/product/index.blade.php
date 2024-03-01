@@ -25,9 +25,7 @@
                                 {{ ' €' . $product->price }}
                             </del>
                             {{ '€' . $product->discount }}
-                        @else{
-                            {{ ' €' . $product->price }}
-                            }
+                        @else{{ ' €' . $product->price }}
                         @endif
                         @if ($product->sales_channels_exists)
                             <strong>online</strong>
@@ -190,6 +188,7 @@
     </form>
 
     {{-- categories --}}
+    <h2>categories</h2>
     <x-categories :categories="$categories" />
 
     <h1>eigenschappen/filters</h1>

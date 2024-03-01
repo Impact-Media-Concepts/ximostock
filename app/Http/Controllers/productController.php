@@ -3,23 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\CategoryProduct;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
-use App\Models\Photo;
-use App\Models\PhotoProduct;
 use App\Models\Product;
-use App\Models\ProductProperty;
+
 use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\SalesChannel;
-use App\Models\Sale;
+use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-class ProductController extends Controller
+class ProductController extends BaseProductController
 {
+    //TODO
     public function index()
     {
         $properties = Property::all();
@@ -154,7 +152,7 @@ class ProductController extends Controller
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
         ]);
 
-        Product::whereIn('id', $validatedData['product_ids'])->update(['backorders'=> true]);
+        Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => true]);
 
         return redirect()->back();
     }
@@ -167,7 +165,7 @@ class ProductController extends Controller
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
         ]);
 
-        Product::whereIn('id', $validatedData['product_ids'])->update(['backorders'=> false]);
+        Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => false]);
 
         return redirect()->back();
     }
@@ -180,7 +178,7 @@ class ProductController extends Controller
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
         ]);
 
-        Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock'=> true]);
+        Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => true]);
 
         return redirect()->back();
     }
@@ -193,11 +191,10 @@ class ProductController extends Controller
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')]
         ]);
 
-        Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock'=> false]);
+        Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => false]);
 
         return redirect()->back();
     }
-
 
     // TODO
     public function update(Product $product)
@@ -259,62 +256,6 @@ class ProductController extends Controller
         ]);
     }
 
-    protected function linkCategoriesToProduct($product, $attributes)
-    {
-        //link primary
-        CategoryProduct::create([
-            'category_id' => $attributes['primaryCategory'],
-            'product_id' => $product->id,
-            'primary' => true
-        ]);
-        //link all other categories
-        foreach ($attributes['categories'] as $categoryId) {
-            CategoryProduct::create([
-                'category_id' => $categoryId,
-                'product_id' => $product->id,
-                'primary' => false
-            ]);
-        }
-    }
-
-    protected function uploadAndLinkPhotosToProduct($product, $request)
-    {
-        $path = $request->file('primaryPhoto')->store('public/photos');
-        $primaryPhoto = Photo::create([
-            'url' => str_replace('public', 'http://localhost:8000/storage', $path)
-        ]);
-
-        PhotoProduct::create([
-            'photo_id' => $primaryPhoto->id,
-            'product_id' => $product->id,
-            'primary' => true
-        ]);
-
-        foreach ($request->file('photos') as $photoFile) {
-            $photoPath = $photoFile->store('public/photos');
-            $photo = Photo::create([
-                'url' => str_replace('public', 'http://localhost:8000/storage', $photoPath)
-            ]);
-
-            PhotoProduct::create([
-                'photo_id' => $photo->id,
-                'product_id' => $product->id,
-                'primary' => false
-            ]);
-        }
-    }
-
-    protected function linkPropertiesToProduct($product, $request)
-    {
-        foreach ($request->input('properties') as $propertyId => $propertyValue) {
-            ProductProperty::create([
-                'product_id' => $product->id,
-                'property_id' => $propertyId,
-                'property_value' => json_encode(['value' => $propertyValue])
-            ]);
-        }
-    }
-
     protected function createInventories($product, $request)
     {
         foreach ($request->input('location_zones') as $location_zone_id => $stock) {
@@ -322,16 +263,6 @@ class ProductController extends Controller
                 'product_id' => $product->id,
                 'location_zone_id' => $location_zone_id,
                 'stock' => $stock
-            ]);
-        }
-    }
-
-    protected function linkSalesChannelsToProduct($product, $attributes)
-    {
-        foreach ($attributes['salesChannels'] as $salesChannel) {
-            ProductSalesChannel::create([
-                'product_id' => $product->id,
-                'sales_channel_id' => $salesChannel
             ]);
         }
     }
@@ -362,58 +293,12 @@ class ProductController extends Controller
             ];
         }
     }
-
-    protected function validateCategoryAttributes()
-    {
-        return [
-            'categories' => ['nullable', 'array'],
-            'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
-            'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
-        ];
-    }
-
-    protected function validateSalesChannelAttributes($request)
-    {
-        $attributes = $request->validate([
-            'salesChannels' => ['array'],
-            'salesChannels.*' => ['numeric', Rule::exists('sales_channels', 'id')]
-        ]);
-        if ($request['salesChannels'] == null) {
-            $attributes['salesChannels'] = [];
-        }
-        return $attributes;
-    }
-
-    protected function validatePhotoAttributes(bool $forOnline)
-    {
-        if ($forOnline) {
-            return [
-                'primaryPhoto' => ['required', 'image'],
-                'photos' => ['nullable', 'array'],
-                'photos.*' => ['image']
-            ];
-        } else {
-            return [
-                'primaryPhoto' => ['nullable', 'image'],
-                'photos' => ['nullable', 'array'],
-                'photos.*' => ['image']
-            ];
-        }
-    }
-
-    protected function validatePropertyAttributes()
-    {
-        return [
-            'properties' => ['nullable', 'array'],
-            'properties.*' => ['string'] //to do exists
-        ];
-    }
-
+    
     protected function validateInventoryAttributes()
     {
         return [
-            'location_zones' => ['nullable', 'array'],
-            'location_zones.*' => ['numeric'] // to do exists
+            'location_zones' => ['nullable', 'array', new ValidLocationZoneKeys],
+            'location_zones.*' => ['required', 'numeric']
         ];
     }
 }
