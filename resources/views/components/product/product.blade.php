@@ -1,17 +1,73 @@
 @props(['products'])
 
+<style>
+    /* scrollbar */
+    .product-scrollbar::-webkit-scrollbar {
+        width: 0px;
+    }
+
+    ::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #fff;
+        border: 1px solid #DBDBDB;
+        border-radius: 15px;
+        z-index: -1 !important;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #DBDBDB;
+        border: 6px solid transparent;
+        background-clip: content-box;
+        border-radius: 15px;
+
+        z-index: -1 !important;
+    }
+
+    ::-webkit-scrollbar-button:single-button {
+        display: block;
+        border-style: solid;
+        height: 13px;
+    }
+
+    /* Up */
+    ::-webkit-scrollbar-button:single-button:vertical:decrement {
+        border-width: 10px 10px 10px 10px;
+        border-color: transparent transparent #000000 transparent;
+    }
+
+    ::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+        border-color: transparent transparent #524d4d transparent;
+    }
+
+    /* Down */
+    ::-webkit-scrollbar-button:single-button:vertical:increment {
+        border-width: 10px 10px 10px 10px;
+        border-color: #000000 transparent transparent transparent;
+    }
+
+    ::-webkit-scrollbar-button:vertical:single-button:increment:hover {
+        border-color: #524d4d transparent transparent transparent;
+    }
+</style>
+
 <div class="relative flex items-center bg-white">
     <form class="relative" action="{{ route('products.bulkDelete') }}" method="POST">
         @csrf
-        <ul class="w-[78.81rem] overflow-y-auto overflow-x-hidden max-h-[49.25rem]" id="container">
+        <ul class="w-[78.81rem] overflow-y-auto overflow-x-hidden max-h-[43.75rem] product-scrollbar" style=""
+            id="container">
 
             @foreach ($products as $product)
                 <li
                     class="flex h-[4.5rem] py-4 gap-2 items-center justify-center hover:bg-gray-100 transition duration-300">
                     <div class="flex items-center relative left-[1.08rem]">
-                        <div class="flex justify-center items-center bg-blue-200 w-10 h-[4.5rem] m-0 p-0">
-                            <input class="h-[1.06rem] mx-2 mt-[0.3rem] checkbox-row flex cursor-pointer" type="checkbox"
-                                name="product_ids[]" value="{{ $product->id }}" />
+                        <div class="flex justify-center items-center w-10 h-[4.5rem] m-0 p-0">
+                            <input
+                                class="h-[1.06rem] mx-2 mt-[0.3rem] checkbox-row flex cursor-pointer relative left-[0.08rem]"
+                                type="checkbox" name="product_ids[]" value="{{ $product->id }}" />
                         </div>
 
                         <a class="rounded-md border-1 flex gap-10 justify-center items-center w-[2.8rem] h-[2.9rem] relative left-2 top-[0.08rem] mr-2"
@@ -31,7 +87,15 @@
 
                         <div class="w-[6.78rem] h-[1] mt-[0.35rem]">
                             {{-- {{ $product->sku }} --}}
-                            123456789054
+                            @if ($product->sku != null)
+                                <p>
+                                    {{ $product->sku }}
+                                </p>
+                            @else
+                                <p>
+                                    N.V.T.
+                                </p>
+                            @endif
                         </div>
 
                         <div class="w-[5.62rem] h-[3rem] flex-col relative top-[0.45rem] right-5">
@@ -48,7 +112,7 @@
                                 </p>
                             @endif
                         </div>
-                        <div class="flex gap-16 relative right-[2.37rem]">
+                        <div class="flex gap-16 relative right-[2.75rem]">
                             <div class="w-[3.75rem] h-[1.06rem] relative left-[0.15rem] top-[0.1rem]  ">
                                 {{-- {{ $product->stock }} --}}
                                 Voorraad
@@ -75,7 +139,7 @@
 
                         </div>
                         <div
-                            class="w-[7.81rem] h-[1.06rem] text-[14px] mt-[0.18rem] text-[#717171] flex relative right-[0.4rem] bottom-[0.1rem]">
+                            class="w-[7.81rem] h-[1.06rem] text-[14px] mt-[0.18rem] text-[#717171] flex relative right-[0.75rem] bottom-[0.1rem]">
                             {{ $product->updated_at->format('d-m-y H:i') }}
                         </div>
 

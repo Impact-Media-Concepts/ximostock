@@ -4,7 +4,7 @@
         value="" />
     <div class="flex gap-[2.5rem] pl-[3.75rem]">
         <div class="flex gap-[19rem] mr-[0.2rem] relative right-[1.1rem]">
-            <x-product.product-sub-header-tab orderBy="name" text="SKU" />
+            <x-product.product-sub-header-tab orderBy="name" text="Naam" />
             <x-product.product-sub-header-tab orderBy="price" text="SKU" />
         </div>
 
