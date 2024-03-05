@@ -6,56 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 </head>
 
-<body>
-    <h1>product page</h1>
-    <form action="{{ route('products.bulkDelete') }}" method="POST">
-        @csrf
-        <ul>
-            @foreach ($products as $product)
-                <li>
-                    <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" />
-                    <a href="/products/{{ $product->id }}">
-                        {{ $product->title }}
-                        <img src="{{ $product->primaryPhoto->url }}" width="200" height="200" />
-                        {{ $product->sku . ' voorraad:' . $product->stock . '  Verkocht:' . $product->sales . '   laatst aangepast:' . $product->updated_at->diffForHumans() }}
-                        @if ($product->discount != null)
-                            <del>
-                                {{ ' €' . $product->price }}
-                            </del>
-                            {{ '€' . $product->discount }}
-                        @else{{ ' €' . $product->price }}
-                        @endif
-                        @if ($product->sales_channels_exists)
-                            <strong>online</strong>
-                        @else
-                            <strong>offline</strong>
-                        @endif
-                        @if ($product->concept)
-                            <strong>Concept</strong>
-                        @endif
-                        allow backorders:
-                        @if ($product->backorders)
-                            <strong>true</strong>
-                        @else
-                            <strong>false</strong>
-                        @endif
-                        keep stock:
-                        @if ($product->communicate_stock)
-                            <strong>true</strong>
-                        @else
-                            <strong>false</strong>
-                        @endif
-                    </a>
-                </li>
-            @endforeach
-        </ul>
-        <button type="submit">Delete Selected Products</button>
-    </form>
+<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
+    <x-sidenav.sidenav />
+    <x-header.header />
+    <x-product.product-container :products="$products" />
+
+    {{-- <x-product :products="$products" /> --}}
+
 
     {{-- Test Bulk discount --}}
-    <h2>discount test</h2>
+    {{-- <h2>discount test</h2>
     <form action="{{ route('products.bulkDiscount') }}" method="POST">
         @csrf
         <ul>
@@ -77,6 +43,7 @@
             </div>
         @endif
     </form>
+
     <h2>test bulk link verkoop kanaal</h2>
     <form action="{{ route('products.bulkLinkSalesChannel') }}" method="POST">
         @csrf
@@ -99,10 +66,10 @@
             @endforeach
         </ul>
         <input type="submit" value="bulk link saleschannels">
-    </form>
+    </form> --}}
 
     {{-- test --}}
-    <h2>test bulk unlink verkoop kanaal</h2>
+    {{-- <h2>test bulk unlink verkoop kanaal</h2>
     <form action="{{ route('products.bulkUnlinkSalesChannel') }}" method="POST">
         @csrf
         <h3>products</h3>
@@ -124,10 +91,10 @@
             @endforeach
         </ul>
         <input type="submit" value="bulk unlink saleschannels">
-    </form>
+    </form> --}}
 
     {{-- test enable backorders --}}
-    <h3>bulk enable backorders</h3>
+    {{-- <h3>bulk enable backorders</h3>
     <form action="{{ route('products.bulkEnableBackorders') }}" method="POST">
         @csrf
         <ul>
@@ -139,10 +106,10 @@
             @endforeach
         </ul>
         <input type="submit" value="bulk enable backorder">
-    </form>
+    </form> --}}
 
     {{-- test disable backorders --}}
-    <h3>bulk disable backorders</h3>
+    {{-- <h3>bulk disable backorders</h3>
     <form action="{{ route('products.bulkDisableBackorders') }}" method="POST">
         @csrf
         <ul>
@@ -154,11 +121,11 @@
             @endforeach
         </ul>
         <input type="submit" value="bulk disable backorder">
-    </form>
+    </form> --}}
 
 
     {{-- test disable backorders --}}
-    <h3>bulk disable communicate stock</h3>
+    {{-- <h3>bulk disable communicate stock</h3>
     <form action="{{ route('products.bulkEnableCommunicateStock') }}" method="POST">
         @csrf
         <ul>
@@ -170,10 +137,10 @@
             @endforeach
         </ul>
         <input type="submit" value="bulk enable keep stock ">
-    </form>
+    </form> --}}
 
     {{-- test disable backorders --}}
-    <h3>bulk disable communicate stock</h3>
+    {{-- <h3>bulk disable communicate stock</h3>
     <form action="{{ route('products.bulkDisableCommunicateStock') }}" method="POST">
         @csrf
         <ul>
@@ -185,10 +152,10 @@
             @endforeach
         </ul>
         <input type="submit" value="bulk disable keep stock ">
-    </form>
+    </form> --}}
 
     {{-- categories --}}
-    <h2>categories</h2>
+    {{-- <h2>categories</h2>
     <x-categories :categories="$categories" />
 
     <h1>eigenschappen/filters</h1>
@@ -207,7 +174,7 @@
                 @endif
             </li>
         @endforeach
-    </ul>
+    </ul> --}}
 </body>
 
 </html>
