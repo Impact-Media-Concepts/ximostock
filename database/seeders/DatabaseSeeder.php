@@ -29,6 +29,13 @@ class DatabaseSeeder extends Seeder
         $categories = Category::factory(5)->create();
 
         $products = Product::factory(30)->create();
+        $primeProducts = Product::factory(10)->create([
+            'sku' => null,
+            'ean' => null
+        ]);
+
+        $products = $products->concat($primeProducts);
+
 
         $properties = Property::factory(20)->create();
 
@@ -62,6 +69,16 @@ class DatabaseSeeder extends Seeder
                     'property_value' => json_encode(['value' => $value])
                 ]);
             }
+        }
+
+        foreach ($primeProducts as $product) {
+            Product::factory(3)->create([
+                'parent_product_id' => $product->id,
+                'title' => null,
+                'short_description' => null,
+                'long_description' => null,
+                'price' => null
+            ]);
         }
 
         //create subcategories
