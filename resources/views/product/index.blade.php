@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 </head>
 
-<body class="flex bg-[#F3F4F8] text-[#717171]">
+<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
     <x-sidenav.sidenav />
     <x-header.header />
     <x-product.product-container :products="$products" />

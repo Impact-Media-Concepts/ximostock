@@ -1,70 +1,28 @@
-<div class="bg-blue-200 h-[3.5rem] flex justify-center items-center">
-    <input class="h-[1.06rem] mx-2" type="checkbox" name="product_ids[]" value="" />
-    <div class="flex gap-10 pl-9">
-        <div class="flex gap-[7rem] mr-[0.6rem]">
-            <div class="flex justify-center items-center w=[2.75] h-[1.06] cursor-pointer"
-                wire:click="setOrderBy('price')">
-                <p class="text-[14px]">
-                    SKU
-                </p>
+@php
+    $buttons = [
+        ['text' => 'Korting', 'width' => '5.688rem'],
+        ['text' => 'Verkoopkanalen', 'width' => '9.31rem'],
+        ['text' => 'Voorraad activeren', 'width' => '10.5rem'],
+        ['text' => 'Archiveren', 'width' => '7.12rem'],
+        ['text' => 'Verwijderen', 'width' => '7.56rem'],
+    ];
+@endphp
 
-                <img class="ml-2 mt-1 w-[0.62rem] h-[0.37rem]" src="../images/arrow-down-icon.png">
-            </div>
-            <div class="flex justify-center items-center w=[2.75] h-[1.06] cursor-pointer"
-                wire:click="setOrderBy('price')">
-                <p class="text-[14px]">
-                    Naam
-                </p>
-
-                <img class="ml-2 mt-1 w-[0.62rem] h-[0.37rem]" src="../images/arrow-down-icon.png">
-            </div>
-        </div>
-
-        <div class="flex justify-center items-center w=[2.75] h-[1.06] pl-[15.5rem] pr-12 cursor-pointer"
-            wire:click="setOrderBy('price')">
-            <p class="text-[14px]">
-                Prijs
-            </p>
-
-            <img class="ml-2 mt-1 w-[0.62rem] h-[0.37rem]" src="../images/arrow-down-icon.png">
-        </div>
-
-        <div class="flex gap-16 pr-4">
-            <div class="flex justify-center items-center w=[2.75] h-[1.06] cursor-pointer"
-                wire:click="setOrderBy('price')">
-                <p class="text-[14px]">
-                    Voorraad
-                </p>
-
-                <img class="ml-2 mt-1 w-[0.62rem] h-[0.37rem]" src="../images/arrow-down-icon.png">
-            </div>
-            <div class="flex justify-center items-center w=[2.75] h-[1.06] cursor-pointer"
-                wire:click="setOrderBy('price')">
-                <p class="text-[14px]">
-                    Verkocht
-                </p>
-
-                <img class="ml-2 mt-1 w-[0.62rem] h-[0.37rem]" src="../images/arrow-down-icon.png">
-            </div>
-        </div>
-        <div class="flex gap-16">
-            <div class="flex justify-center items-center w=[2.75] h-[1.06] cursor-pointer"
-                wire:click="setOrderBy('price')">
-                <p class="text-[14px]">
-                    Status
-                </p>
-
-                <img class="ml-2 mt-1 w-[0.62rem] h-[0.37rem]" src="../images/arrow-down-icon.png">
-            </div>
-            <div class="flex justify-center items-center w=[2.75] h-[1.06] cursor-pointer"
-                wire:click="setOrderBy('price')">
-                <p class="text-[14px]">
-                    Gewijzigd
-                </p>
-
-                <img class="ml-2 mt-1 w-[0.62rem] h-[0.37rem]" src="../images/arrow-down-icon.png">
-            </div>
-        </div>
-
+<div class="bg-[#F8F8F8] h-[3.55rem] flex justify-start items-center pb-1" style="font-family: 'Inter', sans-serif;">
+    <div class="flex ml-[2.2rem] mr-4 text-[14px] pt-0.5">
+        <p>
+            10 variaties van de 12 geselecteerd.
+        </p>
+        <p class="text-[#3DABD5] ml-1 cursor-pointer">
+            Selecteer alle 12 variaties
+        </p>
     </div>
+    <div class="flex justify-center items-center pt-1 gap-[0.57rem]">
+        @foreach ($buttons as $button)
+            <x-product.buttons.product-bulk-button class="w-[{{ $button['width'] }}]">
+                {{ $button['text'] }}
+            </x-product.buttons.product-bulk-button>
+        @endforeach
+    </div>
+
 </div>
