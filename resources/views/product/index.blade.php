@@ -14,10 +14,10 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
+<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif; height:67.5rem">
     <x-sidenav.sidenav />
     <x-header.header />
-    <x-product.product-container :products="$products" />
+    <x-product.product-container :perPage="$perPage" :products="$products" />
 
     {{-- <x-product :products="$productsp" /> --}}
 
