@@ -1,4 +1,9 @@
 :root {
     --light-blue: #3dabd5;
     --light-gray: #717171;
+    --light-gray: #717171;
+    --white: #fff;
+    --black: #000;
+
+    --border-radius-sm: 5px;
 }
