@@ -1,5 +1,6 @@
 @if ($paginator->hasPages())
-    <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="flex items-center justify-between">
+    <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}"
+        class="flex items-center justify-between z-10 pb-[0.1rem] pl-32 pr-[1.55rem]">
         <div class="flex justify-between flex-1 sm:hidden">
             @if ($paginator->onFirstPage())
                 <span
@@ -28,7 +29,7 @@
 
         <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
-                <p class="text-[17px] text-white leading-5 dark:text-gray-400 font-light">
+                <p class="text-[16px] text-white leading-5 dark:text-gray-400 font-light">
                     {!! __('Weergeeft') !!}
                     @if ($paginator->firstItem())
                         <span>{{ $paginator->firstItem() }}</span>
@@ -49,7 +50,7 @@
                     @if ($paginator->onFirstPage())
                         <span aria-disabled="true" aria-label="{{ __('pagination.previous') }}">
                             <span
-                                class="h-11 relative inline-flex items-center px-2 py-2 text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default rounded-l-md leading-5 dark:bg-gray-800 dark:border-gray-600"
+                                class="h-10 relative inline-flex items-center px-2 py-2 text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default rounded-l-md leading-5 dark:bg-gray-800 dark:border-gray-600"
                                 aria-hidden="true">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
@@ -86,7 +87,7 @@
                                 @if ($page == $paginator->currentPage())
                                     <span aria-current="page">
                                         <span
-                                            class="h-11 relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5 dark:bg-gray-800 dark:border-gray-600">{{ $page }}</span>
+                                            class="h-10 relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5 dark:bg-gray-800 dark:border-gray-600">{{ $page }}</span>
                                     </span>
                                 @else
                                     <a href="{{ $url }}"
@@ -113,7 +114,7 @@
                     @else
                         <span aria-disabled="true" aria-label="{{ __('pagination.next') }}">
                             <span
-                                class="h-11 relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default rounded-r-md leading-5 dark:bg-gray-800 dark:border-gray-600"
+                                class="h-10 relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default rounded-r-md leading-5 dark:bg-gray-800 dark:border-gray-600"
                                 aria-hidden="true">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
