@@ -29,13 +29,13 @@ class ProductController extends BaseProductController
 
 
         $perPage = $request->input('perPage', 15);
-        // dd($perPage);
 
         return view('product.index', [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->paginate($perPage),
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
-            'sales_channels' => SalesChannel::all()
+            'sales_channels' => SalesChannel::all(),
+            'perPage' => $perPage
         ]);
     }
 
