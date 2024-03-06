@@ -21,5 +21,4 @@
             </x-product.buttons.product-header-button>
         @endforeach
     </div>
-
 </div>
