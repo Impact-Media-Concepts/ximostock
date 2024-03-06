@@ -97,7 +97,7 @@ class Product extends Model
 
         return $stock;
     }
-    
+
     protected function calculateStock(): int
     {
         $inventories = $this->locationZones;

@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
@@ -18,7 +19,7 @@
     <x-header.header />
     <x-product.product-container :products="$products" />
 
-    {{-- <x-product :products="$products" /> --}}
+    {{-- <x-product :products="$productsp" /> --}}
 
 
     {{-- Test Bulk discount --}}

@@ -4,6 +4,6 @@
     <x-product.product-header />
     <x-product.product-sub-header />
     <x-product.product-bulk-actions />
-    <x-product :products="$products" />
-    <x-product.product-footer-pagination />
+    <x-product.product :products="$products" />
+    <x-product.product-footer-pagination :products="$products" />
 </div>

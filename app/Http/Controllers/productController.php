@@ -13,12 +13,13 @@ use App\Models\SalesChannel;
 use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseProductController
 {
     //TODO
-    public function index()
+    public function index(Request $request)
     {
         $properties = Property::all();
 
@@ -26,8 +27,12 @@ class ProductController extends BaseProductController
             $prop->values = json_decode($prop->values);
         }
 
+
+        $perPage = $request->input('perPage', 15);
+        // dd($perPage);
+
         return view('product.index', [
-            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->get(),
+            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->paginate($perPage),
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'sales_channels' => SalesChannel::all()
@@ -205,10 +210,10 @@ class ProductController extends BaseProductController
         if (Count($saleschannelAttributes['salesChannels']) > 0 || ProductSalesChannel::where('product_id', $product->id)->exists()) {
             $forOnline = true;
         }
-        
+
         $attributes = $request->validate($this->validateProductAttributesUpdate($forOnline, $product->id));
 
-        
+
 
         //update product
         $product->update($attributes);
@@ -302,7 +307,7 @@ class ProductController extends BaseProductController
             ];
         }
     }
-    
+
     //stock and backorders todo
     protected function validateProductAttributesUpdate(bool $forOnline, int $productId)
     {
