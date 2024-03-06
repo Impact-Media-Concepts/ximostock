@@ -1,17 +1,16 @@
 @php
-    $headerButtons = [
-        ['text' => 'Dashboard', 'width' => '6.31rem', 'icon' => '../images/import-icon.png'],
-        ['text' => 'Producten', 'width' => '6.31rem', 'icon' => '../images/export-icon.png'],
-        ['text' => 'Logboek', 'width' => '10.18rem', 'icon' => '../images/selling-channels-icon.png'],
-        ['text' => 'Instellingen', 'width' => '8rem', 'icon' => '../images/archive-icon.png'],
-        ['text' => 'Verkoopkanelen', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
-        ['text' => 'Categorieën', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
-        ['text' => 'Filters', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
-        ['text' => 'Opslaglocaties', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
-        ['text' => 'Thema', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
-        ['text' => 'Thema', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
-        ['text' => 'Thema', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
-        ['text' => 'Thema', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
+    $sidenavButtons = [
+        ['text' => 'Dashboard', 'icon' => '../images/dashboard-icon.png'],
+        ['text' => 'Producten', 'icon' => '../images/product-icon.png'],
+        ['text' => 'Logboek', 'icon' => '../images/logbook-icon.png'],
+        ['text' => 'Instellingen', 'icon' => '../images/settings-icon.png'],
+        ['text' => 'Verkoopkanelen', 'icon' => '../images/settings-icon.png'],
+        ['text' => 'Categorieën', 'icon' => '../images/dashboard-icon.png'],
+        ['text' => 'Filters', 'icon' => '../images/properties-icon.png'],
+        ['text' => 'Opslaglocaties', 'icon' => '../images/store-location-icon.png'],
+        ['text' => 'Thema', 'icon' => '../images/thema-icon.png'],
+        ['text' => 'Leveranciers', 'icon' => '../images/suppliers-icon.png'],
+        ['text' => 'Gebruikers', 'icon' => '../images/users-icon.png'],
     ];
 @endphp
 
@@ -24,14 +23,13 @@
         </div>
         <div class="underline w-[14.12rem] h-[0.08rem] bg-gray-200 mb-4">
         </div>
-        <x-sidenav.sidenav-item />
-
-        @foreach ($buttons as $button)
-            <x-product.buttons.product-bulk-button class="w-[{{ $button['width'] }}]">
-
+        {{-- <div>
+            @foreach ($sidenavButtons as $button)
                 <x-sidenav.sidenav-item icon="{{ $button['icon'] }}">
                     {{ $button['text'] }}
                     <x-sidenav.sidenav-item />
-        @endforeach
+            @endforeach
+        </div> --}}
+
     </div>
 </div>

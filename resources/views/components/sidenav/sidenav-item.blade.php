@@ -13,7 +13,9 @@
     {{ $attributes->merge(['class' => 'flex w-[17.12rem] h-[3.43rem] flex justify-center items-center hover:bg-[#F8F8F8] transition duration-100 delay-150']) }}>
 
     <div class="flex w-[14.12rem] h-[3.43rem] items-center col gap-3">
-        <img src="{{ $icon }}" alt="{{ $icon }} Icon" class="flex">
+        @if (isset($icon))
+            <img src="{{ $icon }}" alt="{{ $icon }} Icon" class="flex">
+        @endif
         <p>
             {{ $slot }}
         </p>
