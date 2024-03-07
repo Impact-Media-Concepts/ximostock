@@ -19,7 +19,7 @@
     <p>
         {{ $product->short_description }}
     </p>
-    <h2>primary category {{ $product->primaryCategory->name }}</h2>
+    {{-- <h2>primary category {{ $product->primaryCategory->name }}</h2> --}}
     @foreach ($product->photos as $photo)
         <img src="{{ $photo->url }}" width="200" height="200" />
     @endforeach
@@ -83,9 +83,9 @@
                 <textarea id="long_description" name="long_description" rows="10" cols="80">{{ $product->long_description }}</textarea><br><br>
             </li>
             <li>
-                <input type="checkbox" id="enable_backorders" {{ $product->backorders ? 'checked' : '' }}
-                    name="enable_backorders" value="1">
-                <label for="enable_backorders">enable backorders</label>
+                <input type="checkbox" id="backorders" {{ $product->backorders ? 'checked' : '' }}
+                    name="backorders" value="1">
+                <label for="backorders">enable backorders</label>
             </li>
             <li>
                 <input type="checkbox" id="communicate_stock" {{ $product->communicate_stock ? 'checked' : '' }}
@@ -93,7 +93,7 @@
                 <label for="communicate_stock">communicate stock</label>
             </li>
             <li>
-                <x-product.show.category-checkbox-list  :categories="$categories"/>
+                <x-product.show.category-checkbox-list   :categories="$categories" :checkedCategories="$product->categories"/>
             </li>
         </ul>
         @if ($errors->any())

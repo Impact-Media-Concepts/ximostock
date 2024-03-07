@@ -1,4 +1,4 @@
-@props(['categories'])
+@props(['categories', 'checkedCategories' => null])
 
 <div id="categoriesContainer">
     <h2>Categories</h2>
@@ -8,7 +8,7 @@
 
 <script>
     let categoriesData = [
-        <x-product.show.category-data :categories="$categories"/>
+        <x-product.show.category-data :categories="$categories" :checkedCategories="$checkedCategories"/>
     ];
     // Find parent function
     function findParentCategory(categoryId, categories = categoriesData, parent = null) {
@@ -141,7 +141,6 @@
 
     function updateCategories() {
 
-        //searchCategories();
         const searchText = document.getElementById('searchInput').value.trim();
 
         categoriesData.forEach(category => {
@@ -183,9 +182,11 @@
             li.classList.add('ml-4');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.value = category.id;
+            checkbox.value = 0;
             checkbox.checked = category.checked;
             checkbox.id = `checkbox_category_${category.id}`;
+            checkbox.name = `categories[${category.id}]`;
+
             checkbox.addEventListener('click', () => handleCheckboxClick(category));
             li.appendChild(checkbox);
             li.appendChild(document.createTextNode(category.name));
@@ -214,9 +215,10 @@
 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.value = subcategory.id;
+            checkbox.value = 0;
             checkbox.checked = subcategory.checked;
             checkbox.id = `checkbox_category_${subcategory.id}`;
+            checkbox.name = `categories[${subcategory.id}]`;
 
             checkbox.addEventListener('click', () => handleCheckboxClick(subcategory));
             li.appendChild(checkbox);
@@ -233,16 +235,26 @@
     // Initialize rendering
     renderCategories();
 
+    function debounce(func, delay) {
+        let timeoutId;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(context, args);
+            }, delay);
+        };
+    }
+
     const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('input', debounce(() => {
         const searchText = searchInput.value.trim();
-        if(searchText != '' ){
-            searchCategories(searchText);
-        }
 
-        // Render categories if search input is empty
         if (!searchText) {
             renderCategories();
+        }else{
+            searchCategories(searchText);
         }
     }, 300));
 </script>
