@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>product</title>
 </head>
 
@@ -91,7 +92,9 @@
                     name="communicate_stock" value="1">
                 <label for="communicate_stock">communicate stock</label>
             </li>
-
+            <li>
+                <x-product.show.category-checkbox-list  :categories="$categories"/>
+            </li>
         </ul>
         @if ($errors->any())
             <div>
