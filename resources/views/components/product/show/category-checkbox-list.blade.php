@@ -233,15 +233,16 @@
     // Initialize rendering
     renderCategories();
 
-    // Add event listener for search input
     const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', () => {
+    searchInput.addEventListener('input', debounce(() => {
         const searchText = searchInput.value.trim();
-        searchCategories(searchText);
+        if(searchText != '' ){
+            searchCategories(searchText);
+        }
 
         // Render categories if search input is empty
         if (!searchText) {
             renderCategories();
         }
-    });
+    }, 300));
 </script>
