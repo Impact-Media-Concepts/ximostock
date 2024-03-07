@@ -31,7 +31,7 @@ class Product extends Model
             ->withPivot('primary');
     }
 
-    public function getPrimaryCategoryAttribute(): Category
+    public function getPrimaryCategoryAttribute()
     {
         $primaryCategory = $this->categories->first(function ($category) {
             return $category->pivot->primary == 1;
