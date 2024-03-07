@@ -64,7 +64,8 @@ class ProductController extends BaseProductController
             $prop->pivot->property_value = json_decode($prop->pivot->property_value);
         }
         return view('product.show', [
-            'product' => $product
+            'product' => $product,
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get()
         ]);
     }
 
@@ -210,10 +211,7 @@ class ProductController extends BaseProductController
         if (Count($saleschannelAttributes['salesChannels']) > 0 || ProductSalesChannel::where('product_id', $product->id)->exists()) {
             $forOnline = true;
         }
-
         $attributes = $request->validate($this->validateProductAttributesUpdate($forOnline, $product->id));
-
-
 
         //update product
         $product->update($attributes);
@@ -308,7 +306,6 @@ class ProductController extends BaseProductController
         }
     }
 
-    //stock and backorders todo
     protected function validateProductAttributesUpdate(bool $forOnline, int $productId)
     {
         if ($forOnline) {
