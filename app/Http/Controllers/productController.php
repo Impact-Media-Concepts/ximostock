@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CategoryProduct;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\Product;
@@ -12,6 +13,7 @@ use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
+use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -214,7 +216,18 @@ class ProductController extends BaseProductController
         $attributes = $request->validate($this->validateProductAttributesUpdate($forOnline, $product->id));
 
         //update product
-        $product->update($attributes);
+        $product->update([
+            'sku' => $attributes['sku'],
+            'ean' => $attributes['ean'],
+            'title' => $attributes['title'],
+            'price' => $attributes['price'],
+            'long_description' => $attributes['long_description'],
+            'short_description' => $attributes['short_description'],
+            'backorders' => $attributes['backorders'],
+            'communicate_stock' => $attributes['communicate_stock'],
+            'discount' => $attributes['discount']
+        ]);
+        $this->updateCategories($product->id, $attributes['categories']);
 
         return redirect()->back();
     }
@@ -318,7 +331,10 @@ class ProductController extends BaseProductController
                 'short_description' => ['max:32000', 'nullable'],
                 'backorders' => ['nullable', 'numeric'],
                 'communicate_stock' => ['nullable', 'numeric'],
-                'discount' => ['nullable', 'numeric']
+                'discount' => ['nullable', 'numeric'],
+                //category validation
+                'categories' => ['nullable', 'array', new VallidCategoryKeys],
+                'categories.*' => ['required', 'numeric']
             ];
         } else {
             return [
@@ -330,7 +346,10 @@ class ProductController extends BaseProductController
                 'short_description' => ['max:32000', 'nullable'],
                 'backorders' => ['nullable', 'numeric'],
                 'communicate_stock' => ['nullable', 'numeric'],
-                'discount' => ['nullable', 'numeric']
+                'discount' => ['nullable', 'numeric'],
+                //category validation
+                'categories' => ['nullable', 'array', new VallidCategoryKeys],
+                'categories.*' => ['required', 'numaric']
             ];
         }
     }
@@ -341,5 +360,40 @@ class ProductController extends BaseProductController
             'location_zones' => ['nullable', 'array', new ValidLocationZoneKeys],
             'location_zones.*' => ['required', 'numeric']
         ];
+    }
+
+    function updateCategories($productId, $categoryData)
+    {
+        // Get all existing CategoryProduct entries for the given product
+        $existingCategoryProducts = CategoryProduct::where('product_id', $productId)->get();
+
+        // Create an array to store the IDs of existing categories
+        $existingCategoryIds = $existingCategoryProducts->pluck('category_id')->toArray();
+
+        // Loop through the new category data
+        foreach ($categoryData as $categoryId => $isPrimary) {
+            // Check if the category exists in the existing CategoryProduct entries
+            if (!in_array($categoryId, $existingCategoryIds)) {
+                // If the category does not exist, create a new CategoryProduct entry
+                CategoryProduct::create([
+                    'product_id' => $productId,
+                    'category_id' => $categoryId,
+                    'primary' => $isPrimary
+                ]);
+            } else {
+                // If the category exists, update its primary status if necessary
+                $existingCategoryProduct = $existingCategoryProducts->where('category_id', $categoryId)->first();
+                if ($existingCategoryProduct->primary != $isPrimary) {
+                    $existingCategoryProduct->update(['primary' => $isPrimary]);
+                }
+                // Remove the category ID from the existing IDs array
+                unset($existingCategoryIds[array_search($categoryId, $existingCategoryIds)]);
+            }
+        }
+
+        // Delete CategoryProduct entries for categories not present in the new data
+        CategoryProduct::where('product_id', $productId)
+            ->whereIn('category_id', $existingCategoryIds)
+            ->delete();
     }
 }
