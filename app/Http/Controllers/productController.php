@@ -219,6 +219,7 @@ class ProductController extends BaseProductController
             $attributes['backorders'] = false;
         }
         if(!isset($attributes['communicate_stock'])){
+
             $attributes['communicate_stock'] = false;
         }
         //update product
