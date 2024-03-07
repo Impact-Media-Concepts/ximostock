@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>All Categories</h1>
-    <x-categories :categories="$categories"/>
+    <x-category.categories :categories="$categories"/>
 
 </body>
 </html>

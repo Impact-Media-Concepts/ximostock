@@ -83,9 +83,24 @@ class DatabaseSeeder extends Seeder
 
         //create subcategories
         foreach ($categories as $category) {
-            Category::factory(5)->create([
+            $subcategories = Category::factory(5)->create([
                 'parent_category_id' => $category
             ]);
+            foreach($subcategories as $category){
+                $subcategories = Category::factory(5)->create([
+                    'parent_category_id' => $category
+                ]);
+                foreach($subcategories as $category){
+                    $subcategories = Category::factory(5)->create([
+                        'parent_category_id' => $category
+                    ]);
+                    foreach($subcategories as $category){
+                        $subcategories = Category::factory(5)->create([
+                            'parent_category_id' => $category
+                        ]);
+                    }
+                }
+            }
         }
 
         //link categories
