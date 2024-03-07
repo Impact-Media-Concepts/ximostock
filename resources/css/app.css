@@ -1,6 +1,8 @@
 :root {
     --light-blue: #3dabd5;
-    --light-gray: #717171;
+    --gray: #717171;
+    --lighter-yellow-gray: #f8f8f8;
+    --lighter-gray: #d3d3d3;
     --white: #fff;
     --black: #000;
     --font-inter: "Inter", sans-serif;

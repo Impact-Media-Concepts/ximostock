@@ -1,27 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>products</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
+<x-layout._header-dependencies />
 
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif; height:67.5rem">
-    <x-sidenav.sidenav />
-    <x-header.header />
+    <x-layout._sidenav-header />
     <x-product.product-container :perPage="$perPage" :products="$products" />
 
-    {{-- <x-product :products="$productsp" /> --}}
-
-
+    <div class="w-[16.56rem] h-[59.25rem] flex bg-green-200 my-[7rem] flex-col" style="padding: 20px 20px; gap: 20px">
+        <x-product.product-categories />
+        <x-product.product-properties />
+    </div>
     {{-- Test Bulk discount --}}
     {{-- <h2>discount test</h2>
     <form action="{{ route('products.bulkDiscount') }}" method="POST">
