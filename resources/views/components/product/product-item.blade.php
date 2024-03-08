@@ -80,9 +80,9 @@
             {{ $product->updated_at->format('d-m-y H:i') }}
         </div>
 
-        @if ($product->concept)
+        {{-- @if ($product->concept)
             <strong>Concept</strong>
-        @endif
+        @endif --}}
         {{-- allow backorders:
         @if ($product->backorders)
             <strong>true</strong>
