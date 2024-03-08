@@ -14,7 +14,7 @@
         {{ $product->title }}
     </h1>
     <h4>
-        {{ $product->ean . '  ' . $product->sku }}
+        {{ $product->ean . '  ' . $product->sku . '   primary category:' . $product->primaryCategory->name}}
     </h4>
     <p>
         {{ $product->short_description }}
