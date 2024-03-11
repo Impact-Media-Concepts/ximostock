@@ -33,7 +33,11 @@ class ProductController extends BaseProductController
         $perPage = $request->input('perPage', 15);
 
         return view('product.index', [
-            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->paginate($perPage),
+            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
+                                ->withExists(['salesChannels'])
+                                ->whereNull('parent_product_id')
+                                ->filter(request(['search']))
+                                ->paginate($perPage),
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'sales_channels' => SalesChannel::all(),
