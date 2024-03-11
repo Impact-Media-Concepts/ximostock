@@ -39,7 +39,7 @@
             <div class="h-[8.31rem] w-[17.12rem] flex justify-center items-center">
                 <img class="w-[11.37rem] h-[2.43rem] flex" src="../images/placeholder-logo.png" alt="placeholder logo">
             </div>
-            <div class="underline w-[14.12rem] h-[0.08rem] bg-gray-200 mb-4">
+            <div class="underline w-[14.6rem] h-[0.08rem] ml-2 bg-gray-200 mb-4">
             </div>
             <div>
                 @foreach ($sidenavButtons as $button)
@@ -52,8 +52,7 @@
                 @endforeach
             </div>
 
-            <div class="flex
-                        justify-center items-center w-12 h-12 relative top-[7.2rem]">
+            <div class="flex justify-center items-center w-12 h-12 relative top-[3.7rem]">
                 <button @click.prevent="isOpen = !isOpen;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-7 h-7">

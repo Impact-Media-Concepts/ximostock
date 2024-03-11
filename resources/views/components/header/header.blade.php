@@ -29,7 +29,9 @@
                 </svg>
             </button>
             <input class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
-            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search...">
+            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search..." autocomplete="off">
+            {{-- <input class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
+            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search..." autocomplete="off" value="{{ $search }}"> --}}
         </form>
     </div>
 
@@ -38,7 +40,7 @@
         </div>
 
         <div class="flex items-center">
-            <button
+            {{-- <button
                 class="w-[10.53rem] h-[2.68rem] rounded-md bg-[#3dabd5] flex justify-center items-center text-white">
                 <div class="flex mt-[0.08rem] relative right-[0.2rem]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -51,7 +53,41 @@
                 <p class="flex font-[300] ">
                     Nieuw toevoegen
                 </p>
-            </button>
+            </button> --}}
+
+            <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative right-6">
+                <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
+                <button @click="open = !open;"
+                    class="flex items-center z-20 w-[10.43rem] px-[1.08rem] h-[3rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6"
+                    style="border: 1px solid white" x-cloak @click.away="open = false">
+                    <!-- Display selected property name -->
+                    <div class="flex mt-[0.08rem] relative right-[0.2rem]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="white" class="w-3 h-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+    
+                    </div>
+                    <span class="w-52 text-left text-[14px] text-white"
+                        x-text="selectedProperty ? selectedProperty.name : 'Nieuw toevoegen'"></span>
+                </button>
+        
+                <div x-cloak x-show="open"
+                    class="absolute flex justify-center items-center w-[10.43rem] bg-[#3dabd5] divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 left-6 top-14">
+                    <ul>
+                        <template x-for="property in pagination" :key="property.data_pages">
+                            <li>
+                                <!-- Store property ID when clicked and log it -->
+                                <button @click="selectedProperty = property; open = false;"
+                                    class="paginate-button block w-[10.43rem] px-4 py-2 text-sm text-white hover:bg-gray-100 focus:outline-none"
+                                    x-bind:data_pages="property.data_pages">
+                                    <span class="flex justify-center items-center" x-text="property.name"></span>
+                                </button>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
@@ -75,3 +111,31 @@
 
     </div>
 </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.paginate-button');
+        // TODO if pagesize > totalproducts, check styling of dropdown button, pagination links dissapear
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+
+            });
+        });
+    });
+
+    // set pagination amount datas
+    window.pagination = [{
+            data_pages: 10,
+            name: 'Product'
+        },
+        {
+            data_pages: 20,
+            name: 'Categorie'
+        },
+        {
+            data_pages: 50,
+            name: 'Eigenschap'
+        },
+    ];
+    </script>

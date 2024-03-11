@@ -63,15 +63,27 @@
                 <script>
                     var productItemCheckbox = document.getElementById('checkboxProductItem' + {{ $product->id }});
                     var productBulkActionsContainer = document.getElementById('productBulkActionsContainer');
-                    
+                    var selectedCountElementItem = document.getElementById('selectedCount');
+
                     productItemCheckbox.addEventListener('click', function() {
                         var productId = {{ $product->id }};
+
                         if (this.checked) {
-                            console.log(this.checked, "id: ", productId);
-                            productBulkActionsContainer.classList.add('bulk-actions-hidden');
+                            //unchecked + hide bulk actions
+                            var totalCheckedCheckboxes = document.querySelectorAll('[id^="checkboxProductItem"]:checked').length - 1 ;
+                            console.log("Total checked checkboxes unchecked:", totalCheckedCheckboxes);
+                            selectedCountElementItem.textContent = totalCheckedCheckboxes;
+                            if (totalCheckedCheckboxes === 0) {
+                                productBulkActionsContainer.classList.add('bulk-actions-hidden');
+                            }
                         } else {
-                            console.log(this.checked, "id: ", productId);
+                            //checked + show bulk actions
+
+                            var totalCheckedCheckboxes = document.querySelectorAll('[id^="checkboxProductItem"]:checked').length +1 ;
+                            console.log("Total checked checkboxes checked:", totalCheckedCheckboxes);
+                            selectedCountElementItem.textContent = totalCheckedCheckboxes;
                             productBulkActionsContainer.classList.remove('bulk-actions-hidden');
+
                         }
                     });
                 </script>

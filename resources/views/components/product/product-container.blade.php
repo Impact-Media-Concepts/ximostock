@@ -28,7 +28,9 @@
     });
 
     let bulkActionsCheckboxSubheader = document.getElementById('bulkActionsCheckboxSubheader');
+    let bulkActionsCheckboxSubheaderSelectAll = document.getElementById('bulkActionsCheckboxSubheaderSelectAll');
     let selectedCountElementBulk = document.getElementById('selectedCount');
+    let selectedCountElementBulkSelectAll = document.getElementById('selectedCount');
 
     bulkActionsCheckboxSubheader.addEventListener('click', function() {
 
@@ -41,10 +43,28 @@
             productItemCheckbox.checked = bulkActionsCheckboxSubheader.checked;
 
             if (bulkActionsCheckboxSubheader.checked) {
-                totalChecked++; // Increment total checked count if the header checkbox is checked
+                totalChecked++;
             }
 
             selectedCountElementBulk.textContent = totalChecked;
         });
     });
+
+    //select all TODO
+    // bulkActionsCheckboxSubheaderSelectAll.addEventListener('click', function() {
+
+    //     let productItemCheckboxes = document.querySelectorAll('[id^="checkboxProductItem"]');
+    //     let totalCheckedSelectAll = 0;
+
+    //     productItemCheckboxes.forEach(function(productItemCheckbox) {
+    //         let productId = productItemCheckbox.id.replace('checkboxProductItem', '');
+    //         console.log(productId);
+    //         productItemCheckbox.checked = bulkActionsCheckboxSubheaderSelectAll.checked;
+
+    //         if (bulkActionsCheckboxSubheaderSelectAll.checked) {
+    //             totalCheckedSelectAll++; // Increment total checked count if the header checkbox is checked
+    //         }
+    //         selectedCountElementBulkSelectAll.textContent = totalCheckedSelectAll;
+    //     });
+    // });
 </script>
