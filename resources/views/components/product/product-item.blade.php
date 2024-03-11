@@ -3,7 +3,7 @@
 <li class="flex h-[4.5rem] py-4 gap-2 items-center justify-center hover:bg-gray-100 transition duration-300">
     <div class="flex items-center relative left-[1.08rem]">
         <div class="flex justify-center items-center w-10 h-[4.5rem] m-0 p-0">
-            <input class="h-[1.06rem] mx-2 mt-[0.3rem] checkbox-row flex cursor-pointer relative right-[0.1rem]"
+            <input id="checkboxProductItem{{ $product->id }}" class="bulkActionsCheckboxProductItem h-[1.06rem] mx-2 mt-[0.3rem] checkbox-row flex cursor-pointer relative right-[0.1rem]"
                 type="checkbox" name="product_ids[]" value="{{ $product->id }}" />
         </div>
 

@@ -60,9 +60,24 @@
         <ul class="w-[78.81rem] overflow-y-auto overflow-x-hidden max-h-[43.75rem] product-scrollbar" id="container">
             @foreach ($products as $product)
                 <x-product.product-item :product="$product" />
+                <script>
+                    var productItemCheckbox = document.getElementById('checkboxProductItem' + {{ $product->id }});
+                    var productBulkActionsContainer = document.getElementById('productBulkActionsContainer');
+                    
+                    productItemCheckbox.addEventListener('click', function() {
+                        var productId = {{ $product->id }};
+                        if (this.checked) {
+                            console.log(this.checked, "id: ", productId);
+                            productBulkActionsContainer.classList.add('bulk-actions-hidden');
+                        } else {
+                            console.log(this.checked, "id: ", productId);
+                            productBulkActionsContainer.classList.remove('bulk-actions-hidden');
+                        }
+                    });
+                </script>
             @endforeach
         </ul>
-        {{-- <button class="flex" type="submit">Delete Selected Products</button> --}}
+        <button class="flex" type="submit">Delete Selected Products</button>
     </form>
 </div>
 <script>

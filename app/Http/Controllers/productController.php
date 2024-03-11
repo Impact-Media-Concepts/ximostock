@@ -215,10 +215,10 @@ class ProductController extends BaseProductController
         }
         $attributes = $request->validate($this->validateProductAttributesUpdate($forOnline, $product->id));
 
-        if(!isset($attributes['backorders'])){
+        if (!isset($attributes['backorders'])) {
             $attributes['backorders'] = false;
         }
-        if(!isset($attributes['communicate_stock'])){
+        if (!isset($attributes['communicate_stock'])) {
 
             $attributes['communicate_stock'] = false;
         }

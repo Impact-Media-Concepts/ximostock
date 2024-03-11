@@ -3,31 +3,28 @@
         ['text' => 'Import', 'width' => '6.31rem', 'icon' => '../images/import-icon.png'],
         ['text' => 'Export', 'width' => '6.31rem', 'icon' => '../images/export-icon.png'],
         ['text' => 'Verkoopkanalen', 'width' => '10.18rem', 'icon' => '../images/selling-channels-icon.png'],
-        ['text' => 'Archiveren', 'width' => '8rem', 'icon' => '../images/archive-icon.png'],
-        ['text' => 'Verwijderen', 'width' => '8.43rem', 'icon' => '../images/delete-icon.png'],
+        ['text' => 'Archiveren', 'width' => '8rem', 'icon' => '../images/archive-icon.png']
     ];
 @endphp
 
-<div class="w-[78.81rem] h-[4.65rem] flex items-center gap-[24.5rem] bg-[#3DABD5] rounded-t-lg pt-1">
+<div class="w-[78.85rem] h-[4.65rem] flex items-center bg-[#3DABD5] rounded-t-lg pt-1">
     <h1 class="relative left-[1.55rem] bottom-[0.2rem] text-white text-[18px]"
-        style="font-family: 'Inter', sans-serif; font-weight:bold">Main
-        product page
+        style="font-family: 'Inter', sans-serif; font-weight:bold">
+        <p>
+            Main product page
+        </p>
     </h1>
-    <div class="flex justify-center items-center gap-[0.7rem] pb-[0.15rem] text-white relative left-[0.1rem]"
+    <div class="flex justify-center left-[33.8rem] items-center gap-[0.7rem] pb-[0.15rem] text-white relative"
         style="font-family: 'Inter', sans-serif;">
         @foreach ($headerButtons as $button)
-            {{-- TODO pop up when click archiveren --}}
-            <x-product.buttons.product-header-button class="w-[{{ $button['width'] }}] @if ($button['text'] === 'Archiveren') cd-popup-trigger @endif" icon="{{ $button['icon'] }}">
-                @if ($button['text'] === 'Archiveren')
-
-                @endif
+            <x-product.buttons.product-header-button class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}"  icon="{{ $button['icon'] }}">
                 {{ $button['text'] }}
             </x-product.buttons.product-header-button>
         @endforeach
     </div>
     <div class="flex justify-center items-center">
         <div
-            class="cd-popup w-full h-full fixed top-0 bg-black bg-opacity-60 hidden pt-32 select-none"
+            class="cd-popup w-full h-full fixed top-0 bg-black bg-opacity-60 hidden pt-32 select-none left-0 z-30"
         >
             <div
             x-data="{
@@ -100,7 +97,7 @@
                 <li class="py-1 md:mr-8 md:py-0">
                     <a
                     x-transition
-                    class="no w-66 md:w-64 text-white border-gray-400 border-2 py-2 rounded-lg text-gray-500 flex justify-center items-center hover:bg-gray-500 hover:text-white duration-200"
+                    class="no hover:text-white w-66 md:w-64 text-white border-gray-400 border-2 py-2 rounded-lg !text-gray-500 flex justify-center items-center hover:bg-gray-500 duration-200"
                     href="#0"
                     x-text="no"
                     ></a>

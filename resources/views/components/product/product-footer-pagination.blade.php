@@ -1,5 +1,4 @@
 <div class="w-[78.81rem] h-[3.72rem] flex grid gap-[50rem] bg-[#3dabd5] rounded-b-lg pt-1">
-
     {{ $products->links() }}
 
     <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative bottom-12">
