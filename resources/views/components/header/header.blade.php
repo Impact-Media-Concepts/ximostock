@@ -19,16 +19,18 @@
     <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.73rem] mt-1 bg-gray-200">
     </div>
 
-    <div class="flex mt-[0.08rem] ml-[0.3rem]">
-        <div class="flex items-center relative left-10">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="#D3D3D3"
-                class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-        </div>
-        <input class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
-            style="font-size: 16px; border:1px solid #D3D3D3;" type="search" placeholder="Search...">
+    <div class="flex mt-[0.08rem] ml-[0.3rem] items-center">
+        <form class="flex" method="GET" action="/products">
+            <button type="submit" class="flex items-center relative left-10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="#D3D3D3"
+                    class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </button>
+            <input class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
+            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search...">
+        </form>
     </div>
 
     <div class="ml-auto mr-10 flex">
