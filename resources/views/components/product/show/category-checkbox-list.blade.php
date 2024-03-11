@@ -5,11 +5,18 @@
     <input type="text" id="searchInput" placeholder="Search...">
     <ul id="categoriesList"></ul>
 </div>
+<hr>
+<div>
+    <h2>selected categories</h2>
+    <ul id="selectedCategoriesList">
 
+    </ul>
+</div>
 <script>
     let categoriesData = [
         <x-product.show.category-data :categories="$categories" :checkedCategories="$checkedCategories"/>
     ];
+
     // Find parent function
     function findParentCategory(categoryId, categories = categoriesData, parent = null) {
         for (const category of categories) {
@@ -36,8 +43,12 @@
 
     // Function to update subcategories based on parent state
     function uncheckSubcategories(category) {
+        const ul = document.getElementById(`category_${category.id}`).querySelector('ul');
+        ul.classList.add('hidden');
         category.subcategories.forEach(subcategory => {
             subcategory.checked = false; // Uncheck the subcategory itself
+            const input = document.getElementById(`checkbox_category_${subcategory.id}`);
+            input.checked = false;
             if (subcategory.subcategories.length > 0) {
                 uncheckSubcategories(subcategory); // Recursively uncheck subcategories
             }
@@ -90,29 +101,7 @@
         }
     }
 
-    // Function to handle checkbox click
-    function handleCheckboxClick(category) {
-        category.checked = !category.checked;
-        if (category.checked) {
-            updateParents(category);
-        } else {
-            uncheckSubcategories(category);
-        }
-        const searchInputValue = document.getElementById('searchInput').value.trim();
-        if (searchInputValue === '') {
-            renderCategories();
-        } else {
-            updateCategories();
 
-            //open or close the subcategories of this category
-            if (category.checked) {
-                showSubcategories(category);
-            } else {
-                hideSubcategories(category);
-            }
-        }
-
-    }
 
     function showSubcategories(category) {
         const li = document.getElementById(`category_${category.id}`);
@@ -138,9 +127,9 @@
         });
     }
 
-
     function updateCategories() {
 
+        //searchCategories();
         const searchText = document.getElementById('searchInput').value.trim();
 
         categoriesData.forEach(category => {
@@ -179,13 +168,11 @@
         categoriesData.forEach(category => {
             const li = document.createElement('li');
             li.id = `category_${category.id}`;
-            li.classList.add('ml-4');
+            li.classList.add('ml-5');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.value = 0;
             checkbox.checked = category.checked;
             checkbox.id = `checkbox_category_${category.id}`;
-            checkbox.name = `categories[${category.id}]`;
 
             checkbox.addEventListener('click', () => handleCheckboxClick(category));
             li.appendChild(checkbox);
@@ -211,14 +198,12 @@
         subcategories.forEach(subcategory => {
             const li = document.createElement('li');
             li.id = `category_${subcategory.id}`;
-            li.classList.add('ml-4');
-
+            li.classList.add('ml-5');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.value = 0;
+            checkbox.value = subcategory.id;
             checkbox.checked = subcategory.checked;
             checkbox.id = `checkbox_category_${subcategory.id}`;
-            checkbox.name = `categories[${subcategory.id}]`;
 
             checkbox.addEventListener('click', () => handleCheckboxClick(subcategory));
             li.appendChild(checkbox);
@@ -232,29 +217,132 @@
         parentElement.appendChild(ul);
     }
 
-    // Initialize rendering
-    renderCategories();
+    function renderSelectedCategories() {
+        const selectedCategoryList = document.getElementById('selectedCategoriesList');
+        selectedCategoryList.innerHTML = '';
 
-    function debounce(func, delay) {
-        let timeoutId;
-        return function() {
-            const context = this;
-            const args = arguments;
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                func.apply(context, args);
-            }, delay);
-        };
+        categoriesData.forEach(category => {
+            if (category.checked) {
+                addSelectedCategory(category);
+            }
+            if (category.subcategories.length > 0) {
+                renderSelectedSubcategories(category.subcategories);
+            }
+        });
+
     }
 
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', debounce(() => {
-        const searchText = searchInput.value.trim();
+    function renderSelectedSubcategories(subcategories) {
+        const selectedCategoryList = document.getElementById('selectedCategoriesList');
+        subcategories.forEach(subcategory => {
+            if (subcategory.checked) {
+                addSelectedCategory(subcategory);
+            }
+            if (subcategory.subcategories.length > 0) {
+                renderSelectedSubcategories(subcategory.subcategories);
+            }
+        });
+    }
 
+    //funciton to add a selected category.
+    function addSelectedCategory(category) {
+        const selectedCategoryList = document.getElementById('selectedCategoriesList');
+        const li = document.createElement('li');
+        li.id = `selectedCategory${category.id}`;
+
+        const title = document.createElement('h4');
+        title.textContent = `category title: ${category.name}`;
+
+        const path = document.createElement('p');
+        path.textContent = getCategoryPath(category);
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = `categories[${category.id}]`
+        input.value = category.primary ? 1 : 0;
+
+        const setPrimaryButton = document.createElement('button');
+        setPrimaryButton.textContent = 'Set as Primary';
+        setPrimaryButton.addEventListener('click', () => setPrimaryCategory(category));
+        setPrimaryButton.classList.add('g-transparent', 'hover:bg-blue-500', 'text-blue-700', 'font-semibold', 'hover:text-white', 'py-2', 'px-4', 'border', 'border-blue-500', 'hover:border-transparent', 'rounded');
+
+        li.appendChild(title);
+        li.appendChild(path);
+        li.appendChild(input);
+        li.appendChild(setPrimaryButton);
+        selectedCategoryList.appendChild(li);
+    }
+
+    function getCategoryPath(category) {
+        let path = category.name;
+
+        function traversePath(currentCategory) {
+            parent = findParentCategory(currentCategory.id);
+            if (parent) {
+
+                path = `${parent.name}/${path}`;
+                traversePath(parent);
+            }
+        }
+        traversePath(category);
+
+        return path;
+    }
+
+    function setPrimaryCategory(category){
+        resetPrimaryForAllCategories(categoriesData);
+        category.primary = true;
+        renderSelectedCategories();
+    }
+
+    function resetPrimaryForAllCategories(categories) {
+        categories.forEach(category => {
+            category.primary = false;
+            if (category.subcategories && category.subcategories.length > 0) {
+                // Recursively call the function for subcategories
+                resetPrimaryForAllCategories(category.subcategories);
+            }
+        });
+    }
+
+    // Function to handle checkbox click
+    function handleCheckboxClick(category) {
+        category.checked = !category.checked;
+        if (category.checked) {
+            updateParents(category);
+        } else {
+            uncheckSubcategories(category);
+        }
+
+        //open or close the subcategories of this category
+        if (category.checked) {
+            showSubcategories(category);
+        } else {
+            hideSubcategories(category);
+        }
+
+        const searchInputValue = document.getElementById('searchInput').value.trim();
+        if (searchInputValue === '') {
+            renderCategories();
+        } else {
+            updateCategories();
+        }
+        renderSelectedCategories();
+    }
+
+    // Initialize rendering
+    renderCategories();
+    renderSelectedCategories();
+
+    // Add event listener for search input
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+        const searchText = searchInput.value.trim();
+        searchCategories(searchText);
+
+        // Render categories if search input is empty
         if (!searchText) {
             renderCategories();
-        }else{
-            searchCategories(searchText);
         }
-    }, 300));
+    });
 </script>

@@ -356,7 +356,7 @@ class ProductController extends BaseProductController
                 'discount' => ['nullable', 'numeric'],
                 //category validation
                 'categories' => ['nullable', 'array', new VallidCategoryKeys],
-                'categories.*' => ['required', 'numaric']
+                'categories.*' => ['required', 'numeric']
             ];
         }
     }
