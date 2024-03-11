@@ -43,8 +43,12 @@
 
     // Function to update subcategories based on parent state
     function uncheckSubcategories(category) {
+        const ul = document.getElementById(`category_${category.id}`).querySelector('ul');
+        ul.classList.add('hidden');
         category.subcategories.forEach(subcategory => {
             subcategory.checked = false; // Uncheck the subcategory itself
+            const input = document.getElementById(`checkbox_category_${subcategory.id}`);
+            input.checked = false;
             if (subcategory.subcategories.length > 0) {
                 uncheckSubcategories(subcategory); // Recursively uncheck subcategories
             }
@@ -309,21 +313,21 @@
         } else {
             uncheckSubcategories(category);
         }
+
+        //open or close the subcategories of this category
+        if (category.checked) {
+            showSubcategories(category);
+        } else {
+            hideSubcategories(category);
+        }
+
         const searchInputValue = document.getElementById('searchInput').value.trim();
         if (searchInputValue === '') {
             renderCategories();
         } else {
             updateCategories();
-
-            //open or close the subcategories of this category
-            if (category.checked) {
-                showSubcategories(category);
-            } else {
-                hideSubcategories(category);
-            }
         }
         renderSelectedCategories();
-
     }
 
     // Initialize rendering

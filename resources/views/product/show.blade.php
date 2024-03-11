@@ -14,8 +14,14 @@
         {{ $product->title }}
     </h1>
     <h4>
-        {{ $product->ean . '  ' . $product->sku . '   primary category:' . $product->primaryCategory->name}}
+        {{ $product->ean . '  ' . $product->sku }}
+        
     </h4>
+    <h4>
+        Primary category: {{ $product->primaryCategory?->name ?? 'none' }}
+    </h4>
+    
+    
     <p>
         {{ $product->short_description }}
     </p>
