@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class product-categories extends Component
+class product-categories-data extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class product-categories extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components/product/categories/.product-categories');
+        return view('components/product/categories/.product-categories-data');
     }
 }
