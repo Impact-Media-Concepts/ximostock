@@ -11,6 +11,16 @@
         color: #D3D3D3;
         font-weight: 400;
     }
+
+    .no-select {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none;
+    }
+
+    .rotate-arrow {
+        transform: rotate(180deg);
+    }
 </style>
 
 <div class="flex h-[28.37rem] w-[14.1rem]">
@@ -18,7 +28,7 @@
         <div class="text-[16px] font-[600] relative right-[0.12rem] bottom-[0.18rem]">
             Categorieën
         </div>
-        
+
         <div class="relative right-[0.08rem] underline w-[14rem] h-[0.15rem] bg-[#f8f8f8] mb-2 mt-[0.17rem]">
         </div>
 
@@ -26,17 +36,17 @@
             <div class="ml-[-0.2rem] mt-[0.85rem]">
                 <input class="sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search" style="font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem" type="text" id="searchInput" placeholder="Zoeken">
             </div>
-            
+
             <ul style="font-family: 'Inter', sans-serif;" id="categoriesList"></ul>
         </div>
     </div>
 </div>
 
 <script>
-    let categoriesData = [ 
-        <x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>
-    ];
-    // Find parent function
+    // let categoriesData = [ <x-product.categories.product-categories-data :categories = "$categories" :checkedCategories = "$checkedCategories" />];
+    // // Find parent function
+
+    let categoriesData = [<x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>];
     function findParentCategory(categoryId, categories = categoriesData, parent = null) {
         for (const category of categories) {
             if (category.id === categoryId) {
@@ -62,16 +72,20 @@
 
     // Function to update subcategories based on parent state
     function uncheckSubcategories(category) {
-        const ul = document.getElementById(`category_${category.id}`).querySelector('ul');
-        ul.classList.add('hidden');
-        category.subcategories.forEach(subcategory => {
-            subcategory.checked = false; // Uncheck the subcategory itself
-            const input = document.getElementById(`checkbox_category_${subcategory.id}`);
-            input.checked = false;
-            if (subcategory.subcategories.length > 0) {
-                uncheckSubcategories(subcategory); // Recursively uncheck subcategories
-            }
-        });
+            const ul = document.getElementById(`category_${category.id}`).querySelector('ul');
+        if (ul) {
+           
+            ul.classList.add('hidden');
+            category.subcategories.forEach(subcategory => {
+                subcategory.checked = false; // Uncheck the subcategory itself
+                const input = document.getElementById(`checkbox_category_${subcategory.id}`);
+                input.checked = false;
+                if (subcategory.subcategories.length > 0) {
+                    uncheckSubcategories(subcategory); // Recursively uncheck subcategories
+                }
+            });
+        }
+       
     }
 
     // Function to search categories and subcategories
@@ -122,6 +136,7 @@
 
     // Function to handle checkbox click
     function handleCheckboxClick(category) {
+
         category.checked = !category.checked;
         if (category.checked) {
             updateParents(category);
@@ -130,6 +145,7 @@
         }
         //open or close the subcategories of this category
         if (category.checked) {
+            
             showSubcategories(category);
         } else {
             hideSubcategories(category);
@@ -203,7 +219,7 @@
 
         const ul = document.createElement('ul');
         ul.classList.add('mt-[0.8rem]');
-        ul.style.maxHeight = '350px';
+        ul.style.maxHeight = '330px';
         ul.style.overflowY = 'scroll';
 
         categoriesData.forEach(category => {
@@ -218,15 +234,25 @@
             checkbox.checked = category.checked;
             checkbox.id = `checkbox_category_${category.id}`;
             checkbox.name = 'categories[]';
-            checkbox.addEventListener('click', () => handleCheckboxClick(category));
-            
+            checkbox.classList.add('cursor-pointer');
+            checkbox.addEventListener('click', () => {
+                arrowDown.classList.toggle('rotate-arrow');
+                handleCheckboxClick(category)
+            });
+
             const categoryNameSpan = document.createElement('span');
-            
             categoryNameSpan.textContent = category.name;
             categoryNameSpan.classList.add('ml-[0.59rem]', 'relative', 'bottom-[0.125rem]');
             categoryNameSpan.style.display = 'inline-flex';
             categoryNameSpan.style.width = '85%';
-            
+            categoryNameSpan.style.zIndex = 99;
+            categoryNameSpan.classList.add('no-select');
+
+            categoryNameSpan.addEventListener('click', () => {
+                arrowDown.classList.toggle('rotate-arrow');
+                handleCheckboxClick(category);
+            });
+
 
             const arrowDownDiv = document.createElement('span');
             const arrowDown = document.createElement('img');
@@ -237,7 +263,7 @@
             arrowDownDiv.appendChild(arrowDown);
             arrowDown.src = '../../images/arrow-down-icon.png';
             arrowDown.alt = 'Arrow Down';
-            arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.25rem]');
+            arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.25rem]', 'cursor-pointer');
 
             categoryNameSpan.appendChild(arrowDownDiv);
             li.appendChild(checkbox);
@@ -260,11 +286,11 @@
         if (!parentChecked) {
             ul.classList.add('hidden');
         }
-        
+
         subcategories.forEach((subcategory, index) => {
             const li = document.createElement('li');
             li.id = `category_${subcategory.id}`;
-            li.classList.add('ml-5', 'font-[400]', 'text-[14px]', 'relative','py-[0.362rem]');
+            li.classList.add('ml-5', 'font-[400]', 'text-[14px]', 'relative', 'py-[0.362rem]', 'li-class');
 
             if (index === 0) {
                 li.classList.add('mt-2');
@@ -276,14 +302,31 @@
             checkbox.checked = subcategory.checked;
             checkbox.id = `checkbox_category_${subcategory.id}`;
             checkbox.name = 'categories[]';
+            checkbox.classList.add('cursor-pointer');
+
+            checkbox.addEventListener('click', () => { 
+                const arrowDown = li.querySelector('img');
+                if (arrowDown) {
+                    arrowDown.classList.toggle('rotate-arrow');
+                }
+                handleCheckboxClick(subcategory);
+            });
 
             const categoryNameSpan = document.createElement('span');
             categoryNameSpan.textContent = subcategory.name;
             categoryNameSpan.classList.add('ml-2', 'relative', 'bottom-[0.15rem]', 'inline-flex');
             categoryNameSpan.style.display = 'inline-flex';
-            categoryNameSpan.style.width= '75%';
+            categoryNameSpan.style.width = '75%';
+            categoryNameSpan.classList.add('no-select');
 
-            checkbox.addEventListener('click', () => handleCheckboxClick(subcategory));
+            categoryNameSpan.addEventListener('click', () => { 
+                const arrowDown = li.querySelector('img');
+                if (arrowDown) {
+                    arrowDown.classList.toggle('rotate-arrow');
+                }
+                handleCheckboxClick(subcategory);
+            });
+
             li.appendChild(checkbox);
             li.appendChild(categoryNameSpan);
             ul.appendChild(li);
@@ -299,7 +342,7 @@
                 arrowDownDiv.appendChild(arrowDown);
                 arrowDown.src = '../../images/arrow-down-icon.png';
                 arrowDown.alt = 'Arrow Down';
-                arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.25rem]');
+                arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.25rem]', 'cursor-pointer');
 
                 categoryNameSpan.appendChild(arrowDownDiv);
                 renderSubcategories(subcategory.subcategories, li, subcategory.checked);

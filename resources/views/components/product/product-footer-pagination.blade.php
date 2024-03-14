@@ -1,3 +1,7 @@
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
 <div class="w-[78.81rem] h-[3.72rem] flex grid gap-[50rem] bg-[#3dabd5] rounded-b-lg pt-1">
     {{ $products->links() }}
 
