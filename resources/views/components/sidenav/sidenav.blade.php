@@ -1,13 +1,13 @@
 {{-- <div x-data={isOpen:true}>
-    <div id="sidebar" class="h-screen overflow-y-auto overflow-x-hidden bg-green-200 transition-all duration-200 pt-40"
+    <div id="sidebar" class="h-screen pt-40 overflow-x-hidden overflow-y-auto transition-all duration-200 bg-green-200"
         :class="isOpen ? 'w-48' : 'w-0'">
-        <div class="w-full - h-auto p-4 flex justify-end bg-gray-400">
+        <div class="flex justify-end w-full h-auto p-4 bg-gray-400 -">
             <button @click.prevent="isOpen = !isOpen;">X
             </button>
         </div>
     </div>
-    <div id="body" class="w-full h-screen overflow-y-auto bg-red-200 transition-all duration-200">
-        <div class="w-full - h-auto p-4 flex justify-start">
+    <div id="body" class="w-full h-screen overflow-y-auto transition-all duration-200 bg-red-200">
+        <div class="flex justify-start w-full h-auto p-4 -">
             <button @click.prevent="isOpen = !isOpen;">X
             </button>
         </div>
@@ -18,11 +18,11 @@
         ['text' => 'Dashboard', 'icon' => '../images/dashboard-icon.png', 'url' => '/dashboard'],
         ['text' => 'Producten', 'icon' => '../images/product-icon.png', 'url' => '/products'],
         ['text' => 'Logboek', 'icon' => '../images/logbook-icon.png', 'url' => '/logbook'],
-        ['text' => 'Instellingen', 'icon' => '../images/settings-icon.png', 'url'],
-        ['text' => 'Verkoopkanalen', 'icon' => '../images/selling-channels-icon.png', 'url' => '/dashboard'],
+        ['text' => 'Instellingen', 'icon' => '../images/settings-icon.png'],
+        ['text' => 'Verkoopkanalen', 'icon' => '../images/selling-channels-icon.png', 'url' => '/selling-channels'],
         ['text' => 'Categorieën', 'icon' => '../images/dashboard-icon.png', 'url' => '/categories'],
         ['text' => 'Filters', 'icon' => '../images/properties-icon.png', 'url' => '/properties'],
-        ['text' => 'tester', 'icon' => '../images/properties-icon.png', 'url' => '/test'],
+        ['text' => 'Archief', 'icon' => '../images/archive-icon.png', 'url' => '/archive'],
         ['text' => 'Opslaglocaties', 'icon' => '../images/store-location-icon.png', 'url' => '/store-location'],
         ['text' => 'Thema', 'icon' => '../images/thema-icon.png', 'url' => '/theme'],
         ['text' => 'Leveranciers', 'icon' => '../images/suppliers-icon.png', 'url' => '/suppliers'],
@@ -45,8 +45,9 @@
                 @foreach ($sidenavButtons as $button)
                     <?php
                     $isActive = isset($button['url']) && Str::contains(request()->url(), $button['url']);
+                    $buttonUrl = isset($button['url']) ? url($button['url']) : null;
                     ?>
-                    <x-sidenav.sidenav-item icon="{{ $button['icon'] }}" active="{{ $isActive }}">
+                    <x-sidenav.sidenav-item icon="{{ $button['icon'] }}" active="{{ $isActive }}" href="{{ $buttonUrl }}">
                         {{ $button['text'] }}
                     </x-sidenav.sidenav-item>
                 @endforeach

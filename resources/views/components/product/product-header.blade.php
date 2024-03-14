@@ -2,8 +2,6 @@
     $headerButtons = [
         ['text' => 'Import', 'width' => '6.31rem', 'icon' => '../images/import-icon.png'],
         ['text' => 'Export', 'width' => '6.31rem', 'icon' => '../images/export-icon.png'],
-        ['text' => 'Verkoopkanalen', 'width' => '10.18rem', 'icon' => '../images/selling-channels-icon.png'],
-        ['text' => 'Archiveren', 'width' => '8rem', 'icon' => '../images/archive-icon.png']
     ];
 @endphp
 
@@ -14,7 +12,7 @@
             Main product page
         </p>
     </h1>
-    <div class="flex justify-center left-[33.8rem] items-center gap-[0.7rem] pb-[0.15rem] text-white relative"
+    <div class="flex justify-center left-[33.8rem] items-center gap-[0.7rem] pb-[0.15rem] text-white relative left-[53.2rem]"
         style="font-family: 'Inter', sans-serif;">
         @foreach ($headerButtons as $button)
             <x-product.buttons.product-header-button class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}"  icon="{{ $button['icon'] }}">
