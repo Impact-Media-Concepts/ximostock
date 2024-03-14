@@ -101,6 +101,17 @@
             <li>
                 <x-product.show.category-checkbox-list   :categories="$categories" :checkedCategories="$product->categories"/>
             </li>
+            <li>
+                SalesChannels:
+                <ul>
+                    @foreach ($salesChannels as $salesChannel)
+                        <li>
+                            <input type="checkbox" id="salesChannel{{$salesChannel->id}}" name="salesChannel[]" value="{{$salesChannel->id}}"/>
+                            <label for="salesChannel{{$salesChannel->id}}">{{$salesChannel->name}}</label>
+                        </li>
+                    @endforeach
+                </ul>
+            </li>
         </ul>
         @if ($errors->any())
             <div>
