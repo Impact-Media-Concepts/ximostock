@@ -8,7 +8,7 @@
     <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative bottom-12">
         <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
         <button @click="open = !open;"
-            class="flex items-center z-20 w-[5.3rem] px-[1.08rem] h-10 text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6"
+            class="hover:bg-[#3999BE] duration-100 flex items-center z-20 w-[5.3rem] px-[1.08rem] h-10 text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6"
             style="border: 1px solid white" x-cloak @click.away="open = false">
             <!-- Display selected property name -->
             <span class="truncate w-52 text-left text-[16px] text-white"

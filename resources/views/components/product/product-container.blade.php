@@ -37,7 +37,6 @@
     // listens if checkbox inside product-sub-header to changed
     // it takes the cound of totalchecked and increases i
     // when a checkbox is checked
-    
     bulkActionsCheckboxSubheader.addEventListener('change', function() {
 
         let productItemCheckboxes = document.querySelectorAll('[id^="checkboxProductItem"]');
@@ -78,8 +77,8 @@
     // listens if checkbox inside product-sub-header to changed
     // it takes the cound of totalchecked and increases i
     // when a checkbox is checked
-    
-    bulkActionsCheckboxSubheaderSelectAll.addEventListener('click', function() {
+    if (bulkActionsCheckboxSubheaderSelectAll) {
+        bulkActionsCheckboxSubheaderSelectAll.addEventListener('click', function() {
 
         let productItemCheckboxess = document.querySelectorAll('[id^="checkboxProductItem"]');
         let totalCheckeds = 0;
@@ -95,7 +94,9 @@
 
             selectedCountElementBulkSelectAll.textContent = totalCheckeds;
         });
-    });
+        });
+    }
+   
 
 
 </script>

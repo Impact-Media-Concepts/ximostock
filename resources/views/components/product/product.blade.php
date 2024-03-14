@@ -60,114 +60,46 @@
         <ul class="w-[78.81rem] overflow-y-auto overflow-x-hidden max-h-[43.75rem] product-scrollbar" id="container">
             @foreach ($products as $product)
                 <x-product.product-item :product="$product" />
-                <script>
-                    var productItemCheckbox = document.getElementById('checkboxProductItem' + {{ $product->id }});
-                    var productBulkActionsContainer = document.getElementById('productBulkActionsContainer');
-                    var selectedCountElementItem = document.getElementById('selectedCount');
-
-                    productItemCheckbox.addEventListener('click', function() {
-                        var productId = {{ $product->id }};
-
-                        if (this.checked) {
-                            //unchecked + hide bulk actions
-                            var totalCheckedCheckboxes = document.querySelectorAll('[id^="checkboxProductItem"]:checked').length - 1 ;
-                            console.log("Total checked checkboxes unchecked:", totalCheckedCheckboxes);
-                            selectedCountElementItem.textContent = totalCheckedCheckboxes;
-                            if (totalCheckedCheckboxes === 0) {
-                                productBulkActionsContainer.classList.add('bulk-actions-hidden');
-                            }
-                        } else {
-                            //checked + show bulk actions
-
-                            var totalCheckedCheckboxes = document.querySelectorAll('[id^="checkboxProductItem"]:checked').length +1 ;
-                            console.log("Total checked checkboxes checked:", totalCheckedCheckboxes);
-                            selectedCountElementItem.textContent = totalCheckedCheckboxes;
-                            productBulkActionsContainer.classList.remove('bulk-actions-hidden');
-
-                        }
-                    });
-                </script>
             @endforeach
         </ul>
         <button class="flex" type="submit">Delete Selected Products</button>
     </form>
 </div>
 <script>
-    $.fn.dragCheck = function(selector) {
-        if (selector === false)
-            return this.find("*")
-                .andSelf()
-                .add(document)
-                .unbind(".dc")
-                .removeClass("dc-selected")
-                .filter(":has(:checkbox)")
-                .css({
-                    MozUserSelect: "",
-                    cursor: ""
-                });
-        else
-            return this.each(function() {
-                // if a checkbox is clicked this will be set to
-                // it's checked state (true||false), otherwise null
-                var mdown = null;
+    $(document).ready(function() {
+        // each element which id starts with checkboxProductItem
+        $('[id^="checkboxProductItem"]').each(function() {
+            let productItemCheckbox = this;
+            let productId = $(productItemCheckbox).data('product-id');
 
-                // get the specified container, or children if not specified
-                $(this)
-                    .find(selector || "> *")
-                    .filter(":has(:checkbox)")
-                    .each(function() {
-                        // highlight all already checked boxes
-                        if ($(this).find(":checkbox:checked").length)
-                            $(this).addClass("dc-selected");
-                    })
-                    .bind("mouseover.dc", function() {
-                        // if a checkbox was clicked and mouse button being held down
-                        if (mdown != null) {
-                            // set this container's checkbox to the
-                            // same state as the one first clicked
-                            $(this).find(":checkbox")[0].checked = mdown;
-                            // add the highlight class
-                            $(this).toggleClass("dc-selected", mdown);
-                        }
-                    })
-                    .bind("mousedown.dc", function(e) {
-                        // find this container's checkbox
-                        var t = e.target;
-                        if (!$(t).is(":checkbox")) t = $(this).find(":checkbox")[0];
-
-                        // switch its state (click event will be canceled later)
-                        t.checked = !t.checked;
-                        // set the value to which other hovered
-                        // checkboxes will be set while the mouse is down
-                        mdown = t.checked;
-
-                        // highlight this one according to its state
-                        $(this).toggleClass("dc-selected", mdown);
-                    })
-
-                    // avoid text selection
-                    .bind("selectstart.dc", function() {
-                        return false;
-                    })
-                    .css({
-                        MozUserSelect: "none",
-                        cursor: "default",
-                    })
-
-                    // cancel the click event on the checkboxes because
-                    // we already switched its checked state on mousedown
-                    .find(":checkbox")
-                    .bind("click.dc", function() {
-                        return false;
-                    });
-
-                // clear the mdown var if the mouse button is released
-                // anywhere on the page
-                $(document).bind("mouseup.dc", function() {
-                    mdown = null;
-                });
+            // productItemCheckbox is clicked execute next code
+            $(productItemCheckbox).on('click', function() {
+                let productBulkActionsContainer = $('#productBulkActionsContainer');
+                let selectedCountElementItem = $('#selectedCount');
+                let totalCheckedCheckboxes = $('[id^="checkboxProductItem"]:checked').length;
+               
+                if ($(this).is(':checked')) {
+                    // When the checkbox is unchecked
+                    // if it checked
+                    // then totalCheckedCheckboxes + 1
+                    // and remove bulk-actions-hidden.
+                    selectedCountElementItem.text(totalCheckedCheckboxes);
+                    if (totalCheckedCheckboxes === 1) {
+                        productBulkActionsContainer.removeClass('bulk-actions-hidden');
+                    }
+                }
+                    
+                     // if clicked productItemCheckbox is unchecked
+                    // then totalCheckedCheckboxes is -1
+                    // and adds class bulk-actions-hidden to id #productBulkActionsContainer
+                    else {
+                    selectedCountElementItem.text(totalCheckedCheckboxes);
+                    if (totalCheckedCheckboxes === 0) {
+                        productBulkActionsContainer.addClass('bulk-actions-hidden');
+                   
+                    }
+                }
             });
-    };
-
-    $("#container").dragCheck(".flex");
+        });
+    });
 </script>

@@ -15,7 +15,7 @@
     <div class="flex justify-center left-[33.8rem] items-center gap-[0.7rem] pb-[0.15rem] text-white relative left-[53.2rem]"
         style="font-family: 'Inter', sans-serif;">
         @foreach ($headerButtons as $button)
-            <x-product.buttons.product-header-button class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}"  icon="{{ $button['icon'] }}">
+            <x-product.buttons.product-header-button class="w-[{{ $button['width'] }}]"  icon="{{ $button['icon'] }}">
                 {{ $button['text'] }}
             </x-product.buttons.product-header-button>
         @endforeach
@@ -92,21 +92,30 @@
                 <ul
                 class="cd-buttons flex-grid justify-center items-center md:pb-2 md:flex"
                 >
-                <li class="py-1 md:mr-8 md:py-0">
-                    <a
-                    x-transition
-                    class="no hover:text-white w-66 md:w-64 text-white border-gray-400 border-2 py-2 rounded-lg !text-gray-500 flex justify-center items-center hover:bg-gray-500 duration-200"
-                    href="#0"
-                    x-text="no"
-                    ></a>
-                </li>
-                <li class="py-1 md:py-0 h">
-                    <a
-                    class="yes w-66 md:w-64 text-white bg-red-500 py-2.5 rounded-lg flex justify-center items-center"
-                    href="#0"
-                    x-text="yes"
-                    ></a>
-                </li>
+
+                    <li class="py-1 md:mr-8 md:py-0">
+                        <button
+                        x-transition
+                        class="no hover:text-white w-66 md:w-64 text-white border-gray-400 border-2 py-2 rounded-lg !text-gray-500 flex justify-center items-center hover:bg-gray-500 duration-200"
+                        href="#0"
+                        x-text="no"
+                        type="submit"
+                        ></button>
+                    </li>
+                    <li class="py-1 md:py-0 h">
+                        <form class="relative" action="{{ route('products.bulkDelete') }}" method="POST">
+                              
+                            @csrf
+                            <button
+                            class="yes w-66 md:w-64 text-white bg-red-500 py-2.5 rounded-lg flex justify-center items-center"
+                            href="#0"
+                            x-text="yes"
+                            type="submit"
+                            value="submit"
+                            ></button>
+                        </form>
+                    </li>
+                    
                 </ul>
             </div>
             </div>
@@ -135,79 +144,4 @@
         });
     });
     //#endregion
-
-    $.fn.dragCheck = function (selector) {
-        if (selector === false)
-        return this.find("*")
-            .andSelf()
-            .add(document)
-            .unbind(".dc")
-            .removeClass("dc-selected")
-            .filter(":has(:checkbox)")
-            .css({ MozUserSelect: "", cursor: "" });
-            else
-        return this.each(function () {
-          // if a checkbox is clicked this will be set to
-          // it's checked state (true||false), otherwise null
-            let mdown = null;
-
-          // get the specified container, or children if not specified
-            $(this)
-            .find(selector || "> *")
-            .filter(":has(:checkbox)")
-            .each(function () {
-              // highlight all already checked boxes
-                if ($(this).find(":checkbox:checked").length)
-                $(this).addClass("dc-selected");
-            })
-            .bind("mouseover.dc", function () {
-              // if a checkbox was clicked and mouse button bein held down
-                if (mdown != null) {
-                // set this container's checkbox to the
-                // same state as the one first clicked
-                $(this).find(":checkbox")[0].checked = mdown;
-                // add the highlight class
-                $(this).toggleClass("dc-selected", mdown);
-                }
-            })
-            .bind("mousedown.dc", function (e) {
-              // find this container's checkbox
-                let t = e.target;
-                if (!$(t).is(":checkbox")) t = $(this).find(":checkbox")[0];
-
-              // switch it's state (click event will be canceled later)
-                t.checked = !t.checked;
-              // set the value to which other hovered
-              // checkboxes will be set while the mouse is down
-                mdown = t.checked;
-
-              // highlight this one according to it's state
-                $(this).toggleClass("dc-selected", mdown);
-            })
-
-            // avoid text selection
-            .bind("selectstart.dc", function () {
-                return false;
-            })
-            .css({
-                MozUserSelect: "none",
-                cursor: "default",
-            })
-
-            // cancel the click event on the checkboxes because
-            // we already switched it's checked state on mousedown
-            .find(":checkbox")
-            .bind("click.dc", function () {
-                return false;
-            });
-
-          // clear the mdown let if the mouse button is released
-          // anywhere on the page
-            $(document).bind("mouseup.dc", function () {
-            mdown = null;
-            });
-        });
-    };
-
-    $("#container").dragCheck(".checkbox-row");
 </script>

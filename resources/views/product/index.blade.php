@@ -14,7 +14,7 @@
         {{-- categories component --}}
         <x-product.categories.product-categories :categories="$categories" />
         {{-- eigenschappen/properties component --}}
-        <x-product.product-properties :categories="$categories"/>
+        <!-- <x-product.product-properties :categories="$categories"/> -->
     </div>
 </body>
 

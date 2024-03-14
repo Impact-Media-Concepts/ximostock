@@ -43,7 +43,7 @@
             <div x-data="{ open: false, selectedProperty: '' }" x-cloak class="relative flex items-center justify-start text-left right-6">
                 <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
                 <button @click="open = !open;"
-                    class="flex items-center z-20 w-[10.53rem] px-[1.08rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
+                    class="hover:bg-[#3999BE] duration-100 flex items-center z-20 w-[10.53rem] px-[1.08rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
                     style="border: 1px solid white" x-cloak @click.away="open = false">
                     <!-- Display selected property name -->
                     <div class="flex mt-[0.08rem] relative right-[0.2rem]">
@@ -64,7 +64,7 @@
                             <li>
                                 <!-- Store property ID when clicked and log it -->
                                 <button @click="selectedProperty = property; open = false;"
-                                    class="flex items-center paginate-button block w-[10.43rem] px-4 py-2.5 text-sm text-white hover:bg-gray-100 focus:outline-none font-[300]"
+                                    class="flex items-center block w-[10.43rem] px-4 py-2.5 text-sm text-white hover:bg-[#3999BE] duration-100 focus:outline-none font-[300]"
                                     x-bind:data_pages="property.data_pages">
                                     <div class="flex  mt-[0.08rem] relative right-[0.2rem]">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -86,7 +86,7 @@
         </div>
 
         <div class="flex items-center gap-3.5">
-            <a href="" class="w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"
+            <a href="/user" class="w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"
                 style="border: 1px solid #3dabd5;">
                 <img class="w-[1.7rem] h-[2.1rem] flex mb-1" src="../images/user-icon.png" alt="user icon">
             </a>
@@ -118,9 +118,10 @@
                             <li>
                                 <!-- Store property ID when clicked and log it -->
                                 <button @click="selectedProperty = property; open = false;"
-                                    class="paginate-button block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-center"
                                     x-bind:data_pages="property.data_pages">
-                                    <span class="flex items-center justify-center " x-text="property.name"></span>
+                                    <img class="h-5.5 w-5.5 pr-3" x-bind:src="'../images/' + (property.image ? property.image : 'default-image.png')" class="w-4 h-4 mr-2" alt="Icon"> 
+                                    <span class="flex items-center justify-center pr-3 " x-text="property.name"></span>
                                 </button>
                             </li>
                         </template>
@@ -161,11 +162,13 @@
 
     window.account = [{
             data_pages: 10,
-            name: 'Instellingen'
+            name: 'Instellingen',
+            image: 'gray-settings.png'
         },
         {
             data_pages: 20,
-            name: 'Uitloggen'
+            name: 'Uitloggen',
+            image: 'log-out-icon.png'
         },
     ];
     </script>

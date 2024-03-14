@@ -25,10 +25,4 @@
             </x-product.buttons.product-bulk-button>
         @endforeach
     </div>
-
 </div>
-
-
-<script>
-
-</script>
