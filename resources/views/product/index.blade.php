@@ -1,7 +1,7 @@
 {{-- Dependencies for the page --}}
 <x-layout._header-dependencies />
 
-<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif; height:60.5rem">
+<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
     {{-- univseral header --}}
     <x-layout._sidenav-header />
 
