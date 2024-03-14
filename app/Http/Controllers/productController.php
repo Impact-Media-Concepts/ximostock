@@ -23,22 +23,30 @@ class ProductController extends BaseProductController
     //TODO
     public function index(Request $request)
     {
-        $properties = Property::all();
-
-        foreach ($properties as $prop) {
-            $prop->values = json_decode($prop->values);
-        }
-
-
         $perPage = $request->input('perPage', 15);
 
-        return view('product.index', [
-            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->paginate($perPage),
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
-            'properties' => $properties,
+        // $categories = Category::with(['child_categories' => function ($query) {
+        //     $query->with('child_categories');
+        // }])
+        //     ->whereNull('parent_category_id')
+        //     ->get();
+
+        // // Eager load child categories recursively
+        // $categories->load('child_categories.child_categories');
+
+        $results = [
+            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
+                ->withExists(['salesChannels'])
+                ->whereNull('parent_product_id')
+                ->filter(request(['search']))
+                ->paginate($perPage),
+            'properties' => Property::all(),
             'sales_channels' => SalesChannel::all(),
-            'perPage' => $perPage
-        ]);
+            'perPage' => $perPage,
+            'search' => request('search'),
+            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get()
+        ];
+        return view('product.index', $results);
     }
 
     public function create()
@@ -67,7 +75,8 @@ class ProductController extends BaseProductController
         }
         return view('product.show', [
             'product' => $product,
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get()
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
+            'salesChannels' => SalesChannel::all()
         ]);
     }
 
