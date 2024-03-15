@@ -49,10 +49,11 @@ Route::post('/categories', [CategoryController::class, 'store']);
 
 //properties
 Route::get('/properties', [PropertyController::class, 'index']);
-
 Route::get('/properties/{property}', [PropertyController::class, 'show']);
+Route::patch('/properties/{property}', [PropertyController::class, 'update']);
 
 
+//authentication
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

@@ -2,9 +2,9 @@
 <ul>
     @foreach ($categories as $category)
         <li class="ml-12">
-            <strong>{{ $category->name . '  ' . Count($category->products) }}</strong>
-            @if ($category->child_categories->isNotEmpty())
-                <x-category.categories :categories="$category->child_categories" />
+            <strong>{{ $category->name }}</strong>
+            @if ($category->child_categories_recursive->isNotEmpty())
+                <x-category.categories :categories="$category->child_categories_recursive" />
             @endif
         </li>
     @endforeach

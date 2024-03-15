@@ -12,6 +12,8 @@ class Property extends Model
     //Values begint met een type wat: multiselect, singleselect, number, text of bool kan zijn
     //als het type multi- of singelselect is dan is er ook een options velt waar de mogenlijkheden in staan
 
+    protected $guarded = ['id'];
+
     public function products(){
         return $this->belongsToMany(Product::class)
         ->using(ProductProperty::class)

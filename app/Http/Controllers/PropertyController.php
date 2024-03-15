@@ -18,4 +18,25 @@ class PropertyController extends Controller
             'property' => $property
         ]);
     }
+
+    public function update(Property $property){
+        $attributes = request()->validate([
+            'options' => ['nullable', 'array'],
+            'options.*' => ['required', 'string'],
+            'name' => ['required', 'string']
+        ]);
+        $options = [];
+        
+        foreach ($attributes['options'] as $option){
+            array_push($options, $option);
+        }
+        $type = $property->type;
+        $values = json_encode(['type'=>$type, 'options' => $options]);
+
+        $property->update([
+            'name' => $attributes['name'],
+            'values' => $values
+        ]);
+        return redirect()->back();
+    }
 }
