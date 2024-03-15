@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Property;
+use App\Rules\ValidPropertyKeys;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PropertyController extends Controller
 {
@@ -38,5 +40,14 @@ class PropertyController extends Controller
             'values' => $values
         ]);
         return redirect()->back();
+    }
+
+    public function bulkDelete(){
+        $attributes = request()->validate([
+            'properties' => ['required', 'array'],
+            'properties.*' => ['required', 'numeric', Rule::exists('properties', 'id')]
+        ]);
+        Property::whereIn('id', $attributes['properties'])->delete();
+        return redirect('/properties');
     }
 }

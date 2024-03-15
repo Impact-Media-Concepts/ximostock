@@ -51,7 +51,7 @@ Route::post('/categories', [CategoryController::class, 'store']);
 Route::get('/properties', [PropertyController::class, 'index']);
 Route::get('/properties/{property}', [PropertyController::class, 'show']);
 Route::patch('/properties/{property}', [PropertyController::class, 'update']);
-
+Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);
 
 //authentication
 Route::get('/dashboard', function () {
