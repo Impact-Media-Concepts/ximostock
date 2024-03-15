@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>product</title>
 </head>
 
@@ -14,11 +15,17 @@
     </h1>
     <h4>
         {{ $product->ean . '  ' . $product->sku }}
+        
     </h4>
+    <h4>
+        Primary category: {{ $product->primaryCategory?->name ?? 'none' }}
+    </h4>
+    
+    
     <p>
         {{ $product->short_description }}
     </p>
-    <h2>primary category {{ $product->primaryCategory->name }}</h2>
+    {{-- <h2>primary category {{ $product->primaryCategory->name }}</h2> --}}
     @foreach ($product->photos as $photo)
         <img src="{{ $photo->url }}" width="200" height="200" />
     @endforeach
@@ -82,16 +89,29 @@
                 <textarea id="long_description" name="long_description" rows="10" cols="80">{{ $product->long_description }}</textarea><br><br>
             </li>
             <li>
-                <input type="checkbox" id="enable_backorders" {{ $product->backorders ? 'checked' : '' }}
-                    name="enable_backorders" value="1">
-                <label for="enable_backorders">enable backorders</label>
+                <input type="checkbox" id="backorders" {{ $product->backorders ? 'checked' : '' }}
+                    name="backorders" value="1">
+                <label for="backorders">enable backorders</label>
             </li>
             <li>
                 <input type="checkbox" id="communicate_stock" {{ $product->communicate_stock ? 'checked' : '' }}
                     name="communicate_stock" value="1">
                 <label for="communicate_stock">communicate stock</label>
             </li>
-
+            <li>
+                <x-product.show.category-checkbox-list   :categories="$categories" :checkedCategories="$product->categories"/>
+            </li>
+            <li>
+                SalesChannels:
+                <ul>
+                    @foreach ($salesChannels as $salesChannel)
+                        <li>
+                            <input type="checkbox" id="salesChannel{{$salesChannel->id}}" {{ $selectedSalesChannels->contains('sales_channel_id', $salesChannel->id) ? 'checked' : '' }} name="salesChannels[]" value="{{$salesChannel->id}}"/>
+                            <label for="salesChannel{{$salesChannel->id}}">{{$salesChannel->name}}</label>
+                        </li>
+                    @endforeach
+                </ul>
+            </li>
         </ul>
         @if ($errors->any())
             <div>

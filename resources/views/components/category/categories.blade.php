@@ -1,10 +1,10 @@
 @props(['categories'])
 <ul>
     @foreach ($categories as $category)
-        <li>
+        <li class="ml-12">
             <strong>{{ $category->name . '  ' . Count($category->products) }}</strong>
             @if ($category->child_categories->isNotEmpty())
-                <x-categories :categories="$category->child_categories" />
+                <x-category.categories :categories="$category->child_categories" />
             @endif
         </li>
     @endforeach

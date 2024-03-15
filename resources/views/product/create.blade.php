@@ -33,10 +33,10 @@
 
         <div>
             <h3>Select Categories:</h3>
-            <x-categories-input :categories="$categories"/>
-            
+            <x-category.categories-input :categories="$categories" />
+
             <label for='primaryCategory'>primaryCategory</label>
-            <input type="number" id="primaryCategory" value="{{old('primaryCategory')}}" name="primaryCategory" />
+            <input type="number" id="primaryCategory" value="{{ old('primaryCategory') }}" name="primaryCategory" />
         </div>
 
         <ul>
@@ -53,7 +53,7 @@
         {{-- Photos --}}
         <div>
             <label for="primaryPhoto">primary Photo</label>
-            <input type="file" id="primaryPhoto" name="primaryPhoto"/>
+            <input type="file" id="primaryPhoto" name="primaryPhoto" />
         </div>
 
         <ul>
@@ -67,8 +67,7 @@
                 @if ($property->values->type == 'text')
                     <div>
                         <label for="property_{{ $property->id }}">{{ $property->name }}</label>
-                        <input  type="text" id="property_{{ $property->id }}"
-                            name="properties[{{ $property->id }}]">
+                        <input type="text" id="property_{{ $property->id }}" name="properties[{{ $property->id }}]">
                     </div>
                 @endif
             @endforeach

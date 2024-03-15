@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+<x-layout._header-dependencies />
+
+<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif; height:67.5rem">
+    <x-layout._sidenav-header />
     <h1>All Categories</h1>
-    <x-categories :categories="$categories"/>
+    <x-category.categories :categories="$categories" />
 
 </body>
+
 </html>

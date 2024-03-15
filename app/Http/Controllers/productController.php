@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CategoryProduct;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\Product;
@@ -12,26 +13,40 @@ use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
+use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseProductController
 {
     //TODO
-    public function index()
+    public function index(Request $request)
     {
-        $properties = Property::all();
+        $perPage = $request->input('perPage', 15);
 
-        foreach ($properties as $prop) {
-            $prop->values = json_decode($prop->values);
-        }
+        // $categories = Category::with(['child_categories' => function ($query) {
+        //     $query->with('child_categories');
+        // }])
+        //     ->whereNull('parent_category_id')
+        //     ->get();
 
-        return view('product.index', [
-            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')->withExists(['salesChannels'])->whereNull('parent_product_id')->get(),
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
-            'properties' => $properties,
-            'sales_channels' => SalesChannel::all()
-        ]);
+        // // Eager load child categories recursively
+        // $categories->load('child_categories.child_categories');
+
+        $results = [
+            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
+                ->withExists(['salesChannels'])
+                ->whereNull('parent_product_id')
+                ->filter(request(['search']))
+                ->paginate($perPage),
+            'properties' => Property::all(),
+            'sales_channels' => SalesChannel::all(),
+            'perPage' => $perPage,
+            'search' => request('search'),
+            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get()
+        ];
+        return view('product.index', $results);
     }
 
     public function create()
@@ -59,7 +74,10 @@ class ProductController extends BaseProductController
             $prop->pivot->property_value = json_decode($prop->pivot->property_value);
         }
         return view('product.show', [
-            'product' => $product
+            'product' => $product,
+            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
+            'salesChannels' => SalesChannel::all(),
+            'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get()
         ]);
     }
 
@@ -202,16 +220,39 @@ class ProductController extends BaseProductController
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
-        if (Count($saleschannelAttributes['salesChannels']) > 0 || ProductSalesChannel::where('product_id', $product->id)->exists()) {
+        if(Count($saleschannelAttributes['salesChannels'])  >  0){
             $forOnline = true;
         }
-        
-        $attributes = $request->validate($this->validateProductAttributesUpdate($forOnline, $product->id));
 
+        $validationRules = $this->validateProductAttributesUpdate($forOnline, $product->id);
+        $validationRules += $this->validateCategoryUpdate();
         
 
+        $attributes = $request->validate($validationRules);
+
+        if (!isset($attributes['backorders'])) {
+            $attributes['backorders'] = false;
+        }
+        if (!isset($attributes['communicate_stock'])) {
+
+            $attributes['communicate_stock'] = false;
+        }
         //update product
-        $product->update($attributes);
+        $product->update([
+            'sku' => $attributes['sku'],
+            'ean' => $attributes['ean'],
+            'title' => $attributes['title'],
+            'price' => $attributes['price'],
+            'long_description' => $attributes['long_description'],
+            'short_description' => $attributes['short_description'],
+            'backorders' => $attributes['backorders'],
+            'communicate_stock' => $attributes['communicate_stock'],
+            'discount' => $attributes['discount']
+        ]);
+        $this->updateCategories($product->id, $attributes['categories']);
+        if($forOnline){
+            $this->updateSalesChannels($product->id, $saleschannelAttributes['salesChannels']);
+        }
 
         return redirect()->back();
     }
@@ -302,8 +343,7 @@ class ProductController extends BaseProductController
             ];
         }
     }
-    
-    //stock and backorders todo
+
     protected function validateProductAttributesUpdate(bool $forOnline, int $productId)
     {
         if ($forOnline) {
@@ -316,7 +356,7 @@ class ProductController extends BaseProductController
                 'short_description' => ['max:32000', 'nullable'],
                 'backorders' => ['nullable', 'numeric'],
                 'communicate_stock' => ['nullable', 'numeric'],
-                'discount' => ['nullable', 'numeric']
+                'discount' => ['nullable', 'numeric'],
             ];
         } else {
             return [
@@ -328,7 +368,7 @@ class ProductController extends BaseProductController
                 'short_description' => ['max:32000', 'nullable'],
                 'backorders' => ['nullable', 'numeric'],
                 'communicate_stock' => ['nullable', 'numeric'],
-                'discount' => ['nullable', 'numeric']
+                'discount' => ['nullable', 'numeric'],
             ];
         }
     }
@@ -339,5 +379,76 @@ class ProductController extends BaseProductController
             'location_zones' => ['nullable', 'array', new ValidLocationZoneKeys],
             'location_zones.*' => ['required', 'numeric']
         ];
+    }
+    protected function validateCategoryUpdate()
+    {
+        return [
+            'categories' => ['nullable', 'array', new VallidCategoryKeys],
+            'categories.*' => ['required' , 'numeric']
+        ];
+    }
+
+    function updateCategories($productId, $categoryData)
+    {
+        // Get all existing CategoryProduct entries for the given product
+        $existingCategoryProducts = CategoryProduct::where('product_id', $productId)->get();
+
+        // Create an array to store the IDs of existing categories
+        $existingCategoryIds = $existingCategoryProducts->pluck('category_id')->toArray();
+
+        // Loop through the new category data
+        foreach ($categoryData as $categoryId => $isPrimary) {
+            // Check if the category exists in the existing CategoryProduct entries
+            if (!in_array($categoryId, $existingCategoryIds)) {
+                // If the category does not exist, create a new CategoryProduct entry
+                CategoryProduct::create([
+                    'product_id' => $productId,
+                    'category_id' => $categoryId,
+                    'primary' => $isPrimary
+                ]);
+            } else {
+                // If the category exists, update its primary status if necessary
+                $existingCategoryProduct = $existingCategoryProducts->where('category_id', $categoryId)->first();
+                if ($existingCategoryProduct->primary != $isPrimary) {
+                    $existingCategoryProduct->update(['primary' => $isPrimary]);
+                }
+                // Remove the category ID from the existing IDs array
+                unset($existingCategoryIds[array_search($categoryId, $existingCategoryIds)]);
+            }
+        }
+
+        // Delete CategoryProduct entries for categories not present in the new data
+        CategoryProduct::where('product_id', $productId)
+            ->whereIn('category_id', $existingCategoryIds)
+            ->delete();
+    }
+
+    function updateSalesChannels($productId, $SalesChannelData)
+    {
+        // Get all existing CategoryProduct entries for the given product
+        $existingProductSalesChannels = ProductSalesChannel::where('product_id', $productId)->get();
+        
+        // Create an array to store the IDs of existing SalesChannels
+        $existingSalesChannelIds = $existingProductSalesChannels->pluck('sales_channel_id')->toArray();
+       
+        // Loop through the new SalesChannel data
+        foreach ($SalesChannelData as $salesChannelId) {
+            // Check if the SalesChannel exists in the existing ProductSalesChannel entries
+            if (!in_array($salesChannelId, $existingSalesChannelIds)) {
+                // If the SalesChannel does not exist, create a new ProductSalesChannel entry
+
+                ProductSalesChannel::create([
+                    'product_id' => $productId,
+                    'sales_channel_id' => $salesChannelId
+                ]);
+            } else {
+                unset($existingCategoryIds[array_search($salesChannelId, $existingSalesChannelIds)]);
+            }
+        }
+
+        // Delete ProductSalesChannel entries for SalesChannels not present in the new data
+        ProductSalesChannel::where('product_id', $productId)
+            ->whereIn('sales_channel_id', $existingSalesChannelIds)
+            ->delete();
     }
 }

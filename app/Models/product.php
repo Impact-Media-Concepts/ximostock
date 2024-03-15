@@ -31,7 +31,7 @@ class Product extends Model
             ->withPivot('primary');
     }
 
-    public function getPrimaryCategoryAttribute(): Category
+    public function getPrimaryCategoryAttribute()
     {
         $primaryCategory = $this->categories->first(function ($category) {
             return $category->pivot->primary == 1;
@@ -97,7 +97,7 @@ class Product extends Model
 
         return $stock;
     }
-    
+
     protected function calculateStock(): int
     {
         $inventories = $this->locationZones;
@@ -151,5 +151,19 @@ class Product extends Model
             }
         }
         return false;
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when(
+            $filters['search'] ?? false,
+            fn ($query, $search) =>
+            $query->where(
+                fn ($query) =>
+                $query
+                    ->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('sku', 'like', '%' . $search . '%')
+            )
+        );
     }
 }

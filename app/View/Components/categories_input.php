@@ -21,6 +21,6 @@ class categories_input extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.categories_input');
+        return view('components/categories.categories-input');
     }
 }
