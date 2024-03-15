@@ -106,7 +106,7 @@
                 <ul>
                     @foreach ($salesChannels as $salesChannel)
                         <li>
-                            <input type="checkbox" id="salesChannel{{$salesChannel->id}}" name="salesChannel[]" value="{{$salesChannel->id}}"/>
+                            <input type="checkbox" id="salesChannel{{$salesChannel->id}}" {{ $selectedSalesChannels->contains('sales_channel_id', $salesChannel->id) ? 'checked' : '' }} name="salesChannels[]" value="{{$salesChannel->id}}"/>
                             <label for="salesChannel{{$salesChannel->id}}">{{$salesChannel->name}}</label>
                         </li>
                     @endforeach
