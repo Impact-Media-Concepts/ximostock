@@ -25,15 +25,6 @@ class ProductController extends BaseProductController
     {
         $perPage = $request->input('perPage', 15);
 
-        // $categories = Category::with(['child_categories' => function ($query) {
-        //     $query->with('child_categories');
-        // }])
-        //     ->whereNull('parent_category_id')
-        //     ->get();
-
-        // // Eager load child categories recursively
-        // $categories->load('child_categories.child_categories');
-
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
                 ->withExists(['salesChannels'])
