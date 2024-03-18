@@ -240,10 +240,14 @@ class ProductController extends BaseProductController
             'communicate_stock' => $attributes['communicate_stock'],
             'discount' => $attributes['discount']
         ]);
+
+        if(!isset($attributes['categories'])){
+            $attributes['categories']=[];
+        }      
         $this->updateCategories($product->id, $attributes['categories']);
-        if($forOnline){
-            $this->updateSalesChannels($product->id, $saleschannelAttributes['salesChannels']);
-        }
+
+        $this->updateSalesChannels($product->id, $saleschannelAttributes['salesChannels']);
+        
 
         return redirect()->back();
     }
@@ -433,7 +437,7 @@ class ProductController extends BaseProductController
                     'sales_channel_id' => $salesChannelId
                 ]);
             } else {
-                unset($existingCategoryIds[array_search($salesChannelId, $existingSalesChannelIds)]);
+                unset($existingSalesChannelIds[array_search($salesChannelId, $existingSalesChannelIds)]);
             }
         }
 
