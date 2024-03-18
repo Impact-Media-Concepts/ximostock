@@ -1,6 +1,8 @@
 <div class="w-full h-[5.05rem] absolute shadow-[0_1px_14px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center">
     <button class="px-11 pt-1 relative left-[0.08rem]">
-        <a href="{{ url('/dashboard') }}"><img class="w-[10.75] h-[1.31rem] flex" src="../images/ximostock-logo.png" alt="ximostock logo"></a>
+        <a href="{{ url('/dashboard') }}">
+            <img class="w-[10.75] h-[1.31rem] flex" src="../images/ximostock-logo.png" alt="ximostock logo">
+        </a>
     </button>
 
     <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.73rem] mt-1 bg-gray-200">
@@ -114,6 +116,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>

@@ -1,18 +1,3 @@
-{{-- <div x-data={isOpen:true}>
-    <div id="sidebar" class="h-screen pt-40 overflow-x-hidden overflow-y-auto transition-all duration-200 bg-green-200"
-        :class="isOpen ? 'w-48' : 'w-0'">
-        <div class="flex justify-end w-full h-auto p-4 bg-gray-400 -">
-            <button @click.prevent="isOpen = !isOpen;">X
-            </button>
-        </div>
-    </div>
-    <div id="body" class="w-full h-full overflow-y-auto transition-all duration-200 bg-red-200">
-        <div class="flex justify-start w-full h-auto p-4 -">
-            <button @click.prevent="isOpen = !isOpen;">X
-            </button>
-        </div>
-    </div>
-</div> --}}
 @php
     $sidenavButtons = [
         ['text' => 'Dashboard', 'icon' => '../images/dashboard-icon.png', 'url' => '/dashboard', 'id' => '1'],
@@ -30,7 +15,7 @@
     ];
 @endphp
 
-<div x-data={isOpen:true}>
+<div x-data={isOpen:true} class="flex">
     <div class="w-[17.05rem] bg-white h-screen relative transition-all duration-200"
         :class="isOpen ? 'w-[17.05rem]' : 'w-[4.08rem]'">
 
