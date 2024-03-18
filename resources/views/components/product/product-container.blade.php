@@ -11,8 +11,13 @@
     {{-- Every component inside this container component--}}
     <x-product.product-header />
     <x-product.product-sub-header :products="$products" />
-    <x-product.product-bulk-actions :products="$products" :perPage="$perPage"/>
-    <x-product.product :products="$products" />
+
+    <!-- form for bulk actions -->
+    <form id="bulkActionsForm" action="{{ route('products.bulkDelete') }}" method="POST">
+        @csrf
+        <x-product.product-bulk-actions :products="$products" :perPage="$perPage"/>
+        <x-product.product :products="$products" />
+    </form>
     <x-product.product-footer-pagination :perPage="$perPage" :products="$products" />
 </div>
 

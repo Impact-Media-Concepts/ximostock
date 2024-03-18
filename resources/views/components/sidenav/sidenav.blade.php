@@ -6,7 +6,7 @@
             </button>
         </div>
     </div>
-    <div id="body" class="w-full h-screen overflow-y-auto transition-all duration-200 bg-red-200">
+    <div id="body" class="w-full h-full overflow-y-auto transition-all duration-200 bg-red-200">
         <div class="flex justify-start w-full h-auto p-4 -">
             <button @click.prevent="isOpen = !isOpen;">X
             </button>

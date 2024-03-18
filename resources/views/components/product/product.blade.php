@@ -4,10 +4,12 @@
     /* scrollbar */
     .product-scrollbar::-webkit-scrollbar {
         width: 0px;
+        scrollbar-width: none;
     }
 
     ::-webkit-scrollbar {
         width: 20px;
+        scrollbar-width: none;
     }
 
     ::-webkit-scrollbar-track {
@@ -26,44 +28,15 @@
 
         z-index: -1 !important;
     }
-
-    ::-webkit-scrollbar-button:single-button {
-        display: block;
-        border-style: solid;
-        height: 13px;
-    }
-
-    /* Up */
-    ::-webkit-scrollbar-button:single-button:vertical:decrement {
-        border-width: 10px 10px 10px 10px;
-        border-color: transparent transparent #000000 transparent;
-    }
-
-    ::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
-        border-color: transparent transparent #524d4d transparent;
-    }
-
-    /* Down */
-    ::-webkit-scrollbar-button:single-button:vertical:increment {
-        border-width: 10px 10px 10px 10px;
-        border-color: #000000 transparent transparent transparent;
-    }
-
-    ::-webkit-scrollbar-button:vertical:single-button:increment:hover {
-        border-color: #524d4d transparent transparent transparent;
-    }
 </style>
 
 <div class="relative flex items-center bg-white">
-    <form class="relative" action="{{ route('products.bulkDelete') }}" method="POST">
-        @csrf
-        <ul class="w-[78.81rem] overflow-y-auto overflow-x-hidden max-h-[43.75rem] product-scrollbar" id="container">
-            @foreach ($products as $product)
-                <x-product.product-item :product="$product" />
-            @endforeach
-        </ul>
-        <button class="flex" type="submit">Delete Selected Products</button>
-    </form>
+    <ul class="w-[78.81rem] overflow-y-auto overflow-x-hidden max-h-[43.75rem] product-scrollbar" id="container">
+        @foreach ($products as $product)
+            <x-product.product-item :product="$product" />
+        @endforeach
+    </ul>
+    <!-- <button class="flex" type="submit">Delete Selected Products</button> -->
 </div>
 <script>
     $(document).ready(function() {

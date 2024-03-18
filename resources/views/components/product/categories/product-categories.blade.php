@@ -21,6 +21,8 @@
     .rotate-arrow {
         transform: rotate(180deg);
     }
+
+    [x-cloak] { display: none !important; }
 </style>
 
 <div class="flex h-[28.37rem] w-[14.1rem]">
@@ -237,7 +239,7 @@
             checkbox.classList.add('cursor-pointer');
             checkbox.addEventListener('click', () => {
                 arrowDown.classList.toggle('rotate-arrow');
-                handleCheckboxClick(category)
+                handleCheckboxClick(category);
             });
 
             const categoryNameSpan = document.createElement('span');
@@ -250,6 +252,7 @@
 
             categoryNameSpan.addEventListener('click', () => {
                 arrowDown.classList.toggle('rotate-arrow');
+                checkbox.checked = !checkbox.checked;
                 handleCheckboxClick(category);
             });
 
@@ -324,6 +327,7 @@
                 if (arrowDown) {
                     arrowDown.classList.toggle('rotate-arrow');
                 }
+                checkbox.checked = !checkbox.checked;
                 handleCheckboxClick(subcategory);
             });
 
