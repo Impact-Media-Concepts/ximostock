@@ -42,4 +42,16 @@ class CategoryController extends Controller
 
         return redirect('/categories');
     }
+
+    public function update(Category $category){
+        $attributes = request()->validate([
+            'name'=>['required', 'string']
+        ]);
+        
+        $category->update([
+            'name'=>$attributes['name']
+        ]);
+
+        return redirect()->back();
+    }
 }
