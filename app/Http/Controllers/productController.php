@@ -25,15 +25,6 @@ class ProductController extends BaseProductController
     {
         $perPage = $request->input('perPage', 20);
 
-        // $categories = Category::with(['child_categories' => function ($query) {
-        //     $query->with('child_categories');
-        // }])
-        //     ->whereNull('parent_category_id')
-        //     ->get();
-
-        // // Eager load child categories recursively
-        // $categories->load('child_categories.child_categories');
-
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
                 ->withExists(['salesChannels'])
@@ -75,8 +66,9 @@ class ProductController extends BaseProductController
         }
         return view('product.show', [
             'product' => $product,
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
-            'salesChannels' => SalesChannel::all()
+            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
+            'salesChannels' => SalesChannel::all(),
+            'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get()
         ]);
     }
 
@@ -219,10 +211,15 @@ class ProductController extends BaseProductController
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
-        if (Count($saleschannelAttributes['salesChannels']) > 0 || ProductSalesChannel::where('product_id', $product->id)->exists()) {
+        if(Count($saleschannelAttributes['salesChannels'])  >  0){
             $forOnline = true;
         }
-        $attributes = $request->validate($this->validateProductAttributesUpdate($forOnline, $product->id));
+
+        $validationRules = $this->validateProductAttributesUpdate($forOnline, $product->id);
+        $validationRules += $this->validateCategoryUpdate();
+        
+
+        $attributes = $request->validate($validationRules);
 
         if (!isset($attributes['backorders'])) {
             $attributes['backorders'] = false;
@@ -244,6 +241,9 @@ class ProductController extends BaseProductController
             'discount' => $attributes['discount']
         ]);
         $this->updateCategories($product->id, $attributes['categories']);
+        if($forOnline){
+            $this->updateSalesChannels($product->id, $saleschannelAttributes['salesChannels']);
+        }
 
         return redirect()->back();
     }
@@ -348,9 +348,6 @@ class ProductController extends BaseProductController
                 'backorders' => ['nullable', 'numeric'],
                 'communicate_stock' => ['nullable', 'numeric'],
                 'discount' => ['nullable', 'numeric'],
-                //category validation
-                'categories' => ['nullable', 'array', new VallidCategoryKeys],
-                'categories.*' => ['required', 'numeric']
             ];
         } else {
             return [
@@ -363,9 +360,6 @@ class ProductController extends BaseProductController
                 'backorders' => ['nullable', 'numeric'],
                 'communicate_stock' => ['nullable', 'numeric'],
                 'discount' => ['nullable', 'numeric'],
-                //category validation
-                'categories' => ['nullable', 'array', new VallidCategoryKeys],
-                'categories.*' => ['required', 'numeric']
             ];
         }
     }
@@ -375,6 +369,13 @@ class ProductController extends BaseProductController
         return [
             'location_zones' => ['nullable', 'array', new ValidLocationZoneKeys],
             'location_zones.*' => ['required', 'numeric']
+        ];
+    }
+    protected function validateCategoryUpdate()
+    {
+        return [
+            'categories' => ['nullable', 'array', new VallidCategoryKeys],
+            'categories.*' => ['required' , 'numeric']
         ];
     }
 
@@ -410,6 +411,35 @@ class ProductController extends BaseProductController
         // Delete CategoryProduct entries for categories not present in the new data
         CategoryProduct::where('product_id', $productId)
             ->whereIn('category_id', $existingCategoryIds)
+            ->delete();
+    }
+
+    function updateSalesChannels($productId, $SalesChannelData)
+    {
+        // Get all existing CategoryProduct entries for the given product
+        $existingProductSalesChannels = ProductSalesChannel::where('product_id', $productId)->get();
+        
+        // Create an array to store the IDs of existing SalesChannels
+        $existingSalesChannelIds = $existingProductSalesChannels->pluck('sales_channel_id')->toArray();
+       
+        // Loop through the new SalesChannel data
+        foreach ($SalesChannelData as $salesChannelId) {
+            // Check if the SalesChannel exists in the existing ProductSalesChannel entries
+            if (!in_array($salesChannelId, $existingSalesChannelIds)) {
+                // If the SalesChannel does not exist, create a new ProductSalesChannel entry
+
+                ProductSalesChannel::create([
+                    'product_id' => $productId,
+                    'sales_channel_id' => $salesChannelId
+                ]);
+            } else {
+                unset($existingCategoryIds[array_search($salesChannelId, $existingSalesChannelIds)]);
+            }
+        }
+
+        // Delete ProductSalesChannel entries for SalesChannels not present in the new data
+        ProductSalesChannel::where('product_id', $productId)
+            ->whereIn('sales_channel_id', $existingSalesChannelIds)
             ->delete();
     }
 }
