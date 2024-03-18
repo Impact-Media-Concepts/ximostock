@@ -18,4 +18,13 @@
     </div>
 </body>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/header-button-data.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/bulk-actions.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/container-bulk-actions.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/single-product-bulk-action.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/discount-values.js') }}"></script>
+
 </html>

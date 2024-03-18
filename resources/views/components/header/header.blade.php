@@ -1,18 +1,3 @@
-<style>
-    input::placeholder {
-        color: #D3D3D3;
-        opacity: 1;
-        font-weight: 400;
-    }
-
-    input::-ms-input-placeholder {
-        color: #D3D3D3;
-        font-weight: 400;
-    }
-
-    [x-cloak] { display: none !important; }
-</style>
-
 <div class="w-full h-[5.05rem] absolute shadow-[0_1px_14px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center">
     <button class="px-11 pt-1 relative left-[0.08rem]">
         <a href="{{ url('/dashboard') }}"><img class="w-[10.75] h-[1.31rem] flex" src="../images/ximostock-logo.png" alt="ximostock logo"></a>
@@ -132,43 +117,3 @@
 
     </div>
 </div>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const buttons = document.querySelectorAll('.paginate-button');
-        // TODO if pagesize > totalproducts, check styling of dropdown button, pagination links dissapear
-        buttons.forEach(button => {
-            button.addEventListener('click', function() {
-
-            });
-        });
-    });
-
-    // set pagination amount datas
-    window.addButon = [{
-            data_pages: 10,
-            name: 'Product'
-        },
-        {
-            data_pages: 20,
-            name: 'Categorie'
-        },
-        {
-            data_pages: 50,
-            name: 'Eigenschap'
-        },
-    ];
-
-    window.account = [{
-            data_pages: 10,
-            name: 'Instellingen',
-            image: 'gray-settings.png'
-        },
-        {
-            data_pages: 20,
-            name: 'Uitloggen',
-            image: 'log-out-icon.png'
-        },
-    ];
-    </script>

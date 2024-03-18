@@ -63,23 +63,3 @@
         </div>
     </div>
 </div>
-
-
-<script>
-$(document).ready(function() {
-        // each element which id starts with checkboxProductItem
-        $('[id^="sideItem"]').each(function() {
-            console.log("y1?");
-            let sideItem = document.querySelectorAll('[id^="sideItem"]');
-            let closeButton = document.querySelectorAll('closeButton');
-
-            let sideid = $(productItemCheckbox).data('sideItem-id');
-
-            // productItemCheckbox is clicked execute next code
-            $(closeButton).on('click', function() {
-                console.log("y2?");
-                sideItem.classList.add("w-[4.08rem]")
-            });
-        });
-    });
-</script>
