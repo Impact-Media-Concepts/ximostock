@@ -1,7 +1,4 @@
-
-<div class="w-[78.81rem] h-[3.72rem] flex grid gap-[50rem] bg-[#3dabd5] rounded-b-lg pt-1">
-    {{ $products->links() }}
-
+<div class="w-[78.85rem] h-[4.65rem] flex items-center bg-[#3DABD5] rounded-b-lg pt-1">
     <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative bottom-12">
         <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
         <button @click="open = !open;"
@@ -19,7 +16,7 @@
 
             </div>
         </button>
-
+        
         <div x-cloak x-show="open"
             class="absolute flex justify-center items-center w-[5.3rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 left-6 bottom-12">
             <ul>
@@ -36,6 +33,8 @@
             </ul>
         </div>
     </div>
+    
+    {{ $products->links() }}
 </div>
 
 <script>

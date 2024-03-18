@@ -5,9 +5,10 @@
 
     
     <x-header.header/>
-    <div class="flex gap-8 relative top-20">
+    <div class="flex relative top-20">
         <div><x-sidenav.sidenav /></div>
-        <div class="flex justify-center items-center" style="width: 1257px; background: white;"> <x-product.product-container :perPage="$perPage" :products="$products" /></div>
+        <div class="flex justify-center items-center"> <x-product.product-container :perPage="$perPage" :products="$products" /></div>
+        
         <div class="w-[16.56rem] h-[57rem] bg-white rounded-md flex my-[7rem] flex-col" style="padding: 20px 20px; gap: 20px">
             {{-- categories component --}}
             <x-product.categories.product-categories :categories="$categories" />
