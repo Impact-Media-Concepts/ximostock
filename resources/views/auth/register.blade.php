@@ -16,6 +16,13 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- work Space -->
+        <div class="mt-4">
+            <x-input-label for="work_space_id" :value="__('Work Space')" />
+            <x-text-input id="work_space_id" class="block mt-1 w-full" type="number" name="work_space_id" :value="old('email')" required/>
+            <x-input-error :messages="$errors->get('work_space_id')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />

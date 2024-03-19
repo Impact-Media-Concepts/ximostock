@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('work_spaces', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('work_space_id')->nullable()->constrained('work_spaces');
             $table->string('name');
-            $table->enum('role', ['admin','manager', 'supplier']);
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -29,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('work_spaces');
     }
 };
