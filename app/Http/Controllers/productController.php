@@ -30,7 +30,8 @@ class ProductController extends BaseProductController
                 ->withExists(['salesChannels'])
                 ->whereNull('parent_product_id')
                 ->filter(request(['search']))
-                ->paginate($perPage),
+                ->paginate($perPage)
+                ->withQueryString(),
             'properties' => Property::all(),
             'sales_channels' => SalesChannel::all(),
             'perPage' => $perPage,
