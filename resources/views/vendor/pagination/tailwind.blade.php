@@ -1,6 +1,6 @@
 @if ($paginator->hasPages())
     <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}"
-        class="flex items-center justify-between z-10 pb-[0.1rem] pl-[2.5rem]">
+        class="w-full flex items-center justify-between z-10 pb-[0.1rem] pl-[2.5rem]">
         <div class="flex justify-between flex-1 xl:hidden">
             @if ($paginator->onFirstPage())
                 <span

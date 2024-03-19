@@ -9,7 +9,7 @@
     ];
 @endphp
 
-<div id="productBulkActionsContainer" class="bulk-actions-hidden bg-[#F8F8F8] h-[3.55rem] flex justify-start items-center pb-1" style="font-family: 'Inter', sans-serif;">
+<div id="productBulkActionsContainer" class="bulk-actions-hidden bg-[#F8F8F8] w-full h-[3.55rem] flex justify-start items-center pb-1" style="font-family: 'Inter', sans-serif;">
     <div class="flex ml-[2.2rem] mr-4 text-[14px] pt-0.5">
         <p>
             <span id="selectedCount">0</span> producten van de <span>{{ $perPage }}</span> geselecteerd.
