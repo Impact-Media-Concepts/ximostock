@@ -18,17 +18,15 @@
             Selecteer alle <span>{{ $perPage }}</span> producten
         </p>
     </div>
+    
     <div class="flex justify-center items-center pt-1 gap-[0.57rem]">
         @foreach ($buttons as $button)
-            <x-product.buttons.product-bulk-button class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}">
+            <x-product.buttons.product-bulk-button class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}  {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }}">
                 {{ $button['text'] }}
             </x-product.buttons.product-bulk-button>
         @endforeach
     </div>
-
+    
+    <x-product.popup.product-discount-popup />
+    <x-product.popup.product-archive-popup />
 </div>
-
-
-<script>
-
-</script>

@@ -1,0 +1,65 @@
+  /* scrollbar */
+  .product-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar-track {
+    background: #fff;
+    border: 1px solid #DBDBDB;
+    border-radius: 15px;
+    z-index: -1 !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #DBDBDB;
+    border: 6px solid transparent;
+    background-clip: content-box;
+    border-radius: 15px;
+
+    z-index: -1 !important;
+}
+
+
+input:checked {
+    accent-color: #3DABD5;
+}
+
+@supports (accent-color: #fff) {
+    .info {
+        display: none;
+    }
+}
+
+[x-cloak] { display: none !important; }
+
+input::placeholder {
+    color: #D3D3D3;
+    opacity: 1;
+    font-weight: 400;
+}
+
+input::-ms-input-placeholder {
+    color: #D3D3D3;
+    font-weight: 400;
+}
+
+.no-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none;
+}
+
+.rotate-arrow {
+    transform: rotate(180deg);
+}
+
+body {
+    scrollbar-width: thin;
+}

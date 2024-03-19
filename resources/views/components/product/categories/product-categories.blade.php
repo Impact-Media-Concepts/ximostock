@@ -1,28 +1,5 @@
 @props(['categories', 'checkedCategories' => null])
 
-<style>
-    input::placeholder {
-        color: #D3D3D3;
-        opacity: 1;
-        font-weight: 400;
-    }
-
-    input::-ms-input-placeholder {
-        color: #D3D3D3;
-        font-weight: 400;
-    }
-
-    .no-select {
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10 and IE 11 */
-        user-select: none;
-    }
-
-    .rotate-arrow {
-        transform: rotate(180deg);
-    }
-</style>
-
 <div class="flex h-[28.37rem] w-[14.1rem]">
     <div class="w-[14.06rem] h-[5.18rem]">
         <div class="text-[16px] font-[600] relative right-[0.12rem] bottom-[0.18rem]">
@@ -43,7 +20,6 @@
 </div>
 
 <script>
-    // let categoriesData = [ <x-product.categories.product-categories-data :categories = "$categories" :checkedCategories = "$checkedCategories" />];
     // // Find parent function
 
     let categoriesData = [<x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>];
@@ -237,7 +213,7 @@
             checkbox.classList.add('cursor-pointer');
             checkbox.addEventListener('click', () => {
                 arrowDown.classList.toggle('rotate-arrow');
-                handleCheckboxClick(category)
+                handleCheckboxClick(category);
             });
 
             const categoryNameSpan = document.createElement('span');
@@ -250,6 +226,7 @@
 
             categoryNameSpan.addEventListener('click', () => {
                 arrowDown.classList.toggle('rotate-arrow');
+                checkbox.checked = !checkbox.checked;
                 handleCheckboxClick(category);
             });
 
@@ -324,6 +301,7 @@
                 if (arrowDown) {
                     arrowDown.classList.toggle('rotate-arrow');
                 }
+                checkbox.checked = !checkbox.checked;
                 handleCheckboxClick(subcategory);
             });
 

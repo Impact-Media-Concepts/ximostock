@@ -23,7 +23,7 @@ class ProductController extends BaseProductController
     //TODO
     public function index(Request $request)
     {
-        $perPage = $request->input('perPage', 15);
+        $perPage = $request->input('perPage', 20);
 
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')

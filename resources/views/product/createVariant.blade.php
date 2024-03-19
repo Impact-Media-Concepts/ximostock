@@ -64,7 +64,7 @@
         <div>
             <h3>Select Categories:</h3>
             <ul>
-                <x-categories-input :categories="$categories"/>
+                <x-category.categories-input :categories="$categories"/>
             </ul>
             <label for='primaryCategory'>primaryCategory</label>
             <input type="number" id="primaryCategory" name="primaryCategory" />

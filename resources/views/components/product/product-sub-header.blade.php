@@ -24,6 +24,5 @@
             <x-product.product-sub-header-tab :product="$products" orderBy="status" text="Status" />
             <x-product.product-sub-header-tab :product="$products" orderBy="modified" text="Gewijzigd" />
         </div>
-
     </div>
 </div>

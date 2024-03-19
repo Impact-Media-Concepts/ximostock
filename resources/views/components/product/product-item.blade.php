@@ -3,8 +3,7 @@
 <li class="flex h-[4.5rem] py-4 gap-2 items-center justify-center hover:bg-gray-100 transition duration-300">
     <div class="flex items-center relative left-[1.08rem]">
         <div class="flex justify-center items-center w-10 h-[4.5rem] m-0 p-0">
-            <input id="checkboxProductItem{{ $product->id }}" class="bulkActionsCheckboxProductItem h-[1.06rem] mx-2 mt-[0.3rem] checkbox-row flex cursor-pointer relative right-[0.1rem]"
-                type="checkbox" name="product_ids[]" value="{{ $product->id }}" />
+            <input id="checkboxProductItem{{ $product->id }}" class="bulkActionsCheckboxProductItem h-[1.06rem] mx-2 mt-[0.3rem] checkbox-row flex cursor-pointer relative right-[0.1rem]" type="checkbox" name="product_ids[]" value="{{ $product->id }}" >
         </div>
 
         <a class="rounded-md border-1 flex gap-10 justify-center items-center w-[2.8rem] h-[2.9rem] relative left-0 top-[0.08rem] mr-2"
@@ -24,15 +23,14 @@
 
         <div class="w-[6.78rem] h-[1] mt-[0.35rem]">
             {{-- {{ $product->sku }} --}}
-            @if ($product->sku != null)
-                <p>
-                    {{ $product->sku }}
-                </p>
-            @else
-                <p>
-                    N.V.T.
-                </p>
-            @endif
+            @php
+                // Use PHP code directly here instead of Blade directives
+                if ($product->sku != null) {
+                    echo '<p>' . $product->sku . '</p>';
+                } else {
+                    echo '<p>N.V.T.</p>';
+                }
+            @endphp
         </div>
 
         <div class="w-[5.62rem] h-[3rem] flex-col relative top-[0.45rem] right-5">
@@ -73,7 +71,6 @@
                     @endif
                 </div>
             </div>
-
         </div>
         <div
             class="w-[7.81rem] h-[1.06rem] text-[14px] mt-[0.18rem] text-[#717171] flex relative right-[0.75rem] bottom-[0.1rem]">
