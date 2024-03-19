@@ -2,22 +2,20 @@
 <x-layout._header-dependencies />
 
 <body class="bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
-
-    
     <x-header.header/>
-    <div class="flex relative top-20">
-        <div><x-sidenav.sidenav /></div>
+    <div class="flex h-full">
+        <div class="h-full"><x-sidenav.sidenav /></div>
         <div class="flex justify-center items-center"> <x-product.product-container :perPage="$perPage" :products="$products" /></div>
-        
-        <div class="w-[16.56rem] h-[57rem] bg-white rounded-md flex my-[7rem] flex-col" style="padding: 20px 20px; gap: 20px">
-            {{-- categories component --}}
-            <x-product.categories.product-categories :categories="$categories" />
-            {{-- eigenschappen/properties component --}}
-            <!-- <x-product.product-properties :categories="$categories"/> -->
+        <div class="flex justify-center items-center">
+            <div class="w-[16.56rem] h-[57rem] bg-white rounded-md" style="padding: 20px 20px; gap: 20px">
+                {{-- categories component --}}
+                <x-product.categories.product-categories :categories="$categories" />
+                {{-- eigenschappen/properties component --}}
+                <!-- <x-product.product-properties :categories="$categories"/> -->
+            </div>
         </div>
-     
+    
     </div>
-
 </body>
 
 <x-layout._footer-dependencies /> 

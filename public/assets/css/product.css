@@ -63,3 +63,7 @@ input::-ms-input-placeholder {
 body {
     scrollbar-width: thin;
 }
+
+body, html {
+    height:  100%;
+}

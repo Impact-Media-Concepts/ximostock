@@ -1,5 +1,5 @@
-<div class="w-[78.85rem] h-[4.65rem] flex items-center bg-[#3DABD5] rounded-b-lg pt-1">
-    <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative bottom-12">
+<div class="w-[78.85rem] h-[3.72rem] flex items-center bg-[#3DABD5] rounded-b-lg pt-1">
+    <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative">
         <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
         <button @click="open = !open;"
             class="hover:bg-[#3999BE] duration-100 flex items-center z-20 w-[5.3rem] px-[1.08rem] h-10 text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6"

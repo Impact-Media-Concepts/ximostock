@@ -1,6 +1,6 @@
 @if ($paginator->hasPages())
     <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}"
-        class="flex items-center justify-between z-10 pb-[0.1rem] pl-32 pr-[1.55rem]">
+        class="flex items-center justify-between z-10 pb-[0.1rem] pl-[2.5rem]">
         <div class="flex justify-between flex-1 sm:hidden">
             @if ($paginator->onFirstPage())
                 <span
@@ -27,9 +27,9 @@
             @endif
         </div>
 
-        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-                <p class="text-[16px] text-white leading-5 font-light">
+        <div class="hidden flex gap-[33rem] sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div class="flex">
+                <p class="text-[16px] w-64 text-white leading-5 font-light">
                     {!! __('Weergeeft') !!}
                     @if ($paginator->firstItem())
                         <span>{{ $paginator->firstItem() }}</span>
@@ -44,7 +44,7 @@
                 </p>
             </div>
 
-            <div>
+            <div class="flex">
                 <span class="relative z-0 inline-flex rtl:flex-row-reverse shadow-sm rounded-md">
                     {{-- Previous Page Link --}}
                     @if ($paginator->onFirstPage())
