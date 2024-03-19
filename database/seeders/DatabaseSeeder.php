@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
     {
         $categories = Category::factory(5)->create();
 
-        $products = Product::factory(50)->create();
-        $primeProducts = Product::factory(10)->create([
+        $products = Product::factory(5000)->create();
+        $primeProducts = Product::factory(1000)->create([
             'sku' => null,
             'ean' => null
         ]);
