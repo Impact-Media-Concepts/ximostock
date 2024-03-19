@@ -33,8 +33,7 @@
             </ul>
         </div>
     </div>
-    
-    {{ $products->links() }}
+    {{ $products->onEachSide(0)->links() }}
 </div>
 
 <script>

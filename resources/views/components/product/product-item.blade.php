@@ -49,13 +49,11 @@
         </div>
         <div class="flex gap-16 relative right-[2.75rem]">
             <div class="w-[3.75rem] h-[1.06rem] relative left-[0.15rem] top-[0.1rem]  ">
-                {{-- {{ $product->stock }} --}}
-                Voorraad
+                {{ $product->stock }}
             </div>
             <div class="flex gap-16 relative left-5">
                 <div class="flex w-[3.75rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
-                    {{-- {{ $product->sales }} --}}
-                    Verkocht
+                    {{ $product->sales }}
                 </div>
                 <div class="flex items-center w-[3.12rem] h-[1.06rem] mt-1">
                     @if ($product->sales_channels_exists)

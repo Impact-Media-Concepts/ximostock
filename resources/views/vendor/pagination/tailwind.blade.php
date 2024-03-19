@@ -1,7 +1,7 @@
 @if ($paginator->hasPages())
     <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}"
         class="flex items-center justify-between z-10 pb-[0.1rem] pl-[2.5rem]">
-        <div class="flex justify-between flex-1 sm:hidden">
+        <div class="flex justify-between flex-1 xl:hidden">
             @if ($paginator->onFirstPage())
                 <span
                     class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5 rounded-md">
@@ -27,9 +27,9 @@
             @endif
         </div>
 
-        <div class="hidden flex gap-[33rem] sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div class="hidden flex gap-[26rem] sm:flex-1 sm:flex sm:items-center sm:justify-between absolute">
             <div class="flex">
-                <p class="text-[16px] w-64 text-white leading-5 font-light">
+                <p class="text-[16px] w-72 text-white leading-5 font-light">
                     {!! __('Weergeeft') !!}
                     @if ($paginator->firstItem())
                         <span>{{ $paginator->firstItem() }}</span>
@@ -77,7 +77,7 @@
                         @if (is_string($element))
                             <span aria-disabled="true">
                                 <span
-                                    class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5">{{ $element }}</span>
+                                    class="relative inline-flex items-center h-10 px-4 py-2 -ml-px text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5">{{ $element }}</span>
                             </span>
                         @endif
 

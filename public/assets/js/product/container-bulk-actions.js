@@ -25,7 +25,6 @@ bulkActionsCheckboxSubheader.addEventListener('change', function() {
 
     productItemCheckboxes.forEach(function(productItemCheckbox) {
         let productId = productItemCheckbox.id.replace('checkboxProductItem', '');
-        console.log(productId);
         productItemCheckbox.checked = bulkActionsCheckboxSubheader.checked;
 
         if (bulkActionsCheckboxSubheader.checked) {
