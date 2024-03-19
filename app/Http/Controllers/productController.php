@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\Inventory;
@@ -23,11 +23,15 @@ class ProductController extends BaseProductController
     //TODO
     public function index(Request $request)
     {
+        if(!Auth::check()){
+            abort(403);
+        }
         $perPage = $request->input('perPage', 20);
 
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
                 ->withExists(['salesChannels'])
+                ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
                 ->filter(request(['search']))
                 ->paginate($perPage)

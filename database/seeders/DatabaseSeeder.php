@@ -17,6 +17,8 @@ use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\Sale;
 use App\Models\SalesChannel;
+use App\Models\User;
+use App\Models\WorkSpace;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,10 +28,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $workSpaces = WorkSpace::factory(5)->create();
+
+        User::factory()->create([
+            'role' => 'manager',
+            'work_space_id' => 1
+        ]);
+        User::factory()->create([
+            'role' => 'manager',
+            'work_space_id' => 2
+        ]);
+        User::factory()->create([
+            'role' => 'supplier',
+            'work_space_id' => null
+        ]);
+        User::factory()->create([
+            'role' => 'admin',
+            'work_space_id' => null
+        ]);
         $categories = Category::factory(5)->create();
 
-        $products = Product::factory(5000)->create();
-        $primeProducts = Product::factory(1000)->create([
+        $products = Product::factory(1000)->create([
+            'work_space_id' => 1,
+        ]);
+
+        $primeProducts = Product::factory(500)->create([
+            'work_space_id' => 2,
             'sku' => null,
             'ean' => null
         ]);
