@@ -7,9 +7,9 @@
     }
 </style>
 
-<div class="my-[7rem] mx-[2rem]">
+<div class="mx-[2rem]">
     {{-- Every component inside this container component--}}
-    <x-product.product-header />
+    <x-product.product-header :products="$products"/>
     <x-product.product-sub-header :products="$products" />
 
     <!-- form for bulk actions -->
