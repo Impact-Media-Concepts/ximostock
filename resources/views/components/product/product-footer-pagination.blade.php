@@ -1,4 +1,4 @@
-<div class="w-[78.85rem] h-[3.72rem] flex items-center bg-[#3DABD5] rounded-b-lg pt-1">
+<div class="w-full h-[3.72rem] flex items-center bg-[#3DABD5] rounded-b-lg pt-1">
     <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative">
         <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
         <button @click="open = !open;"
@@ -33,8 +33,7 @@
             </ul>
         </div>
     </div>
-    
-    {{ $products->links() }}
+    {{ $products->onEachSide(0)->links() }}
 </div>
 
 <script>

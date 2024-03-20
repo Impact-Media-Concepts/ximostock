@@ -19,7 +19,7 @@
     <div class="w-[17.05rem] bg-white h-screen relative transition-all duration-200"
         :class="isOpen ? 'w-[17.05rem]' : 'w-[4.08rem]'">
 
-        <div class="bg-white h-auto relative mt-[5.03rem] right-[0.2rem] flex-col flex items-center">
+        <div class="bg-white h-auto relative right-[0.2rem] flex-col flex items-center">
             <div >
                 @foreach ($sidenavButtons as $button)
                     <?php

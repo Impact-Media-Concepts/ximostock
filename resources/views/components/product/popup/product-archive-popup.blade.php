@@ -1,5 +1,5 @@
 <div
-    class="cd-popup w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 100;"
+    class="cd-popup w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 999;"
 >
     <div
         x-data="{
@@ -62,7 +62,7 @@
                 <li class="py-1  md:mr-8 md:py-0">
                     <button
                     x-transition
-                    class="no w-[13.43rem] text-white border-gray-400 border-2 py-2 rounded-lg text-gray-500 flex justify-center items-center hover:bg-gray-100 duration-100"
+                    class="no w-[13.43rem] border-gray-400 border-2 py-2 rounded-lg text-gray-500 flex justify-center items-center hover:bg-gray-100 duration-100"
                     href="#0"
                     x-text="no"
                     type="button"

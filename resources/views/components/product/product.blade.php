@@ -1,8 +1,8 @@
 @props(['products'])
 
 
-<div class="relative flex items-center bg-white">
-    <ul class="w-[78.81rem] overflow-y-auto overflow-x-hidden max-h-[43.75rem] product-scrollbar" id="container">
+<div class="relative w-full h-full flex items-center bg-white" style="max-height: 100%;">
+    <ul class="w-full overflow-y-auto overflow-x-hidden product-scrollbar"  style="height: 100%;" id="container">
         @foreach ($products as $product)
             <x-product.product-item :product="$product" />
         @endforeach

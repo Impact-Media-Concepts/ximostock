@@ -21,7 +21,6 @@
 
 <script>
     // // Find parent function
-
     let categoriesData = [<x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>];
     function findParentCategory(categoryId, categories = categoriesData, parent = null) {
         for (const category of categories) {
