@@ -30,6 +30,12 @@ class DatabaseSeeder extends Seeder
     {
         $workSpaces = WorkSpace::factory(5)->create();
 
+
+        User::factory()->create([
+            'role' => 'admin',
+            'work_space_id' => null,
+            'email' => 'stage@stage.com'
+        ]);
         User::factory()->create([
             'role' => 'manager',
             'work_space_id' => 1
