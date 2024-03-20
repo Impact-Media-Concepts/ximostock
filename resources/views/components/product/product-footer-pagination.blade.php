@@ -1,14 +1,8 @@
-<style>
-    [x-cloak] { display: none !important; }
-</style>
-
-<div class="w-[78.81rem] h-[3.72rem] flex grid gap-[50rem] bg-[#3dabd5] rounded-b-lg pt-1">
-    {{ $products->links() }}
-
-    <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative bottom-12">
+<div class="w-full h-[3.72rem] relative flex items-center bg-[#3DABD5] rounded-b-lg pt-1" style="z-index: 11;">
+    <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative">
         <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
         <button @click="open = !open;"
-            class="flex items-center z-20 w-[5.3rem] px-[1.08rem] h-10 text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6"
+            class="hover:bg-[#3999BE] duration-100 flex items-center z-20 w-[5.3rem] px-[1.08rem] h-10 text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6"
             style="border: 1px solid white" x-cloak @click.away="open = false">
             <!-- Display selected property name -->
             <span class="truncate w-52 text-left text-[16px] text-white"
@@ -22,7 +16,7 @@
 
             </div>
         </button>
-
+        
         <div x-cloak x-show="open"
             class="absolute flex justify-center items-center w-[5.3rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 left-6 bottom-12">
             <ul>
@@ -39,13 +33,13 @@
             </ul>
         </div>
     </div>
+    {{ $products->onEachSide(0)->links() }}
 </div>
 
 <script>
     // set pagination amount
     document.addEventListener('DOMContentLoaded', function() {
         const buttons = document.querySelectorAll('.paginate-button');
-        // TODO if pagesize > totalproducts, check styling of dropdown button, pagination links dissapear
         buttons.forEach(button => {
             button.addEventListener('click', function() {
                 const pageSize = parseInt(this.getAttribute('data_pages'));

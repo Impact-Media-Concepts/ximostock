@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\Inventory;
@@ -16,6 +16,7 @@ use App\Rules\ValidProductKeys;
 use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseProductController
@@ -23,23 +24,19 @@ class ProductController extends BaseProductController
     //TODO
     public function index(Request $request)
     {
-        $perPage = $request->input('perPage', 15);
-
-        // $categories = Category::with(['child_categories' => function ($query) {
-        //     $query->with('child_categories');
-        // }])
-        //     ->whereNull('parent_category_id')
-        //     ->get();
-
-        // // Eager load child categories recursively
-        // $categories->load('child_categories.child_categories');
+        if(!Auth::check()){
+            abort(403);
+        }
+        $perPage = $request->input('perPage', 20);
 
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
                 ->withExists(['salesChannels'])
+                ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
                 ->filter(request(['search']))
-                ->paginate($perPage),
+                ->paginate($perPage)
+                ->withQueryString(),
             'properties' => Property::all(),
             'sales_channels' => SalesChannel::all(),
             'perPage' => $perPage,
@@ -95,10 +92,17 @@ class ProductController extends BaseProductController
 
     public function bulkDelete()
     {
+        //request must be between [] else it only sends 1 
+        if(! Gate::allows('bulk-delete-products', [request('product_ids')])){
+            abort(403);
+        }
+
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
         ]);
+
+        
 
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();
@@ -249,10 +253,14 @@ class ProductController extends BaseProductController
             'communicate_stock' => $attributes['communicate_stock'],
             'discount' => $attributes['discount']
         ]);
+
+        if(!isset($attributes['categories'])){
+            $attributes['categories']=[];
+        }      
         $this->updateCategories($product->id, $attributes['categories']);
-        if($forOnline){
-            $this->updateSalesChannels($product->id, $saleschannelAttributes['salesChannels']);
-        }
+
+        $this->updateSalesChannels($product->id, $saleschannelAttributes['salesChannels']);
+        
 
         return redirect()->back();
     }
@@ -442,7 +450,7 @@ class ProductController extends BaseProductController
                     'sales_channel_id' => $salesChannelId
                 ]);
             } else {
-                unset($existingCategoryIds[array_search($salesChannelId, $existingSalesChannelIds)]);
+                unset($existingSalesChannelIds[array_search($salesChannelId, $existingSalesChannelIds)]);
             }
         }
 

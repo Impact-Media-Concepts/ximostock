@@ -46,12 +46,12 @@ class Product extends Model
             ->withPivot('primary');
     }
 
-    public function getPrimaryPhotoAttribute(): Photo
+    public function getPrimaryPhotoAttribute()
     {
         $primaryPhoto = $this->photos->first(function ($photo) {
             return $photo->pivot->primary == 1;
         });
-
+        
         return $primaryPhoto;
     }
 

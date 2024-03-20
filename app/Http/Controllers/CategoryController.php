@@ -10,14 +10,9 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::with(['child_categories', 'products', 'parent_category'])
-            ->whereNull('parent_category_id')
-            ->get();
-
-        // Eager load child categories recursively
-        $categories->load('child_categories.child_categories');
-
-        return view('category.index', compact('categories'));
+        return view('category.index',[
+            'categories' => Category::with('child_categories_recursive','products')->whereNull('parent_category_id')->get()
+        ]);
     }
 
     public function show(Category $category)
@@ -46,5 +41,17 @@ class CategoryController extends Controller
         Category::create($attributes);
 
         return redirect('/categories');
+    }
+
+    public function update(Category $category){
+        $attributes = request()->validate([
+            'name'=>['required', 'string']
+        ]);
+        
+        $category->update([
+            'name'=>$attributes['name']
+        ]);
+
+        return redirect()->back();
     }
 }
