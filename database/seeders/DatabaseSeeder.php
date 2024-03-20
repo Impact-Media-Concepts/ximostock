@@ -38,11 +38,13 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory()->create([
             'role' => 'manager',
-            'work_space_id' => 1
+            'work_space_id' => 1,
+            'email' => 'manager@1.com'
         ]);
         User::factory()->create([
             'role' => 'manager',
-            'work_space_id' => 2
+            'work_space_id' => 2,
+            'email' => 'manager@2.com'
         ]);
         User::factory()->create([
             'role' => 'supplier',
