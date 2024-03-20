@@ -22,13 +22,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 //product
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/create', [ProductController::class, 'create']);
-Route::get('/products/{product}', [ProductController::class, 'show']);
-Route::post('/products',[ProductController::class, 'store']);
-Route::patch('/products/{product}', [ProductController::class, 'update']);
-Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('/products', [ProductController::class, 'index'])->middleware('auth');
+Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create-product');
+Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view-product,product');
+Route::post('/products', [ProductController::class, 'store'])->middleware('can:create-product');
+Route::patch('/products/{product}', [ProductController::class, 'update'])->middleware('can:update-product,product');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:destroy-product,product');
 Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
 Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
 Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
@@ -38,8 +39,10 @@ Route::post('/products/bulkdisablebackorders', [ProductController::class, 'bulkD
 Route::post('/products/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');
 Route::post('/products/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');
 //variant product
-Route::get('/products/variant/create' , [ProductVariationController::class, 'create']);
-Route::post('/products/variant',[ProductVariationController::class, 'store']);
+Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
+Route::post('/products/variant', [ProductVariationController::class, 'store']);
+
+
 
 //categories
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -65,4 +68,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

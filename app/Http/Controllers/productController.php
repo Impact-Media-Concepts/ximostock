@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\Inventory;
@@ -16,6 +16,7 @@ use App\Rules\ValidProductKeys;
 use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseProductController
@@ -23,11 +24,15 @@ class ProductController extends BaseProductController
     //TODO
     public function index(Request $request)
     {
+        if(!Auth::check()){
+            abort(403);
+        }
         $perPage = $request->input('perPage', 20);
 
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
                 ->withExists(['salesChannels'])
+                ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
                 ->filter(request(['search']))
                 ->paginate($perPage)
@@ -87,10 +92,17 @@ class ProductController extends BaseProductController
 
     public function bulkDelete()
     {
+        //request must be between [] else it only sends 1 
+        if(! Gate::allows('bulk-delete-products', [request('product_ids')])){
+            abort(403);
+        }
+
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
         ]);
+
+        
 
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();

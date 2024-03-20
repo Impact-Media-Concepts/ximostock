@@ -93,7 +93,7 @@
     
                     </div>
                     <span class="w-52 text-left text-[14px] text-gray-700 relative right-2">
-                        Jan Janssen
+                        {{Auth::user()->name}}
                     </span>
                     <img class="w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="../images/arrow-down-icon.png"
                         alt="user icon">
