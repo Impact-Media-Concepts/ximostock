@@ -1,4 +1,4 @@
-<div class="w-full h-[3.72rem] flex items-center bg-[#3DABD5] rounded-b-lg pt-1">
+<div class="w-full h-[3.72rem] relative flex items-center bg-[#3DABD5] rounded-b-lg pt-1" style="z-index: 11;">
     <div x-data="{ open: false, selectedProperty: '' }" x-cloak class=" text-left flex justify-start items-center relative">
         <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
         <button @click="open = !open;"
@@ -40,7 +40,6 @@
     // set pagination amount
     document.addEventListener('DOMContentLoaded', function() {
         const buttons = document.querySelectorAll('.paginate-button');
-        // TODO if pagesize > totalproducts, check styling of dropdown button, pagination links dissapear
         buttons.forEach(button => {
             button.addEventListener('click', function() {
                 const pageSize = parseInt(this.getAttribute('data_pages'));

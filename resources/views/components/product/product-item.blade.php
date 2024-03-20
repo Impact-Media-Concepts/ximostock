@@ -13,7 +13,7 @@
         </a>
     </div>
 
-    <a class="flex items-center w-full gap-14 justify-center" href="/products/{{ $product->id }}">
+    <a class="hoi flex items-center w-full gap-14 justify-center" href="/products/{{ $product->id }}">
         <div class="flex w-full h-[2.62rem] relative left-8" style="align-items: center"
             title=" {{ $product->title }}">
             <p class="line-clamp-2">
@@ -22,9 +22,7 @@
         </div>
 
         <div class="w-full h-[1] mt-[0.35rem]">
-            {{-- {{ $product->sku }} --}}
             @php
-                // Use PHP code directly here instead of Blade directives
                 if ($product->sku != null) {
                     echo '<p>' . $product->sku . '</p>';
                 } else {

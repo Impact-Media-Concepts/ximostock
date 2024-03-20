@@ -27,23 +27,24 @@
                         $buttonUrl = isset($button['url']) ? url($button['url']) : null;
                         $buttonId = isset($button['id']) ? url($button['id']) : null;
                     ?>
-                    <x-sidenav.sidenav-item icon="{{ $button['icon'] }}" active="{{ $isActive }}" href="{{ $buttonUrl }}">
+                    <x-sidenav.sidenav-item icon="{{ $button['icon'] }}" active="{{ $isActive }}" href="{{ $buttonUrl }}"
+                    x-bind:class="isOpen ? 'w-[17.45rem]' : 'w-[4.08rem]'">
                         {{ $button['text'] }}
                     </x-sidenav.sidenav-item>
                 @endforeach
             </div>
 
             <div id="closeButton" class=" closeButton flex justify-center items-center w-12 h-12 relative top-[4.3rem] left-[0.08rem]">
-                <button>
-                    <div class="flex">
-                        <img class="w-4.5 h-4.5 delay-[140ms]" :class="{ 'rotate-180': !isOpen }" src="../images/double-arrow-left.png">
-                    <div>
-                </button>
-                <!-- <button @click.prevent="isOpen = !isOpen;">
+                <!-- <button>
                     <div class="flex">
                         <img class="w-4.5 h-4.5 delay-[140ms]" :class="{ 'rotate-180': !isOpen }" src="../images/double-arrow-left.png">
                     <div>
                 </button> -->
+                <button @click.prevent="isOpen = !isOpen;">
+                    <div class="flex">
+                        <img class="w-4.5 h-4.5 delay-[140ms]" :class="{ 'rotate-180': !isOpen }" src="../images/double-arrow-left.png">
+                    <div>
+                </button>
             </div>
         </div>
     </div>
