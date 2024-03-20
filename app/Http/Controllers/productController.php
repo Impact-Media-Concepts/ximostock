@@ -16,6 +16,7 @@ use App\Rules\ValidProductKeys;
 use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseProductController
@@ -91,10 +92,17 @@ class ProductController extends BaseProductController
 
     public function bulkDelete()
     {
+        //request must be between [] else it only sends 1 
+        if(! Gate::allows('bulk-delete-products', [request('product_ids')])){
+            abort(403);
+        }
+
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
         ]);
+
+        
 
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();
