@@ -79,42 +79,46 @@
                 <img class="w-[1.7rem] h-[2.1rem] flex mb-1" src="../images/user-icon.png" alt="user icon">
             </a>
 
-            <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
-                <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
-                <button @click="open = !open;"
-                    class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
-                    style="border: 1px solid #717171"  @click.away="open = false">
-                    <!-- Display selected property name -->
-                    <div class="flex mt-[0.08rem] relative right-[0.2rem]">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="white" class="w-3 h-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-    
-                    </div>
-                    <span class="w-52 text-left text-[14px] text-gray-700 relative right-2">
-                        {{Auth::user()->name}}
-                    </span>
-                    <img class="w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="../images/arrow-down-icon.png"
-                        alt="user icon">
-                </button>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
+                    <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
+                    <button @click="open = !open;"
+                        class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
+                        style="border: 1px solid #717171"
+                        type="button"  @click.away="open = false">
+                        <!-- Display selected property name -->
+                        <div class="flex mt-[0.08rem] relative right-[0.2rem]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="white" class="w-3 h-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
         
-                <div x-cloak x-show="open"
-                    class="absolute flex justify-center items-center h-[5.37rem] w-[10.43rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]" style="border: 1px solid #F0F0F0;">
-                    <ul >
-                        <template  x-for="property in account" :key="property.data_pages">
-                            <li >
-                                <!-- Store property ID when clicked and log it -->
-                                <button @click="selectedProperty = property; open = false;"
-                                    class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-center">
-                                    <img  class="h-5.5 w-5.5 pr-3" x-bind:src="'../images/' + (property.image ? property.image : 'default-image.png')" class="w-4 h-4 mr-2" alt="Icon"> 
-                                    <span  class="flex items-center justify-center pr-3 " x-text="property.name"></span>
-                                </button>
-                            </li>
-                        </template>
-                    </ul>
+                        </div>
+                        <span class="w-52 text-left text-[14px] text-gray-700 relative right-2">
+                            {{Auth::user()->name}}
+                        </span>
+                        <img class="w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="../images/arrow-down-icon.png"
+                            alt="user icon">
+                    </button>
+            
+                    <div x-cloak x-show="open"
+                        class="absolute flex justify-center items-center h-[5.37rem] w-[10.43rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]" style="border: 1px solid #F0F0F0;">
+                        <ul >
+                            <template  x-for="property in account" :key="property.data_pages">
+                                <li >
+                                    <!-- Store property ID when clicked and log it -->
+                                    <button @click="selectedProperty = property; open = false;"
+                                        class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-center">
+                                        <img  class="h-5.5 w-5.5 pr-3" x-bind:src="'../images/' + (property.image ? property.image : 'default-image.png')" class="w-4 h-4 mr-2" alt="Icon"> 
+                                        <span  class="flex items-center justify-center pr-3 " x-text="property.name"></span>
+                                    </button>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
