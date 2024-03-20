@@ -24,9 +24,6 @@ class ProductController extends BaseProductController
     //TODO
     public function index(Request $request)
     {
-        if(!Auth::check()){
-            abort(403);
-        }
         $perPage = $request->input('perPage', 20);
 
         $results = [
@@ -92,10 +89,7 @@ class ProductController extends BaseProductController
 
     public function bulkDelete()
     {
-        //request must be between [] else it only sends 1 
-        if(! Gate::allows('bulk-delete-products', [request('product_ids')])){
-            abort(403);
-        }
+        gate::authorize('bulk-products', [request('product_ids')]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -112,6 +106,7 @@ class ProductController extends BaseProductController
 
     public function bulkDiscount()
     {
+        gate::authorize('bulk-products', [request('product_ids')]);
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array', new ValidProductKeys],
@@ -168,6 +163,8 @@ class ProductController extends BaseProductController
 
     public function bulkEnableBackorders()
     {
+        gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -181,6 +178,8 @@ class ProductController extends BaseProductController
 
     public function bulkDisableBackorders()
     {
+        gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -194,6 +193,8 @@ class ProductController extends BaseProductController
 
     public function bulkEnableCommunicateStock()
     {
+        gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -207,6 +208,8 @@ class ProductController extends BaseProductController
 
     public function bulkDisableCommunicateStock()
     {
+        gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
