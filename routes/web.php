@@ -24,23 +24,26 @@ Route::get('/', function () {
 
 
 //product
-Route::get('/products', [ProductController::class, 'index'])->middleware('auth');
-Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create-product');
-Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view-product,product');
-Route::post('/products', [ProductController::class, 'store'])->middleware('can:create-product');
-Route::patch('/products/{product}', [ProductController::class, 'update']);
-Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:destroy-product,product');
-Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
-Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
-Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
-Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
-Route::post('/products/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');
-Route::post('/products/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');
-Route::post('/products/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');
-Route::post('/products/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');
-//variant product
-Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
-Route::post('/products/variant', [ProductVariationController::class, 'store']);
+Route::middleware('auth')->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create-product');
+    Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view-product,product');
+    Route::post('/products', [ProductController::class, 'store'])->middleware('can:create-product');
+    Route::patch('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:destroy-product,product');
+    Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
+    Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
+    Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
+    Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
+    Route::post('/products/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');
+    Route::post('/products/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');
+    Route::post('/products/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');
+    Route::post('/products/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');
+    //variant product
+    Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
+    Route::post('/products/variant', [ProductVariationController::class, 'store']);
+});
+
 
 
 
