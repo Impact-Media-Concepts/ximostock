@@ -46,11 +46,6 @@ class ProductController extends BaseProductController
 
     public function create()
     {
-        // $properties = Property::all();
-
-        // foreach ($properties as $prop) {
-        //     $prop->values = json_decode($prop->values);
-        // }
         return view('product.create', [
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
             'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
