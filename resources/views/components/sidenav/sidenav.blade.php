@@ -15,37 +15,58 @@
     ];
 @endphp
 
-<div x-data={isOpen:true} class="flex">
-    <div class="w-[17.05rem] bg-white h-screen relative transition-all duration-200"
-        :class="isOpen ? 'w-[17.05rem]' : 'w-[4.08rem]'">
+<style>
+    .side-bar {
+        width: 17.06rem;
+        height: 100%;
+        position: relative;
+        transition: all 500ms ease;
+        top: 0;
+        z-index: 20;
+    }
 
-        <div class="bg-white h-auto relative right-[0.2rem] flex-col flex items-center">
-            <div >
-                @foreach ($sidenavButtons as $button)
-                    <?php
-                        $isActive = isset($button['url']) && Str::contains(request()->url(), $button['url']);
-                        $buttonUrl = isset($button['url']) ? url($button['url']) : null;
-                        $buttonId = isset($button['id']) ? url($button['id']) : null;
-                    ?>
-                    <x-sidenav.sidenav-item icon="{{ $button['icon'] }}" active="{{ $isActive }}" href="{{ $buttonUrl }}"
-                    x-bind:class="isOpen ? 'w-[17.45rem]' : 'w-[4.08rem]'">
-                        {{ $button['text'] }}
-                    </x-sidenav.sidenav-item>
-                @endforeach
-            </div>
+    .category-item {
+        width: 100%;
+    }
 
-            <div id="closeButton" class=" closeButton flex justify-center items-center w-12 h-12 relative top-[4.3rem] left-[0.08rem]">
-                <!-- <button>
-                    <div class="flex">
-                        <img class="w-4.5 h-4.5 delay-[140ms]" :class="{ 'rotate-180': !isOpen }" src="../images/double-arrow-left.png">
-                    <div>
-                </button> -->
-                <button @click.prevent="isOpen = !isOpen;">
-                    <div class="flex">
-                        <img class="w-4.5 h-4.5 delay-[140ms]" :class="{ 'rotate-180': !isOpen }" src="../images/double-arrow-left.png">
-                    <div>
-                </button>
-            </div>
-        </div>
+    .side-bar.collapse {
+        width: 4.06rem;
+    }
+
+    .activeItem.collapse {
+        width: 4.06rem;
+    }
+
+    .hide-text {
+        display: none !important;
+    }
+
+    .rotate-arrows {
+        transform: rotate(-180deg);
+    }
+
+    .arrow-transition {
+        transition: transform 0.2s ease-in-out;
+    }
+</style>
+
+<div class="side-bar w-[17.06rem] h-full bg-white fixed top-0 z-[1000]">
+    <ul class="category-list flex grid items-center">
+        @foreach ($sidenavButtons as $button)
+        <?php
+                $isActive = isset($button['url']) && Str::contains(request()->url(), $button['url']);
+                $buttonUrl = isset($button['url']) ? url($button['url']) : null;
+                $buttonId = isset($button['id']) ? url($button['id']) : null;
+            ?>
+            <x-sidenav.sidenav-item icon="{{ $button['icon'] }}" active="{{ $isActive }}" href="{{ $buttonUrl }}"
+            >
+                {{ $button['text'] }}
+            </x-sidenav.sidenav-item>
+        @endforeach
+    </ul>
+    <div class="w-full pt-8 flex justify-center items-center">  
+        <button class="open-button arrow-transition">
+            <img class="w-4.5 h-4.5" src="../images/double-arrow-left.png">
+        </button>
     </div>
 </div>
