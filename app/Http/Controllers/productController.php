@@ -24,9 +24,6 @@ class ProductController extends BaseProductController
     //TODO
     public function index(Request $request)
     {
-        if(!Auth::check()){
-            abort(403);
-        }
         $perPage = $request->input('perPage', 20);
 
         $results = [
@@ -35,10 +32,11 @@ class ProductController extends BaseProductController
                 ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
                 ->filter(request(['search']))
+                ->orderByDesc('updated_at')
                 ->paginate($perPage)
                 ->withQueryString(),
             'properties' => Property::all(),
-            'sales_channels' => SalesChannel::all(),
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get()
@@ -48,16 +46,16 @@ class ProductController extends BaseProductController
 
     public function create()
     {
-        $properties = Property::all();
+        // $properties = Property::all();
 
-        foreach ($properties as $prop) {
-            $prop->values = json_decode($prop->values);
-        }
+        // foreach ($properties as $prop) {
+        //     $prop->values = json_decode($prop->values);
+        // }
         return view('product.create', [
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
-            'properties' => $properties,
-            'locations' => InventoryLocation::with(['location_zones'])->get(),
-            'salesChannels' => SalesChannel::all()
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'locations' => InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get()
         ]);
     }
 
@@ -73,36 +71,33 @@ class ProductController extends BaseProductController
         return view('product.show', [
             'product' => $product,
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
-            'salesChannels' => SalesChannel::all(),
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get()
         ]);
     }
 
     public function destroy($id)
     {
+
         // Find the product by its ID
         $product = Product::findOrFail($id);
+
+        Gate::authorize('destroy-product', $product);
 
         // Soft delete the product
         $product->delete();
 
-        // Redirect back to the product index page with a success message
         return redirect('/products');
     }
 
     public function bulkDelete()
     {
-        //request must be between [] else it only sends 1 
-        if(! Gate::allows('bulk-delete-products', [request('product_ids')])){
-            abort(403);
-        }
+        Gate::authorize('bulk-products', [request('product_ids')]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
         ]);
-
-        
 
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();
@@ -112,6 +107,7 @@ class ProductController extends BaseProductController
 
     public function bulkDiscount()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array', new ValidProductKeys],
@@ -129,6 +125,8 @@ class ProductController extends BaseProductController
 
     public function bulkLinkSalesChannel()
     {
+        Gate::authorize('bulk-saleschannel-products');
+
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -151,6 +149,8 @@ class ProductController extends BaseProductController
 
     public function bulkUnlinkSalesChannel()
     {
+        Gate::authorize('bulk-saleschannel-products');
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -168,6 +168,8 @@ class ProductController extends BaseProductController
 
     public function bulkEnableBackorders()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -181,6 +183,8 @@ class ProductController extends BaseProductController
 
     public function bulkDisableBackorders()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -194,6 +198,8 @@ class ProductController extends BaseProductController
 
     public function bulkEnableCommunicateStock()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -207,6 +213,8 @@ class ProductController extends BaseProductController
 
     public function bulkDisableCommunicateStock()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -221,6 +229,22 @@ class ProductController extends BaseProductController
     public function update(Product $product)
     {
         $request = request();
+        //authorize
+        $salesChannels = $request['salesChannels'] != null ? $request['salesChannels'] : [];
+        $categories = array_keys($request['categories']) != null ? array_keys($request['categories']) : [];
+        // $properties = array_keys($request['properties']) != null ? array_keys($request['properties']) : [];
+        $properties=[]; //not implemented yet
+        // $location_zones = array_keys($request['location_zones']) != null ? array_keys($request['location_zones']) : [];
+        $location_zones = []; //not implemented yet
+        Gate::authorize('update-product', [
+            $product,
+            $salesChannels,
+            $categories,
+            $properties,
+            $location_zones
+        ]);
+
+
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
@@ -268,6 +292,19 @@ class ProductController extends BaseProductController
     public function store()
     {
         $request = request();
+        $salesChannels = $request['salesChannels'] != null ? $request['salesChannels'] : [];
+        $categories = $request['categories'] != null ? $request['categories'] : [];
+        $properties = array_keys($request['properties']) != null ? array_keys($request['properties']) : [];
+        $location_zones = array_keys($request['location_zones']) != null ? array_keys($request['location_zones']) : [];
+        
+        Gate::authorize('store-product', [
+            $salesChannels,
+            $categories,
+            $properties,
+            $location_zones
+        ]);
+        
+
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
@@ -301,6 +338,7 @@ class ProductController extends BaseProductController
     protected function createProduct($attributes): Product
     {
         return Product::create([
+            'work_space_id' => Auth::user()->work_space_id,
             'sku' => $attributes['sku'],
             'ean' => $attributes['ean'],
             'title' => $attributes['title'],

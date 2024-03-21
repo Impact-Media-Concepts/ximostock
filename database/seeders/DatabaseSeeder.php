@@ -71,7 +71,12 @@ class DatabaseSeeder extends Seeder
 
         $properties = Property::factory(20)->create();
 
-        $saleschannels = SalesChannel::factory(5)->create();
+        $saleschannels = SalesChannel::factory(5)->create([
+            'work_space_id' => 1,
+        ]);
+        SalesChannel::factory(3)->create([
+            'work_space_id' => 2,
+        ]);
 
         //link properties
         foreach ($properties as $prop) {
