@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\Product;
-
 use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\SalesChannel;
@@ -39,7 +38,7 @@ class ProductController extends BaseProductController
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
-            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get()
+            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
         ];
         return view('product.index', $results);
     }
@@ -421,6 +420,7 @@ class ProductController extends BaseProductController
             'location_zones.*' => ['required', 'numeric']
         ];
     }
+    
     protected function validateCategoryUpdate()
     {
         return [

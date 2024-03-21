@@ -45,14 +45,14 @@ Route::middleware('auth')->group(function () {
 });
 
 
-
-
 //categories
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/create', [CategoryController::class, 'create']);
-Route::get('/categories/{category}', [CategoryController::class, 'show']);
-Route::post('/categories', [CategoryController::class, 'store']);
-Route::patch('/categories/{category}', [CategoryController::class, 'update']);
+Route::middleware('auth')->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:index-category');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->middleware('can:create-category');
+    Route::get('/categories/{category}', [CategoryController::class, 'show'])->middleware('can:show-category,category');
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::patch('/categories/{category}', [CategoryController::class, 'update']);
+});
 
 //properties
 Route::get('/properties', [PropertyController::class, 'index']);
