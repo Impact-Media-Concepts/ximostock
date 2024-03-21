@@ -19,7 +19,7 @@
             </div>
 
             <div class="flex w-full justify-end mr-7">
-                <span class="relative  pr-[7rem] z-0 inline-flex rtl:flex-row-reverse shadow-sm rounded-md">
+                <span class="relative z-0 inline-flex rtl:flex-row-reverse shadow-sm rounded-md">
                     {{-- Previous Page Link --}}
                     @if ($paginator->onFirstPage())
                         <span aria-disabled="true" aria-label="{{ __('pagination.previous') }}">
