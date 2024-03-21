@@ -1,33 +1,7 @@
 @if ($paginator->hasPages())
     <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}"
         class="w-full flex items-center justify-between z-10 pb-[0.1rem] pl-[2.5rem]">
-        <div class="flex justify-between flex-1 xl:hidden">
-            @if ($paginator->onFirstPage())
-                <span
-                    class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5 rounded-md">
-                    {!! __('pagination.previous') !!}
-                </span>
-            @else
-                <a href="{{ $paginator->previousPageUrl() }}"
-                    class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 leading-5 rounded-md hover:text-white focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-white transition ease-in-out duration-150">
-                    {!! __('pagination.previous') !!}
-                </a>
-            @endif
-
-            @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->nextPageUrl() }}"
-                    class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 leading-5 rounded-md hover:text-white focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-white transition ease-in-out duration-150">
-                    {!! __('pagination.next') !!}
-                </a>
-            @else
-                <span
-                    class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5 rounded-md">
-                    {!! __('pagination.next') !!}
-                </span>
-            @endif
-        </div>
-
-        <div class="hidden flex gap-[26rem] sm:flex-1 sm:flex sm:items-center sm:justify-between absolute">
+        <div class="flex justify-start items-center w-full">
             <div class="flex">
                 <p class="text-[16px] w-72 text-white leading-5 font-light">
                     {!! __('Weergeeft') !!}
@@ -44,8 +18,8 @@
                 </p>
             </div>
 
-            <div class="flex">
-                <span class="relative z-0 inline-flex rtl:flex-row-reverse shadow-sm rounded-md">
+            <div class="flex w-full justify-end mr-7">
+                <span class="relative  pr-[7rem] z-0 inline-flex rtl:flex-row-reverse shadow-sm rounded-md">
                     {{-- Previous Page Link --}}
                     @if ($paginator->onFirstPage())
                         <span aria-disabled="true" aria-label="{{ __('pagination.previous') }}">
