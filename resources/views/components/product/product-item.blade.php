@@ -21,7 +21,7 @@
             </p>
         </div>
 
-        <div class="w-full h-[1] mt-[0.35rem]">
+        <div class="h-[1] mt-[0.35rem]">
             @php
                 if ($product->sku != null) {
                     echo '<p>' . $product->sku . '</p>';
@@ -31,7 +31,7 @@
             @endphp
         </div>
 
-        <div class="w-full h-[3rem] flex-col relative top-[0.45rem] right-5">
+        <div class="h-[3rem] flex-col relative top-[0.45rem] right-5">
             @if ($product->discount != null)
                 <p class="line-through">
                     {{ ' €' . $product->price }}
