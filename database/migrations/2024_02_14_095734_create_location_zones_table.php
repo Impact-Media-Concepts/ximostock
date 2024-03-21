@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('location_zones', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('work_space_id')->constrained('work_spaces');
             $table->foreignId('inventory_location_id')->constrained();
             $table->string('name');
             $table->timestamps();

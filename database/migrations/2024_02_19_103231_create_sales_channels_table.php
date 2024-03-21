@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sales_channels', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('work_space_id')->nullable()->constrained('work_spaces');
             $table->enum('channel_type',['WooCommerce']);
             $table->string('url');
             $table->string('flavicon_url')->nullable();

@@ -35,7 +35,7 @@ class ProductController extends BaseProductController
                 ->paginate($perPage)
                 ->withQueryString(),
             'properties' => Property::all(),
-            'sales_channels' => SalesChannel::all(),
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get()
@@ -70,33 +70,33 @@ class ProductController extends BaseProductController
         return view('product.show', [
             'product' => $product,
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
-            'salesChannels' => SalesChannel::all(),
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get()
         ]);
     }
 
     public function destroy($id)
     {
+
         // Find the product by its ID
         $product = Product::findOrFail($id);
+
+        Gate::authorize('destroy-product', $product);
 
         // Soft delete the product
         $product->delete();
 
-        // Redirect back to the product index page with a success message
         return redirect('/products');
     }
 
     public function bulkDelete()
     {
-        gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [request('product_ids')]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
         ]);
-
-        
 
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();
@@ -106,7 +106,7 @@ class ProductController extends BaseProductController
 
     public function bulkDiscount()
     {
-        gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [request('product_ids')]);
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array', new ValidProductKeys],
@@ -124,6 +124,8 @@ class ProductController extends BaseProductController
 
     public function bulkLinkSalesChannel()
     {
+        Gate::authorize('bulk-saleschannel-products');
+
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -146,6 +148,8 @@ class ProductController extends BaseProductController
 
     public function bulkUnlinkSalesChannel()
     {
+        Gate::authorize('bulk-saleschannel-products');
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -163,7 +167,7 @@ class ProductController extends BaseProductController
 
     public function bulkEnableBackorders()
     {
-        gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -178,7 +182,7 @@ class ProductController extends BaseProductController
 
     public function bulkDisableBackorders()
     {
-        gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -193,7 +197,7 @@ class ProductController extends BaseProductController
 
     public function bulkEnableCommunicateStock()
     {
-        gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -208,7 +212,7 @@ class ProductController extends BaseProductController
 
     public function bulkDisableCommunicateStock()
     {
-        gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -271,6 +275,15 @@ class ProductController extends BaseProductController
     public function store()
     {
         $request = request();
+        //fix authentication
+        Gate::authorize('store-product', [
+            $request['salesChannels'],
+            $request['categories'],
+            array_keys($request['properties']),
+            array_keys($request['location_zones'])
+        ]);
+        
+
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
@@ -304,6 +317,7 @@ class ProductController extends BaseProductController
     protected function createProduct($attributes): Product
     {
         return Product::create([
+            'work_space_id' => Auth::user()->work_space_id,
             'sku' => $attributes['sku'],
             'ean' => $attributes['ean'],
             'title' => $attributes['title'],

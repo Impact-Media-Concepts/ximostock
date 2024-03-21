@@ -28,7 +28,7 @@ Route::get('/products', [ProductController::class, 'index'])->middleware('auth')
 Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create-product');
 Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view-product,product');
 Route::post('/products', [ProductController::class, 'store'])->middleware('can:create-product');
-Route::patch('/products/{product}', [ProductController::class, 'update'])->middleware('can:update-product,product');
+Route::patch('/products/{product}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:destroy-product,product');
 Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
 Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');

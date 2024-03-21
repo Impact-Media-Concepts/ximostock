@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\WorkSpace;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,7 @@ class SalesChannelFactory extends Factory
     {
         return [
             'name' => fake()->word(),
+            'work_space_id' => WorkSpace::factory()->create(),
             'channel_type'=> 'WooCommerce',
             'url' => fake()->url(),
             'api_key' => fake()->url()

@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('parent_category_id')->nullable()->constrained('categories');
+            $table->foreignId('work_space_id')->constrained('work_spaces');
             $table->string('name');
             $table->timestamps();
         });
