@@ -73,13 +73,12 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        Gate::define('store-product', function(User $user, array $salesChannelIds, array $categoryIds, array $propertyIds, array $locationZoneIds){
+        Gate::define('store-product', function(User $user, array $salesChannelIds , array $categoryIds, array $propertyIds, array $locationZoneIds){
 
             $salesChannels = SalesChannel::whereIn('id', $salesChannelIds)->get();
             $categories = Category::whereIn('id', $categoryIds)->get();
             $properties = Property::whereIn('id', $propertyIds)->get();
             $locationZones = LocationZone::whereIn('id', $locationZoneIds)->get();
-            //dd($salesChannels,  $categories, $properties, $locationZones, $locationZoneIds);
 
             if(Count($salesChannelIds) != Count($salesChannels) || Count($categoryIds) != Count($categories) || Count($propertyIds) != Count($properties) || Count($locationZoneIds) != Count($locationZones)){
                 //return bad request if one of the ids not found.
@@ -167,6 +166,47 @@ class AppServiceProvider extends ServiceProvider
                     }
                 }
                 //return true if all manager and all products are part of his workspace
+                return Response::allow();
+            }else{
+                //deny if user is neither admin or manager
+                return Response::deny();
+            }
+        });
+
+        Gate::define('update-product',function(User $user, Product $product, array $salesChannelIds , array $categoryIds, array $propertyIds, array $locationZoneIds){
+            $salesChannels = SalesChannel::whereIn('id', $salesChannelIds)->get();
+            $categories = Category::whereIn('id', $categoryIds)->get();
+            $properties = Property::whereIn('id', $propertyIds)->get();
+            $locationZones = LocationZone::whereIn('id', $locationZoneIds)->get();
+
+            if(Count($salesChannelIds) != Count($salesChannels) || Count($categoryIds) != Count($categories) || Count($propertyIds) != Count($properties) || Count($locationZoneIds) != Count($locationZones)){
+                //return bad request if one of the ids not found.
+                return Response::denyWithStatus(400);
+            }
+            if($user->role === 'admin'){
+                //allow if user is admin
+                return Response::allow();
+            }elseif($user->role === 'manager' && $product->work_space_id === $user->work_space_id){
+                foreach($salesChannels as $salesChannel){
+                    if($salesChannel->work_space_id !== $user->work_space_id){
+                        return Response::deny();
+                    }
+                }
+                foreach($categories as $category){
+                    if($category->work_space_id !== $user->work_space_id){
+                        return Response::deny();
+                    }
+                }
+                foreach($properties as $property){
+                    if($property->work_space_id !== $user->work_space_id){
+                        return Response::deny();
+                    }
+                }
+                foreach($locationZones as $locationZone){
+                    if($locationZone->work_space_id !== $user->work_space_id){
+                        return Response::deny();
+                    }
+                }
                 return Response::allow();
             }else{
                 //deny if user is neither admin or manager

@@ -32,6 +32,7 @@ class ProductController extends BaseProductController
                 ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
                 ->filter(request(['search']))
+                ->orderByDesc('updated_at')
                 ->paginate($perPage)
                 ->withQueryString(),
             'properties' => Property::all(),
@@ -45,16 +46,16 @@ class ProductController extends BaseProductController
 
     public function create()
     {
-        $properties = Property::all();
+        // $properties = Property::all();
 
-        foreach ($properties as $prop) {
-            $prop->values = json_decode($prop->values);
-        }
+        // foreach ($properties as $prop) {
+        //     $prop->values = json_decode($prop->values);
+        // }
         return view('product.create', [
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
-            'properties' => $properties,
-            'locations' => InventoryLocation::with(['location_zones'])->get(),
-            'salesChannels' => SalesChannel::all()
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'locations' => InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get()
         ]);
     }
 
@@ -228,6 +229,22 @@ class ProductController extends BaseProductController
     public function update(Product $product)
     {
         $request = request();
+        //authorize
+        $salesChannels = $request['salesChannels'] != null ? $request['salesChannels'] : [];
+        $categories = array_keys($request['categories']) != null ? array_keys($request['categories']) : [];
+        // $properties = array_keys($request['properties']) != null ? array_keys($request['properties']) : [];
+        $properties=[]; //not implemented yet
+        // $location_zones = array_keys($request['location_zones']) != null ? array_keys($request['location_zones']) : [];
+        $location_zones = []; //not implemented yet
+        Gate::authorize('update-product', [
+            $product,
+            $salesChannels,
+            $categories,
+            $properties,
+            $location_zones
+        ]);
+
+
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
@@ -275,12 +292,16 @@ class ProductController extends BaseProductController
     public function store()
     {
         $request = request();
-        //fix authentication
+        $salesChannels = $request['salesChannels'] != null ? $request['salesChannels'] : [];
+        $categories = $request['categories'] != null ? $request['categories'] : [];
+        $properties = array_keys($request['properties']) != null ? array_keys($request['properties']) : [];
+        $location_zones = array_keys($request['location_zones']) != null ? array_keys($request['location_zones']) : [];
+        
         Gate::authorize('store-product', [
-            $request['salesChannels'],
-            $request['categories'],
-            array_keys($request['properties']),
-            array_keys($request['location_zones'])
+            $salesChannels,
+            $categories,
+            $properties,
+            $location_zones
         ]);
         
 
