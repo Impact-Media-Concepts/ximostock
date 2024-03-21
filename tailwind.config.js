@@ -13,7 +13,9 @@ export default {
         "./resources/views/components/product/categories/**/*.php",
         "./resources/views/components/product/create/**/*.php",
         "./resources/views/components/product/popup/**/*.php",
-        "./resources/views/property/**/*.php"
+        "./resources/views/property/**/*.php",
+        "./resources/views/vendor/pagination/**/*.php",
+        "./resources/views/vendor/**/*.php",
     ],
     theme: {
         screens: {
