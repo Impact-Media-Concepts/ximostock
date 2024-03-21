@@ -41,7 +41,7 @@ class CategoryController extends Controller
         //validate
         $attributes = $request->validate([
             'name' => ['required'],
-            'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]    
+            'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
         $attributes += ['work_space_id'=>Auth::user()->work_space_id];
 
@@ -53,13 +53,14 @@ class CategoryController extends Controller
     //add the parent category id
     public function update(Category $category){
         Gate::authorize('update-category', [$category, null]); 
-
         $attributes = request()->validate([
-            'name'=>['required', 'string']
+            'name'=>['required', 'string'],
+            'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
-        
+
         $category->update([
-            'name'=>$attributes['name']
+            'name'=>$attributes['name'],
+            'parent_category_id' => $attributes['parent_category_id']
         ]);
 
         return redirect()->back();
