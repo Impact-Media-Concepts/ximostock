@@ -668,24 +668,12 @@ video {
   left: 0.5rem;
 }
 
-.left-5 {
-  left: 1.25rem;
-}
-
 .left-6 {
   left: 1.5rem;
 }
 
-.left-\[0\.05rem\] {
-  left: 0.05rem;
-}
-
 .left-\[0\.08rem\] {
   left: 0.08rem;
-}
-
-.left-\[0\.15rem\] {
-  left: 0.15rem;
 }
 
 .left-\[0\.75rem\] {
@@ -730,14 +718,6 @@ video {
 
 .right-\[0\.75rem\] {
   right: 0.75rem;
-}
-
-.right-\[0\.83rem\] {
-  right: 0.83rem;
-}
-
-.right-\[1\.6rem\] {
-  right: 1.6rem;
 }
 
 .start-0 {
@@ -1599,10 +1579,6 @@ video {
   gap: 2.5rem;
 }
 
-.gap-16 {
-  gap: 4rem;
-}
-
 .gap-2 {
   gap: 0.5rem;
 }
@@ -1645,18 +1621,6 @@ video {
 
 .gap-\[1\.9rem\] {
   gap: 1.9rem;
-}
-
-.gap-\[3\.75rem\] {
-  gap: 3.75rem;
-}
-
-.gap-\[3\.8rem\] {
-  gap: 3.8rem;
-}
-
-.gap-\[5\.2rem\] {
-  gap: 5.2rem;
 }
 
 .space-x-8 > :not([hidden]) ~ :not([hidden]) {
@@ -2803,9 +2767,97 @@ video {
   }
 }
 
+@media (min-width: 1920px) {
+  .normal\:mr-\[3\.35rem\] {
+    margin-right: 3.35rem;
+  }
+
+  .normal\:mr-\[3\.85rem\] {
+    margin-right: 3.85rem;
+  }
+
+  .normal\:mr-\[5\.3rem\] {
+    margin-right: 5.3rem;
+  }
+
+  .normal\:mr-\[7\.75rem\] {
+    margin-right: 7.75rem;
+  }
+
+  .normal\:h-\[0\.6rem\] {
+    height: 0.6rem;
+  }
+
+  .normal\:max-w-\[20rem\] {
+    max-width: 20rem;
+  }
+
+  .normal\:max-w-\[21\.5rem\] {
+    max-width: 21.5rem;
+  }
+
+  .normal\:gap-1 {
+    gap: 0.25rem;
+  }
+
+  .normal\:gap-\[17\.5rem\] {
+    gap: 17.5rem;
+  }
+
+  .normal\:gap-\[4\.7rem\] {
+    gap: 4.7rem;
+  }
+}
+
 @media (min-width: 2560px) {
-  .big\:pt-24 {
-    padding-top: 6rem;
+  .big\:mr-\[13\.55rem\] {
+    margin-right: 13.55rem;
+  }
+
+  .big\:w-\[17rem\] {
+    width: 17rem;
+  }
+
+  .big\:w-\[19\.2rem\] {
+    width: 19.2rem;
+  }
+
+  .big\:w-\[9rem\] {
+    width: 9rem;
+  }
+
+  .big\:w-full {
+    width: 100%;
+  }
+
+  .big\:max-w-\[20rem\] {
+    max-width: 20rem;
+  }
+
+  .big\:gap-\[10\.8rem\] {
+    gap: 10.8rem;
+  }
+
+  .big\:gap-\[25\.5rem\] {
+    gap: 25.5rem;
+  }
+
+  .big\:gap-\[9\.75rem\] {
+    gap: 9.75rem;
+  }
+}
+
+@media (min-width: 3840px) {
+  .enormous\:mr-\[20rem\] {
+    margin-right: 20rem;
+  }
+
+  .enormous\:max-w-\[42\.5rem\] {
+    max-width: 42.5rem;
+  }
+
+  .enormous\:gap-\[60rem\] {
+    gap: 60rem;
   }
 }
 
