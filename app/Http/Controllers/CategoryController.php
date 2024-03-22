@@ -13,6 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         return view('category.index',[
+            'sidenavActive' => 'categories',
             'categories' => Category::with('child_categories_recursive','products')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
         ]);
     }
@@ -20,6 +21,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         return view('category.show', [
+            'sidenavActive' => 'categories',
             'category' => $category
         ]);
     }
@@ -27,6 +29,7 @@ class CategoryController extends Controller
     public function create()
     {
         return view('category.create', [
+            'sidenavActive' => 'categories',
             'categories' => Category::all()
         ]);
     }
