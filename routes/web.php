@@ -42,23 +42,21 @@ Route::middleware('auth')->group(function () {
     //variant product
     Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
     Route::post('/products/variant', [ProductVariationController::class, 'store']);
+
+    //categories
+    Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:index-category');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->middleware('can:create-category');
+    Route::get('/categories/{category}', [CategoryController::class, 'show'])->middleware('can:show-category,category');
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::patch('/categories/{category}', [CategoryController::class, 'update']);
+
+
+    //properties
+    Route::get('/properties', [PropertyController::class, 'index'])->middleware('can:index-property');
+    Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('can:show-property,property');
+    Route::patch('/properties/{property}', [PropertyController::class, 'update']);
+    Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);
 });
-
-
-
-
-//categories
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/create', [CategoryController::class, 'create']);
-Route::get('/categories/{category}', [CategoryController::class, 'show']);
-Route::post('/categories', [CategoryController::class, 'store']);
-Route::patch('/categories/{category}', [CategoryController::class, 'update']);
-
-//properties
-Route::get('/properties', [PropertyController::class, 'index']);
-Route::get('/properties/{property}', [PropertyController::class, 'show']);
-Route::patch('/properties/{property}', [PropertyController::class, 'update']);
-Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);
 
 //authentication
 Route::get('/dashboard', function () {

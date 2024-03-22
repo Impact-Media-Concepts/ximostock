@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
@@ -11,7 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         return view('category.index',[
-            'categories' => Category::with('child_categories_recursive','products')->whereNull('parent_category_id')->get()
+            'categories' => Category::with('child_categories_recursive','products')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
         ]);
     }
 
@@ -32,11 +34,16 @@ class CategoryController extends Controller
     public function store()
     {
         $request = request();
+        $parentCategoryId = $request->has('parent_category_id') ? $request['parent_category_id'] : null;
 
+        Gate::authorize('store-category',[ $parentCategoryId]);
+
+        //validate
         $attributes = $request->validate([
             'name' => ['required'],
             'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
+        $attributes += ['work_space_id'=>Auth::user()->work_space_id];
 
         Category::create($attributes);
 
@@ -44,12 +51,16 @@ class CategoryController extends Controller
     }
 
     public function update(Category $category){
-        $attributes = request()->validate([
-            'name'=>['required', 'string']
+        $request = request();
+        Gate::authorize('update-category', [$category, $request['parent_category_id']]); 
+        $attributes = $request->validate([
+            'name'=>['required', 'string'],
+            'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
-        
+
         $category->update([
-            'name'=>$attributes['name']
+            'name'=>$attributes['name'],
+            'parent_category_id' => $attributes['parent_category_id']
         ]);
 
         return redirect()->back();
