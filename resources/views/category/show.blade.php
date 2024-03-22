@@ -10,9 +10,9 @@
 
 <body>
 
-    <form action="/categories/{{$category->id}}" method="POST">
+    <form action="/categories/{{ $category->id }}" method="POST">
         @csrf
-        @method("PATCH")
+        @method('PATCH')
         <input type="text" name="name" value="{{ $category->name }}">
         <input type="submit" value="update">
         @if ($errors->any())
@@ -24,21 +24,22 @@
                 </ul>
             </div>
         @endif
-    </form>
 
-    <h3>
-        @if ($category->parent_category != null)
-            parent category: {{ $category->parent_category->name }}
-        @endif
-    </h3>
-    <ul>
-        @foreach ($category->child_categories as $child)
-            <li>
-                {{ $child->name }}
-            </li>
-        @endforeach
-    </ul>
-    
+
+        <h3>
+            parent category: {{ $category->parent_category->name ?? ''}}
+            
+            <input type="number" name="parent_category_id" value="{{ $category->parent_category->id ?? '' }}">
+
+        </h3>
+        <ul>
+            @foreach ($category->child_categories as $child)
+                <li>
+                    {{ $child->name }}
+                </li>
+            @endforeach
+        </ul>
+    </form>
 </body>
 
 </html>

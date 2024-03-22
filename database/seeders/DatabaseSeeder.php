@@ -54,6 +54,11 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'work_space_id' => null
         ]);
+        User::factory()->create([
+            'role' => 'supplier',
+            'work_space_id' => null,
+            'email' => 'supplier@stage.com'
+        ]);
         $categories = Category::factory(5)->create();
 
         $products = Product::factory(1000)->create([
