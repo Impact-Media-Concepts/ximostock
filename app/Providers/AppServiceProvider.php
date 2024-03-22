@@ -292,5 +292,52 @@ class AppServiceProvider extends ServiceProvider
                 return Response::deny();
             }
         });
+
+        //property authorization
+        Gate::define('index-property', function(User $user){
+            if($user->role ==='admin' || $user->role === 'manager'){
+                return Response::allow();
+            }else{
+                return Response::deny();
+            }
+        });
+
+        Gate::define('show-property', function(User $user, Property $property){
+            if($user->role === 'admin'){
+                return Response::allow();
+            }elseif($user->role === 'manager' && $user->work_space_id === $property->work_space_id){
+                return Response::allow();
+            }else{
+                return Response::deny();
+            }
+        });
+
+        Gate::define('update-property', function(User $user, Property $property){
+            if($user->role === 'admin' || ($user->role === 'manager' && $property->work_space_id === $user->work_space_id)){
+                return Response::allow();
+            }else{
+                return Response::deny();
+            }
+        });
+
+        Gate::define('bulk-property', function(User $user, ?array $propertyIds){
+            $properties = Property::whereIn('id', $propertyIds)->get();
+            if(Count($properties) !== Count($propertyIds)){
+                return Response::denyWithStatus(400);
+            }
+
+            if($user->role === 'admin'){
+                return Response::allow();
+            }elseif($user->role === 'manager'){
+                foreach($properties as $property){
+                    if($property->work_space_id !== $user->work_space_id){
+                        return Response::deny();
+                    }
+                }
+                return Response::allow();
+            }else{
+                return Response::deny();
+            }
+        });
     }
 }

@@ -50,10 +50,10 @@ class CategoryController extends Controller
         return redirect('/categories');
     }
 
-    //add the parent category id
     public function update(Category $category){
-        Gate::authorize('update-category', [$category, null]); 
-        $attributes = request()->validate([
+        $request = request();
+        Gate::authorize('update-category', [$category, $request['parent_category_id']]); 
+        $attributes = $request->validate([
             'name'=>['required', 'string'],
             'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
