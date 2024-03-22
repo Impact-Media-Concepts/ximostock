@@ -13,12 +13,14 @@ class PropertyController extends Controller
 {
     public function index(){
         return view('property.index',[
-            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get()
+            'sidenavActive' => 'properties',
+            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
         ]);
     }
 
     public function show(Property $property){
         return view('property.show',[
+            'sidenavActive' => 'properties',
             'property' => $property
         ]);
     }

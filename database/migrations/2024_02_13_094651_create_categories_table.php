@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('parent_category_id')->nullable()->constrained('categories');
             $table->foreignId('work_space_id')->constrained('work_spaces');
             $table->string('name');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -50,6 +50,7 @@ class ProductController extends BaseProductController
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
             'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
             'locations' => InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'sidenavActive' => 'products',
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get()
         ]);
     }
@@ -66,6 +67,7 @@ class ProductController extends BaseProductController
         return view('product.show', [
             'product' => $product,
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
+            'sidenavActive' => 'products',
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get()
         ]);
