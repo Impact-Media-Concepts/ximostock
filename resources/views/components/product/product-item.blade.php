@@ -13,10 +13,10 @@
         </a>
     </div>
 
-    <a class="hoi flex items-center w-full justify-center" href="/products/{{ $product->id }}">
-        <div class="flex w-full product-item-title-max-width h-[2.62rem] relative items-center left-[0.75rem]"
+    <a class="hoi flex items-center w-full justify-center normal:gap-1 big:-gap[1.25rem]" href="/products/{{ $product->id }}">
+        <div class="flex w-full normal:max-w-[21.5rem] enormous:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
             title=" {{ $product->title }}">
-            <p class="line-clamp-2 line-clamp-title product-item-title-p-max-width">
+            <p class="line-clamp-2 normal:max-w-[20rem] big:max-w-[20rem] enormous:max-w[38rem]">
                 {{ $product->title }}
             </p>
         </div>
@@ -25,7 +25,7 @@
     <div class="flex w-full items-center justify-start">
         
 
-        <div class="h-[1] mt-[0.35rem] product-sku-width">
+        <div class="h-[1] mt-[0.35rem] big:w-[17rem]">
             @php
                 if ($product->sku != null) {
                     echo '<p>' . $product->sku . '</p>';
@@ -35,7 +35,7 @@
             @endphp
         </div>
 
-        <div class="h-[3rem] product-price-width flex-col relative top-[0.45rem]">
+        <div class="h-[3rem] big:w-[19.2rem] flex-col relative top-[0.45rem]">
             @if ($product->discount != null)
                 <p class="line-through">
                     {{ ' €' . $product->price }}
@@ -49,30 +49,33 @@
                 </p>
             @endif
         </div>
-        <div class="product-stock-width h-[1.06rem] relative top-[0.1rem]  ">
+        <div class="big:w-[9rem] h-[1.06rem] relative top-[0.1rem]  ">
             <p>
                 {{ $product->stock }}
             </p>
         </div>
-        
-        <div class="flex">
-            <div class="flex w-[3.75rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
+
+        <div class="flex w-[3.75rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
+            <p>
                 {{ $product->sales }}
-            </div>
-            <div class="flex items-center w-[3.12rem] h-[1.06rem] mt-1">
-                @if ($product->sales_channels_exists)
-                    <div class="w-1.5 h-1.5 bg-[#3DABD5] rounded-full"></div>
-                    <p class="text-[#3DABD5] z-10 flex items-center relative left-1">
-                        Online
-                    </p>
-                @else
-                    <div class="w-1.5 h-1.5 bg-[#717171] rounded-full"></div>
-                    <p class="text-[#717171] z-10 flex items-center relative left-1">
-                        Offline
-                    </p>
-                @endif
-            </div>
+            </p>
+          
         </div>
+
+        <div class="flex items-center w-[3.12rem] h-[1.06rem] mt-1">
+            @if ($product->sales_channels_exists)
+                <div class="w-1.5 h-1.5 bg-[#3DABD5] rounded-full"></div>
+                <p class="text-[#3DABD5] z-10 flex items-center relative left-1">
+                    Online
+                </p>
+            @else
+                <div class="w-1.5 h-1.5 bg-[#717171] rounded-full"></div>
+                <p class="text-[#717171] z-10 flex items-center relative left-1">
+                    Offline
+                </p>
+            @endif
+        </div>
+
         <div
             class="h-[1.06rem] text-[14px] mt-[0.18rem] text-[#717171] flex justify-end relative right-[0.75rem] bottom-[0.1rem]">
             {{ $product->updated_at->format('d-m-y H:i') }}

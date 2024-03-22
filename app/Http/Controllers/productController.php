@@ -38,6 +38,7 @@ class ProductController extends BaseProductController
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
+            'sidenavActive' => 'products',
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
         ];
         return view('product.index', $results);
