@@ -5,7 +5,7 @@
     <x-header.header/>
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div class="h-full">
-            <x-sidenav.sidenav />
+            <x-sidenav.sidenav :sidenavActive="$sidenavActive" />
         </div>
         
         <div class="flex w-full h-full pr-10 py-[1.95rem] gap-8">     
