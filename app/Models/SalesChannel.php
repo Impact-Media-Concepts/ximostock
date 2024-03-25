@@ -12,6 +12,8 @@ class SalesChannel extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_sales_channel');
+        return $this->belongsToMany(Product::class, 'product_sales_channel')
+        ->using(ProductSalesChannel::class)
+        ->withPivot(['title','price', 'short_description', 'long_description', 'discount']);
     }
 }
