@@ -23,9 +23,9 @@ $(document).ready(function() {
 
 arrowCollapse.onclick = () => {
     arrowCollapse.classList.toggle("rotate-arrows");
-    sideBar.classList.toggle("collapse");
+    sideBar.classList.toggle("close-sidenav");
     
-    const isCollapsed = sideBar.classList.contains("collapse");
+    const isCollapsed = sideBar.classList.contains("close-sidenav");
     activeItem.forEach(element => {
         element.style.width = isCollapsed ? "4.08rem" : "17.06rem";
     });
