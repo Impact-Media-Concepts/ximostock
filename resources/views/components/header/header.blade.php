@@ -1,4 +1,4 @@
-<div class="w-full h-[5.05rem] absolute shadow-[0_1px_14px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center z-[998]">
+<div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center z-[998]">
     <button class="px-11 pt-1 relative left-[0.08rem]">
         <a href="{{ url('/dashboard') }}">
             <img class="w-[10.75] h-[1.31rem] flex" src="../images/ximostock-logo.png" alt="ximostock logo">
@@ -91,8 +91,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                     </div>
-                    <span class="w-52 text-left text-[14px] text-gray-700 relative right-2">
-                        {{Auth::user()->name}}
+                    <span class="w-52 text-left text-[14px] text-gray-700 line-clamp-1 relative right-2" title="{{ Auth::user()->name }}">
+                        {{ Auth::user()->name }}
                     </span>
                     <img class="w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="../images/arrow-down-icon.png"
                         alt="user icon">
