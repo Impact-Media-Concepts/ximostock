@@ -1,6 +1,6 @@
 @props(['products'])
 
-<div class="bg-white w-full h-[3.55rem] flex justify-start items-center normal:gap-[4.7rem]"
+<div class="bg-white w-full h-[3.55rem] flex justify-start items-center normal:gap-[5.05rem]"
     style="border-bottom: 1px solid #0000001A; font-family: 'Inter', sans-serif;">
     <input id="bulkActionsCheckboxSubheader" class="h-[0.87rem] flex justify-start items-center w-[0.87rem] ml-[1.55rem] mt-1 cursor-pointer" type="checkbox" name="product_ids[]"
         value="" />
