@@ -25,7 +25,7 @@
 <x-layout._footer-dependencies /> 
 <script type="text/javascript" src="{{ asset('./assets/js/product/header-button-data.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
-<script type="text/javascript" src="{{ asset('./assets/js/product/bulk-actions.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/show-pop-ups.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/container-bulk-actions.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/single-product-bulk-action.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/discount-values.js') }}"></script>

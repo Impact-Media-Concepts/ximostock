@@ -47,12 +47,12 @@
 
     // Function to update subcategories based on parent state
     function uncheckSubcategories(category) {
-            const ul = document.getElementById(`category_${category.id}`).querySelector('ul');
+        const ul = document.getElementById(`category_${category.id}`).querySelector('ul');
         if (ul) {
-           
             ul.classList.add('hidden');
             category.subcategories.forEach(subcategory => {
                 subcategory.checked = false; // Uncheck the subcategory itself
+                removeRotateArrowClass(category);
                 const input = document.getElementById(`checkbox_category_${subcategory.id}`);
                 input.checked = false;
                 if (subcategory.subcategories.length > 0) {
@@ -60,7 +60,6 @@
                 }
             });
         }
-       
     }
 
     // Function to search categories and subcategories
@@ -117,6 +116,7 @@
             updateParents(category);
         } else {
             uncheckSubcategories(category);
+            console.log("unchecked boiii");
         }
         //open or close the subcategories of this category
         if (category.checked) {
@@ -130,6 +130,18 @@
             updateCategories();
         }
 
+    }
+
+    function removeRotateArrowClass(category) {
+        const checkboxes = document.querySelectorAll(`input[type='checkbox'][value='${category.id}']`);
+        checkboxes.forEach(checkbox => {
+            const li = checkbox.closest('li');
+            const arrowDown = li.querySelector('img');
+            if (arrowDown) {
+                arrowDown.classList.remove('rotate-arrow');
+                
+            }
+        });
     }
 
     function showSubcategories(category) {
@@ -224,11 +236,11 @@
             categoryNameSpan.classList.add('no-select');
 
             categoryNameSpan.addEventListener('click', () => {
+
                 arrowDown.classList.toggle('rotate-arrow');
                 checkbox.checked = !checkbox.checked;
                 handleCheckboxClick(category);
             });
-
 
             const arrowDownDiv = document.createElement('span');
             const arrowDown = document.createElement('img');
@@ -281,8 +293,10 @@
             checkbox.classList.add('cursor-pointer');
 
             checkbox.addEventListener('click', () => { 
+                console.log("sub Yooo?");
                 const arrowDown = li.querySelector('img');
                 if (arrowDown) {
+                    console.log("sub if Yooo?");
                     arrowDown.classList.toggle('rotate-arrow');
                 }
                 handleCheckboxClick(subcategory);
