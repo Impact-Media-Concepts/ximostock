@@ -31,11 +31,11 @@
         width: 100%;
     }
 
-    .side-bar.collapse {
+    .side-bar.close-sidenav {
         width: 4.06rem;
     }
 
-    .activeItem.collapse {
+    .activeItem.close-sidenav {
         width: 4.06rem;
     }
 
@@ -56,7 +56,6 @@
     <ul class="category-list flex grid items-center">
         @foreach ($sidenavButtons as $button)
             <?php
-                
                 $isActive = isset($button['slug']) && strpos($button['slug'], $sidenavActive) !== false;
                 
                 $buttonUrl = isset($button['url']) ? url($button['url']) : null;

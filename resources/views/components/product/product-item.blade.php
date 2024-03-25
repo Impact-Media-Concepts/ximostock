@@ -6,82 +6,79 @@
             <input id="checkboxProductItem{{ $product->id }}" class="bulkActionsCheckboxProductItem h-[1.06rem] mx-2 mt-[0.3rem] checkbox-row flex cursor-pointer relative right-[0.1rem]" type="checkbox" name="product_ids[]" value="{{ $product->id }}" >
         </div>
 
-        <a class="rounded-md border-1 flex gap-10 justify-center items-center w-[2.8rem] h-[2.9rem] relative left-0 top-[0.08rem] mr-2"
+        <a class="rounded-md border-1 flex gap-10 justify-center items-center w-[2.8rem] h-[2.9rem] relative left-0 top-[0.08rem] mr-2 big:mr-[1.5rem]"
             style="border: 1px solid #DBDBDB; overflow:visible">
             <img class="w-[2.3rem] h-[2.3rem] pt-[0.01rem]" style="max-width: none;"
                 src="{{ $product->primaryPhoto->url }}" />
         </a>
     </div>
 
-    <a class="hoi flex items-center w-full justify-center normal:gap-1 big:-gap[1.25rem]" href="/products/{{ $product->id }}">
-        <div class="flex w-full normal:max-w-[21.8rem] big-max-w-[29.3rem] enormous:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
+    <a class="hoi flex items-center w-full justify-center normal:gap-1 big:gap-[1.1rem]" href="/products/{{ $product->id }}">
+        <div class="flex w-full normal:max-w-[21.3rem] big:max-w-[27.9rem] enormous:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
             title=" {{ $product->title }}">
-            <p class="line-clamp-2 normal:max-w-[20rem] big:max-w-[20rem] enormous:max-w[38rem]">
+            <p class="line-clamp-2 normal:max-w-[20rem] big:max-w-[20rem] enormous:max-w-[42.5rem]">
                 {{ $product->title }}
             </p>
         </div>
 
 
-    <div class="flex w-full items-center justify-start">
-        
-        <div class="mt-[0.35rem] normal:w-[10.2rem] big:w-[13.1rem]">
-            @php
-                if ($product->sku != null) {
-                    echo '<p>' . $product->sku . '</p>';
-                } else {
-                    echo '<p>N.V.T.</p>';
-                }
-            @endphp
-        </div>
+        <div class="flex w-full items-center justify-start">
+            <div class="mt-[0.35rem] normal:w-[10.8rem] big:w-[15.7rem] enormous:w-[22.1rem]">
+                @php
+                    if ($product->sku != null) {
+                        echo '<p>' . $product->sku . '</p>';
+                    } else {
+                        echo '<p>N.V.T.</p>';
+                    }
+                @endphp
+            </div>
 
-        <div class="h-[3rem] normal:w-[8.1rem] big:w-[13.58rem] flex-col relative top-[0.45rem]">
-            @if ($product->discount != null)
-                <p class="line-through">
-                    {{ ' €' . $product->price }}
+            <div class="h-[3rem] normal:w-[8rem] big:w-[16.1rem] enormous:w-[22.7rem] flex-col relative top-[0.45rem]">
+                @if ($product->discount != null)
+                    <p class="line-through">
+                        {{ ' €' . $product->price }}
+                    </p>
+                    <p class="font-bold relative bottom-[0.15rem]">
+                        {{ '€' . $product->discount }}
+                    </p>
+                @else
+                    <p class="mt-[0.6rem]">
+                        {{ ' €' . $product->price }}
+                    </p>
+                @endif
+            </div>
+            <div class="normal:w-[9rem] big:w-[14.4rem] enormous:w-[27.2rem] h-[1.06rem] relative top-[0.1rem]  ">
+                <p>
+                    {{ $product->stock }}
                 </p>
-                <p class="font-bold relative bottom-[0.15rem]">
-                    {{ '€' . $product->discount }}
-                </p>
-            @else
-                <p class="mt-[0.6rem]">
-                    {{ ' €' . $product->price }}
-                </p>
-            @endif
-        </div>
-        <div class="normal:w-[9rem] big:w-[15.7rem] h-[1.06rem] relative top-[0.1rem]  ">
-            <p>
-                {{ $product->stock }}
-            </p>
-        </div>
+            </div>
 
-        <div class="flex normal:w-[14.7rem] big-w-[14.9rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
-            <p>
-                {{ $product->sales }}
-            </p>
-          
-        </div>
-
-        <div class="flex items-center normal:w-[8.2rem] big-w-[16rem] h-[1.06rem] mt-1">
-            @if ($product->sales_channels_exists)
-                <div class="mt-[0.15rem] w-1.5 h-1.5 bg-[#3DABD5] rounded-full"></div>
-                <p class="text-[#3DABD5] z-10 flex items-center relative left-1">
-                    Online
+            <div class="flex normal:w-[7.5rem] big:w-[13.35rem] enormous:w-[26.7rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
+                <p>
+                    {{ $product->sales }}
                 </p>
-            @else
-                <div class="w-1.5 h-1.5 bg-[#717171] rounded-full"></div>
-                <p class="text-[#717171] z-10 flex items-center relative left-1">
-                    Offline
-                </p>
-            @endif
-        </div>
+            
+            </div>
 
-        <div
-            class="h-[1.06rem] text-[14px] mt-[0.18rem] text-[#717171] flex justify-end relative right-[0.75rem] bottom-[0.1rem]">
-            {{ $product->updated_at->format('d-m-y H:i') }}
-        </div>
-    </div>
-        
+            <div class="flex items-center normal:w-[8.2rem] big:w-[14.9rem] enormous:w-[27.8rem] h-[1.06rem] mt-1">
+                @if ($product->sales_channels_exists)
+                    <div class="mt-[0.15rem] w-1.5 h-1.5 bg-[#3DABD5] rounded-full"></div>
+                    <p class="text-[#3DABD5] z-10 flex items-center relative left-1">
+                        Online
+                    </p>
+                @else
+                    <div class="w-1.5 h-1.5 bg-[#717171] rounded-full"></div>
+                    <p class="text-[#717171] z-10 flex items-center relative left-1">
+                        Offline
+                    </p>
+                @endif
+            </div>
 
+            <div
+                class="h-[1.06rem] text-[14px] mt-[0.18rem] text-[#717171] flex justify-end relative right-[0.75rem] bottom-[0.1rem]">
+                {{ $product->updated_at->format('d-m-y H:i') }}
+            </div>
+        </div>
         {{-- @if ($product->concept)
             <strong>Concept</strong>
         @endif --}}
