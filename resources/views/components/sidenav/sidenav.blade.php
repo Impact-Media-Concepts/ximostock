@@ -69,7 +69,7 @@
     </ul>
     <div class="w-full pt-8 flex justify-center items-center">  
         <button class="open-button arrow-transition">
-            <img class="w-4.5 h-4.5" src="../images/double-arrow-left.png">
+            <img class="select-none w-4.5 h-4.5" src="../images/double-arrow-left.png">
         </button>
     </div>
 </div>
