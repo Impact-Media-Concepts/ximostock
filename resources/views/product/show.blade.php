@@ -15,13 +15,13 @@
     </h1>
     <h4>
         {{ $product->ean . '  ' . $product->sku }}
-        
+
     </h4>
     <h4>
         Primary category: {{ $product->primaryCategory?->name ?? 'none' }}
     </h4>
-    
-    
+
+
     <p>
         {{ $product->short_description }}
     </p>
@@ -76,9 +76,7 @@
             </li>
             <li>
                 <label for="discount">actieprijs: </label>
-                <input type="number" step="0.01"
-                    value="{{ $product->discount  }}" name="discount"
-                    id="discount">
+                <input type="number" step="0.01" value="{{ $product->discount }}" name="discount" id="discount">
             </li>
             <li>
                 <label for="short_description">Short Description:</label><br>
@@ -89,8 +87,8 @@
                 <textarea id="long_description" name="long_description" rows="10" cols="80">{{ $product->long_description }}</textarea><br><br>
             </li>
             <li>
-                <input type="checkbox" id="backorders" {{ $product->backorders ? 'checked' : '' }}
-                    name="backorders" value="1">
+                <input type="checkbox" id="backorders" {{ $product->backorders ? 'checked' : '' }} name="backorders"
+                    value="1">
                 <label for="backorders">enable backorders</label>
             </li>
             <li>
@@ -99,24 +97,50 @@
                 <label for="communicate_stock">communicate stock</label>
             </li>
             <li>
-                <x-product.show.category-checkbox-list   :categories="$categories" :checkedCategories="$product->categories"/>
+                <x-product.show.category-checkbox-list :categories="$categories" :checkedCategories="$product->categories" />
             </li>
             <li>
                 SalesChannels:
                 <ul>
                     @foreach ($salesChannels as $salesChannel)
                         <li>
-                            <input type="checkbox" name="salesChannelIds[]" value="{{$salesChannel->id}}"  id="salesChannel{{$salesChannel->id}}"  {{ $selectedSalesChannels->contains('sales_channel_id', $salesChannel->id) ? 'checked' : '' }}  />
-                            <label for="salesChannel{{$salesChannel->id}}">{{$salesChannel->name}}</label>
+                            <input type="checkbox" name="salesChannelIds[]" value="{{ $salesChannel->id }}"
+                                id="salesChannel{{ $salesChannel->id }}"
+                                {{ $selectedSalesChannels->contains('sales_channel_id', $salesChannel->id) ? 'checked' : '' }} />
+                            <label for="salesChannel{{ $salesChannel->id }}">{{ $salesChannel->name }}</label>
                             @if ($selectedSalesChannels->contains('sales_channel_id', $salesChannel->id))
-                            <ul>
-                                <li>
-                                    <label for="salesChannels{{$salesChannel->id}}title">title:</label>
-                                    <input type="text" value="" name="salesChannels[{{$salesChannel->id}}][title]" id="salesChannels{{$salesChannel->id}}title">
-                                </li>
-                            </ul>
+                                <ul>
+                                    <li>
+                                        <label for="salesChannels{{ $salesChannel->id }}title">title:</label>
+                                        <input type="text"
+                                            value="{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->title }}"
+                                            name="salesChannels[{{ $salesChannel->id }}][title]"
+                                            id="salesChannels{{ $salesChannel->id }}title">
+                                    </li>
+                                    <li>
+                                        <label for="salesChannels{{ $salesChannel->id }}price">price:</label>
+                                        <input type="number" step="0.01"
+                                            value="{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->price }}"
+                                            name="salesChannels[{{ $salesChannel->id }}][price]"
+                                            id="salesChannels{{ $salesChannel->id }}price">
+                                    </li>
+                                    <li>
+                                        <label for="salesChannel{{ $salesChannel->id }}short_description">Short
+                                            Description:</label><br>
+                                        <textarea name="salesChannels[{{ $salesChannel->id }}][short_description]"
+                                            id="salesChannel{{ $salesChannel->id }}short_description" name="short_description"
+                                             rows="4" cols="80">{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->short_description }}</textarea><br><br>
+                                    </li>
+                                    <li>
+                                        <label for="salesChannel{{ $salesChannel->id }}long_description">Long
+                                            Description:</label><br>
+                                        <textarea name="salesChannels[{{ $salesChannel->id }}][long_description]"
+                                            id="salesChannel{{ $salesChannel->id }}long_description" 
+                                            name="long_description" rows="4" cols="80">{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->long_description }}</textarea><br><br>
+                                    </li>
+                                </ul>
                             @endif
-                            
+
                         </li>
                     @endforeach
                 </ul>
