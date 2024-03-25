@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->middleware('can:show-category,category');
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::patch('/categories/{category}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware('can:destroy-category,category');
 
 
     //properties

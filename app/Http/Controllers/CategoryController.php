@@ -53,6 +53,12 @@ class CategoryController extends Controller
         return redirect('/categories');
     }
 
+    public function destroy(Category $category){
+
+        $category->delete();
+        return redirect('/categories');
+    }
+
     public function update(Category $category){
         $request = request();
         Gate::authorize('update-category', [$category, $request['parent_category_id']]); 
