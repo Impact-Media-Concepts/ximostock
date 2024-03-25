@@ -14,28 +14,25 @@
         class="discount-popup-container relative w-[44rem] h-[24.81rem] bg-white pb-0 rounded-md text-center p-8 mx-auto mt-20 transform -translate-y-40 transition-transform duration-300"
     >
         <div
-            class="discount-popup-close flex justify-end items-center relative bottom-4 left-2"
+            class="w-[2rem] discount-popup-close flex items-center relative bottom-4 left-[39rem] hover:cursor-pointer z-[1000]"
         >
-            <a
-                href="#0"
-                class="discount-popup-close w-10 h-10 flex items-center justify-center cursor-pointer"
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="gray"
+                class="discount-popup-close select-none flex items-center justify-center w-8 h-8"
             >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="gray"
-                    class="discount-popup-close flex items-center justify-center w-8 h-8 cursor-pointer"
-                >
-                    <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M6 18 18 6M6 6l12 12"
-                    />
-                </svg>
-            </a>
+                <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+                class="discount-popup-close"
+                />
+            </svg>
         </div>
+       
         <div class="relative bottom-8">
             <div class="w-[40.87rem] h-[19.31rem] mt-4">
                 <div class="w-[40.87rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white"> 
@@ -81,7 +78,7 @@
                         </div>
                     </div>
                     <div class="discount-buttons flex items-center gap-[0.7rem] absolute bottom-5 right-5">
-                        <button type="button" class="flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
+                        <button type="button" class="discount-popup-close flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -94,9 +91,10 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 d="M6 18 18 6M6 6l12 12"
+                                class="discount-popup-close "
                                 />
                             </svg>
-                            <p class="flex text-[#717171]">
+                            <p class="discount-popup-close flex text-[#717171]">
                                 Annuleren
                             </p>
                         </button>
