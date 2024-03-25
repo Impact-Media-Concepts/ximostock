@@ -504,6 +504,15 @@ class ProductController extends BaseProductController
                 if(isset($salesChannelData['salesChannels'][$salesChannelId]['title'])){
                     $attributes += ['title' => $salesChannelData['salesChannels'][$salesChannelId]['title']];
                 }
+                if(isset($salesChannelData['salesChannels'][$salesChannelId]['short_description'])){
+                    $attributes += ['short_description' => $salesChannelData['salesChannels'][$salesChannelId]['short_description']];
+                }
+                if(isset($salesChannelData['salesChannels'][$salesChannelId]['long_description'])){
+                    $attributes += ['long_description' => $salesChannelData['salesChannels'][$salesChannelId]['long_description']];
+                }
+                if(isset($salesChannelData['salesChannels'][$salesChannelId]['price'])){
+                    $attributes += ['price' => $salesChannelData['salesChannels'][$salesChannelId]['price']];
+                }
                 ProductSalesChannel::create(
                     $attributes
                 );           
@@ -511,6 +520,9 @@ class ProductController extends BaseProductController
                 $productSalesChannel = ProductSalesChannel::where('sales_channel_id', $salesChannelId)->where('product_id', $productId)->first();
                 $productSalesChannel->update([
                     'title' => $salesChannelData['salesChannels'][$salesChannelId]['title'],
+                    'short_description' => $salesChannelData['salesChannels'][$salesChannelId]['short_description'],
+                    'long_description' => $salesChannelData['salesChannels'][$salesChannelId]['long_description'],
+                    'price' =>  $salesChannelData['salesChannels'][$salesChannelId]['price']
                 ]);
                 unset($existingSalesChannelIds[array_search($salesChannelId, $existingSalesChannelIds)]);
             }
