@@ -8,7 +8,7 @@
 
         <a class="rounded-md border-1 flex gap-10 justify-center items-center w-[2.8rem] h-[2.9rem] relative left-0 top-[0.08rem] mr-2 big:mr-[1.5rem]"
             style="border: 1px solid #DBDBDB; overflow:visible">
-            <img class="w-[2.3rem] h-[2.3rem] pt-[0.01rem]" style="max-width: none;"
+            <img class="select-none w-[2.3rem] h-[2.3rem] pt-[0.01rem]" style="max-width: none;"
                 src="{{ $product->primaryPhoto->url }}" />
         </a>
     </div>
@@ -16,11 +16,10 @@
     <a class="hoi flex items-center w-full justify-center normal:gap-1 big:gap-[1.1rem]" href="/products/{{ $product->id }}">
         <div class="flex w-full normal:max-w-[21.3rem] big:max-w-[27.9rem] enormous:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
             title=" {{ $product->title }}">
-            <p class="line-clamp-2 normal:max-w-[20rem] big:max-w-[20rem] enormous:max-w-[42.5rem]">
+            <p class="line-clamp-2 normal:max-w-[20rem] big:max-w-[27.9rem] enormous:max-w-[42.5rem]">
                 {{ $product->title }}
             </p>
         </div>
-
 
         <div class="flex w-full items-center justify-start">
             <div class="mt-[0.35rem] normal:w-[10.8rem] big:w-[15.7rem] enormous:w-[22.1rem]">
@@ -76,7 +75,7 @@
 
             <div
                 class="h-[1.06rem] text-[14px] mt-[0.18rem] text-[#717171] flex justify-end relative right-[0.75rem] bottom-[0.1rem]">
-                {{ $product->updated_at->format('d-m-y H:i') }}
+                {{ $product->updated_at->timezone('Europe/Amsterdam')->format('d-m-y H:i') }}
             </div>
         </div>
         {{-- @if ($product->concept)

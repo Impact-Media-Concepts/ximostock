@@ -75,7 +75,7 @@
                 </li>
                 <li class="py-1 flex md:py-0 h">
                     <button
-                    class="yes w-[13.43rem] text-white bg-[#FD9827] duration-100 py-2.5 rounded-lg flex justify-center items-center"
+                    class="yes w-[13.43rem] text-white bg-[#FD9827] hover:bg-[#da821e] duration-100 py-2.5 rounded-lg flex justify-center items-center"
                     href="#0"
                     x-text="yes"
                     type="submit"
