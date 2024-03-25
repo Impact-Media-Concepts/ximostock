@@ -14,7 +14,7 @@
     </div>
 
     <a class="hoi flex items-center w-full justify-center normal:gap-1 big:-gap[1.25rem]" href="/products/{{ $product->id }}">
-        <div class="flex w-full normal:max-w-[21.5rem] big-max-w-[28.4rem]  enormous:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
+        <div class="flex w-full normal:max-w-[21.8rem] big-max-w-[29.3rem] enormous:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
             title=" {{ $product->title }}">
             <p class="line-clamp-2 normal:max-w-[20rem] big:max-w-[20rem] enormous:max-w[38rem]">
                 {{ $product->title }}
@@ -24,7 +24,7 @@
 
     <div class="flex w-full items-center justify-start">
         
-        <div class="h-[1] mt-[0.35rem] normal:w-[10.5rem] big:w-[15.85rem]">
+        <div class="mt-[0.35rem] normal:w-[10.2rem] big:w-[13.1rem]">
             @php
                 if ($product->sku != null) {
                     echo '<p>' . $product->sku . '</p>';
@@ -34,7 +34,7 @@
             @endphp
         </div>
 
-        <div class="h-[3rem] normal:w-[8.1rem] big:w-[16rem] flex-col relative top-[0.45rem]">
+        <div class="h-[3rem] normal:w-[8.1rem] big:w-[13.58rem] flex-col relative top-[0.45rem]">
             @if ($product->discount != null)
                 <p class="line-through">
                     {{ ' €' . $product->price }}
@@ -48,20 +48,20 @@
                 </p>
             @endif
         </div>
-        <div class="normal:w-[9rem] big:w-[13.7rem] h-[1.06rem] relative top-[0.1rem]  ">
+        <div class="normal:w-[9rem] big:w-[15.7rem] h-[1.06rem] relative top-[0.1rem]  ">
             <p>
                 {{ $product->stock }}
             </p>
         </div>
 
-        <div class="flex normal:w-[7.5rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
+        <div class="flex normal:w-[14.7rem] big-w-[14.9rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
             <p>
                 {{ $product->sales }}
             </p>
           
         </div>
 
-        <div class="flex items-center normal:w-[8rem] h-[1.06rem] mt-1">
+        <div class="flex items-center normal:w-[8.2rem] big-w-[16rem] h-[1.06rem] mt-1">
             @if ($product->sales_channels_exists)
                 <div class="mt-[0.15rem] w-1.5 h-1.5 bg-[#3DABD5] rounded-full"></div>
                 <p class="text-[#3DABD5] z-10 flex items-center relative left-1">
