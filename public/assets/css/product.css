@@ -64,3 +64,8 @@ input::-ms-input-placeholder {
         right: 0rem !important;
     }
 }
+
+/* Product categories */
+.rotate-arrow {
+    transform: rotate(180deg);
+}

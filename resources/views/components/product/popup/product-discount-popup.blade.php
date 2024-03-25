@@ -65,7 +65,6 @@
                                     <ul >
                                         <template  x-for="property in discount" :key="property.data_pages">
                                             <li >
-                                                <!-- Store property ID when clicked and log it -->
                                                 <button type="button" @click="selectedProperty = property; open = false;"
                                                     class="hover:bg-[#3999BE] duration-100 block w-[38.06rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
                                                     <span  class="flex items-center justify-start pr-3 pl-4 " x-text="property.name"></span>
