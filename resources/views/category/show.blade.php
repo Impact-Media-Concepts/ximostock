@@ -40,6 +40,11 @@
             @endforeach
         </ul>
     </form>
+    <form method="POST" action="/categories/{{$category->id}}">
+        @csrf
+        @method('DELETE')
+        <input type="submit" value="delete">
+    </form>
 </body>
 
 </html>
