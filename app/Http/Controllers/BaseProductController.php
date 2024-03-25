@@ -17,7 +17,7 @@ abstract class BaseProductController extends Controller
     {
         $attributes = $request->validate([
             'salesChannels' => ['array', 'nullable'],
-            'salesChannels.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
+            'salesChannels.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')],
         ]);
         if ($request['salesChannels'] == null) {
             $attributes['salesChannels'] = [];

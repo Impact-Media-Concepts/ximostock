@@ -106,13 +106,23 @@
                 <ul>
                     @foreach ($salesChannels as $salesChannel)
                         <li>
-                            <input type="checkbox" id="salesChannel{{$salesChannel->id}}" {{ $selectedSalesChannels->contains('sales_channel_id', $salesChannel->id) ? 'checked' : '' }} name="salesChannels[]" value="{{$salesChannel->id}}"/>
+                            <input type="checkbox" name="salesChannelIds[]" value="{{$salesChannel->id}}"  id="salesChannel{{$salesChannel->id}}"  {{ $selectedSalesChannels->contains('sales_channel_id', $salesChannel->id) ? 'checked' : '' }}  />
                             <label for="salesChannel{{$salesChannel->id}}">{{$salesChannel->name}}</label>
+                            @if ($selectedSalesChannels->contains('sales_channel_id', $salesChannel->id))
+                            <ul>
+                                <li>
+                                    <label for="salesChannels{{$salesChannel->id}}title">title:</label>
+                                    <input type="text" value="" name="salesChannels[{{$salesChannel->id}}][title]" id="salesChannels{{$salesChannel->id}}title">
+                                </li>
+                            </ul>
+                            @endif
+                            
                         </li>
                     @endforeach
                 </ul>
             </li>
         </ul>
+
         @if ($errors->any())
             <div>
                 <ul>
