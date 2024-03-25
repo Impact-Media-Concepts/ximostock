@@ -1,3 +1,5 @@
+@props(['search'])
+
 <div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center z-[998]">
     <button class="px-11 pt-1 relative left-[0.08rem]">
         <a href="{{ url('/dashboard') }}">
@@ -18,9 +20,7 @@
                 </svg>
             </button>
             <input class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
-            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search..." autocomplete="off">
-            {{-- <input class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
-            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search..." autocomplete="off" value="{{ $search }}"> --}}
+            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search..." autocomplete="off" value="{{ $search }}">
         </form>
     </div>
 

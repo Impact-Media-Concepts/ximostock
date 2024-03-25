@@ -2,7 +2,7 @@
 <x-layout._header-dependencies />
 
 <body class="bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
-    <x-header.header/>
+    <x-header.header :search="$search" />
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div class="h-full">
             <x-sidenav.sidenav :sidenavActive="$sidenavActive"/>
