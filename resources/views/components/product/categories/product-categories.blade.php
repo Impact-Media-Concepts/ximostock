@@ -273,7 +273,6 @@
         // Add class to hide subcategories if parent category is not checked
         if (!parentChecked) {
             ul.classList.add('hidden');
-            console.log("parent unchecked");
         }
 
         subcategories.forEach((subcategory, index) => {
