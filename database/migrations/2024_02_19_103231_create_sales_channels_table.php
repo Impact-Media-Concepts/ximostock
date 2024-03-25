@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('flavicon_url')->nullable();
             $table->string('api_key');
             $table->string('secret')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
