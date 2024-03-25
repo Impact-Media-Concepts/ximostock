@@ -112,7 +112,7 @@
                             <ul>
                                 <li>
                                     <label for="salesChannels{{$salesChannel->id}}title">title:</label>
-                                    <input type="text" value="" name="salesChannels[{{$salesChannel->id}}][title]" id="salesChannels{{$salesChannel->id}}title">
+                                    <input type="text" value="{{$selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->title}}" name="salesChannels[{{$salesChannel->id}}][title]" id="salesChannels{{$salesChannel->id}}title">
                                 </li>
                             </ul>
                             @endif

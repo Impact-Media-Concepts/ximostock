@@ -35,7 +35,7 @@ class ProductController extends BaseProductController
                 ->orderByDesc('updated_at')
                 ->paginate($perPage)
                 ->withQueryString(),
-            'properties' => Property::all(),
+            // 'properties' => Property::all(),
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
@@ -70,7 +70,7 @@ class ProductController extends BaseProductController
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
             'sidenavActive' => 'products',
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
-            'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get()
+            'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get(),
         ]);
     }
 
