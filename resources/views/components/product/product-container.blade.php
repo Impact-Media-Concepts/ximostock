@@ -5,24 +5,6 @@
     .bulk-actions-hidden {
         display: none;
     }
-
-    @media only screen and (min-width: 1920px) {
-        .form-height {
-            height: 75.5%;
-        }
-    }
-
-    @media only screen and (min-width: 2560px) {
-        .form-height {
-            height: 85%;
-        }
-    }
-
-    @media only screen and (min-width: 3840px) {
-        .form-height {
-            height: 90.5%;
-        }
-    }
 </style>
 
 <div class="w-full h-full">
@@ -31,7 +13,7 @@
     <x-product.product-sub-header :products="$products" />
 
     <!-- form for bulk actions -->
-    <form class="form-height" id="bulkActionsForm" action="{{ route('products.bulkDelete') }}" method="POST">
+    <form class="form-height big:h-5/6" id="bulkActionsForm" action="{{ route('products.bulkDelete') }}" method="POST">
         @csrf
         <x-product.product-bulk-actions :products="$products" :perPage="$perPage"/>
         <x-product.product :products="$products" />
