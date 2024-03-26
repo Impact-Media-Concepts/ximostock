@@ -61,8 +61,8 @@
                             <ul
                                 class="dropdown-content absolute hidden rounded-md right-[1rem] pr-[9.8rem] w-[18rem]"
                             >
-                                <div class="shadow-lg">
-                                    <li class="rounded-md ">
+                                <div class="shadow-lg rounded-md ">
+                                    <li class="rounded-md">
                                         <a
                                             class="text-[14px] shadow-sm flex items-center rounded-t-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-t-lg py-2 px-4 block whitespace-no-wrap"
                                             href="/products/create"

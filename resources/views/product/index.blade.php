@@ -1,5 +1,5 @@
 {{-- Dependencies for the page --}}
-<x-layout._header-dependencies />
+<x-layout._header-dependencies :sidenavActive="$sidenavActive"/>
 
 <body class="bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
     <x-header.header :search="$search" />

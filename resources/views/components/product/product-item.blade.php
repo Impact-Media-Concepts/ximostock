@@ -22,7 +22,7 @@
         </div>
 
         <div class="flex w-full items-center justify-start">
-            <div class="mt-[0.35rem] normal:w-[10.8rem] big:w-[15.7rem] enormous:w-[22.1rem]">
+            <div class="mt-[0.35rem] normal:w-[10.8rem] big:w-[16.3rem] enormous:w-[22.1rem]">
                 @php
                     if ($product->sku != null) {
                         echo '<p>' . $product->sku . '</p>';
