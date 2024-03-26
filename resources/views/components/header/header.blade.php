@@ -34,7 +34,6 @@
                 <button @click="open = !open;"
                     class="hover:bg-[#3999BE] duration-100 flex items-center z-20 w-[10.53rem] px-[1.08rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
                     style="border: 1px solid white" @click.away="open = false">
-                    <!-- Display selected property name -->
                     <div class="flex mt-[0.08rem]">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="white" class="w-3 h-3">
@@ -45,26 +44,81 @@
                     <span class="pl-[0.2rem] text-left text-[14px] text-white">Nieuw toevoegen</span>
                 </button>
         
-                <div x-show="open"
-                    class="absolute flex justify-center items-center w-[10.43rem] bg-[#3dabd5] divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 left-6 top-[3.2rem]">
-                    <ul>
-                        <template x-for="property in addButon" :key="property.data_pages">
-                            <li>
-                                <!-- Store property ID when clicked and log it -->
-                                <button @click="selectedProperty = property; open = false;"
-                                    class="flex items-center block w-[10.43rem] px-4 py-2.5 text-sm text-white hover:bg-[#3999BE] duration-100 focus:outline-none font-[300]"
-                                    x-bind:data_pages="property.data_pages">
-                                    <div class="flex  mt-[0.08rem] relative right-[0.2rem]">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="white" class="w-3 h-3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                    
-                                    </div>
-                                    <span class="flex items-center justify-center" x-text="property.name"></span>
-                                </button>
-                            </li>
-                        </template>
+                <div x-cloak x-show="open"
+                    class="absolute flex-col justify-center items-center w-[10.43rem] bg-[#3dabd5] divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 left-6 top-[3.2rem]">
+                    <ul class="dropdown-content">
+                        <li class="dropdown flex justify-start">
+                            <div
+                                class="hover:rounded-t-lg duration-100 block w-[10.43rem] px-4 py-2 text-[14px] text-white focus:outline-none flex items-center justify-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="white" class="w-3 h-3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                <p class="pl-[0.2rem]">
+                                    Products
+                                </p>
+                            </div>
+                            <ul
+                                class="dropdown-content absolute hidden rounded-md right-[1rem] pr-[9.8rem] w-[18rem]"
+                            >
+                                <div class="shadow-lg rounded-md ">
+                                    <li class="rounded-md">
+                                        <a
+                                            class="text-[14px] shadow-sm flex items-center rounded-t-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-t-lg py-2 px-4 block whitespace-no-wrap"
+                                            href="/products/create"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="white" class="w-3 h-3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            </svg>
+                                            <p class="pl-[0.2rem]">
+                                                Simpel
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="rounded-md">
+                                        <a
+                                            class="text-[14px] shadow-sm flex items-center rounded-b-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-b-lg py-2 px-4 block whitespace-no-wrap"
+                                            href="/variant/create"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                stroke="white" class="w-3 h-3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                            </svg>
+                                            <p class="pl-[0.2rem]">
+                                                Variatie
+                                            </p>
+                                        </a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="flex-col !border-t-0">
+                        <li>
+                            <a
+                                href="/categories/create"
+                                class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="white" class="w-3 h-3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                <span class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Categorie</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="/"
+                                class="hover:bg-[#3999BE] hover:rounded-b-lg  duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="white" class="w-3 h-3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                <span class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Eigenschap</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

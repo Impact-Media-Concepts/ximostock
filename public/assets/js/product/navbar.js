@@ -1,4 +1,3 @@
-
 let sideBar = document.querySelector(".side-bar");
 let activeItem = document.querySelectorAll(".side-bar-active-item");
 let arrowCollapse = document.querySelector(".open-button");
@@ -6,25 +5,11 @@ let textToHide = document.querySelectorAll(".text");
 
 let isHidden = false;
 
-$(document).ready(function() {
-  // each element which id starts with checkboxProductItem
-  $('[id^="sideItem"]').each(function() {
-      let sideItem = document.querySelectorAll('[id^="sideItem"]');
-      let closeButton = document.querySelectorAll('closeButton');
-
-      let sideid = $(productItemCheckbox).data('sideItem-id');
-
-      // productItemCheckbox is clicked execute next code
-      $(closeButton).on('click', function() {
-          sideItem.classList.add("w-[4.08rem]")
-      });
-  });
-});
-
-arrowCollapse.onclick = () => {
+// Function to toggle sidenav state
+function toggleSidenav() {
     arrowCollapse.classList.toggle("rotate-arrows");
     sideBar.classList.toggle("close-sidenav");
-    
+
     const isCollapsed = sideBar.classList.contains("close-sidenav");
     activeItem.forEach(element => {
         element.style.width = isCollapsed ? "4.08rem" : "17.06rem";
@@ -45,4 +30,16 @@ arrowCollapse.onclick = () => {
             isHidden = false;
         }, 250);
     }
-};
+
+    // Store sidenav state in localStorage
+    localStorage.setItem('sidenavCollapsed', isCollapsed);
+}
+
+// Check if sidenav state is stored in localStorage
+const storedCollapsed = localStorage.getItem('sidenavCollapsed');
+if (storedCollapsed === 'true') {
+    toggleSidenav();
+}
+
+// Event listener for sidenav toggle
+arrowCollapse.onclick = toggleSidenav;

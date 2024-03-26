@@ -1,22 +1,4 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-    scrollbar-width: thin;
-}
-
-body,
-html {
-    height: 100%;
-}
-
-[x-cloak] {
-    display: none !important;
-}
-
 /* checkbox */
-
 input:checked {
     accent-color: #3dabd5;
 }
@@ -26,7 +8,6 @@ input:checked {
         display: none;
     }
 }
-
 
 input::placeholder {
     color: #d3d3d3;
@@ -39,7 +20,7 @@ input::-ms-input-placeholder {
     font-weight: 400;
 }
 
- /* Popup */
+/* Popup */
 .no-select {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */

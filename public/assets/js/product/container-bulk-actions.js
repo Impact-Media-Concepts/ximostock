@@ -37,6 +37,11 @@ let bulkActionsSelectAll = document.getElementById('selectAll');
 let selectedCountElementBulkSelectAll = document.getElementById('selectedCount');
 
 bulkActionsSelectAll.addEventListener('click', function() {
+
+    if (!bulkActionsCheckboxSubheader.checked) {
+        bulkActionsCheckboxSubheader.checked = true;
+    }
+
     let productItemCheckboxesSelectAll = document.querySelectorAll('[id^="checkboxProductItem"]');
     let totalCheckedSelected = 0;
     productItemCheckboxesSelectAll.forEach(function(productItemCheckbox) {
