@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+    scrollbar-width: thin;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* header multidropdown */
+.dropdown:hover > .dropdown-content {
+  display: block;
+}

@@ -728,6 +728,10 @@ video {
   right: 0.75rem;
 }
 
+.right-\[1rem\] {
+  right: 1rem;
+}
+
 .start-0 {
   inset-inline-start: 0px;
 }
@@ -1416,6 +1420,10 @@ video {
   width: 17.06rem;
 }
 
+.w-\[18rem\] {
+  width: 18rem;
+}
+
 .w-\[2\.3rem\] {
   width: 2.3rem;
 }
@@ -1750,6 +1758,10 @@ video {
 
 .border-2 {
   border-width: 2px;
+}
+
+.\!border-t-0 {
+  border-top-width: 0px !important;
 }
 
 .border-b {
@@ -2128,6 +2140,10 @@ video {
   padding-right: 1rem;
 }
 
+.pr-\[9\.8rem\] {
+  padding-right: 9.8rem;
+}
+
 .ps-3 {
   padding-inline-start: 0.75rem;
 }
@@ -2243,10 +2259,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.font-\[300\] {
-  font-weight: 300;
 }
 
 .font-\[400\] {
@@ -2576,6 +2588,16 @@ video {
 
 .hover\:cursor-pointer:hover {
   cursor: pointer;
+}
+
+.hover\:rounded-b-lg:hover {
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.hover\:rounded-t-lg:hover {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .hover\:border-gray-300:hover {

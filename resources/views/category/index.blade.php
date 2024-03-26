@@ -7,4 +7,7 @@
 
 </body>
 
+<x-layout._footer-dependencies /> 
+<script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
+
 </html>
