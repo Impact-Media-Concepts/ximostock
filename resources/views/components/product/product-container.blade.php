@@ -5,24 +5,6 @@
     .bulk-actions-hidden {
         display: none;
     }
-
-    @media only screen and (min-width: 1920px) {
-        .form-height {
-            height: 75.5%;
-        }
-    }
-
-    @media only screen and (min-width: 2560px) {
-        .form-height {
-            height: 85%;
-        }
-    }
-
-    @media only screen and (min-width: 3840px) {
-        .form-height {
-            height: 90.5%;
-        }
-    }
 </style>
 
 <div class="w-full h-full">
