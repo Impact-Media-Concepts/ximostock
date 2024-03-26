@@ -1,5 +1,4 @@
 /* checkbox */
-
 input:checked {
     accent-color: #3dabd5;
 }
@@ -9,7 +8,6 @@ input:checked {
         display: none;
     }
 }
-
 
 input::placeholder {
     color: #d3d3d3;
