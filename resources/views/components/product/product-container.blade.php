@@ -13,7 +13,7 @@
     <x-product.product-sub-header :products="$products" />
 
     <!-- form for bulk actions -->
-    <form class="form-height big:h-5/6" id="bulkActionsForm" action="{{ route('products.bulkDelete') }}" method="POST">
+    <form class="form-height uhd:h-5/6" id="bulkActionsForm" action="{{ route('products.bulkDelete') }}" method="POST">
         @csrf
         <x-product.product-bulk-actions :products="$products" :perPage="$perPage"/>
         <x-product.product :products="$products" />

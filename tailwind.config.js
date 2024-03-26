@@ -19,17 +19,17 @@ export default {
     ],
     theme: {
         screens: {
-            laptop: "1280px",
-            normal: "1920px",
-            big: "2560px",
-            enormous: "3840px",
+            basic: "1280px",
+            hd: "1920px",
+            uhd: "2560px",
+            shd: "3840px",
         },
         extend: {
             screens: {
-                laptop: "1280px",
-                normal: "1920px",
-                big: "2560px",
-                enormous: "3840px",
+                basic: "1280px",
+                hd: "1920px",
+                uhd: "2560px",
+                shd: "3840px",
             },
         },
     },
