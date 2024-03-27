@@ -115,7 +115,6 @@ class Product extends Model
         return $this->hasMany(ProductSalesChannel::class);
     }
 
-
     //calulate the total sales of this product
     public function getSalesAttribute(): int
     {
@@ -164,6 +163,18 @@ class Product extends Model
                     ->where('title', 'like', '%' . $search . '%')
                     ->orWhere('sku', 'like', '%' . $search . '%')
             )
+        );
+    
+        $query->when(
+            $filters['categories'] ?? false,
+            fn ($query, $categories) =>
+            $query->whereHas('categories', function ($query) use ($categories) {
+                // Group by product id and count the number of distinct category IDs
+                $query->select('product_id')
+                      ->whereIn('category_id', $categories)
+                      ->groupBy('product_id')
+                      ->havingRaw('COUNT(DISTINCT category_id) = ?', [count($categories)]);
+            })
         );
     }
 }

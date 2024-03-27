@@ -31,7 +31,7 @@ class ProductController extends BaseProductController
                 ->withExists(['salesChannels'])
                 ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
-                ->filter(request(['search']))
+                ->filter(request(['search', 'categories']))
                 ->orderByDesc('updated_at')
                 ->paginate($perPage)
                 ->withQueryString(),
@@ -39,6 +39,7 @@ class ProductController extends BaseProductController
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
+            'selectedCategories' => request('categories'),
             'sidenavActive' => 'products',
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
         ];
