@@ -15,12 +15,11 @@
                 <div class="w-[16.56rem] h-full bg-white rounded-md" style="padding: 20px 20px; gap: 20px">
                     <form id="searchForm" method="GET" action="/products">
                         {{-- categories component --}}
-                        <x-product.categories.product-categories :categories="$categories" />
+                        <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />
                         {{-- eigenschappen/properties component --}}
                         <!-- <x-product.product-properties :categories="$categories"/> -->
                         <input type="hidden" name="search" id="productSearchInput" value="{{$search}}">
                         <input type="submit" value="search test">
-
                     </form>
                 </div>
             </div>

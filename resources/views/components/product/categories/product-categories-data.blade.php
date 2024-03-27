@@ -1,7 +1,7 @@
 @props(['categories', 'checkedCategories' => null])
 
 <?php
-$category_ids = $checkedCategories ? $checkedCategories->pluck('id')->toArray() : [];
+$category_ids = $checkedCategories ? $checkedCategories : [];
 ?>
 
 @foreach ($categories as $category)
