@@ -51,7 +51,7 @@ class Product extends Model
         $primaryPhoto = $this->photos->first(function ($photo) {
             return $photo->pivot->primary == 1;
         });
-        
+
         return $primaryPhoto;
     }
 
@@ -153,28 +153,53 @@ class Product extends Model
     }
 
     public function scopeFilter($query, array $filters)
-    {
-        $query->when(
-            $filters['search'] ?? false,
-            fn ($query, $search) =>
-            $query->where(
-                fn ($query) =>
-                $query
-                    ->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('sku', 'like', '%' . $search . '%')
-            )
-        );
-    
-        $query->when(
-            $filters['categories'] ?? false,
-            fn ($query, $categories) =>
-            $query->whereHas('categories', function ($query) use ($categories) {
-                // Group by product id and count the number of distinct category IDs
-                $query->select('product_id')
-                      ->whereIn('category_id', $categories)
-                      ->groupBy('product_id')
-                      ->havingRaw('COUNT(DISTINCT category_id) = ?', [count($categories)]);
-            })
-        );
-    }
+{
+    $query->when(
+        $filters['search'] ?? false,
+        fn ($query, $search) =>
+        $query->where(
+            fn ($query) =>
+            $query
+                ->where('title', 'like', '%' . $search . '%')
+                ->orWhere('sku', 'like', '%' . $search . '%')
+        )
+    );
+
+    $query->when(
+        $filters['categories'] ?? false,
+        fn ($query, $categories) =>
+        $query->whereHas('categories', function ($query) use ($categories) {
+            // Group by product id and count the number of distinct category IDs
+            $query->select('product_id')
+                ->whereIn('category_id', $categories)
+                ->groupBy('product_id')
+                ->havingRaw('COUNT(DISTINCT category_id) = ?', [count($categories)]);
+        })
+    );
+
+    $query->when(
+        $filters['orderByInput'] ?? false,
+        fn ($query, $orderByInput) =>
+        // Apply different orderings based on the provided input
+        match ($orderByInput) {
+            'NameAscending' => $query->orderBy('title'),
+            'NameDescending' => $query->orderByDesc('title'),
+            'PriceAscending' => $query->orderBy('price'),
+            'PriceDescending' => $query->orderByDesc('price'),
+            'SKUAscending' => $query->orderBy('sku'),
+            'SKUDescending' => $query->orderByDesc('sku'),
+            'UpdatedAtAscending' => $query->orderBy('updated_at'),
+            'UpdatedAtDescending' => $query->orderByDesc('updated_at'),
+            // 'StockAscending' => $query->get()->sortBy(function($query){
+            //     dd($query->stock);
+            //     return $query->stock;
+            // }),
+            // 'StockDescending' => $query->get()->sortByDesc(function($query){
+            //     return $query->stock;
+            // }),
+            default => $query->orderBy('updated_at')
+        }
+    );
+}
+
 }

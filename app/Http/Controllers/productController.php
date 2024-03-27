@@ -26,20 +26,23 @@ class ProductController extends BaseProductController
     {
         $perPage = $request->input('perPage', 20);
 
+        $products = 
+
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
                 ->withExists(['salesChannels'])
                 ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
-                ->filter(request(['search', 'categories']))
-                ->orderByDesc('updated_at')
+                ->filter(request(['search', 'categories', 'orderByInput']))
                 ->paginate($perPage)
-                ->withQueryString(),
+                ->withQueryString()
+                ,
             // 'properties' => Property::all(),
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
             'selectedCategories' => request('categories'),
+            'orderBy' => request('orderByInput'),
             'sidenavActive' => 'products',
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
         ];
