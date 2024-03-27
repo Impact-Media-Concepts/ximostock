@@ -1,4 +1,4 @@
-function addListners(){
+document.addEventListener("DOMContentLoaded", () => {
     const searchBar = document.getElementById('searchBar');
     searchBar.addEventListener('input', () => {
         const productSearchInput = document.getElementById('productSearchInput');
@@ -9,8 +9,5 @@ function addListners(){
             const searchForm = document.getElementById('searchForm');
             searchForm.submit();
         }
-    })
-}
-
-addListners();
-
+    });  
+});
