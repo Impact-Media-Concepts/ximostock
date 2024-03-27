@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $categories = Category::factory(5)->create();
 
-        $products = Product::factory(1000)->create([
+        $products = Product::factory(30)->create([
             'work_space_id' => 1,
         ]);
 
