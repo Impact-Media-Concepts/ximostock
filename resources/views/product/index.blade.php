@@ -18,6 +18,7 @@
                         <x-product.categories.product-categories :categories="$categories" />
                         {{-- eigenschappen/properties component --}}
                         <!-- <x-product.product-properties :categories="$categories"/> -->
+                        <input type="hidden" name="search" id="productSearchInput" value="{{$search}}">
                         <input type="submit" value="search test">
 
                     </form>
@@ -34,5 +35,5 @@
 <script type="text/javascript" src="{{ asset('./assets/js/product/container-bulk-actions.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/single-product-bulk-action.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/discount-values.js') }}"></script>
-
+<script type="text/javascript" src="{{ asset('./assets/js/product/collect-filters.js') }}"></script>
 </html>
