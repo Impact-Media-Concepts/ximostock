@@ -6,27 +6,27 @@
         value="" />
     <div class="flex items-center pt-[0.08rem]">
         <div class="flex relative basic:gap-[7rem] basic:mr-[2rem] hd:mr-[8rem] hd:h-[0.6rem] hd:gap-[17.5rem] uhd:w-full uhd:gap-[25.4rem] uhd:mr-[14.2rem] shd:gap-[40rem] shd:mr-[20rem]">
-            <x-product.product-sub-header-tab :product="$products" text="Naam" />
-            <x-product.product-sub-header-tab :product="$products" text="SKU" />
+            <x-product.product-sub-header-tab orderId="Name" text="Naam" />
+            <x-product.product-sub-header-tab orderId="SKU" text="SKU" />
         </div>
 
         <div class="basic:mr-[2rem] hd:mr-[5.3rem] uhd:mr-[13.7rem] shd:mr-[20.2rem] flex justify-center items-center w-[2.75] cursor-pointer">
-            <x-product.product-sub-header-tab :product="$products" class="mt-[0.12rem]" text="Prijs" />
+            <x-product.product-sub-header-tab class="mt-[0.12rem]" orderId="Price" text="Prijs" />
         </div>
 
         <div class="basic:mr-[2rem] hd:mr-[3.85rem] uhd:mr-[10.2rem] shd:mr-[23rem]">
-            <x-product.product-sub-header-tab :product="$products" text="Voorraad" />
+            <x-product.product-sub-header-tab orderId="Stock" text="Voorraad" />
         </div>
         <div class="basic:mr-[2rem] hd:mr-[3.35rem] uhd:mr-[9.7rem] shd:mr-[22.8rem]">
-            <x-product.product-sub-header-tab :product="$products" text="Verkocht" />
+            <x-product.product-sub-header-tab orderId="Sold" text="Verkocht" />
         </div>
 
         <div class="basic:mr-[2rem] hd:mr-[3.85rem] uhd:mr-[10.8rem] shd:mr-[23.8rem]">
-            <x-product.product-sub-header-tab :product="$products" text="Status" />
+            <x-product.product-sub-header-tab orderId="Status" text="Status" />
         </div>
 
         <div class="uhd:w-full flex uhd:gap-[10.8rem]">
-            <x-product.product-sub-header-tab :product="$products" text="Gewijzigd" />
+            <x-product.product-sub-header-tab orderId="UpdatedAt" text="Gewijzigd" />
         </div>
     </div>
 </div>
