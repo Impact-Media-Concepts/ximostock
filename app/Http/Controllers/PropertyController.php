@@ -59,4 +59,10 @@ class PropertyController extends Controller
         Property::whereIn('id', $attributes['properties'])->delete();
         return redirect('/properties');
     }
+
+    public function create(){
+        return view('property.create',[
+            
+        ]);
+    }
 }
