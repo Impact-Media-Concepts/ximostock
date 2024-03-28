@@ -107,6 +107,8 @@ class ProductController extends BaseProductController
         return redirect('/products');
     }
 
+
+    //TODO make with percentile
     public function bulkDiscount()
     {
         Gate::authorize('bulk-products', [request('product_ids')]);
@@ -294,9 +296,10 @@ class ProductController extends BaseProductController
     {
         $request = request();
         $salesChannels = $request['salesChannels'] != null ? $request['salesChannels'] : [];
-        $categories = $request['categories'] != null ? $request['categories'] : [];
+        $categories = array_keys($request['categories']) != null ? array_keys($request['categories']) : [];
         $properties = array_keys($request['properties']) != null ? array_keys($request['properties']) : [];
         $location_zones = array_keys($request['location_zones']) != null ? array_keys($request['location_zones']) : [];
+        
         
         Gate::authorize('store-product', [
             $salesChannels,

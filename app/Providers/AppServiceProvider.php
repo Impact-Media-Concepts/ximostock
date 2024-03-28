@@ -345,5 +345,13 @@ class AppServiceProvider extends ServiceProvider
                 return Response::deny();
             }
         });
+
+        Gate::define('create-property', function(User $user){
+            if ($user->role === 'admin' || $user->role === 'manager') {
+                return Response::allow();
+            } else {
+                return Response::deny();
+            }
+        });
     }
 }
