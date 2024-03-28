@@ -294,10 +294,11 @@ class ProductController extends BaseProductController
     public function store()
     {
         $request = request();
-        $salesChannels = $request['salesChannels'] != null ? $request['salesChannels'] : [];
-        $categories = array_keys($request['categories']) != null ? array_keys($request['categories']) : [];
-        $properties = array_keys($request['properties']) != null ? array_keys($request['properties']) : [];
-        $location_zones = array_keys($request['location_zones']) != null ? array_keys($request['location_zones']) : [];
+        //authorize
+        $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
+        $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
+        $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
+        $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
         
         
         Gate::authorize('store-product', [
