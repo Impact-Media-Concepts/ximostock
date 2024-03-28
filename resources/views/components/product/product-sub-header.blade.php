@@ -5,7 +5,7 @@
     <input id="bulkActionsCheckboxSubheader" class="h-[0.87rem] flex justify-start items-center w-[0.87rem] ml-[1.55rem] mt-1 cursor-pointer" type="checkbox" name="product_ids[]"
         value="" />
     <div class="flex items-center pt-[0.08rem]">
-        <div class="flex relative basic:gap-[7rem] basic:mr-[2rem] hd:mr-[8rem] hd:h-[0.6rem] hd:gap-[14.5rem] uhd:w-full uhd:gap-[25.4rem] uhd:mr-[14.2rem] shd:gap-[40rem] shd:mr-[20rem]">
+        <div class="flex relative basic:gap-[7rem] basic:mr-[2rem] hd:mr-[8rem] hd:h-[0.6rem] hd:gap-[17.5rem] uhd:w-full uhd:gap-[25.4rem] uhd:mr-[14.2rem] shd:gap-[40rem] shd:mr-[20rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Name" text="Naam" />
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="SKU" text="SKU" />
         </div>
@@ -16,10 +16,6 @@
 
         <div class="basic:mr-[2rem] hd:mr-[3rem] uhd:mr-[10.2rem] shd:mr-[23rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Stock" class="w-6" text="Voorraad" />
-        </div>
-
-        <div class="basic:mr-[2rem] hd:mr-[2rem] uhd:mr-[10.2rem] shd:mr-[23rem]">
-            <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="CommunicateStock" text="Voorraad communiceren" />
         </div>
 
         <div class="basic:mr-[2rem] hd:mr-[2rem] uhd:mr-[9.7rem] shd:mr-[22.8rem]">

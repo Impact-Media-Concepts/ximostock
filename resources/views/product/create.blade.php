@@ -24,6 +24,10 @@
 
                     <x-product.create.create-error-message :errors="$errors" />
 
+                    <x-product.create.create-cancel-button />
+                    <x-product.create.create-previous-button />
+                    <x-product.create.create-next-button />
+
                     <input type="submit" value="Submit"></input>
                 </form>
             </div>
