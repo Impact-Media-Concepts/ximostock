@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class product-title extends Component
+class sku extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class product-title extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.product.create.stepOne.product-title');
+        return view('components.product.create.stepOne.sku');
     }
 }

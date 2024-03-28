@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class product-price extends Component
+class ean extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class product-price extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.product.create.product-price');
+        return view('components.product.create.stepOne.ean');
     }
 }
