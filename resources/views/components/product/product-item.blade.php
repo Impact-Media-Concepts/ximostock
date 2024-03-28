@@ -51,6 +51,12 @@
                     {{ $product->stock }}
                 </p>
             </div>
+            
+            <div class="hd:w-[9rem] uhd:w-[14.4rem] shd:w-[27.2rem] h-[1.06rem] relative top-[0.1rem]  ">
+                <p>
+                    {{ $product->stock }}
+                </p>
+            </div>
 
             <div class="flex hd:w-[7.5rem] uhd:w-[13.35rem] shd:w-[26.7rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
                 <p>
