@@ -107,6 +107,8 @@ class ProductController extends BaseProductController
         return redirect('/products');
     }
 
+
+    //TODO make with percentile
     public function bulkDiscount()
     {
         Gate::authorize('bulk-products', [request('product_ids')]);
