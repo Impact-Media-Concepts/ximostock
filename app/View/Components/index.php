@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class product-long-desc extends Component
+class index extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class product-long-desc extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.product.create.product-long-desc');
+        return view('components.index');
     }
 }
