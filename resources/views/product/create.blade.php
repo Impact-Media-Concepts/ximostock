@@ -10,7 +10,7 @@
             <div>
                 <form method="POST" action="/products" enctype="multipart/form-data">
                     @csrf
-                    <x-product.create.product-title />
+                    <x-product.create.stepOne.index />
 
                     <label for="sku">Artikelnummer:</label>
                     <input type="text" name="sku" id="sku" value="{{ old('sku') }}">
