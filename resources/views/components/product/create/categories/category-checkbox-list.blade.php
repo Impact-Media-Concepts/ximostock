@@ -311,7 +311,9 @@
         if (category.checked) {
             updateParents(category);
         } else {
-            uncheckSubcategories(category);
+            if(category.subcategories.length > 0){
+                uncheckSubcategories(category);
+            }
         }
 
         //open or close the subcategories of this category
@@ -327,6 +329,7 @@
         } else {
             updateCategories();
         }
+
         renderSelectedCategories();
     }
 
