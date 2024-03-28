@@ -34,13 +34,9 @@
         <label for="price">price: </label>
         <input type="number" step="0.01" name="price" id="price" value="{{ old('price') }}">
 
-        <div>
-            <h3>Select Categories:</h3>
-            <x-category.categories-input :categories="$categories" />
-
-            <label for='primaryCategory'>primaryCategory</label>
-            <input type="number" id="primaryCategory" value="{{ old('primaryCategory') }}" name="primaryCategory" />
-        </div>
+        <li>
+            <x-product.create.categories.category-checkbox-list :categories="$categories"  :checkedCategories="$product->categories" />
+        </li>
 
         <ul>
             <li>
