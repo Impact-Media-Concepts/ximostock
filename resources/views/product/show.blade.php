@@ -96,9 +96,11 @@
                     name="communicate_stock" value="1">
                 <label for="communicate_stock">communicate stock</label>
             </li>
+            
             <li>
                 <x-product.show.category-checkbox-list :categories="$categories" :checkedCategories="$product->categories" />
             </li>
+
             <li>
                 SalesChannels:
                 <ul>

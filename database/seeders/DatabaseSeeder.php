@@ -61,11 +61,11 @@ class DatabaseSeeder extends Seeder
         ]);
         $categories = Category::factory(5)->create();
 
-        $products = Product::factory(30)->create([
+        $products = Product::factory(10)->create([
             'work_space_id' => 1,
         ]);
 
-        $primeProducts = Product::factory(500)->create([
+        $primeProducts = Product::factory(50)->create([
             'work_space_id' => 2,
             'sku' => null,
             'ean' => null
@@ -125,22 +125,17 @@ class DatabaseSeeder extends Seeder
 
         //create subcategories
         foreach ($categories as $category) {
-            $subcategories = Category::factory(5)->create([
+            $subcategories = Category::factory(2)->create([
                 'parent_category_id' => $category
             ]);
             foreach($subcategories as $category){
-                $subcategories = Category::factory(5)->create([
+                $subcategories = Category::factory(3)->create([
                     'parent_category_id' => $category
                 ]);
                 foreach($subcategories as $category){
-                    $subcategories = Category::factory(5)->create([
+                    $subcategories = Category::factory(3)->create([
                         'parent_category_id' => $category
                     ]);
-                    foreach($subcategories as $category){
-                        $subcategories = Category::factory(5)->create([
-                            'parent_category_id' => $category
-                        ]);
-                    }
                 }
             }
         }

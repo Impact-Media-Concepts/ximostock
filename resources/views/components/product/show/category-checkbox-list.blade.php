@@ -9,7 +9,6 @@
 <div>
     <h2>selected categories</h2>
     <ul id="selectedCategoriesList">
-
     </ul>
 </div>
 <script>

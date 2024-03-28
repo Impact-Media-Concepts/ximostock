@@ -297,7 +297,6 @@ class ProductController extends BaseProductController
         $categories = $request['categories'] != null ? $request['categories'] : [];
         $properties = array_keys($request['properties']) != null ? array_keys($request['properties']) : [];
         $location_zones = array_keys($request['location_zones']) != null ? array_keys($request['location_zones']) : [];
-        
         Gate::authorize('store-product', [
             $salesChannels,
             $categories,
