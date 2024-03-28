@@ -8,6 +8,7 @@ use App\Models\PhotoProduct;
 use App\Models\ProductProperty;
 use App\Rules\ValidPropertyKeys;
 use App\Models\ProductSalesChannel;
+use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 
 
@@ -28,9 +29,9 @@ abstract class BaseProductController extends Controller
     protected function validateCategoryAttributes()
     {
         return [
-            'categories' => ['nullable', 'array'],
-            'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
-            'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
+            'categories' => ['nullable', 'array', new VallidCategoryKeys],
+            'categories.*' => ['required', 'array'],
+            'categories.*'=> ['required', 'numeric']
         ];
     }
 

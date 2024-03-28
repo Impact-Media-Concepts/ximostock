@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseProductController
 {
-    //TODO
     public function index(Request $request)
     {
         $perPage = $request->input('perPage', 20);
