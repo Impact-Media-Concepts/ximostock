@@ -54,8 +54,9 @@ Route::middleware('auth')->group(function () {
 
     //properties
     Route::get('/properties', [PropertyController::class, 'index'])->middleware('can:index-property');
-    Route::get('/properties/create', [PropertyController::class, 'create']);//middleware
+    Route::get('/properties/create', [PropertyController::class, 'create']);//middleware TODO
     Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('can:show-property,property');
+    Route::post('/properties',[PropertyController::class, 'store']);//middleware TODO
     Route::patch('/properties/{property}', [PropertyController::class, 'update']);
     Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);
 });

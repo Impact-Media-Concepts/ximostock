@@ -65,4 +65,14 @@ class PropertyController extends Controller
             
         ]);
     }
+
+    public function store(){
+        //authorize
+
+        //validate
+
+        //store
+
+        return redirect('/properties');
+    }
 }
