@@ -11,6 +11,7 @@ use App\Models\ProductSalesChannel;
 use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 
+use function PHPSTORM_META\map;
 
 abstract class BaseProductController extends Controller
 {
@@ -62,36 +63,16 @@ abstract class BaseProductController extends Controller
     
     protected function linkCategoriesToProduct($product, $attributes)
     {
-        // Link primary category
-        CategoryProduct::create([
-            'category_id' => $attributes['primaryCategory'],
-            'product_id' => $product->id,
-            'primary' => true
-        ]);
-    
         // Link all other categories and their parents
-        foreach ($attributes['categories'] as $categoryId) {
-            $this->linkCategoryAndParentsToProduct($categoryId, $product->id);
+        foreach ($attributes['categories'] as $categoryid => $primary) {
+            CategoryProduct::create([
+                'category_id' => $categoryid,
+                'product_id' => $product->id,
+                'primary' => $primary
+            ]);
         }
     }
     
-    protected function linkCategoryAndParentsToProduct($categoryId, $productId)
-    {
-        // Link the category itself
-        CategoryProduct::create([
-            'category_id' => $categoryId,
-            'product_id' => $productId,
-            'primary' => false
-        ]);
-    
-        // Fetch the category
-        $category = Category::find($categoryId);
-    
-        // If the category has a parent, recursively link the parent categories
-        if ($category->parent_category_id !== null) {
-            $this->linkCategoryAndParentsToProduct($category->parent_category_id, $productId);
-        }
-    }
 
     protected function uploadAndLinkPhotosToProduct($product, $request)
     {
