@@ -5,24 +5,24 @@
     <input id="bulkActionsCheckboxSubheader" class="h-[0.87rem] flex justify-start items-center w-[0.87rem] ml-[1.55rem] mt-1 cursor-pointer" type="checkbox" name="product_ids[]"
         value="" />
     <div class="flex items-center pt-[0.08rem]">
-        <div class="flex relative basic:gap-[7rem] basic:mr-[2rem] hd:mr-[8rem] hd:h-[0.6rem] hd:gap-[17.5rem] uhd:w-full uhd:gap-[25.4rem] uhd:mr-[14.2rem] shd:gap-[40rem] shd:mr-[20rem]">
+        <div class="flex relative basic:gap-[7rem] basic:mr-[2rem] hd:mr-[8.05rem] hd:h-[0.6rem] hd:gap-[18.5rem] uhd:w-full uhd:gap-[25.4rem] uhd:mr-[14.85rem] shd:gap-[40rem] shd:mr-[20.8rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Name" text="Naam" />
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="SKU" text="SKU" />
         </div>
 
-        <div class="basic:mr-[2rem] hd:mr-[3rem] uhd:mr-[13.7rem] shd:mr-[20.2rem] flex justify-center items-center w-[2.75] cursor-pointer">
+        <div class="basic:mr-[2rem] hd:mr-[7.4rem] uhd:mr-[14.85rem] shd:mr-[21.3rem] flex justify-center items-center w-[2.75] cursor-pointer">
             <x-product.product-sub-header-tab class="mt-[0.12rem]" :orderBy="$orderBy" orderId="Price" text="Prijs" />
         </div>
 
-        <div class="basic:mr-[2rem] hd:mr-[3rem] uhd:mr-[10.2rem] shd:mr-[23rem]">
+        <div class="basic:mr-[2rem] hd:mr-[5.9rem] uhd:mr-[11.4rem] shd:mr-[24.3rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Stock" class="w-6" text="Voorraad" />
         </div>
 
-        <div class="basic:mr-[2rem] hd:mr-[2rem] uhd:mr-[9.7rem] shd:mr-[22.8rem]">
+        <div class="basic:mr-[2rem] hd:mr-[4.4rem] uhd:mr-[10rem] shd:mr-[23.3rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Sold" text="Verkocht" />
         </div>
 
-        <div class="basic:mr-[2rem] hd:mr-[2.5rem] uhd:mr-[10.8rem] shd:mr-[23.8rem]">
+        <div class="basic:mr-[2rem] hd:mr-[4.8rem] uhd:mr-[11.5rem] shd:mr-[24.4rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Status" text="Status" />
         </div>
 

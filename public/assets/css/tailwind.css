@@ -2843,20 +2843,24 @@ video {
 }
 
 @media (min-width: 1920px) {
-  .hd\:mr-\[3\.35rem\] {
-    margin-right: 3.35rem;
+  .hd\:mr-\[4\.4rem\] {
+    margin-right: 4.4rem;
   }
 
-  .hd\:mr-\[3\.85rem\] {
-    margin-right: 3.85rem;
+  .hd\:mr-\[4\.8rem\] {
+    margin-right: 4.8rem;
   }
 
-  .hd\:mr-\[5\.3rem\] {
-    margin-right: 5.3rem;
+  .hd\:mr-\[5\.9rem\] {
+    margin-right: 5.9rem;
   }
 
-  .hd\:mr-\[8rem\] {
-    margin-right: 8rem;
+  .hd\:mr-\[7\.4rem\] {
+    margin-right: 7.4rem;
+  }
+
+  .hd\:mr-\[8\.05rem\] {
+    margin-right: 8.05rem;
   }
 
   .hd\:h-\[0\.6rem\] {
@@ -2895,8 +2899,8 @@ video {
     gap: 0.25rem;
   }
 
-  .hd\:gap-\[17\.5rem\] {
-    gap: 17.5rem;
+  .hd\:gap-\[18\.5rem\] {
+    gap: 18.5rem;
   }
 
   .hd\:gap-\[4\.5rem\] {
@@ -2909,24 +2913,20 @@ video {
     margin-right: 1.5rem;
   }
 
-  .uhd\:mr-\[10\.2rem\] {
-    margin-right: 10.2rem;
+  .uhd\:mr-\[10rem\] {
+    margin-right: 10rem;
   }
 
-  .uhd\:mr-\[10\.8rem\] {
-    margin-right: 10.8rem;
+  .uhd\:mr-\[11\.4rem\] {
+    margin-right: 11.4rem;
   }
 
-  .uhd\:mr-\[13\.7rem\] {
-    margin-right: 13.7rem;
+  .uhd\:mr-\[11\.5rem\] {
+    margin-right: 11.5rem;
   }
 
-  .uhd\:mr-\[14\.2rem\] {
-    margin-right: 14.2rem;
-  }
-
-  .uhd\:mr-\[9\.7rem\] {
-    margin-right: 9.7rem;
+  .uhd\:mr-\[14\.85rem\] {
+    margin-right: 14.85rem;
   }
 
   .uhd\:h-5\/6 {
@@ -2979,24 +2979,24 @@ video {
 }
 
 @media (min-width: 3840px) {
-  .shd\:mr-\[20\.2rem\] {
-    margin-right: 20.2rem;
+  .shd\:mr-\[20\.8rem\] {
+    margin-right: 20.8rem;
   }
 
-  .shd\:mr-\[20rem\] {
-    margin-right: 20rem;
+  .shd\:mr-\[21\.3rem\] {
+    margin-right: 21.3rem;
   }
 
-  .shd\:mr-\[22\.8rem\] {
-    margin-right: 22.8rem;
+  .shd\:mr-\[23\.3rem\] {
+    margin-right: 23.3rem;
   }
 
-  .shd\:mr-\[23\.8rem\] {
-    margin-right: 23.8rem;
+  .shd\:mr-\[24\.3rem\] {
+    margin-right: 24.3rem;
   }
 
-  .shd\:mr-\[23rem\] {
-    margin-right: 23rem;
+  .shd\:mr-\[24\.4rem\] {
+    margin-right: 24.4rem;
   }
 
   .shd\:w-\[22\.1rem\] {
