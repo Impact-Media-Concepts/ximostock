@@ -1,18 +1,18 @@
 <?php
-
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\Product;
-
 use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
+use App\Rules\ValidSalesChannelKeys;
 use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -21,43 +21,41 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseProductController
 {
-    //TODO
     public function index(Request $request)
     {
-        if(!Auth::check()){
-            abort(403);
-        }
         $perPage = $request->input('perPage', 20);
+
+        $products = 
 
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
                 ->withExists(['salesChannels'])
                 ->where('work_space_id', Auth::user()->work_space_id)
                 ->whereNull('parent_product_id')
-                ->filter(request(['search']))
+                ->filter(request(['search', 'categories', 'orderByInput']))
                 ->paginate($perPage)
-                ->withQueryString(),
-            'properties' => Property::all(),
-            'sales_channels' => SalesChannel::all(),
+                ->withQueryString()
+                ,
+            // 'properties' => Property::all(),
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
-            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get()
+            'selectedCategories' => request('categories'),
+            'orderBy' => request('orderByInput'),
+            'sidenavActive' => 'products',
+            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
         ];
         return view('product.index', $results);
     }
 
     public function create()
     {
-        $properties = Property::all();
-
-        foreach ($properties as $prop) {
-            $prop->values = json_decode($prop->values);
-        }
         return view('product.create', [
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
-            'properties' => $properties,
-            'locations' => InventoryLocation::with(['location_zones'])->get(),
-            'salesChannels' => SalesChannel::all()
+            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'locations' => InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'sidenavActive' => 'products',
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get()
         ]);
     }
 
@@ -73,36 +71,34 @@ class ProductController extends BaseProductController
         return view('product.show', [
             'product' => $product,
             'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
-            'salesChannels' => SalesChannel::all(),
-            'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get()
+            'sidenavActive' => 'products',
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get(),
         ]);
     }
 
     public function destroy($id)
     {
+
         // Find the product by its ID
         $product = Product::findOrFail($id);
+
+        Gate::authorize('destroy-product', $product);
 
         // Soft delete the product
         $product->delete();
 
-        // Redirect back to the product index page with a success message
         return redirect('/products');
     }
 
     public function bulkDelete()
     {
-        //request must be between [] else it only sends 1 
-        if(! Gate::allows('bulk-delete-products', [request('product_ids')])){
-            abort(403);
-        }
+        Gate::authorize('bulk-products', [request('product_ids')]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
         ]);
-
-        
 
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();
@@ -110,8 +106,11 @@ class ProductController extends BaseProductController
         return redirect('/products');
     }
 
+
+    //TODO make with percentile
     public function bulkDiscount()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array', new ValidProductKeys],
@@ -129,6 +128,8 @@ class ProductController extends BaseProductController
 
     public function bulkLinkSalesChannel()
     {
+        Gate::authorize('bulk-saleschannel-products');
+
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -151,6 +152,8 @@ class ProductController extends BaseProductController
 
     public function bulkUnlinkSalesChannel()
     {
+        Gate::authorize('bulk-saleschannel-products');
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -168,6 +171,8 @@ class ProductController extends BaseProductController
 
     public function bulkEnableBackorders()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -181,6 +186,8 @@ class ProductController extends BaseProductController
 
     public function bulkDisableBackorders()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -194,6 +201,8 @@ class ProductController extends BaseProductController
 
     public function bulkEnableCommunicateStock()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -207,6 +216,8 @@ class ProductController extends BaseProductController
 
     public function bulkDisableCommunicateStock()
     {
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
         // Validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -221,8 +232,23 @@ class ProductController extends BaseProductController
     public function update(Product $product)
     {
         $request = request();
+
+        //authorize
+        $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
+        $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
+        $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
+        $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
+        Gate::authorize('update-product', [
+            $product,
+            $salesChannels,
+            $categories,
+            $properties,
+            $location_zones
+        ]);
+
+
         //validate
-        $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
+        $saleschannelAttributes = $this->validateSalesChannelAttributesUpdate($request);
         $forOnline = false;
         if(Count($saleschannelAttributes['salesChannels'])  >  0){
             $forOnline = true;
@@ -259,7 +285,7 @@ class ProductController extends BaseProductController
         }      
         $this->updateCategories($product->id, $attributes['categories']);
 
-        $this->updateSalesChannels($product->id, $saleschannelAttributes['salesChannels']);
+        $this->updateSalesChannels($product->id, $saleschannelAttributes);
         
 
         return redirect()->back();
@@ -268,6 +294,21 @@ class ProductController extends BaseProductController
     public function store()
     {
         $request = request();
+        //authorize
+        $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
+        $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
+        $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
+        $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
+        
+        
+        Gate::authorize('store-product', [
+            $salesChannels,
+            $categories,
+            $properties,
+            $location_zones
+        ]);
+        
+
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
@@ -301,6 +342,7 @@ class ProductController extends BaseProductController
     protected function createProduct($attributes): Product
     {
         return Product::create([
+            'work_space_id' => Auth::user()->work_space_id,
             'sku' => $attributes['sku'],
             'ean' => $attributes['ean'],
             'title' => $attributes['title'],
@@ -388,12 +430,31 @@ class ProductController extends BaseProductController
             'location_zones.*' => ['required', 'numeric']
         ];
     }
+    
     protected function validateCategoryUpdate()
     {
         return [
             'categories' => ['nullable', 'array', new VallidCategoryKeys],
             'categories.*' => ['required' , 'numeric']
         ];
+    }
+
+    protected function validateSalesChannelAttributesUpdate($request){
+        $attributes = $request->validate([
+            'salesChannels' => ['array', 'nullable', new ValidSalesChannelKeys],
+            'salesChannels.*' => ['required', 'array'],
+            'salesChannels.*.title' => ['nullable', 'max:32000'],
+            'salesChannels.*.short_description' => ['nullable', 'max:32000'],
+            'salesChannels.*.long_description' => ['nullable', 'max:32000'],
+            'salesChannels.*.price' => ['nullable', 'numeric'],
+            'salesChannels.*.discount' => ['nullable', 'numeric'],
+            'salesChannelIds' => ['array', 'nullable'],
+            'salesChannelIds' => ['nullable', Rule::exists('sales_channels', 'id')]
+        ]);
+        if ($request['salesChannels'] == null) {
+            $attributes['salesChannels'] = [];
+        }
+        return $attributes;
     }
 
     function updateCategories($productId, $categoryData)
@@ -431,29 +492,49 @@ class ProductController extends BaseProductController
             ->delete();
     }
 
-    function updateSalesChannels($productId, $SalesChannelData)
+    function updateSalesChannels($productId, $salesChannelData)
     {
         // Get all existing CategoryProduct entries for the given product
         $existingProductSalesChannels = ProductSalesChannel::where('product_id', $productId)->get();
         
         // Create an array to store the IDs of existing SalesChannels
         $existingSalesChannelIds = $existingProductSalesChannels->pluck('sales_channel_id')->toArray();
-       
+
+        $salesChannelIds = isset($salesChannelData['salesChannelIds']) ? $salesChannelData['salesChannelIds'] : [];
+        
         // Loop through the new SalesChannel data
-        foreach ($SalesChannelData as $salesChannelId) {
+        foreach ($salesChannelIds as $salesChannelId) {
             // Check if the SalesChannel exists in the existing ProductSalesChannel entries
             if (!in_array($salesChannelId, $existingSalesChannelIds)) {
                 // If the SalesChannel does not exist, create a new ProductSalesChannel entry
-
-                ProductSalesChannel::create([
-                    'product_id' => $productId,
-                    'sales_channel_id' => $salesChannelId
-                ]);
+                $attributes = ['product_id' => $productId, 'sales_channel_id' => $salesChannelId];
+                if(isset($salesChannelData['salesChannels'][$salesChannelId]['title'])){
+                    $attributes += ['title' => $salesChannelData['salesChannels'][$salesChannelId]['title']];
+                }
+                if(isset($salesChannelData['salesChannels'][$salesChannelId]['short_description'])){
+                    $attributes += ['short_description' => $salesChannelData['salesChannels'][$salesChannelId]['short_description']];
+                }
+                if(isset($salesChannelData['salesChannels'][$salesChannelId]['long_description'])){
+                    $attributes += ['long_description' => $salesChannelData['salesChannels'][$salesChannelId]['long_description']];
+                }
+                if(isset($salesChannelData['salesChannels'][$salesChannelId]['price'])){
+                    $attributes += ['price' => $salesChannelData['salesChannels'][$salesChannelId]['price']];
+                }
+                ProductSalesChannel::create(
+                    $attributes
+                );           
             } else {
+                $productSalesChannel = ProductSalesChannel::where('sales_channel_id', $salesChannelId)->where('product_id', $productId)->first();
+                $productSalesChannel->update([
+                    'title' => $salesChannelData['salesChannels'][$salesChannelId]['title'],
+                    'short_description' => $salesChannelData['salesChannels'][$salesChannelId]['short_description'],
+                    'long_description' => $salesChannelData['salesChannels'][$salesChannelId]['long_description'],
+                    'price' =>  $salesChannelData['salesChannels'][$salesChannelId]['price']
+                ]);
                 unset($existingSalesChannelIds[array_search($salesChannelId, $existingSalesChannelIds)]);
             }
         }
-
+        
         // Delete ProductSalesChannel entries for SalesChannels not present in the new data
         ProductSalesChannel::where('product_id', $productId)
             ->whereIn('sales_channel_id', $existingSalesChannelIds)

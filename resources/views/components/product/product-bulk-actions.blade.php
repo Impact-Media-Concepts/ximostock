@@ -14,7 +14,7 @@
         <p>
             <span id="selectedCount">0</span> producten van de <span>{{ $perPage }}</span> geselecteerd.
         </p>
-        <p id="bulkActionsCheckboxSubheaderSelectAll" class="text-[#3DABD5] ml-1 cursor-pointer">
+        <p id="selectAll" class="text-[#3DABD5] ml-1 cursor-pointer">
             Selecteer alle <span>{{ $perPage }}</span> producten
         </p>
     </div>

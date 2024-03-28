@@ -51,7 +51,7 @@ class Product extends Model
         $primaryPhoto = $this->photos->first(function ($photo) {
             return $photo->pivot->primary == 1;
         });
-        
+
         return $primaryPhoto;
     }
 
@@ -115,7 +115,6 @@ class Product extends Model
         return $this->hasMany(ProductSalesChannel::class);
     }
 
-
     //calulate the total sales of this product
     public function getSalesAttribute(): int
     {
@@ -165,5 +164,33 @@ class Product extends Model
                     ->orWhere('sku', 'like', '%' . $search . '%')
             )
         );
+
+        $query->when(
+            $filters['categories'] ?? false,
+            fn ($query, $categories) =>
+            $query->whereHas('categories', function ($query) use ($categories) {
+                // Group by product id and count the number of distinct category IDs
+                $query->select('product_id')
+                    ->whereIn('category_id', $categories)
+                    ->groupBy('product_id')
+                    ->havingRaw('COUNT(DISTINCT category_id) = ?', [count($categories)]);
+            })
+        );
+
+        // Apply different orderings based on the provided input
+        if(!isset($filters['orderByInput'])){
+            $filters['orderByInput'] = null;
+        }
+        match ($filters['orderByInput']) {
+            'NameAscending' => $query->orderBy('title'),
+            'NameDescending' => $query->orderByDesc('title'),
+            'PriceAscending' => $query->orderBy('price'),
+            'PriceDescending' => $query->orderByDesc('price'),
+            'SKUAscending' => $query->orderBy('sku'),
+            'SKUDescending' => $query->orderByDesc('sku'),
+            'UpdatedAtAscending' => $query->orderBy('updated_at'),
+            'UpdatedAtDescending' => $query->orderByDesc('updated_at'),
+            default => $query->orderByDesc('updated_at')
+        };
     }
 }

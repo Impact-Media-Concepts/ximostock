@@ -19,6 +19,7 @@ class LocationZoneFactory extends Factory
     public function definition(): array
     {
         return [
+            'work_space_id' => 1,
             'name'=>fake()->word(),
             'inventory_location_id' => InventoryLocation::factory()->create()
         ];

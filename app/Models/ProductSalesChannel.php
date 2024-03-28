@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ProductSalesChannel extends Model
 {
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $table = 'product_sales_channel';
 
