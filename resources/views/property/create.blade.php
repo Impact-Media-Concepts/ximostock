@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>property Options Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -24,7 +25,7 @@
             <option value="text">text</option>
         </select>
         <ul id="optionsList"></ul>
-        <button type="button" id="addOptionButton" style="display: none;">Add Option</button>
+        <button type="button" id="addOptionButton" class="hidden">Add Option</button>
         <button type="submit">Submit</button>
     </form>
     <script>
@@ -71,7 +72,7 @@
 
                 // Remove existing option items
                 optionItems.forEach(item => {
-                    optionsList.removeChild(item);
+                    item.classList.add('hidden');
                 });
 
                 if (selectedType === 'singleselect' || selectedType === 'multiselect') {
@@ -81,15 +82,15 @@
 
                     // Show option items and add option button
                     optionItems.forEach(item => {
-                        item.style.display = 'block';
+                        item.classList.remove('hidden');
                     });
-                    addOptionButton.style.display = 'block';
+                    addOptionButton.classList.remove('hidden');
                 } else {
                     // Hide option items and add option button
                     optionItems.forEach(item => {
-                        item.style.display = 'none';
+                        item.classList.add('hidden');
                     });
-                    addOptionButton.style.display = 'none';
+                    addOptionButton.classList.add('hidden');
                 }
             });
 
