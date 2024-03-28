@@ -1,16 +1,23 @@
-<x-layout._header-dependencies :sidenavActive="$sidenavActive" />
+<!-- <x-layout._header-dependencies :sidenavActive="$sidenavActive" />
 
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
-    <x-header.header/>
-    
+<x-header.header/>
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div class="h-full">
             <x-sidenav.sidenav :sidenavActive="$sidenavActive"/>
         </div>
         <div class="pt-20">
-        <form method="POST" action="/products" enctype="multipart/form-data">
+            
+        </div>
+    </div>
+</body>
+
+</html> -->
+
+<div class="">
+    <form method="POST" action="/products" enctype="multipart/form-data">
         @csrf
-        <x-product.create.step-one.index />
+        <x-product.create.product-title />
 
         <label for="sku">Artikelnummer:</label>
         <input type="text" name="sku" id="sku" value="{{ old('sku') }}">
@@ -28,7 +35,7 @@
         <input type="number" step="0.01" name="price" id="price" value="{{ old('price') }}">
 
         <li>
-            <x-product.show.category-checkbox-list :categories="$categories" />
+            <x-product.create.categories.category-checkbox-list :categories="$categories"  :checkedCategories="$product->categories" />
         </li>
 
         <ul>
@@ -102,9 +109,4 @@
 
         <input type="submit" value="Submit"></input>
     </form>
-        </div>
-    </div>
-</body>
-
-</html>
-<script src="https://cdn.tailwindcss.com"></script>
+</div>
