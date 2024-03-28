@@ -21,36 +21,3 @@ html {
 }
 
 /* Side nav styling */
-
-.side-bar {
-  width: 17.06rem;
-  height: 100%;
-  position: relative;
-  transition: all 500ms ease;
-  top: 0;
-  z-index: 20;
-}
-
-.category-item {
-  width: 100%;
-}
-
-.side-bar.close-sidenav {
-  width: 4.06rem;
-}
-
-.activeItem.close-sidenav {
-  width: 4.06rem;
-}
-
-.hide-text {
-  display: none !important;
-}
-
-.rotate-arrows {
-  transform: rotate(-180deg);
-}
-
-.arrow-transition {
-  transition: transform 0.2s ease-in-out;
-}

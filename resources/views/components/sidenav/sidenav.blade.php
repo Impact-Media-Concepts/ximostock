@@ -1,6 +1,7 @@
 @props(['sidenavActive'])
 
-@php
+
+<?php
     $sidenavButtons = [
         ['text' => 'Dashboard', 'icon' => '../images/dashboard-icon.png', 'url' => '/dashboard', 'id' => '1', 'slug' => 'dashboard'],
         ['text' => 'Producten', 'icon' => '../images/product-icon.png', 'url' => '/products',  'id' => '2', 'slug' => 'products'],
@@ -13,12 +14,25 @@
         ['text' => 'Opslaglocaties', 'icon' => '../images/store-location-icon.png', 'url' => '/store-location', 'id' => '9', 'slug' => 'store-location'],
         ['text' => 'Thema', 'icon' => '../images/thema-icon.png', 'url' => '/theme', 'id' => '10', 'slug' => 'theme'],
         ['text' => 'Leveranciers', 'icon' => '../images/suppliers-icon.png', 'url' => '/suppliers', 'id' => '11', 'slug' => 'suppliers'],
-        ['text' => 'Gebruikers', 'icon' => '../images/users-icon.png', 'url' => '/users', 'id' => '12', 'slug' => 'users'],
+        ['text' => 'Gebruikers', 'icon' => '../images/users-icon.png', 'url' => '/users', 'id' => '12', 'slug' => 'users']
     ];
-@endphp
+
+    session_start();
+    
+    if (!isset($_SESSION['count']))
+    {
+    $_SESSION['count'] = 1;
+    }
+    else
+    {
+    ++$_SESSION['count'];
+    }
+    
+    echo $_SESSION['count'];
+?>
 
 <style>
-    .side-bar {
+    .side-nav {
         width: 17.06rem;
         height: 100%;
         position: relative;
@@ -31,11 +45,7 @@
         width: 100%;
     }
 
-    .side-bar.close-sidenav {
-        width: 4.06rem;
-    }
-
-    .activeItem.close-sidenav {
+    .side-nav.close-sidenav {
         width: 4.06rem;
     }
 
@@ -52,7 +62,7 @@
     }
 </style>
 
-<div class="side-bar w-[17.06rem] h-full bg-white fixed top-0 z-[1000]">
+<div id="sidenav-container" class="side-nav h-full bg-white fixed top-0 z-[1000]">
     <ul class="category-list flex grid items-center">
         @foreach ($sidenavButtons as $button)
             <?php
@@ -68,7 +78,7 @@
         @endforeach
     </ul>
     <div class="w-full pt-8 flex justify-center items-center">  
-        <button class="open-button arrow-transition">
+        <button class="open-button arrow-transition" id="setSessionBtn">
             <img class="select-none w-4.5 h-4.5" src="../images/double-arrow-left.png">
         </button>
     </div>
