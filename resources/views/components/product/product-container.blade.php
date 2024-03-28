@@ -1,5 +1,5 @@
 {{-- receives the props from parent --}}
-@props(['products', 'perPage'])
+@props(['products', 'perPage', 'orderBy'])
 
 <style>
     .bulk-actions-hidden {
@@ -10,7 +10,7 @@
 <div class="w-full h-full">
     {{-- Every component inside this container component--}}
     <x-product.product-header :products="$products"/>
-    <x-product.product-sub-header :products="$products" />
+    <x-product.product-sub-header :orderBy="$orderBy" :products="$products" />
 
     <!-- form for bulk actions -->
     <form class="form-height uhd:h-5/6" id="bulkActionsForm" action="{{ route('products.bulkDelete') }}" method="POST">
