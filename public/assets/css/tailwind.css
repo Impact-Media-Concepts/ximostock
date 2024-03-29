@@ -636,6 +636,10 @@ video {
   bottom: 0.1rem;
 }
 
+.bottom-\[0\.4rem\] {
+  bottom: 0.4rem;
+}
+
 .bottom-\[1\.1rem\] {
   bottom: 1.1rem;
 }
@@ -1536,6 +1540,10 @@ video {
   width: 9.31rem;
 }
 
+.w-\[9\.6rem\] {
+  width: 9.6rem;
+}
+
 .w-\[9rem\] {
   width: 9rem;
 }
@@ -1699,6 +1707,10 @@ video {
 
 .gap-\[1\.9rem\] {
   gap: 1.9rem;
+}
+
+.gap-\[10rem\] {
+  gap: 10rem;
 }
 
 .space-x-8 > :not([hidden]) ~ :not([hidden]) {

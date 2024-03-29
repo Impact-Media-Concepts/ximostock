@@ -87,7 +87,7 @@
                         $product->title
                     </p>
                     <div class="pr-[1rem]">
-                        <button class="w-[6.06rem] h-[2.12rem] flex justify-center items-center rounded-md hover:bg-gray-100" style="border: 1px solid #717172;">
+                        <button type="button" class="w-[6.06rem] h-[2.12rem] flex justify-center items-center rounded-md hover:bg-gray-100" style="border: 1px solid #717172;">
                             <p class="text-[14px] text-[#717171]">
                                 Overslaan
                             </p>
@@ -95,10 +95,15 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-end">
-                <button type="button" class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
+
+            <div class="flex items-center gap-[10rem] relative bottom-[0.4rem]">
+                <button type="button" class="flex justify-center gap-2 items-center discountCancel w-[9.6rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
+                    <img class="select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
+                    <p class="flex text-[#717171]">Korting annuleren</p>
+                </button>
+                <button type="button" class="flex justify-center items-center w-[9.6rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
                     <img src="../images/save-icon.png">
-                    <p class="flex text-[#F8F8F8]">Save</p>
+                    <p class="flex text-[#F8F8F8]">Toch toepassen</p>
                 </button>
             </div>
         </div>
