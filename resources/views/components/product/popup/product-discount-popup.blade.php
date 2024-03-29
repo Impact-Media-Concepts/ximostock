@@ -1,40 +1,3 @@
-<style>
-
-    .discount-input::placeholder {
-    text-align: center; 
-    }
-
-    /* or, for legacy browsers */
-
-    .discount-input::-webkit-input-placeholder {
-    text-align: center;
-    }
-
-    .discount-input:-moz-placeholder { /* Firefox 18- */
-    text-align: center;  
-    }
-
-    .discount-input::-moz-placeholder {  /* Firefox 19+ */
-    text-align: center;  
-    }
-
-    .discount-input:-ms-input-placeholder {  
-    text-align: center; 
-    }
-    
-    /* Chrome, Safari, Edge, Opera */
-    .discount-input::-webkit-outer-spin-button,
-    .discount-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    }
-
-    /* Firefox */
-    .discount-input[type=number] {
-    -moz-appearance: textfield;
-    }
-</style>
-
 <div
     class="discount-popup w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 999;"
 >
@@ -71,11 +34,9 @@
         </div>
        
         <div class="relative bottom-8">
-            <div class="w-[40.87rem] h-[15.81rem] mt-4" style="border: 1px solid #f0f0f0; border-radius 10px;">
+            <div class="w-[40.87rem] h-[15.81rem] mt-[2rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
                 <div class="w-[40.87rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white"> 
-                    <p>
-                        Korting
-                    </p>
+                    <p>Korting</p>
                 </div>
                 <div x-data="{ showDecimals: false }" class="pt-[1.5rem] pl-[1.5rem]">
                     <div class="flex-col justify-center items-center">
@@ -89,26 +50,22 @@
                             </div>
                         </div>
                     </div>
-                    <div x-show="showDecimals" class="flex justify-start items-center pt-[0.5rem]">
+                    <div x-show="showDecimals" class="flex justify-start items-center pt-[0.5rem]" style="">
                         <input class="discount-input text-center w-[18.68rem] h-[2.5rem] font-[16px]rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountDecimals" placeholder="Decimalen">
                         <label for="discountDecimals"></label>
                     </div>
                 </div>
 
-                <div class="discount-buttons flex items-center gap-[0.7rem] absolute right-[0.3rem]">
-                        <button type="button" class="discount-popup-close flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
-                            <img class="select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
-                            <p class="discount-popup-close flex text-[#717171]">
-                                Annuleren
-                            </p>
-                        </button>
-                        <button type="button" class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
-                            <img src="../images/save-icon.png">
-                            <p class="flex text-[#F8F8F8]">
-                                Save
-                            </p>
-                        </button>
-                    </div>
+                <div class="discount-buttons flex items-center gap-[0.7rem] absolute bottom-[1.1rem] right-[0.3rem]">
+                    <button type="button" class="discount-popup-close flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
+                        <img class="select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
+                        <p class="discount-popup-close flex text-[#717171]">Annuleren</p>
+                    </button>
+                    <button type="button" class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
+                        <img src="../images/save-icon.png">
+                        <p class="flex text-[#F8F8F8]">Save</p>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
