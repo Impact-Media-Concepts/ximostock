@@ -188,8 +188,14 @@ class Product extends Model
             'PriceDescending' => $query->orderByDesc('price'),
             'SKUAscending' => $query->orderBy('sku'),
             'SKUDescending' => $query->orderByDesc('sku'),
+            'StockDescending' => $query->orderByDesc('orderByStock'),
+            'StockAscending' => $query->orderBy('orderByStock'),
             'UpdatedAtAscending' => $query->orderBy('updated_at'),
             'UpdatedAtDescending' => $query->orderByDesc('updated_at'),
+            'SoldDescending' => $query->orderByDesc('orderBySold'),
+            'SoldAscending' => $query->orderBy('orderBySold'),
+            'StatusDescending' => $query->orderByDesc('orderByOnline'),
+            'StatusAscending' => $query->orderBy('orderByOnline'),
             default => $query->orderByDesc('updated_at')
         };
     }

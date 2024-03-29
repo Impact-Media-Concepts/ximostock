@@ -24,6 +24,9 @@ return new class extends Migration
             $table->decimal('discount')->nullable();
             $table->boolean('backorders')->default(false)->nullable();
             $table->boolean('communicate_stock')->default(true)->nullable();
+            $table->integer('orderByStock')->default(0);
+            $table->integer('orderBySold')->default(0);
+            $table->boolean('orderByOnline')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
