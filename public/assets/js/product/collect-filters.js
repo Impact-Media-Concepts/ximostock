@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
     orderByEvent("UpdatedAt");
     orderByEvent("Stock");
     orderByEvent("Price");
+    orderByEvent("Sold");
+    orderByEvent("Status");
     
 });
 
