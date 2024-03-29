@@ -57,3 +57,22 @@ input::-ms-input-placeholder {
 .rotate-arrow {
     transform: rotate(180deg);
 }
+
+/* popUp */
+.discount-input::placeholder, .discount-input::-webkit-input-placeholder,
+.discount-input:-moz-placeholder, .discount-input::-moz-placeholder,
+.discount-input:-ms-input-placeholder  {
+text-align: center; 
+}
+
+/* Chrome, Safari, Edge, Opera */
+.discount-input::-webkit-outer-spin-button,
+.discount-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.discount-input[type=number] {
+    -moz-appearance: textfield;
+}

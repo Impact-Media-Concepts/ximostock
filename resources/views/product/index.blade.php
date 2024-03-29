@@ -16,10 +16,11 @@
                         {{-- categories component --}}
                         <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />
                         {{-- eigenschappen/properties component --}}
-                        <!-- <x-product.product-properties :categories="$categories"/> -->
                         <input type="hidden" name="search" id="productSearchInput" value="{{$search}}">
                         <input type="hidden" name="orderByInput" id="orderByInput" value="{{$orderBy}}">
                         <input type="submit" value="search test">
+
+                        <x-product.properties.properties />
                     </form>
                 </div>
             </div>
