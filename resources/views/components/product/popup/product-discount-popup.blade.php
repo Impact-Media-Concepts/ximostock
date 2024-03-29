@@ -58,7 +58,7 @@
 
                 <div class="discount-buttons flex items-center gap-[0.7rem] absolute bottom-[1.1rem] right-[0.3rem]">
                     <button type="button" class="discount-popup-close flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
-                        <img class="select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
+                        <img class="discount-popup-close select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
                         <p class="discount-popup-close flex text-[#717171]">Annuleren</p>
                     </button>
                     <button type="button" class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
@@ -66,6 +66,40 @@
                         <p class="flex text-[#F8F8F8]">Save</p>
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <div class="w-[32.18rem] h-[36.56rem] bg-white flex grid justify-center rounded-md">
+            <div class="flex justify-end relative top-[1rem]">
+                <img class="select-none w-[1.1rem] h-[1.1rem] flex" src="../images/x-icon.png" alt="x icon">
+            </div>
+            <div class="flex justify-center">
+                <img class="select-none w-[8.12rem] h-[7rem]" src="../images/archive-warning-icon.png"> 
+            </div>
+            <div class="w-[28rem] h-[5.93rem] flex">
+                <p class="text-[16px] text-[#717171]">
+                    Waarschuwing, er zijn (xxx) producten waarbij het afronden bij de decimalen ervoor zorgt dat het product duurder word. Wilt u door gaan met deze actie of producten toch overslaan voor deze actie?
+                </p>
+            </div>
+            <div class="w-[29.12rem] h-[14.75rem] flex grid rounded-md overflow-y-auto overflow-x-hidden max-h-[14.75rem]" style="border: 1px solid #F0F0F0;">
+                <div class="w-[27.75rem] h-[3.68rem] flex justify-between items-center border border-gray-200">
+                    <p class="flex-grow flex justify-start pl-[1.2rem]">
+                        $product->title
+                    </p>
+                    <div class="pr-[1rem]">
+                        <button class="w-[6.06rem] h-[2.12rem] flex justify-center items-center rounded-md hover:bg-gray-100" style="border: 1px solid #717172;">
+                            <p class="text-[14px] text-[#717171]">
+                                Overslaan
+                            </p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
+                    <img src="../images/save-icon.png">
+                    <p class="flex text-[#F8F8F8]">Save</p>
+                </button>
             </div>
         </div>
     </div>
