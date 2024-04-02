@@ -42,26 +42,27 @@
                     <div class="flex-col justify-center items-center">
                         <div class="flex items-center">
                             <div class="mr-[1rem]">
-                                <input class="text-center discount-input w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountPercentage" placeholder="Kortingspercentage">
+                                <input name="discount" class="text-center discount-input w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountPercentage" placeholder="Kortingspercentage">
                             </div>
                             <div class="flex gap-[0.5rem]">
-                                <input type="checkbox" x-on:click="showDecimals = !showDecimals">
+                                <input type="checkbox" id="roundDiscount" x-on:click="showDecimals = !showDecimals">
+                                <input type="hidden" name="round" value="0" id="trueRoundDiscount">
                                 <label class="text-[14px] font-bold" for="discountPercentage">Afronden op decimalen?</label>
                             </div>
                         </div>
                     </div>
                     <div x-show="showDecimals" class="flex justify-start items-center pt-[0.5rem]" style="">
-                        <input class="discount-input text-center w-[18.68rem] h-[2.5rem] font-[16px]rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountDecimals" placeholder="Decimalen">
+                        <input name="cents" class="discount-input text-center w-[18.68rem] h-[2.5rem] font-[16px]rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountDecimals" placeholder="Decimalen">
                         <label for="discountDecimals"></label>
                     </div>
                 </div>
-
+                
                 <div class="discount-buttons flex items-center gap-[0.7rem] absolute bottom-[1.1rem] right-[0.3rem]">
                     <button type="button" class="discount-popup-close flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
                         <img class="discount-popup-close select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
                         <p class="discount-popup-close flex text-[#717171]">Annuleren</p>
                     </button>
-                    <button type="button" class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
+                    <button class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
                         <img src="../images/save-icon.png">
                         <p class="flex text-[#F8F8F8]">Save</p>
                     </button>

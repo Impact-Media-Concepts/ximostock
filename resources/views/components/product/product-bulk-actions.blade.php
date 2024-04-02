@@ -2,10 +2,10 @@
 
 @php
     $buttons = [
-        ['text' => 'Korting', 'width' => '5.688rem'],
-        ['text' => 'Verkoopkanalen', 'width' => '9.31rem'],
-        ['text' => 'Voorraad activeren', 'width' => '10.5rem'],
-        ['text' => 'Archiveren', 'width' => '7.12rem']
+        ['text' => 'Korting', 'width' => '5.688rem', 'actionId' => 'Discount'],
+        ['text' => 'Verkoopkanalen', 'width' => '9.31rem', 'actionId' => 'SalesChannels'],
+        ['text' => 'Voorraad activeren', 'width' => '10.5rem', 'actionId' => 'ManageStock'],
+        ['text' => 'Archiveren', 'width' => '7.12rem', 'actionId' => 'Archive']
     ];
 @endphp
 
@@ -21,7 +21,7 @@
     
     <div class="flex justify-center items-center pt-1 gap-[0.57rem]">
         @foreach ($buttons as $button)
-            <x-product.buttons.product-bulk-button class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}  {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }}">
+            <x-product.buttons.product-bulk-button bulkActionId="bulkAction{{$button['actionId']}}" class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}  {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }}">
                 {{ $button['text'] }}
             </x-product.buttons.product-bulk-button>
         @endforeach
