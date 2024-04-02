@@ -1,5 +1,5 @@
 {{-- receives the props from parent --}}
-@props(['products', 'perPage', 'orderBy'])
+@props(['products', 'perPage', 'orderBy', 'discountError'])
 
 <style>
     .bulk-actions-hidden {
@@ -15,7 +15,7 @@
     <!-- form for bulk actions -->
     <form class="form-height uhd:h-5/6" id="bulkActionsForm" action="" method="POST">
         @csrf
-        <x-product.product-bulk-actions :products="$products" :perPage="$perPage"/>
+        <x-product.product-bulk-actions :discountError="$discountError" :products="$products" :perPage="$perPage"/>
         <x-product.product :products="$products" />
     </form>
     <x-product.product-footer-pagination :perPage="$perPage" :products="$products" />

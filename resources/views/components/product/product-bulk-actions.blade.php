@@ -1,4 +1,4 @@
-@props(['products', 'perPage'])
+@props(['products', 'perPage', 'discountError'])
 
 @php
     $buttons = [
@@ -27,6 +27,6 @@
         @endforeach
     </div>
     
-    <x-product.popup.product-discount-popup />
+    <x-product.popup.product-discount-popup :discountError="$discountError" />
     <x-product.popup.product-archive-popup />
 </div>
