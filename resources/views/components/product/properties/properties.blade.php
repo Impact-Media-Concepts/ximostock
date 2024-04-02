@@ -11,18 +11,21 @@
         .hidden {
             display: none;
         }
-
         
         .property-search-input {
             padding-left: 1.2rem;
+            padding-right: 1rem;
         }
 
-        .multi-select-input {
+        .multi-select-input,
+        .text-input {
             padding-left: 0.8rem;
         }
 
         .property-search-input::placeholder,
-        .multi-select-input::placeholder {
+        .multi-select-input::placeholder,
+        .bool-input::placeholder,
+        .single-input::placeholder {
             color: #DBDBDB;
         }
 
@@ -40,12 +43,15 @@
   </head>
 
   <body>
-    <div class="flex grid justify-center items-center w-56">
-      <input class="property-search-input w-[13.93rem] h-[2.5rem] rounded-md" style="border: 1px solid #D3D3D3;" type="text" id="propertySearchInput" placeholder="Zoeken" />
-      <ul id="propertyList"></ul>
+    <div class="flex grid justify-center h-[28.37rem]">
+        <div>
+            <input class="property-search-input w-[14.06rem] h-[2.5rem] rounded-md" style="border: 1px solid #D3D3D3;" type="text" id="propertySearchInput" placeholder="Zoeken" />
+            <ul id="propertyList"></ul>
+        </div>
     </div>
+  </body>
 
-    <script>
+  <script>
       let propertiesData = [
         {
           id: 1,
@@ -89,21 +95,26 @@
       function renderProperties() {
         const propertyList = document.getElementById("propertyList");
         propertyList.innerHTML = ""; // Clear existing list
-
+        propertyList.style.maxHeight = '330px';
+        propertyList.style.overflowY = 'scroll';
         propertiesData.forEach((property) => {
           const li = document.createElement("li");
           li.id = `li_${property.id}`;
+          li.classList.add('ml-[1.1rem]', 'pt-[0.35rem]', 'pb-[0.35rem]');
           //build components
           const checkbox = document.createElement("input");
           checkbox.type = "checkbox";
           checkbox.addEventListener("click", () =>
-            handleCheckboxClick(property)
+            propertyHandleCheckboxClick(property)
           );
-          const text = document.createTextNode(property.name);
 
+          const textSpan = document.createElement("span");
+          const text = document.createTextNode(property.name);
+          textSpan.classList.add("ml-[0.59rem]", "font-[600]", "relative", "bottom-[0.125rem]")
           //add components to list item
+          textSpan.appendChild(text);
           li.appendChild(checkbox);
-          li.appendChild(text);
+          li.appendChild(textSpan);
           renderProperty(property, li);
 
           //add listitem to list of properties
@@ -126,9 +137,7 @@
             rendersingleselect(property, div);
             break;
           case "text":
-            const textbox = document.createElement("input");
-            textbox.type = "text";
-            div.appendChild(textbox);
+            renderText(div);
             break;
           case "number":
             renderNumber(div);
@@ -167,7 +176,7 @@
         input.classList.add(
           "flex",
           "z-20",
-          "w-[12.37rem]",
+          "w-[11.2rem]",
           "h-[2.12rem]",
           "items-center",
           "justify-start",
@@ -197,9 +206,9 @@
           "hidden",
           "overflow-y-auto",
           "overflow-x-hidden",
+          "w-[11rem]",
           "max-h-[14rem]",
-          "mt-[2rem]",
-
+          "mt-[2rem]"
         );
 
         input.addEventListener("focus", (event) => focusmultiSelect(options));
@@ -212,7 +221,7 @@
             "flex",
             "items-center",
             "block",
-            "w-[11.37rem]",
+            "w-[11rem]",
             "px-4",
             "py-2.5",
             "text-sm",
@@ -220,6 +229,7 @@
             "hover:bg-gray-200",
             "focus:outline-none",
             "font-[300]",
+            "hover:cursor-pointer"
           );
 
           const span = document.createElement("span");
@@ -227,7 +237,8 @@
             "flex",
             "items-center",
             "justify-center",
-            "text-black"
+            "text-black",
+            "hover:cursor-pointer"
           );
 
           options.classList.add("absolute");
@@ -235,7 +246,7 @@
           li.id = `property_${property.id}_${option}`;
           li.appendChild(span);
           li.addEventListener("click", (event) =>
-            selectControl(option, input, trueInput)
+            propertySelectControl(option, input, trueInput)
           );
           options.appendChild(li);
         });
@@ -251,13 +262,12 @@
         input.type = "text";
         input.classList.add(
           "z-20",
-          "w-[12.37rem]",
+          "w-[11.2rem]",
           "h-[2.12rem]",
           "pl-3",
           "flex",
           "items-center",
           "justify-start",
-          "z-20",
           "text-sm",
           "font-light",
           "text-gray-700",
@@ -265,11 +275,12 @@
           "rounded-md",
           "focus:ring-[#717171]",
           "top-[0.02rem]",
-          "mb-1"
+          "mb-1",
+          "bool-input"
         );
         input.style.border = "1px solid #D3D3D3";
         input.id = `searchProp_${property.id}`;
-        input.placeholder = "zoek...";
+        input.placeholder = "Zoeken";
         input.addEventListener("input", (event) =>
           searchProperty(input.value, property, trueInput)
         );
@@ -281,7 +292,7 @@
         const options = document.createElement("ul");
         options.classList.add(
           "hidden",
-          "w-[12.37rem]",
+          "w-[11rem]",
           "flex",
           "gap-1",
           "grid"
@@ -296,7 +307,7 @@
           "flex",
           "items-center",
           "block",
-          "w-[12.37rem]",
+          "w-[11.2rem]",
           "h-[2.12rem]",
           "px-4",
           "py-2.5",
@@ -305,14 +316,15 @@
           "hover:bg-gray-200",
           "focus:outline-none",
           "font-[300]",
-          "rounded-md"
+          "rounded-md",
+          "hover:cursor-pointer"
         );
         optionTrue.style.border = "1px solid #D3D3D3";
         optionFalse.classList.add(
           "flex",
           "items-center",
           "block",
-          "w-[12.37rem]",
+          "w-[11.2rem]",
           "h-[2.12rem]",
           "px-4",
           "py-2.5",
@@ -321,7 +333,8 @@
           "hover:bg-gray-200",
           "focus:outline-none",
           "font-[300]",
-          "rounded-md"
+          "rounded-md",
+          "hover:cursor-pointer"
         );
         optionFalse.style.border = "1px solid #D3D3D3";
         const spanTrue = document.createElement("span");
@@ -357,6 +370,7 @@
         div.appendChild(trueInput);
         div.appendChild(options);
       }
+
       function focusmultiSelect(options) {
         options.classList.remove("hidden");
         options.querySelectorAll("li").forEach((option) => {
@@ -381,35 +395,26 @@
 
         input.type = "text";
         input.classList.add(
-          "z-20",
-          "w-[14.25rem]",
-          "h-[2.78rem]",
-          "pl-3",
-          "flex",
-          "items-center",
-          "justify-start",
-          "z-20",
-          "w-[14rem]",
-          "h-[2.78rem]",
-          "text-sm",
-          "font-light",
-          "text-gray-700",
-          "bottom-[0.05rem]",
-          "border-1",
-          "border-white",
-          "rounded-md",
-          "shadow-sm",
-          "focus:outline-none",
-          "focus:ring-2",
-          "focus:ring-indigo-500",
-          "focus:ring-offset-2",
-          "focus:ring-offset-gray-100",
-          "relative",
-          "top-[0.02rem]"
+            "z-20",
+            "w-[11.2rem]",
+            "h-[2.12rem]",
+            "pl-3",
+            "flex",
+            "items-center",
+            "justify-start",
+            "text-sm",
+            "font-light",
+            "text-gray-700",
+            "bottom-[0.05rem]",
+            "rounded-md",
+            "focus:ring-[#717171]",
+            "top-[0.02rem]",
+            "mb-1",
+            "single-input"
         );
-        
+        input.style.border = "1px solid #D3D3D3";
         input.id = `searchProp_${property.id}`;
-        input.placeholder = "zoek...";
+        input.placeholder = "Zoeken";
         input.addEventListener("input", (event) =>
           searchProperty(input.value, property, trueInput)
         );
@@ -423,7 +428,8 @@
           "hidden",
           "overflow-y-auto",
           "overflow-x-hidden",
-          "max-h-[14rem]"
+          "max-h-[14rem]",
+          "w-[11.2rem]"
         );
 
         input.addEventListener("focus", (event) => focusSingleSelect(options));
@@ -436,14 +442,17 @@
             "flex",
             "items-center",
             "block",
-            "w-[14rem]",
+            "w-[11.2rem]",
+            "h-[2.12rem]",
             "px-4",
             "py-2.5",
             "text-sm",
             "text-white",
             "hover:bg-gray-200",
             "focus:outline-none",
-            "font-[300]"
+            "font-[300]",
+            "rounded-md",
+            "hover:cursor-pointer"
           );
           const span = document.createElement("span");
           span.classList.add(
@@ -455,14 +464,30 @@
           span.textContent = option;
           li.id = `property_${property.id}_${option}`;
           li.appendChild(span);
-          li.addEventListener("click", (event) =>
-            selectControl(option, input, trueInput)
-          );
+        //   li.addEventListener("click", (event) =>
+        //     propertySelectControl(option, input, trueInput)
+        //   );
           options.appendChild(li);
         });
         div.appendChild(input);
         div.appendChild(trueInput);
         div.appendChild(options);
+      }
+
+      function renderText(div) {
+        const textSpan = document.createElement("span");
+        const text = document.createElement("input");
+       
+        text.type = "text";
+        text.classList.add("w-[11.2rem]", "rounded-md","h-[2.12rem]", "text-input");
+
+        text.style.border = "1px solid #D3D3D3";
+        textSpan.appendChild(text);
+        div.appendChild(textSpan);
+      }
+
+      function renderTextBox() {
+        // TODO
       }
 
       function focusSingleSelect(options) {
@@ -488,7 +513,7 @@
         }, 200); // Adjust delay time as needed
       }
 
-      function selectControl(option, input, trueInput) {
+      function propertySelectControl(option, input, trueInput) {
         // Check if the surrounding div exists, if not, create it
         let selectedOptionsDiv = document.getElementById("selectedOptionsDiv");
         if (!selectedOptionsDiv) {
@@ -593,7 +618,7 @@
         trueInput.value = null;
       }
 
-      function handleCheckboxClick(property) {
+      function propertyHandleCheckboxClick(property) {
         property.checked = !property.checked;
         const div = document.getElementById(`div_${property.id}`);
         if (property.checked) {
@@ -625,7 +650,7 @@
       propertySearchInput.addEventListener("input", () => {
         const searchText = propertySearchInput.value.trim();
 
-        // Render categories if search input is empty
+        // Render properties if search input is empty
         if (!searchText) {
           renderProperties(); //vervang met show all
         } else {
@@ -633,5 +658,4 @@
         }
       });
     </script>
-  </body>
 </html>
