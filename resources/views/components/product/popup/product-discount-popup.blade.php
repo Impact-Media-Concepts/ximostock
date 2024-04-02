@@ -35,7 +35,7 @@
        
         <div class="relative bottom-8">
             <div class="w-[40.87rem] h-[15.81rem] mt-[2rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
-                <div class="w-[40.87rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white"> 
+                <div class="w-[40.87rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white">
                     <p>Korting</p>
                 </div>
                 <div x-data="{ showDecimals: false }" class="pt-[1.5rem] pl-[1.5rem]">
