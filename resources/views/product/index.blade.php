@@ -9,7 +9,9 @@
         </div>
 
         <div class="flex w-full h-full pr-10 py-[1.95rem] gap-8">
-            <div class="flex justify-start items-start w-full h-full"> <x-product.product-container :orderBy="$orderBy" :perPage="$perPage" :products="$products" /></div>
+            <div class="flex justify-start items-start w-full h-full"> 
+                <x-product.product-container :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
+            </div>
             <div class="flex justify-center items-start">
                 <div class="w-[16.56rem] h-full bg-white rounded-md" style="padding: 20px 20px; gap: 20px">
                     <form id="searchForm" method="GET" action="/products">
@@ -36,4 +38,6 @@
 <script type="text/javascript" src="{{ asset('./assets/js/product/single-product-bulk-action.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/discount-values.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/collect-filters.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/manage-bulk-action-form.js') }}"></script>
+
 </html>

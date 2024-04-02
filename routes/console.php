@@ -21,14 +21,14 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-//calculate all stock, status, and sales for the sorting purposes
+//calculate all stock, status, and sales for sorting purposes
 Schedule::call(function(){
     $products = Product::all();
     foreach($products as $product){
         $product->update([
             'orderByStock' => $product->stock,
             'orderBySold' => $product->sales,
-            'orderByOnline' => Count($product->salesChannels)
+            'orderByOnline' => Count($product->salesChannels) > 0
         ]);
     }
 })->daily();

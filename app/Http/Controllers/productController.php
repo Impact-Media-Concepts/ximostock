@@ -18,14 +18,13 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\Constraint\Count;
 
 class ProductController extends BaseProductController
 {
     public function index(Request $request)
     {
         $perPage = $request->input('perPage', 20);
-
-        $products = 
 
         $results = [
             'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
@@ -36,14 +35,14 @@ class ProductController extends BaseProductController
                 ->paginate($perPage)
                 ->withQueryString()
                 ,
-            // 'properties' => Property::all(),
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
             'selectedCategories' => request('categories'),
             'orderBy' => request('orderByInput'),
             'sidenavActive' => 'products',
-            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
+            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'discountErrors' => $request->session()->get('discountErrors')
         ];
         return view('product.index', $results);
     }
@@ -103,27 +102,63 @@ class ProductController extends BaseProductController
         // Delete selected products
         Product::whereIn('id', $validatedData['product_ids'])->delete();
 
-        return redirect('/products');
+        return redirect()->back();
     }
 
 
-    //TODO make with percentile
     public function bulkDiscount()
     {
         Gate::authorize('bulk-products', [request('product_ids')]);
         //validate request
         $validatedData = request()->validate([
-            'product_ids' => ['required', 'array', new ValidProductKeys],
-            'product_ids.*' => ['required', 'array'],
-            'product_ids.*.discount' => ['required', 'numeric']
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
+            'discount' => ['required', 'numeric' , 'between:0,100', 'min:0'], //0% koritng= geen koritng meer
+            'cents' => ['nullable', 'numeric', 'digits_between:0,2', 'Integer', 'min:0'],
+            'round' => ['required', 'boolean']
         ]);
+
         // Apply the discount to each product
-        foreach ($validatedData['product_ids'] as $productId => $discount) {
-            $product = Product::findOrFail($productId);
-            $product->discount = $discount['discount'];
-            $product->save();
+        if($validatedData['discount'] != 0){
+            if($validatedData['round']){
+                $products = [];
+                $failedProducts = [];
+                foreach ($validatedData['product_ids'] as $productId) {
+                    $product = Product::findOrFail($productId);
+                    $discount = $product->price - $product->price / 100 * $validatedData['discount']; //bereken de korting op bassis van het gegeven percentage
+                    $discount = round($discount,0);
+                    $discount += $validatedData['cents']/100;
+                    $product->discount = $discount;
+                    //fitler alle producten die duurder zijn geworden door afronden.
+                    if($product->price <= $discount){
+                        array_push($failedProducts, $product);
+                    }else{
+                        array_push($products, $product);
+                    }
+                }
+                foreach($products as $product){
+                    $product->save();
+                }
+                //als er errors zijn redirect met errors
+                if(Count($failedProducts) > 0){
+                    redirect('/products')->with('discountErrors',$failedProducts);
+                }
+            }else{
+                foreach ($validatedData['product_ids'] as $productId) {
+                    $product = Product::findOrFail($productId);
+                    $discount = $product->price - $product->price / 100 * $validatedData['discount']; //bereken de korting op bassis van het gegeven percentage
+                    $product->discount = $discount;
+                    $product->save();
+                }
+            }
+        }else{
+            foreach ($validatedData['product_ids'] as $productId) {
+                $product = Product::findOrFail($productId);
+                $product->discount = null;
+                $product->save();
+            }
         }
-        return redirect('/products');
+        return redirect()->back();
     }
 
     public function bulkLinkSalesChannel()
