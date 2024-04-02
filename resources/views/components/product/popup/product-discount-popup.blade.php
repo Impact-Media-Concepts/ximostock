@@ -42,7 +42,7 @@
                     <div class="flex-col justify-center items-center">
                         <div class="flex items-center">
                             <div class="mr-[1rem]">
-                                <input class="text-center discount-input w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountPercentage" placeholder="Kortingspercentage">
+                                <input name="discount" class="text-center discount-input w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountPercentage" placeholder="Kortingspercentage">
                             </div>
                             <div class="flex gap-[0.5rem]">
                                 <input type="checkbox" x-on:click="showDecimals = !showDecimals">
@@ -55,7 +55,7 @@
                         <label for="discountDecimals"></label>
                     </div>
                 </div>
-
+                <input type="hidden" name="round" value="0">
                 <div class="discount-buttons flex items-center gap-[0.7rem] absolute bottom-[1.1rem] right-[0.3rem]">
                     <button type="button" class="discount-popup-close flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
                         <img class="discount-popup-close select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">

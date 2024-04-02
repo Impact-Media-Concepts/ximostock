@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $categories = Category::factory(5)->create();
 
-        $products = Product::factory(30)->create([
+        $products = Product::factory(1000)->create([
             'work_space_id' => 1,
         ]);
 
@@ -187,7 +187,7 @@ class DatabaseSeeder extends Seeder
 
         //link salesChannels
         $productSalesChannels = [];
-        for ($x = 1; $x <= 5; $x++) {
+        for ($x = 1; $x <= 500; $x++) {
             for ($y = 1; $y <= 3; $y++)
                 array_push($productSalesChannels, ProductSalesChannel::create([
                     'product_id' => $x,
@@ -199,7 +199,7 @@ class DatabaseSeeder extends Seeder
             Sale::create([
                 'product_sales_channel_id' => $sale->id,
                 'price' => fake()->numberBetween(10, 30),
-                'stock' => fake()->numberBetween(0, 20)
+                'stock' => fake()->numberBetween(1, 20)
             ]);
         }
     }

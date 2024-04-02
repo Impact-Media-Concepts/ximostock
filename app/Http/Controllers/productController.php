@@ -107,23 +107,40 @@ class ProductController extends BaseProductController
     }
 
 
-    //TODO make with percentile
     public function bulkDiscount()
     {
         Gate::authorize('bulk-products', [request('product_ids')]);
         //validate request
         $validatedData = request()->validate([
-            'product_ids' => ['required', 'array', new ValidProductKeys],
-            'product_ids.*' => ['required', 'array'],
-            'product_ids.*.discount' => ['required', 'numeric']
+            'product_ids' => ['required', 'array'],
+            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
+            'discount' => ['required', 'numeric' , 'between:0,101'], //0% koritng= geen koritng meer
+            'cents' => ['nullable', 'numeric', 'between:0,100', 'Integer'],
+            'round' => ['required', 'boolean']
         ]);
+
         // Apply the discount to each product
-        foreach ($validatedData['product_ids'] as $productId => $discount) {
-            $product = Product::findOrFail($productId);
-            $product->discount = $discount['discount'];
-            $product->save();
+        if($validatedData['discount'] != 0){
+            if($validatedData['round']){
+
+            }else{
+                foreach ($validatedData['product_ids'] as $productId) {
+                    $product = Product::findOrFail($productId);
+                    $discount = $product->price - $product->price / 100 * $validatedData['discount']; //bereken de korting op bassis van het gegeven percentage
+                    $product->discount = $discount;
+                    $product->save();
+                }
+            }
+        }else{
+            foreach ($validatedData['product_ids'] as $productId) {
+                $product = Product::findOrFail($productId);
+                $product->discount = null;
+                $product->save();
+            }
         }
-        return redirect('/products');
+        
+        
+        return redirect()->back();
     }
 
     public function bulkLinkSalesChannel()
