@@ -1,4 +1,9 @@
-
+document.getElementById("propertySearchInput").onkeypress = function(e) {
+	let key = e.charCode || e.keyCode || 0;     
+	if (key == 13) {
+			e.preventDefault();
+	}
+}
 
 function renderProperties() {
 	const propertyList = document.getElementById("propertyList");
@@ -26,33 +31,33 @@ function renderProperties() {
 		propertyNameSpan.style.zIndex = 99;
 		propertyNameSpan.classList.add('no-select');
 
-		propertyNameSpan.addEventListener('click', () => {
+		const arrowDownDiv = document.createElement('span');
+		const arrowDown = document.createElement('img');
+
+		arrowDownDiv.style.width = '85%';
+		arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', "select-none");
+
+		arrowDownDiv.appendChild(arrowDown);
+		arrowDown.src = '../../images/arrow-down-icon.png';
+		arrowDown.alt = 'Arrow Down';
+		arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.8rem]', 'cursor-pointer');
+
+		const textSpan = document.createElement("span");
+		const text = document.createTextNode(property.name);
+		textSpan.classList.add("ml-[0.59rem]", "font-[600]", "relative", "bottom-[0.125rem]", "select-none")
+		//add components to list item
+		textSpan.appendChild(text);
+
+		const propertyTitleContainer = document.createElement("div");
+		propertyTitleContainer.classList.add("flex", "items-center");
+
+        propertyTitleContainer.addEventListener('click', () => {
 
 			arrowDown.classList.toggle('rotate-arrow');
 			checkbox.checked = !checkbox.checked;
 			propertyHandleCheckboxClick(property);
 		});
 
-
-		const arrowDownDiv = document.createElement('span');
-		const arrowDown = document.createElement('img');
-
-		arrowDownDiv.style.width = '85%';
-		arrowDownDiv.classList.add('flex', 'items-center', 'justify-end');
-
-		arrowDownDiv.appendChild(arrowDown);
-		arrowDown.src = '../../images/arrow-down-icon.png';
-		arrowDown.alt = 'Arrow Down';
-		arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.25rem]', 'cursor-pointer');
-
-		const textSpan = document.createElement("span");
-		const text = document.createTextNode(property.name);
-		textSpan.classList.add("ml-[0.59rem]", "font-[600]", "relative", "bottom-[0.125rem]")
-		//add components to list item
-		textSpan.appendChild(text);
-
-		const propertyTitleContainer = document.createElement("div");
-		propertyTitleContainer.classList.add("flex", "items-center");
 
 		propertyTitleContainer.appendChild(checkbox);
 		propertyTitleContainer.appendChild(textSpan);
@@ -68,7 +73,7 @@ function renderProperties() {
 function renderProperty(property, li) {
 	const div = document.createElement("div");
 	div.id = `div_${property.id}`;
-	div.classList.add("hidden", "grid");
+	div.classList.add("hidden", "grid", "mt-[0.5rem]");
 	switch (property.type) {
 	case "multiselect":
 		rendermultiselect(property, div);
@@ -606,22 +611,6 @@ function propertyHandleCheckboxClick(property) {
 	}
 }
 
-function uncheckSubcategories(property) {
-	const ul = document.getElementById(`property_${property.id}`).querySelector('ul');
-	if (ul) {
-		ul.classList.add('hidden');
-		property.subcategories.forEach(subproperty => {
-			subproperty.checked = false; // Uncheck the subproperty itself
-			removeRotateArrowClass(property);
-			const input = document.getElementById(`checkbox_property_${subproperty.id}`);
-			input.checked = false;
-			if (subproperty.subcategories.length > 0) {
-				uncheckSubcategories(subproperty); // Recursively uncheck subcategories
-			}
-		});
-	}
-}
-
 function removeRotateArrowClass(property) {
 	const checkboxes = document.querySelectorAll(`input[type='checkbox'][value='${property.id}']`);
 	checkboxes.forEach(checkbox => {
@@ -629,7 +618,6 @@ function removeRotateArrowClass(property) {
 		const arrowDown = li.querySelector('img');
 		if (arrowDown) {
 			arrowDown.classList.remove('rotate-arrow');
-			
 		}
 	});
 }
