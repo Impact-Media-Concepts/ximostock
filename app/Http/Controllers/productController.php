@@ -29,11 +29,13 @@ class ProductController extends BaseProductController
                 'workspace' => ['required'] //todo valid workspace rule
             ]);
 
-            $products = Product::where('work_space_id', request('workspace'));
+            $products = Product::where('work_space_id', $request['workspace']);
             $categories = Category::where('work_space_id', $request['workspace']);
+            $properties = Property::where('work_space_id', $request['workspace']);
         }else{
             $products = Product::where('work_space_id', Auth::user()->work_space_id);
             $categories = Category::where('work_space_id', Auth::user()->work_space_id);
+            $properties = Property::where('work_space_id', Auth::user()->work_space_id);
         }
 
         $products = $products
@@ -48,10 +50,13 @@ class ProductController extends BaseProductController
             ->with('child_categories_recursive')
             ->whereNull('parent_category_id')
             ->get();
+        
+        $properties = $properties->get();
 
         $results = [
             'products' => $products,
             'categories' => $categories,
+            'properties' => $properties,
             'perPage' => $perPage,
             'search' => request('search'),
             'selectedCategories' => request('categories'),
