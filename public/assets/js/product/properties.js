@@ -549,7 +549,7 @@ function propertyMultiSelectControl(option, input, trueInput, id) {
     removePropertyIcon.src = '../images/x-icon.png';
 
     removePropertyIcon.addEventListener('click', function () {
-        newDiv.remove(); // Remove the specific selected-option div
+        newDiv.remove();
         updateTrueInputValue();
     });
 
@@ -573,6 +573,7 @@ function propertyMultiSelectControl(option, input, trueInput, id) {
         trueInput.value = selectedOptions.map(option => option.getAttribute('data-value')).join(',');
     }
 }
+
 
 function propertySingleSelectControl(option, input, trueInput) {
 	input.value = option;
