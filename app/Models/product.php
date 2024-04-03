@@ -199,4 +199,10 @@ class Product extends Model
             default => $query->orderByDesc('updated_at')
         };
     }
+
+    public function scopeWorkspace($query, $workspace){
+        if($workspace){
+            $query->where('work_space_id','=', $workspace);
+        }
+    }
 }
