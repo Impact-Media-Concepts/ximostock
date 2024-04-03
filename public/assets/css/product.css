@@ -76,3 +76,34 @@ text-align: center;
 .discount-input[type=number] {
     -moz-appearance: textfield;
 }
+
+
+/* properties */
+
+.property-search-input {
+    padding-left: 1.2rem;
+    padding-right: 1rem;
+}
+
+.multi-select-input,
+.text-input {
+    padding-left: 0.8rem;
+}
+
+.property-search-input::placeholder,
+.multi-select-input::placeholder,
+.bool-input::placeholder,
+.single-input::placeholder {
+    color: #DBDBDB;
+}
+
+.numberInput::-webkit-outer-spin-button,
+.numberInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.numberInput[type=number] {
+    -moz-appearance: textfield;
+}
