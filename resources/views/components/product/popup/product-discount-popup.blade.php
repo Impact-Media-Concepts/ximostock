@@ -110,13 +110,13 @@
         @endif
     </div>
 </div>
-
+<x-layout._footer-dependencies />
 <script>
     document.addEventListener("DOMContentLoaded", (event) => {
         document.querySelectorAll('.skip-discount-error-item').forEach(function(button) {
         button.addEventListener('click', function() {
             // Find the parent container of the clicked button
-            var discountErrorItem = button.closest('.discount-error-item');
+            let discountErrorItem = button.closest('.discount-error-item');
             // Remove the corresponding item from the UI
             discountErrorItem.parentNode.removeChild(discountErrorItem);
             // Optional: Send an AJAX request to update the server-side data
