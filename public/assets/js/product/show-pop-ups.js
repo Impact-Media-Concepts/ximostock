@@ -1,40 +1,40 @@
-//#region pop up
-jQuery(document).ready(function ($) {
+document.addEventListener("DOMContentLoaded", function () {
   // Open popup
-    $(".cd-popup-trigger").on("click", function (event) {
-    event.preventDefault();
-    $(".cd-popup").removeClass("hidden");
-    }); 
+  document.querySelectorAll(".cd-popup-trigger").forEach(function (trigger) {
+      trigger.addEventListener("click", function (event) {
+          event.preventDefault();
+          document.querySelector(".cd-popup").classList.remove("hidden");
+      });
+  });
 
   // Close popup
-    $(".cd-popup").on("click", function (event) {
-    if (
-        $(event.target).is(".cd-popup-close") ||
-        $(event.target).is(".no")
-    ) {
-        event.preventDefault();
-        $(this).addClass("hidden");
-    }
-    });
-});
-//#endregion
+  document.querySelector(".cd-popup").addEventListener("click", function (event) {
+      if (
+          event.target.matches(".cd-popup-close") ||
+          event.target.matches(".no")
+      ) {
+          event.preventDefault();
+          this.classList.add("hidden");
+      }
+  });
 
-jQuery(document).ready(function ($) {
-  // Open popup
-    $(".discount-popup-trigger").on("click", function (event) {
-    event.preventDefault();
-    $(".discount-popup").removeClass("hidden");
-    }); 
+  // Open discount popup
+  document.querySelectorAll(".discount-popup-trigger").forEach(function (trigger) {
+      trigger.addEventListener("click", function (event) {
+          event.preventDefault();
+          document.querySelector(".discount-popup").classList.remove("hidden");
+      });
+  });
 
-  // Close popup
-    $(".discount-popup").on("click", function (event) {
-    if (
-        $(event.target).is(".discount-popup-close") ||
-        $(event.target).is(".discountCancel") ||
-        $(event.target).is(".discountSave")
-    ) {
-        event.preventDefault();
-        $(this).addClass("hidden");
-    }
-    });
+  // Close discount popup
+  document.querySelector(".discount-popup").addEventListener("click", function (event) {
+      if (
+          event.target.matches(".discount-popup-close") ||
+          event.target.matches(".discountCancel") ||
+          event.target.matches(".discountSave")
+      ) {
+          event.preventDefault();
+          this.classList.add("hidden");
+      }
+  });
 });
