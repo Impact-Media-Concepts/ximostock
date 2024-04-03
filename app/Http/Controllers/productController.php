@@ -24,25 +24,47 @@ class ProductController extends BaseProductController
 {
     public function index(Request $request)
     {
+        
+
         $perPage = $request->input('perPage', 20);
+        if(Auth::user()->role === 'admin'){
+            $request->validate([
+                'workspace' => ['required'] //todo valid workspace rule
+            ]);
+
+            $products = Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
+            ->withExists(['salesChannels'])
+            ->workspace(request('workspace'))
+            ->whereNull('parent_product_id')
+            ->filter(request(['search', 'categories', 'orderByInput']))
+            ->paginate($perPage)
+            ->withQueryString();
+            $categories = Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', $request['workspace'])->get();
+
+        }else{
+            $products = Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
+            ->withExists(['salesChannels'])
+            ->where('work_space_id', Auth::user()->work_space_id)
+            ->whereNull('parent_product_id')
+            ->filter(request(['search', 'categories', 'orderByInput']))
+            ->paginate($perPage)
+            ->withQueryString();
+
+            $categories = Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get();
+
+        }
 
         $results = [
-            'products' => Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
-                ->withExists(['salesChannels'])
-                ->where('work_space_id', Auth::user()->work_space_id)
-                ->whereNull('parent_product_id')
-                ->filter(request(['search', 'categories', 'orderByInput']))
-                ->paginate($perPage)
-                ->withQueryString()
-                ,
+            'products' => $products,
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'perPage' => $perPage,
             'search' => request('search'),
             'selectedCategories' => request('categories'),
             'orderBy' => request('orderByInput'),
             'sidenavActive' => 'products',
-            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'categories' => $categories,
             'discountErrors' => $request->session()->get('discountErrors')
+
         ];
         return view('product.index', $results);
     }
@@ -159,6 +181,23 @@ class ProductController extends BaseProductController
             }
         }
         return redirect()->back();
+    }
+
+    //adds the "discount" even if product is more expansive
+    public function BulkDiscountForce(){
+        Gate::authorize('bulk-products', [request('product_ids')]);
+
+        $validatedData = request()->validate([
+            'product_ids' => ['required', 'array', new ValidProductKeys],
+            'product_ids.*' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        foreach($validatedData['product_ids'] as $productId => $discount){
+            $product = Product::findOrFail($productId);
+            $product->discount = $discount;
+            $product->save();
+        }
+        redirect()->back();
     }
 
     public function bulkLinkSalesChannel()

@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:destroy-product,product');
     Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
     Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
+    Route::post('/products/bulkdiscountforce', [ProductController::class, 'BulkDiscountForce']);
     Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
     Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
     Route::post('/products/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');
