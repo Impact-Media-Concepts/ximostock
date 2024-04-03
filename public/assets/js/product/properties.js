@@ -1,42 +1,4 @@
-let propertiesData = [
-	{
-	id: 1,
-	name: "number",
-	type: "number",
-	options: [],
-	},
-	{
-	id: 2,
-	name: "bool",
-	type: "bool",
-	options: [],
-	},
-	{
-	id: 3,
-	name: "multiSelect",
-	type: "multiselect",
-	options: [
-		"lange sjonge jonge",
-		"kort",
-		"JJ",
-		"ECHTSUPER LANGE text van jip maar extra lang voor testingsLeukHeden",
-		"Jipppiee",
-		"twee superlange wrdn",
-	],
-	},
-	{
-	id: 4,
-	name: "Single select",
-	type: "singleselect",
-	options: ["red", "blue", "green", "purple", "yellow", "orange"],
-	},
-	{
-	id: 5,
-	name: "Text",
-	type: "text",
-	options: [],
-	}
-];
+
 
 function renderProperties() {
 	const propertyList = document.getElementById("propertyList");
@@ -537,7 +499,7 @@ function focusSingleSelect(options) {
 }
 
 let blurMultiDelayTimer;
-	function blurmultiSelect(options) {
+function blurmultiSelect(options) {
 	clearTimeout(blurMultiDelayTimer);
 	blurMultiDelayTimer = setTimeout(() => {
 	options.classList.add("hidden");

@@ -22,7 +22,7 @@
                         <input type="hidden" name="orderByInput" id="orderByInput" value="{{$orderBy}}">
                         <input type="submit" value="search test">
 
-                        <x-product.properties.properties :discountError="$discountErrors" />
+                        <x-product.properties.properties :properties="$properties" />
                     </form>
                 </div>
             </div>

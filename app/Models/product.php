@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use GuzzleHttp\Psr7\Query;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -176,6 +178,27 @@ class Product extends Model
                     ->havingRaw('COUNT(DISTINCT category_id) = ?', [count($categories)]);
             })
         );
+
+        if(isset($filters['properties'])){
+            $propertyFilters = $filters['properties'];
+            $query->whereHas('properties', function ($query) use ($propertyFilters) {
+                foreach ($propertyFilters as $propertyId => $propertyValue) {
+                    
+                    $query->where(function ($query) use ($propertyId, $propertyValue) {
+                        if ($propertyValue === null) {
+                            // If no property value is specified, filter products linked to the property
+                            $query->where('property_id', $propertyId);
+                        } else {
+                            // Filter products linked to the property with the specified value
+                            $query->where('property_id', $propertyId)
+                                  ->whereJsonContains('property_value', ['value' => $propertyValue]);
+                        }
+                    });
+
+                }
+            });
+        }
+        
 
         // Apply different orderings based on the provided input
         if(!isset($filters['orderByInput'])){
