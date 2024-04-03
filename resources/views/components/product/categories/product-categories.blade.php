@@ -10,8 +10,8 @@
         </div>
 
         <div id="categoriesContainer">
-            <div class="ml-[-0.2rem] mt-[0.85rem]">
-                <input class="sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search" style="font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem" type="text" id="searchInput" placeholder="Zoeken">
+            <div class="mt-[0.85rem]">
+                <input class="sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search" style="font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem" type="text" id="categorySearchInput" placeholder="Zoeken">
             </div>
 
             <ul style="font-family: 'Inter', sans-serif;" id="categoriesList"></ul>
@@ -69,7 +69,7 @@
             if (!searchText || category.name.toLowerCase().includes(searchText.toLowerCase())) {
                 li.classList.remove('hidden');
                 // If found through search, show its parents
-                showParents(li);
+                categoryShowParents(li);
             } else {
                 li.classList.add('hidden');
             }
@@ -87,7 +87,7 @@
             if (!searchText || subcategory.name.toLowerCase().includes(searchText.toLowerCase())) {
                 li.classList.remove('hidden');
                 // If found through search, show its parents
-                showParents(li);
+                categoryShowParents(li);
             } else {
                 li.classList.add('hidden');
             }
@@ -99,18 +99,17 @@
     }
 
     // Function to show parents recursively
-    function showParents(element) {
+    function categoryShowParents(element) {
         if (element.parentNode.tagName === 'UL') {
             const parentElement = element.parentNode.parentNode;
             parentElement.classList.remove('hidden');
             element.parentNode.classList.remove('hidden');
-            showParents(parentElement);
+            categoryShowParents(parentElement);
         }
     }
 
     // Function to handle checkbox click
-    function handleCheckboxClick(category) {
-
+    function categoryHandleCheckboxClick(category) {
         category.checked = !category.checked;
         if (category.checked) {
             updateParents(category);
@@ -125,8 +124,8 @@
         } else {
             hideSubcategories(category);
         }
-        const searchInputValue = document.getElementById('searchInput').value.trim();
-        if (searchInputValue !== '') {
+        const categorySearchInputValue = document.getElementById('categorySearchInput').value.trim();
+        if (categorySearchInputValue !== '') {
             updateCategories();
         }
 
@@ -170,7 +169,7 @@
 
     function updateCategories() {
 
-        const searchText = document.getElementById('searchInput').value.trim();
+        const searchText = document.getElementById('categorySearchInput').value.trim();
 
         categoriesData.forEach(category => {
             const checkbox = document.getElementById(`checkbox_category_${category.id}`);
@@ -185,7 +184,7 @@
     }
 
     function updateSubcategories(subcategories) {
-        const searchText = document.getElementById('searchInput').value.trim();
+        const searchText = document.getElementById('categorySearchInput').value.trim();
 
         subcategories.forEach(subcategory => {
             const checkbox = document.getElementById(`checkbox_category_${subcategory.id}`);
@@ -213,7 +212,7 @@
             const li = document.createElement('li');
 
             li.id = `category_${category.id}`;
-            li.classList.add('ml-[1.1rem]', 'font-[600]', 'text-[14px]', 'py-[0.35rem]');
+            li.classList.add('font-[600]', 'text-[14px]', 'py-[0.35rem]');
 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
@@ -224,7 +223,7 @@
             checkbox.classList.add('cursor-pointer');
             checkbox.addEventListener('click', () => {
                 arrowDown.classList.toggle('rotate-arrow');
-                handleCheckboxClick(category);
+                categoryHandleCheckboxClick(category);
             });
 
             const categoryNameSpan = document.createElement('span');
@@ -239,7 +238,7 @@
 
                 arrowDown.classList.toggle('rotate-arrow');
                 checkbox.checked = !checkbox.checked;
-                handleCheckboxClick(category);
+                categoryHandleCheckboxClick(category);
             });
 
             const arrowDownDiv = document.createElement('span');
@@ -299,7 +298,7 @@
                     console.log("sub if Yooo?");
                     arrowDown.classList.toggle('rotate-arrow');
                 }
-                handleCheckboxClick(subcategory);
+                categoryHandleCheckboxClick(subcategory);
             });
 
             const categoryNameSpan = document.createElement('span');
@@ -315,7 +314,7 @@
                     arrowDown.classList.toggle('rotate-arrow');
                 }
                 checkbox.checked = !checkbox.checked;
-                handleCheckboxClick(subcategory);
+                categoryHandleCheckboxClick(subcategory);
             });
 
             li.appendChild(checkbox);
@@ -359,9 +358,9 @@
         };
     }
 
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', debounce(() => {
-        const searchText = searchInput.value.trim();
+    const categorySearchInput = document.getElementById('categorySearchInput');
+    categorySearchInput.addEventListener('input', debounce(() => {
+        const searchText = categorySearchInput.value.trim();
 
         if (!searchText) {
             renderCategories();
