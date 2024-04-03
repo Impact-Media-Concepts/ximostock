@@ -17,18 +17,18 @@
         ['text' => 'Gebruikers', 'icon' => '../images/users-icon.png', 'url' => '/users', 'id' => '12', 'slug' => 'users']
     ];
 
-    session_start();
+    // session_start();
     
-    if (!isset($_SESSION['count']))
-    {
-    $_SESSION['count'] = 1;
-    }
-    else
-    {
-    ++$_SESSION['count'];
-    }
+    // if (!isset($_SESSION['count']))
+    // {
+    // $_SESSION['count'] = 1;
+    // }
+    // else
+    // {
+    // ++$_SESSION['count'];
+    // }
     
-    echo $_SESSION['count'];
+    // echo $_SESSION['count'];
 ?>
 
 <style>
