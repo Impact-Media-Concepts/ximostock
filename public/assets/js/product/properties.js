@@ -17,11 +17,7 @@ function renderProperties() {
 		//build components
 		const checkbox = document.createElement("input");
 		checkbox.type = "checkbox";
-		checkbox.addEventListener("click", () => {
-			arrowDown.classList.toggle('rotate-arrow');
-			propertyHandleCheckboxClick(property)
-			}
-		);
+        checkbox.classList.add("hover:cursor-pointer")
 
 		const propertyNameSpan = document.createElement('span');
 		propertyNameSpan.textContent = property.name;
@@ -51,13 +47,14 @@ function renderProperties() {
 		const propertyTitleContainer = document.createElement("div");
 		propertyTitleContainer.classList.add("flex", "items-center");
 
-        propertyTitleContainer.addEventListener('click', () => {
+        checkbox.addEventListener("click", () => {checkbox.checked = !checkbox.checked;});
 
+		propertyTitleContainer.addEventListener('click', () => {
+			propertyHandleCheckboxClick(property);
 			arrowDown.classList.toggle('rotate-arrow');
 			checkbox.checked = !checkbox.checked;
-			propertyHandleCheckboxClick(property);
-		});
-
+			}
+        );
 
 		propertyTitleContainer.appendChild(checkbox);
 		propertyTitleContainer.appendChild(textSpan);
@@ -234,10 +231,10 @@ function rendermultiselect(property, div) {
 		);
 
 		span.textContent = option;
-		li.id = `property_${property.id}_${option}`;
+		li.id = `property_${property.id}_${index}_${option}`;
 		li.appendChild(span);
 		li.addEventListener("click", (event) =>
-			propertyMultiSelectControl(option, input, trueInput)
+			propertyMultiSelectControl(option, input, trueInput, property.id)
 		);
 		options.appendChild(li);
 	});
@@ -457,6 +454,7 @@ function rendersingleselect(property, div) {
 		);
 
 		const span = document.createElement("span");
+
 		span.classList.add(
 			"flex",
 			"items-center",
@@ -519,62 +517,61 @@ function blurSingleSelect(options) {
 	}, 200);
 }
 
-function propertyMultiSelectControl(option, input, trueInput) {
-	// Check if the surrounding div exists, if not, create it
-	let selectedOptionsDiv = document.getElementById("selectedOptionsDiv");
+function propertyMultiSelectControl(option, input, trueInput, id) {
+    // Check if the surrounding div exists, if not, create it
+    let selectedOptionsContainer = document.getElementById(`selectedOptionsContainer${id}`);
 
-	if (!selectedOptionsDiv) {
-		selectedOptionsDiv = document.createElement("div");
-		selectedOptionsDiv.classList.add("flex", "flex-wrap");
-		selectedOptionsDiv.id = "selectedOptionsDiv";
-		input.parentNode.insertBefore(selectedOptionsDiv, input.nextSibling);
-	}
+    if (!selectedOptionsContainer) {
+        selectedOptionsContainer = document.createElement('div');
+        selectedOptionsContainer.style.display = "flex";
+        selectedOptionsContainer.style.flexWrap = "wrap";
+        selectedOptionsContainer.id = `selectedOptionsContainer${id}`;
+        input.parentNode.insertBefore(selectedOptionsContainer, input.nextSibling);
+    }
 
-	// Check if the option is already selected
-	if (
-		selectedOptionsDiv.querySelector(
-			`div.selected-option[data-value="${option}"]`
-		)
-	) {
-	// If the option is already selected, do nothing
-	return;
-	}
+    // Check if the option is already selected
+    if (selectedOptionsContainer.querySelector(`div.selected-option[data-value="${option}"]`)) {
+        // If the option is already selected, do nothing
+        return;
+    }
 
-	// Create a new div for the selected option
-	const newDiv = document.createElement("div");
-	newDiv.classList.add("selected-option", "flex", "items-center", "bg-white", "w-fit", "p-[0.3rem]", "rounded-md", "m-[0.25rem]");
-	newDiv.style.border = "1px solid #D3D3D3";
-	newDiv.setAttribute("data-value", option);
+    // Create a new div for the selected option
+    const newDiv = document.createElement('div');
+    newDiv.classList.add('selected-option', 'flex', 'items-center', 'bg-white', 'w-fit', 'p-[0.3rem]', 'rounded-md', 'm-[0.25rem]');
+    newDiv.style.border = '1px solid #D3D3D3';
+    newDiv.setAttribute('data-value', option);
 
-	// Create a span element
-	const span = document.createElement("span");
-	span.classList.add("flex", "pt-[0.16rem]", "pl-[0.2rem]");
-	const removePropertyIcon = document.createElement("img");
-	removePropertyIcon.classList.add("select-none", "w-[0.75rem]", "h-[0.75rem]", "hover:cursor-pointer");
-	removePropertyIcon.src = "../images/x-icon.png";
+    // Create a span element
+    const span = document.createElement('span');
+    span.classList.add('flex', 'pt-[0.16rem]', 'pl-[0.2rem]');
+    const removePropertyIcon = document.createElement('img');
+    removePropertyIcon.classList.add('select-none', 'w-[0.75rem]', 'h-[0.75rem]', 'hover:cursor-pointer');
+    removePropertyIcon.src = '../images/x-icon.png';
 
-	removePropertyIcon.addEventListener("click", function () {
-	newDiv.remove(); // Remove the specific selected-option div
-	});
+    removePropertyIcon.addEventListener('click', function () {
+        newDiv.remove(); // Remove the specific selected-option div
+        updateTrueInputValue();
+    });
 
-	span.appendChild(removePropertyIcon);
+    span.appendChild(removePropertyIcon);
 
-	const textNode = document.createTextNode(option);
+    const textNode = document.createTextNode(option);
 
-	newDiv.appendChild(textNode);
+    newDiv.appendChild(textNode);
+    newDiv.appendChild(span);
 
-	// Append the span to the new div
-	newDiv.appendChild(span);
+    // Append the new div to the surrounding container
+    selectedOptionsContainer.appendChild(newDiv);
 
-	// Append the text node to the new div
+    input.value = '';
 
-	// Append the new div to the surrounding div
-	selectedOptionsDiv.appendChild(newDiv);
+    // Optionally, you can update the hidden input value as well
+    updateTrueInputValue();
 
-	input.value = "";
-
-	// Optionally, you can update the hidden input value as well
-	trueInput.value += (trueInput.value ? "," : "") + option;
+    function updateTrueInputValue() {
+        const selectedOptions = Array.from(selectedOptionsContainer.querySelectorAll('.selected-option'));
+        trueInput.value = selectedOptions.map(option => option.getAttribute('data-value')).join(',');
+    }
 }
 
 function propertySingleSelectControl(option, input, trueInput) {

@@ -15,13 +15,9 @@
         <div class="relative right-[0.08rem] underline w-[14rem] h-[0.15rem] bg-[#f8f8f8] mb-1 mt-[0.17rem]">
         </div>
         
-        <div>
-            <div>
-                <input class="sticky property-search-input w-[14.06rem] h-[2.5rem] rounded-md mt-[0.55rem]" style="border: 1px solid #D3D3D3;" type="text" id="propertySearchInput" placeholder="Zoeken" />
-            </div>
 
-            <ul  class="mt-[0.85rem]" id="propertyList"></ul>
-        </div>
+        <input class="sticky property-search-input w-[14.06rem] h-[2.5rem] rounded-md mt-[0.55rem]" style="border: 1px solid #D3D3D3;" type="text" id="propertySearchInput" placeholder="Zoeken" />
+        <ul  class="mt-[0.85rem]" id="propertyList"></ul>
     </div>
 </div>
 
