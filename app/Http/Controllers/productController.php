@@ -17,54 +17,47 @@ use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
-use PHPUnit\Framework\Constraint\Count;
+
 
 class ProductController extends BaseProductController
 {
     public function index(Request $request)
     {
-        
-
         $perPage = $request->input('perPage', 20);
         if(Auth::user()->role === 'admin'){
             $request->validate([
                 'workspace' => ['required'] //todo valid workspace rule
             ]);
 
-            $products = Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
-            ->withExists(['salesChannels'])
-            ->workspace(request('workspace'))
-            ->whereNull('parent_product_id')
-            ->filter(request(['search', 'categories', 'orderByInput']))
-            ->paginate($perPage)
-            ->withQueryString();
-            $categories = Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', $request['workspace'])->get();
-
+            $products = Product::where('work_space_id', request('workspace'));
+            $categories = Category::where('work_space_id', $request['workspace']);
         }else{
-            $products = Product::with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
+            $products = Product::where('work_space_id', Auth::user()->work_space_id);
+            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
+        }
+
+        $products = $products
+            ->with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
             ->withExists(['salesChannels'])
-            ->where('work_space_id', Auth::user()->work_space_id)
             ->whereNull('parent_product_id')
-            ->filter(request(['search', 'categories', 'orderByInput']))
+            ->filter(request(['search', 'categories', 'orderByInput', 'properties']))
             ->paginate($perPage)
             ->withQueryString();
-
-            $categories = Category::with('child_categories_recursive')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get();
-
-        }
+        
+        $categories = $categories
+            ->with('child_categories_recursive')
+            ->whereNull('parent_category_id')
+            ->get();
 
         $results = [
             'products' => $products,
-            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'categories' => $categories,
             'perPage' => $perPage,
             'search' => request('search'),
             'selectedCategories' => request('categories'),
             'orderBy' => request('orderByInput'),
             'sidenavActive' => 'products',
-            'categories' => $categories,
             'discountErrors' => $request->session()->get('discountErrors')
-
         ];
         return view('product.index', $results);
     }
