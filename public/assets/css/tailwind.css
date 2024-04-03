@@ -927,6 +927,10 @@ video {
   margin-right: 0.25rem;
 }
 
+.mr-\[0\.8rem\] {
+  margin-right: 0.8rem;
+}
+
 .mr-\[0\.93rem\] {
   margin-right: 0.93rem;
 }
@@ -1017,6 +1021,10 @@ video {
 
 .mt-\[0\.3rem\] {
   margin-top: 0.3rem;
+}
+
+.mt-\[0\.5rem\] {
+  margin-top: 0.5rem;
 }
 
 .mt-\[0\.6rem\] {

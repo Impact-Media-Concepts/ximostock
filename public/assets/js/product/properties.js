@@ -1,5 +1,3 @@
-
-
 function renderProperties() {
 	const propertyList = document.getElementById("propertyList");
 	propertyList.innerHTML = ""; // Clear existing list
@@ -26,14 +24,6 @@ function renderProperties() {
 		propertyNameSpan.style.zIndex = 99;
 		propertyNameSpan.classList.add('no-select');
 
-		propertyNameSpan.addEventListener('click', () => {
-
-			arrowDown.classList.toggle('rotate-arrow');
-			checkbox.checked = !checkbox.checked;
-			propertyHandleCheckboxClick(property);
-		});
-
-
 		const arrowDownDiv = document.createElement('span');
 		const arrowDown = document.createElement('img');
 
@@ -43,7 +33,7 @@ function renderProperties() {
 		arrowDownDiv.appendChild(arrowDown);
 		arrowDown.src = '../../images/arrow-down-icon.png';
 		arrowDown.alt = 'Arrow Down';
-		arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.25rem]', 'cursor-pointer');
+		arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.8rem]', 'cursor-pointer');
 
 		const textSpan = document.createElement("span");
 		const text = document.createTextNode(property.name);
@@ -53,6 +43,14 @@ function renderProperties() {
 
 		const propertyTitleContainer = document.createElement("div");
 		propertyTitleContainer.classList.add("flex", "items-center");
+
+        propertyTitleContainer.addEventListener('click', () => {
+
+			arrowDown.classList.toggle('rotate-arrow');
+			checkbox.checked = !checkbox.checked;
+			propertyHandleCheckboxClick(property);
+		});
+
 
 		propertyTitleContainer.appendChild(checkbox);
 		propertyTitleContainer.appendChild(textSpan);
@@ -68,7 +66,7 @@ function renderProperties() {
 function renderProperty(property, li) {
 	const div = document.createElement("div");
 	div.id = `div_${property.id}`;
-	div.classList.add("hidden", "grid");
+	div.classList.add("hidden", "grid", "mt-[0.5rem]");
 	switch (property.type) {
 	case "multiselect":
 		rendermultiselect(property, div);
