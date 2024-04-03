@@ -1,3 +1,10 @@
+document.getElementById("propertySearchInput").onkeypress = function(e) {
+	let key = e.charCode || e.keyCode || 0;     
+	if (key == 13) {
+			e.preventDefault();
+	}
+}
+
 function renderProperties() {
 	const propertyList = document.getElementById("propertyList");
 	propertyList.innerHTML = ""; // Clear existing list
@@ -28,7 +35,7 @@ function renderProperties() {
 		const arrowDown = document.createElement('img');
 
 		arrowDownDiv.style.width = '85%';
-		arrowDownDiv.classList.add('flex', 'items-center', 'justify-end');
+		arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', "select-none");
 
 		arrowDownDiv.appendChild(arrowDown);
 		arrowDown.src = '../../images/arrow-down-icon.png';
@@ -37,7 +44,7 @@ function renderProperties() {
 
 		const textSpan = document.createElement("span");
 		const text = document.createTextNode(property.name);
-		textSpan.classList.add("ml-[0.59rem]", "font-[600]", "relative", "bottom-[0.125rem]")
+		textSpan.classList.add("ml-[0.59rem]", "font-[600]", "relative", "bottom-[0.125rem]", "select-none")
 		//add components to list item
 		textSpan.appendChild(text);
 

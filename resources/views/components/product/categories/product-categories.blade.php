@@ -20,7 +20,13 @@
 </div>
 
 <script>
-    // // Find parent function
+    document.getElementById("categorySearchInput").onkeypress = function(e) {
+        let key = e.charCode || e.keyCode || 0;     
+        if (key == 13) {
+                e.preventDefault();
+        }
+    }
+    //Find parent function
     let categoriesData = [<x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>];
     function findParentCategory(categoryId, categories = categoriesData, parent = null) {
         for (const category of categories) {
