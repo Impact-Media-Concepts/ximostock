@@ -43,8 +43,9 @@
                 <div x-data="{ showDecimals: false }" class="pt-[1.5rem] pl-[1.5rem]">
                     <div class="flex-col justify-center items-center">
                         <div class="flex items-center">
-                            <div class="mr-[1rem]">
-                                <input name="discount" class="text-center discount-input w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountPercentage" placeholder="Kortingspercentage">
+                            <div class="mr-[1rem] flex items-center">
+                                <input id="discountRoundedInput" name="discount" class="text-center discount-input w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" min="0" max="100" for="discountPercentage" placeholder="Kortingspercentage" step="0.01">
+                                <span class="relative right-[1.5rem] font-[16px]">%</span>
                             </div>
                             <div class="flex gap-[0.5rem]">
                                 <input type="checkbox" id="roundDiscount" x-on:click="showDecimals = !showDecimals">
@@ -54,7 +55,7 @@
                         </div>
                     </div>
                     <div x-show="showDecimals" class="flex justify-start items-center pt-[0.5rem]" style="">
-                        <input name="cents" class="discount-input text-center w-[18.68rem] h-[2.5rem] font-[16px]rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountDecimals" placeholder="Decimalen">
+                        <input id="discountDecimalsInput" name="cents" class="discount-input discount-decimals-input text-center w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountDecimals" placeholder="Centen">
                         <label for="discountDecimals"></label>
                     </div>
                 </div>
@@ -110,17 +111,54 @@
         @endif
     </div>
 </div>
-<x-layout._footer-dependencies />
+
 <script>
     document.addEventListener("DOMContentLoaded", (event) => {
         document.querySelectorAll('.skip-discount-error-item').forEach(function(button) {
-        button.addEventListener('click', function() {
-            // Find the parent container of the clicked button
-            let discountErrorItem = button.closest('.discount-error-item');
-            // Remove the corresponding item from the UI
-            discountErrorItem.parentNode.removeChild(discountErrorItem);
-            // Optional: Send an AJAX request to update the server-side data
+            button.addEventListener('click', function() {
+                let discountErrorItem = button.closest('.discount-error-item');
+            
+                discountErrorItem.parentNode.removeChild(discountErrorItem);
+            });
         });
     });
-    });
+
+    function restrictNumberInput(event) {
+        let input = event.target;
+        let value = parseInt(input.value, 10);
+        let min = 10;
+        let max = 100;
+
+        if (isNaN(value)) {
+            input.value = "";
+            event.preventDefault();
+        }
+        else if (value > max) {
+            input.value = max;
+            event.preventDefault();
+        }
+    }
+
+    let input = document.getElementById("discountRoundedInput");
+    input.addEventListener("input", restrictNumberInput);
+
+
+    function decimalRestrictNumberInput(event) {
+        let decimalInput = event.target;
+        let decimalValue = parseInt(decimalInput.value, 10);
+        let decimalMin = 10;
+        let decimalMax = 99;
+
+        if (isNaN(decimalValue)) {
+            decimalInput.value = "";
+            event.preventDefault();
+        }
+        else if (decimalValue > decimalMax) {
+            decimalInput.value = decimalMax;
+            event.preventDefault();
+        }
+    }
+
+    let decimalInput = document.getElementById("discountDecimalsInput");
+    decimalInput.addEventListener("input", decimalRestrictNumberInput);
 </script>

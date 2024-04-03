@@ -716,6 +716,10 @@ video {
   right: 0.75rem;
 }
 
+.right-\[1\.5rem\] {
+  right: 1.5rem;
+}
+
 .right-\[1rem\] {
   right: 1rem;
 }
