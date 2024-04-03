@@ -604,22 +604,6 @@ function propertyHandleCheckboxClick(property) {
 	}
 }
 
-function uncheckSubcategories(property) {
-	const ul = document.getElementById(`property_${property.id}`).querySelector('ul');
-	if (ul) {
-		ul.classList.add('hidden');
-		property.subcategories.forEach(subproperty => {
-			subproperty.checked = false; // Uncheck the subproperty itself
-			removeRotateArrowClass(property);
-			const input = document.getElementById(`checkbox_property_${subproperty.id}`);
-			input.checked = false;
-			if (subproperty.subcategories.length > 0) {
-				uncheckSubcategories(subproperty); // Recursively uncheck subcategories
-			}
-		});
-	}
-}
-
 function removeRotateArrowClass(property) {
 	const checkboxes = document.querySelectorAll(`input[type='checkbox'][value='${property.id}']`);
 	checkboxes.forEach(checkbox => {
@@ -627,7 +611,6 @@ function removeRotateArrowClass(property) {
 		const arrowDown = li.querySelector('img');
 		if (arrowDown) {
 			arrowDown.classList.remove('rotate-arrow');
-			
 		}
 	});
 }
