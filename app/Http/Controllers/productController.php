@@ -34,11 +34,13 @@ class ProductController extends BaseProductController
             $categories = Category::where('work_space_id', $request['workspace']);
             $properties = Property::where('work_space_id', $request['workspace']);
             $workspaces= WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
         }else{
             $products = Product::where('work_space_id', Auth::user()->work_space_id);
             $categories = Category::where('work_space_id', Auth::user()->work_space_id);
             $properties = Property::where('work_space_id', Auth::user()->work_space_id);
             $workspaces = null;
+            $activeWorkspace = null;
         }
 
         $products = $products
@@ -66,7 +68,8 @@ class ProductController extends BaseProductController
             'orderBy' => request('orderByInput'),
             'sidenavActive' => 'products',
             'discountErrors' => $request->session()->get('discountErrors'),
-            'worksapces' => $workspaces
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ];
         return view('product.index', $results);
     }
