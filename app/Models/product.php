@@ -178,30 +178,32 @@ class Product extends Model
                     ->havingRaw('COUNT(DISTINCT category_id) = ?', [count($categories)]);
             })
         );
-
-        if(isset($filters['properties'])){
-            $propertyFilters = $filters['properties'];
-            $query->whereHas('properties', function ($query) use ($propertyFilters) {
-                foreach ($propertyFilters as $propertyId => $propertyValue) {
-                    
-                    $query->where(function ($query) use ($propertyId, $propertyValue) {
-                        if ($propertyValue === null) {
-                            // If no property value is specified, filter products linked to the property
-                            $query->where('property_id', $propertyId);
-                        } else {
-                            // Filter products linked to the property with the specified value
-                            $query->where('property_id', $propertyId)
-                                  ->whereJsonContains('property_value', ['value' => $propertyValue]);
+        
+        $query->when(
+            $filters['properties'] ?? false,
+            function ($query, $properties) {
+                $query->whereHas('properties', function ($query) use ($properties) {
+                    $query->where(function ($query) use ($properties) {
+                        foreach ($properties as $propertyId => $propertyValue) {
+                            $query->orWhere(function ($query) use ($propertyId, $propertyValue) {
+                                $query->where('property_id', $propertyId);
+                                if ($propertyValue !== null) {
+                                    $query->whereJsonContains('property_value', ['value' => $propertyValue]);
+                                }
+                            });
                         }
                     });
-
-                }
-            });
-        }
         
+                    // Group by product id and count the number of distinct property IDs
+                    $query->select('product_id')
+                        ->groupBy('product_id')
+                        ->havingRaw('COUNT(DISTINCT property_id) = ?', [count($properties)]);
+                });
+            }
+        );
 
         // Apply different orderings based on the provided input
-        if(!isset($filters['orderByInput'])){
+        if (!isset($filters['orderByInput'])) {
             $filters['orderByInput'] = null;
         }
         match ($filters['orderByInput']) {
@@ -223,9 +225,10 @@ class Product extends Model
         };
     }
 
-    public function scopeWorkspace($query, $workspace){
-        if($workspace){
-            $query->where('work_space_id','=', $workspace);
+    public function scopeWorkspace($query, $workspace)
+    {
+        if ($workspace) {
+            $query->where('work_space_id', '=', $workspace);
         }
     }
 }

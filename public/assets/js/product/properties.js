@@ -18,14 +18,18 @@ function renderProperties() {
 		const checkbox = document.createElement("input");
 		checkbox.type = "checkbox";
         checkbox.classList.add("hover:cursor-pointer")
-		//add event listner
+		
+		//add true input
 		const trueInput = document.createElement('input');
-		trueInput.id = `properties[${property.id}]`
-		checkbox.addEventListener('change', function(trueInput, property){
+		trueInput.id = `properties[${property.id}]`;
+		trueInput.type = 'hidden';
+		trueInput.value = null;
+		checkbox.addEventListener('change', function() {
 			if(this.checked){
 				trueInput.name = `properties[${property.id}]`;
+				
 			}else{
-				trueInput.name = null;
+				trueInput.name = '';
 			}
 		});
 
@@ -69,6 +73,7 @@ function renderProperties() {
 		propertyTitleContainer.appendChild(checkbox);
 		propertyTitleContainer.appendChild(textSpan);
 		propertyTitleContainer.appendChild(arrowDownDiv);
+		propertyTitleContainer.appendChild(trueInput);
 		li.appendChild(propertyTitleContainer);
 		renderProperty(property, li);
 
