@@ -25,6 +25,11 @@ input::-ms-input-placeholder {
     .form-height {
         height: 75.5%;
     }
+
+    /* when no products available */
+    .hd-form-height {
+        height: 25.5%;
+    }
 }
 
 /* Popup */
