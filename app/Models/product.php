@@ -187,13 +187,27 @@ class Product extends Model
                         foreach ($properties as $propertyId => $propertyValue) {
                             $query->orWhere(function ($query) use ($propertyId, $propertyValue) {
                                 $query->where('property_id', $propertyId);
+                                // Fetch the property type from the properties table
+                                $propertyType = Property::find($propertyId)->type ?? null;
+                                // Cast the property value based on its type
+                                switch ($propertyType) {
+                                    case 'bool':
+                                        // Convert to boolean
+                                        $propertyValue = filter_var($propertyValue, FILTER_VALIDATE_BOOLEAN);
+                                        break;
+                                    case 'number':
+                                        // Convert to integer or float
+                                        $propertyValue = is_numeric($propertyValue) ? $propertyValue + 0 : null;
+                                        break;
+                                    // Add more cases for other property types as needed
+                                }
+                                // Apply the condition based on the property value
                                 if ($propertyValue !== null) {
                                     $query->whereJsonContains('property_value', ['value' => $propertyValue]);
                                 }
                             });
                         }
                     });
-        
                     // Group by product id and count the number of distinct property IDs
                     $query->select('product_id')
                         ->groupBy('product_id')
@@ -201,6 +215,7 @@ class Product extends Model
                 });
             }
         );
+        
 
         // Apply different orderings based on the provided input
         if (!isset($filters['orderByInput'])) {

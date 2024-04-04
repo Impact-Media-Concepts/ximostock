@@ -24,6 +24,7 @@ function renderProperties() {
 		trueInput.id = `properties[${property.id}]`;
 		trueInput.type = 'hidden';
 		trueInput.value = null;
+
 		checkbox.addEventListener('change', function() {
 			if(this.checked){
 				trueInput.name = `properties[${property.id}]`;
@@ -75,23 +76,23 @@ function renderProperties() {
 		propertyTitleContainer.appendChild(arrowDownDiv);
 		propertyTitleContainer.appendChild(trueInput);
 		li.appendChild(propertyTitleContainer);
-		renderProperty(property, li);
+		renderProperty(property, li, trueInput);
 
 		//add listitem to list of properties
 		propertyList.appendChild(li);
 	});
 }
 
-function renderProperty(property, li) {
+function renderProperty(property, li, trueInput) {
 	const div = document.createElement("div");
 	div.id = `div_${property.id}`;
 	div.classList.add("hidden", "grid", "mt-[0.5rem]");
 	switch (property.type) {
 	case "multiselect":
-		rendermultiselect(property, div);
+		rendermultiselect(property, div, trueInput);
 		break;
 	case "bool":
-		renderBool(property, div);
+		renderBool(property, div, trueInput);
 		break;
 	case "singleselect":
 		rendersingleselect(property, div);
@@ -156,7 +157,7 @@ function renderNumber(div) {
 	});
 }
 
-function rendermultiselect(property, div) {
+function rendermultiselect(property, div, trueInput) {
 	const input = document.createElement("input");
 
 	input.type = "text";
@@ -245,7 +246,8 @@ function rendermultiselect(property, div) {
 		li.id = `property_${property.id}_${index}_${option}`;
 		li.appendChild(span);
 		li.addEventListener("click", (event) =>
-			propertyMultiSelectControl(option, input, property.id)
+			propertyMultiSelectControl(option, input, property.id, trueInput)
+
 		);
 		options.appendChild(li);
 	});
@@ -253,7 +255,7 @@ function rendermultiselect(property, div) {
 	div.appendChild(options);
 }
 
-function renderBool(property, div) {
+function renderBool(property, div, trueInput) {
 	const input = document.createElement("input");
 
 	input.type = "text";
@@ -352,10 +354,11 @@ function renderBool(property, div) {
 	optionTrue.appendChild(spanTrue);
 	optionFalse.appendChild(spanFalse);
 	optionTrue.addEventListener("click", (event) =>
-	BoolControl(1, input)
+	BoolControl(1, input, trueInput)
+
 	);
 	optionFalse.addEventListener("click", (event) =>
-	BoolControl(0, input)
+	BoolControl(0, input, trueInput)
 	);
 	options.appendChild(optionTrue);
 	options.appendChild(optionFalse);
@@ -371,11 +374,13 @@ function focusmultiSelect(options) {
 	});
 }
 
-function BoolControl(option, input) {
+function BoolControl(option, input, trueInput) {
 	if (option) {
 		input.value = "Ja";
+		trueInput.value = true;
 	} else {
 		input.value = "Nee";
+		trueInput.value = false;
 	}
 }
 
@@ -515,7 +520,7 @@ function blurSingleSelect(options) {
 	}, 200);
 }
 
-function propertyMultiSelectControl(option, input, id) {
+function propertyMultiSelectControl(option, input, id, trueInput) {
     // Check if the surrounding div exists, if not, create it
     let selectedOptionsContainer = document.getElementById(`selectedOptionsContainer${id}`);
 
@@ -547,6 +552,7 @@ function propertyMultiSelectControl(option, input, id) {
     removePropertyIcon.src = '../images/x-icon.png';
 
     removePropertyIcon.addEventListener('click', function () {
+
         newDiv.remove();
     });
 
@@ -562,7 +568,6 @@ function propertyMultiSelectControl(option, input, id) {
 
     input.value = '';
 }
-
 
 function propertySingleSelectControl(option, input) {
 	input.value = option;
