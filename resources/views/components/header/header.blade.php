@@ -120,6 +120,69 @@
         <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
         </div>
 
+        <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
+            <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
+            <button @click="open = !open;"
+                class="flex items-center z-20 w-[9.18rem] px-[1.08rem] h-[2.81rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
+                style="border: 1px solid #717171" type="button" @click.away="open = false">
+                <div class="flex mt-[0.08rem] relative right-[0.2rem]">
+                    <img class="select-none w-[2.5rem] h-[1.2rem] flex mr-[2rem]"
+                        src="../images/workspaces-icon.png" alt="workspaces icon">
+                </div>
+                <span class="w-52 text-left text-[14px] text-gray-700 line-clamp-1 relative right-2"
+                    title="{{ Auth::user()->name }}">
+                    {{ Auth::user()->name }}
+                </span>
+            </button>
+
+            <div x-cloak x-show="open"
+                class="absolute flex-col justify-center items-center h-[36.18rem] w-[16.56rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]"
+                style="border: 1px solid #F0F0F0;">
+                <input type="text">
+
+                <ul>
+                    <div class="items-center">
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+                
+            </div>
+        </div>
+
+        <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
+        </div>
+
         <div class="flex items-center gap-3.5">
             <a href="/user" class="w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"
                 style="border: 1px solid #3dabd5;">
