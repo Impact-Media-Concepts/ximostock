@@ -174,6 +174,150 @@
                                 </button>
                             </a>
                         </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
+                        <li class="flex items-center justify-start">
+                            <a href="/settings">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
+                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
+                                </button>
+                            </a>
+                        </li>
                     </div>
                 </ul>
                 
