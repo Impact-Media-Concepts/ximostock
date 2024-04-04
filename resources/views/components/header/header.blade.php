@@ -119,7 +119,7 @@
         <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
         </div>
 
-        @can('create-property')
+        @can('index-workspaces')
             <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
                 <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
                 <button @click="open = !open;"
@@ -210,7 +210,7 @@
     </div>
 </div>
 
-@can('create-property')
+@can('index-workspaces')
     <x-workspaces-data :workspaces="$workspaces"/>
 @endcan
 
