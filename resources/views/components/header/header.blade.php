@@ -242,7 +242,7 @@
 
             button.appendChild(span);
 
-            // Check if the workspace id matches the active workspace id from @props
+            // Check if the workspace id matches the active workspace id from props
             if (workspace.id === activeWorkspace) {
                 const div = document.createElement('div');
                 div.classList.add("w-full", "flex", "items-center", "justify-end")
