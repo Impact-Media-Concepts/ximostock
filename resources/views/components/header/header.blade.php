@@ -119,33 +119,35 @@
         <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
         </div>
 
-        <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
-            <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
-            <button @click="open = !open;"
-                title="Workspaces"
-                class="flex gap-[0.7rem] items-center z-20 w-[9.18rem] px-[1.08rem] h-[2.81rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
-                style="border: 1px solid #717171" type="button" @click.away="open = false">
-                <div class="flex mt-[0.08rem] relative right-[0.2rem]">
-                    <img class="select-none w-[1.2rem] h-[1.2rem] flex"
-                        src="../images/workspaces-icon.png" alt="workspaces icon">
-                </div>
-                <span class="text-left text-[14px] text-gray-700 line-clamp-1 relative right-2">
-                    Workspaces
-                </span>
-            </button>
-            <div class="flex justify-center">
-                <div x-cloak x-show="open"
-                    class="absolute mr-[13.7rem] flex-col justify-center items-center h-[36.18rem] max-h-[36.16rem] overflow-y-auto w-[16.56rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.6rem]"
-                    style="border: 1px solid #F0F0F0;">
-                    <div class="flex items-center justify-center">
-                        <input @click.stop class="sticky workspace-search-input w-[14.06rem] h-[2.5rem] rounded-md mt-[1rem] pl-[1rem]" style="border: 1px solid #D3D3D3;" type="text" id="workspaceInput" placeholder="Zoeken" />
+        @can('create-property')
+            <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
+                <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
+                <button @click="open = !open;"
+                    title="Workspaces"
+                    class="flex gap-[0.7rem] items-center z-20 w-[9.18rem] px-[1.08rem] h-[2.81rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
+                    style="border: 1px solid #717171" type="button" @click.away="open = false">
+                    <div class="flex mt-[0.08rem] relative right-[0.2rem]">
+                        <img class="select-none w-[1.2rem] h-[1.2rem] flex"
+                            src="../images/workspaces-icon.png" alt="workspaces icon">
                     </div>
+                    <span class="text-left text-[14px] text-gray-700 line-clamp-1 relative right-2">
+                        Workspaces
+                    </span>
+                </button>
+                <div class="flex justify-center">
+                    <div x-cloak x-show="open"
+                        class="absolute mr-[13.7rem] flex-col justify-center items-center h-[36.18rem] max-h-[36.16rem] overflow-y-auto w-[16.56rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.6rem]"
+                        style="border: 1px solid #F0F0F0;">
+                        <div class="flex items-center justify-center">
+                            <input @click.stop class="sticky workspace-search-input w-[14.06rem] h-[2.5rem] rounded-md mt-[1rem] pl-[1rem]" style="border: 1px solid #D3D3D3;" type="text" id="workspaceInput" placeholder="Zoeken" />
+                        </div>
 
-                    <div class="items-center border-none mt-[1rem]" id="workspaceList">
+                        <div class="items-center border-none mt-[1rem]" id="workspaceList">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endcan
 
         <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
         </div>
@@ -208,15 +210,16 @@
     </div>
 </div>
 
-<x-workspaces-data :workspaces="$workspaces"/>
+@can('create-property')
+    <x-workspaces-data :workspaces="$workspaces"/>
+@endcan
 
 <script>
     function renderWorkspaces() {
         const workspaceList = document.getElementById('workspaceList');
 
         workspaceList.innerHTML = '';
-
-        // Iterate through workspaces and create list items
+        
         workspacesData.forEach(workspace => {
             const activeWorkspace = {{ $activeWorkspace ?? 'null' }};
             const li = document.createElement('li');
@@ -239,7 +242,7 @@
 
             button.appendChild(span);
 
-            // Check if the workspace id matches the active workspace id
+            // Check if the workspace id matches the active workspace id from @props
             if (workspace.id === activeWorkspace) {
                 const div = document.createElement('div');
                 div.classList.add("w-full", "flex", "items-center", "justify-end")
