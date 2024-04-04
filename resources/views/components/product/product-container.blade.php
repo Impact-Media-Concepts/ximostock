@@ -13,7 +13,7 @@
     <x-product.product-sub-header :orderBy="$orderBy" :products="$products" />
 
     <!-- form for bulk actions -->
-    <form class="form-height uhd:h-5/6" id="bulkActionsForm" action="" method="POST">
+    <form class="form-height {{ $products->isEmpty() ? 'hd-form-height' : '' }} uhd:h-5/6" id="bulkActionsForm" action="" method="POST">
         @csrf
         <x-product.product-bulk-actions :discountError="$discountError" :products="$products" :perPage="$perPage"/>
         <x-product.product :products="$products" />

@@ -1,4 +1,5 @@
 @props(['product'])
+
 <li class="flex w-full h-[4.5rem] py-4 gap-2 items-center justify-center hover:bg-gray-100 transition duration-300">
     <div class="flex items-center relative left-[0.8rem]">
         <div class="flex justify-center items-center w-10 h-[4.5rem] m-0 p-0">
