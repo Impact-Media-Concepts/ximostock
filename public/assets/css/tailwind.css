@@ -676,6 +676,10 @@ video {
   left: 1.5rem;
 }
 
+.left-\[28rem\] {
+  left: 28rem;
+}
+
 .left-\[32rem\] {
   left: 32rem;
 }
@@ -849,6 +853,10 @@ video {
 
 .mb-\[0\.25rem\] {
   margin-bottom: 0.25rem;
+}
+
+.mb-\[0\.5rem\] {
+  margin-bottom: 0.5rem;
 }
 
 .mb-\[1rem\] {
@@ -1800,6 +1808,10 @@ video {
 
 .gap-\[1\.9rem\] {
   gap: 1.9rem;
+}
+
+.gap-\[13\.2rem\] {
+  gap: 13.2rem;
 }
 
 .space-x-8 > :not([hidden]) ~ :not([hidden]) {

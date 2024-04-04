@@ -72,43 +72,6 @@
                 </div>
             </div>
         </div>
-
-        @if ($discountError)
-            <div class="flex justify-end">
-                <div class="w-[32.18rem] h-[36.56rem] bg-white flex grid justify-center rounded-md">
-                    <div class="flex justify-end relative top-[1rem]">
-                        <img class="select-none w-[1.1rem] h-[1.1rem] flex" src="../images/x-icon.png" alt="x icon">
-                    </div>
-                    <div class="flex justify-center">
-                        <img class="select-none w-[8.12rem] h-[7rem]" src="../images/archive-warning-icon.png"> 
-                    </div>
-                    <div class="w-[28rem] h-[5.93rem] flex">
-                        <p class="text-[16px] text-[#717171]">
-                            Waarschuwing, er zijn (xxx)producten waarbij het afronden bij de decimalen ervoor zorgt dat het product duurder word. Wilt u door gaan met deze actie of producten toch overslaan voor deze actie?
-                        </p>
-                    </div>
-                    <div class="w-[29.12rem] h-[14.75rem] flex-col rounded-md overflow-y-auto overflow-x-hidden max-h-[14.75rem]" style="border: 1px solid #F0F0F0;">
-                        <?php if ($discountError !== null): ?>
-                            <?php foreach ($discountError as $index => $error): ?>
-                                <div class="discount-error-item w-[27.75rem] h-[3.68rem] flex justify-between items-center border border-gray-200">
-                                    <p class="flex-grow flex justify-start pl-[1.2rem] truncate max-w-[19rem]">
-                                        {{ $error->title }}
-                                        <input type="hidden" name="products_ids[{{ $error->id }}]" value="{{ $error->discount }}">
-                                    </p>
-                                    <div class="pr-[1rem]">
-                                        <button type="button" class="skip-discount-error-item w-[6.06rem] h-[2.12rem] flex justify-center items-center rounded-md hover:bg-gray-100" style="border: 1px solid #717172;">
-                                            <p class="text-[14px] text-[#717171]">
-                                                Overslaan
-                                            </p>
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
 </div>
 
