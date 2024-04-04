@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\SalesChannel;
+use App\Models\WorkSpace;
 use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
 use App\Rules\ValidSalesChannelKeys;
@@ -32,10 +33,12 @@ class ProductController extends BaseProductController
             $products = Product::where('work_space_id', $request['workspace']);
             $categories = Category::where('work_space_id', $request['workspace']);
             $properties = Property::where('work_space_id', $request['workspace']);
+            $workspaces= WorkSpace::all();
         }else{
             $products = Product::where('work_space_id', Auth::user()->work_space_id);
             $categories = Category::where('work_space_id', Auth::user()->work_space_id);
             $properties = Property::where('work_space_id', Auth::user()->work_space_id);
+            $workspaces = null;
         }
 
         $products = $products
@@ -62,7 +65,8 @@ class ProductController extends BaseProductController
             'selectedCategories' => request('categories'),
             'orderBy' => request('orderByInput'),
             'sidenavActive' => 'products',
-            'discountErrors' => $request->session()->get('discountErrors')
+            'discountErrors' => $request->session()->get('discountErrors'),
+            'worksapces' => $workspaces
         ];
         return view('product.index', $results);
     }
@@ -349,7 +353,8 @@ class ProductController extends BaseProductController
             'short_description' => $attributes['short_description'],
             'backorders' => $attributes['backorders'],
             'communicate_stock' => $attributes['communicate_stock'],
-            'discount' => $attributes['discount']
+            'discount' => $attributes['discount'],
+            'orderByOnline' => $forOnline
         ]);
 
         if(!isset($attributes['categories'])){
@@ -592,9 +597,7 @@ class ProductController extends BaseProductController
                 if(isset($salesChannelData['salesChannels'][$salesChannelId]['price'])){
                     $attributes += ['price' => $salesChannelData['salesChannels'][$salesChannelId]['price']];
                 }
-                ProductSalesChannel::create(
-                    $attributes
-                );           
+                ProductSalesChannel::create($attributes);
             } else {
                 $productSalesChannel = ProductSalesChannel::where('sales_channel_id', $salesChannelId)->where('product_id', $productId)->first();
                 $productSalesChannel->update([
