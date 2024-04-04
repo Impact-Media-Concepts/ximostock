@@ -147,10 +147,10 @@
                     </div>
                 </div>
             </div>
-        @endcan
 
-        <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
-        </div>
+            <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
+            </div>
+        @endcan
 
         <div class="flex items-center gap-3.5">
             <a href="/user" class="w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"

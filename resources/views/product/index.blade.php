@@ -22,6 +22,9 @@
                                 <span class="pl-[0.2rem] text-[14px] text-white">Opslaan</span>
                             </button>
                         </div>
+
+                        <x-product.popup.save-popup/>
+                        
                         <!-- <input type="submit" value="search test"> -->
                         {{-- categories component --}}
                         <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />
