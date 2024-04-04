@@ -353,5 +353,14 @@ class AppServiceProvider extends ServiceProvider
                 return Response::deny();
             }
         });
+
+        //workspace authorization
+        Gate::define('index-workspaces', function(User $user){
+            if($user->role === 'admin'){
+                return Response::allow();
+            }else{
+                return Response::deny();
+            }
+        });
     }
 }
