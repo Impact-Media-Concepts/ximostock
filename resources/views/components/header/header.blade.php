@@ -1,4 +1,4 @@
-@props(['search' => null])
+@props(['search' => null, 'workspaces', 'activeWorkspace' => null])
 
 <div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center z-[998]">
     <button class="px-11 pt-1 relative left-[0.08rem]">
@@ -108,8 +108,7 @@
                                     stroke-width="1.5" stroke="white" class="w-3 h-3">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
-                                <span
-                                    class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Eigenschap</span>
+                                <span class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Eigenschap</span>
                             </a>
                         </li>
                     </ul>
@@ -123,60 +122,28 @@
         <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
             <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
             <button @click="open = !open;"
-                class="flex items-center z-20 w-[9.18rem] px-[1.08rem] h-[2.81rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
+                title="Workspaces"
+                class="flex gap-[0.7rem] items-center z-20 w-[9.18rem] px-[1.08rem] h-[2.81rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
                 style="border: 1px solid #717171" type="button" @click.away="open = false">
                 <div class="flex mt-[0.08rem] relative right-[0.2rem]">
-                    <img class="select-none w-[2.5rem] h-[1.2rem] flex mr-[2rem]"
+                    <img class="select-none w-[1.2rem] h-[1.2rem] flex"
                         src="../images/workspaces-icon.png" alt="workspaces icon">
                 </div>
-                <span class="w-52 text-left text-[14px] text-gray-700 line-clamp-1 relative right-2"
-                    title="{{ Auth::user()->name }}">
-                    {{ Auth::user()->name }}
+                <span class="text-left text-[14px] text-gray-700 line-clamp-1 relative right-2">
+                    Workspaces
                 </span>
             </button>
-
-            <div x-cloak x-show="open"
-                class="absolute flex-col justify-center items-center h-[36.18rem] w-[16.56rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]"
-                style="border: 1px solid #F0F0F0;">
-                <input type="text">
-
-                <ul>
-                    <div class="items-center">
-                        <li class="flex items-center justify-start">
-                            <a href="/settings">
-                                <button @click="selectedProperty = 'Instellingen'; open = false;"
-                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
-                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
-                                </button>
-                            </a>
-                        </li>
-                        <li class="flex items-center justify-start">
-                            <a href="/settings">
-                                <button @click="selectedProperty = 'Instellingen'; open = false;"
-                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
-                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
-                                </button>
-                            </a>
-                        </li>
-                        <li class="flex items-center justify-start">
-                            <a href="/settings">
-                                <button @click="selectedProperty = 'Instellingen'; open = false;"
-                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
-                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
-                                </button>
-                            </a>
-                        </li>
-                        <li class="flex items-center justify-start">
-                            <a href="/settings">
-                                <button @click="selectedProperty = 'Instellingen'; open = false;"
-                                    class="hover:bg-[#3999BE] duration-100 block w-[15.5rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start">
-                                    <span class="flex items-center justify-start pr-3 text-[#717171]">workspace</span>
-                                </button>
-                            </a>
-                        </li>
+            <div class="flex justify-center">
+                <div x-cloak x-show="open"
+                    class="absolute mr-[13.7rem] flex-col justify-center items-center h-[36.18rem] max-h-[36.16rem] overflow-y-auto w-[16.56rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.6rem]"
+                    style="border: 1px solid #F0F0F0;">
+                    <div class="flex items-center justify-center">
+                        <input @click.stop class="sticky workspace-search-input w-[14.06rem] h-[2.5rem] rounded-md mt-[1rem] pl-[1rem]" style="border: 1px solid #D3D3D3;" type="text" id="workspaceInput" placeholder="Zoeken" />
                     </div>
-                </ul>
-                
+
+                    <div class="items-center border-none mt-[1rem]" id="workspaceList">
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -240,3 +207,82 @@
         </div>
     </div>
 </div>
+
+<x-workspaces-data :workspaces="$workspaces"/>
+
+<script>
+    function renderWorkspaces() {
+        const workspaceList = document.getElementById('workspaceList');
+
+        workspaceList.innerHTML = '';
+
+        // Iterate through workspaces and create list items
+        workspacesData.forEach(workspace => {
+            const activeWorkspace = {{ $activeWorkspace ?? 'null' }};
+            const li = document.createElement('li');
+            li.classList.add('flex', 'items-center', 'justify-start');
+            li.id = `li_${workspace.id}`;
+
+            const a = document.createElement('a');
+            a.href = `?workspace=${workspace.id}`;
+
+            const button = document.createElement('button');
+            button.classList.add('hover:bg-[#3999BE]', 'duration-100', 'block', 'w-[15.5rem]', 'h-[2.3rem]', 'px-4', 'py-2', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'focus:outline-none', 'flex', 'justify-start', 'items-center');
+            button.addEventListener('click', () => {
+                selectedProperty = 'Instellingen';
+                open = false;
+            });
+
+            const span = document.createElement('span');
+            span.classList.add('flex', 'items-center', 'justify-start', 'pr-3', 'text-[#717171]');
+            span.textContent = workspace.name;
+
+            button.appendChild(span);
+
+            // Check if the workspace id matches the active workspace id
+            if (workspace.id === activeWorkspace) {
+                const div = document.createElement('div');
+                div.classList.add("w-full", "flex", "items-center", "justify-end")
+                const span = document.createElement('span');
+                span.style.width = '0.5rem';
+                span.style.height = '0.5rem';
+                span.style.backgroundColor = '#3999BE';
+                span.style.borderRadius= "50%";
+                div.appendChild(span);
+                button.appendChild(div);
+            }
+
+            a.appendChild(button);
+            li.appendChild(a);
+            workspaceList.appendChild(li);
+        });
+    }
+
+    renderWorkspaces();
+    
+    function searchWorkspaces(workspaceSearchText) {
+        workspacesData.forEach((workspace) => {
+        const li = document.getElementById(`li_${workspace.id}`);
+        if (
+            !workspaceSearchText ||
+            workspace.name.toLowerCase().includes(workspaceSearchText.toLowerCase())
+        ) {
+            li.classList.remove("hidden");
+        } else {
+            li.classList.add("hidden");
+        }
+        });
+    }
+
+    const workspaceSearchInput = document.getElementById("workspaceInput");
+    workspaceSearchInput.addEventListener("input", () => {
+        const workspaceSearchText = workspaceSearchInput.value.trim();
+
+        // Render Workspaces if search input is empty
+        if (!workspaceSearchText) {
+            renderWorkspaces(); //vervang met show all
+        } else {
+            searchWorkspaces(workspaceSearchText);
+        }
+    });
+</script>
