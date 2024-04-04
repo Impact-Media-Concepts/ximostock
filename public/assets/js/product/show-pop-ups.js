@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
           this.classList.add("hidden");
       }
   });
-
+  
   // Open discount popup
   document.querySelectorAll(".discount-popup-trigger").forEach(function (trigger) {
       trigger.addEventListener("click", function (event) {
