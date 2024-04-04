@@ -18,6 +18,16 @@ function renderProperties() {
 		const checkbox = document.createElement("input");
 		checkbox.type = "checkbox";
         checkbox.classList.add("hover:cursor-pointer")
+		//add event listner
+		const trueInput = document.createElement('input');
+		trueInput.id = `properties[${property.id}]`
+		checkbox.addEventListener('change', function(trueInput, property){
+			if(this.checked){
+				trueInput.name = `properties[${property.id}]`;
+			}else{
+				trueInput.name = null;
+			}
+		});
 
 		const propertyNameSpan = document.createElement('span');
 		propertyNameSpan.textContent = property.name;
@@ -143,7 +153,6 @@ function renderNumber(div) {
 
 function rendermultiselect(property, div) {
 	const input = document.createElement("input");
-	const trueInput = document.createElement("input");
 
 	input.type = "text";
 	input.classList.add(
@@ -169,12 +178,9 @@ function rendermultiselect(property, div) {
 	input.style.border = "1px solid #D3D3D3";
 	input.placeholder = "Zoeken";
 	input.addEventListener("input", (event) =>
-	searchProperty(input.value, property, trueInput)
+	searchProperty(input.value, property)
 	);
 
-	//actual input send to backend
-	trueInput.type = "hidden";
-	trueInput.name = `prop[${property.id}]`;
 
 	const options = document.createElement("ul");
 	options.classList.add(
@@ -234,18 +240,16 @@ function rendermultiselect(property, div) {
 		li.id = `property_${property.id}_${index}_${option}`;
 		li.appendChild(span);
 		li.addEventListener("click", (event) =>
-			propertyMultiSelectControl(option, input, trueInput, property.id)
+			propertyMultiSelectControl(option, input, property.id)
 		);
 		options.appendChild(li);
 	});
 	div.appendChild(input);
-	div.appendChild(trueInput);
 	div.appendChild(options);
 }
 
 function renderBool(property, div) {
 	const input = document.createElement("input");
-	const trueInput = document.createElement("input");
 
 	input.type = "text";
 	input.classList.add(
@@ -270,12 +274,9 @@ function renderBool(property, div) {
 	input.id = `searchProp_${property.id}`;
 	input.placeholder = "Zoeken";
 	input.addEventListener("input", (event) =>
-	searchProperty(input.value, property, trueInput)
+	searchProperty(input.value, property)
 	);
 
-	//actual input send to backend
-	trueInput.type = "hidden";
-	trueInput.name = `prop[${property.id}]`;
 
 	const options = document.createElement("ul");
 	options.classList.add(
@@ -346,16 +347,15 @@ function renderBool(property, div) {
 	optionTrue.appendChild(spanTrue);
 	optionFalse.appendChild(spanFalse);
 	optionTrue.addEventListener("click", (event) =>
-	BoolControl(1, input, trueInput)
+	BoolControl(1, input)
 	);
 	optionFalse.addEventListener("click", (event) =>
-	BoolControl(0, input, trueInput)
+	BoolControl(0, input)
 	);
 	options.appendChild(optionTrue);
 	options.appendChild(optionFalse);
 
 	div.appendChild(input);
-	div.appendChild(trueInput);
 	div.appendChild(options);
 }
 
@@ -366,19 +366,17 @@ function focusmultiSelect(options) {
 	});
 }
 
-function BoolControl(option, input, trueInput) {
+function BoolControl(option, input) {
 	if (option) {
 		input.value = "Ja";
 	} else {
 		input.value = "Nee";
 	}
-	trueInput.value = option;
 }
 
 //render the singel select property
 function rendersingleselect(property, div) {
 	const input = document.createElement("input");
-	const trueInput = document.createElement("input");
 
 	input.type = "text";
 	input.classList.add(
@@ -403,12 +401,8 @@ function rendersingleselect(property, div) {
 		input.id = `searchProp_${property.id}`;
 		input.placeholder = "Zoeken";
 		input.addEventListener("input", (event) =>
-		searchProperty(input.value, property, trueInput)
+		searchProperty(input.value, property)
 	);
-
-	//actual input send to backend
-	trueInput.type = "hidden";
-	trueInput.name = `prop[${property.id}]`;
 
 	const options = document.createElement("ul");
 	options.classList.add(
@@ -469,12 +463,11 @@ function rendersingleselect(property, div) {
 		li.id = `property_${property.id}_${option}`;
 		li.appendChild(span);
 		li.addEventListener("click", (event) =>
-			propertySingleSelectControl(option, input, trueInput)
+			propertySingleSelectControl(option, input)
 		);
 		options.appendChild(li);
 	});
 	div.appendChild(input);
-	div.appendChild(trueInput);
 	div.appendChild(options);
 }
 
@@ -517,7 +510,7 @@ function blurSingleSelect(options) {
 	}, 200);
 }
 
-function propertyMultiSelectControl(option, input, trueInput, id) {
+function propertyMultiSelectControl(option, input, id) {
     // Check if the surrounding div exists, if not, create it
     let selectedOptionsContainer = document.getElementById(`selectedOptionsContainer${id}`);
 
@@ -550,7 +543,6 @@ function propertyMultiSelectControl(option, input, trueInput, id) {
 
     removePropertyIcon.addEventListener('click', function () {
         newDiv.remove();
-        updateTrueInputValue();
     });
 
     span.appendChild(removePropertyIcon);
@@ -564,24 +556,15 @@ function propertyMultiSelectControl(option, input, trueInput, id) {
     selectedOptionsContainer.appendChild(newDiv);
 
     input.value = '';
-
-    // Optionally, you can update the hidden input value as well
-    updateTrueInputValue();
-
-    function updateTrueInputValue() {
-        const selectedOptions = Array.from(selectedOptionsContainer.querySelectorAll('.selected-option'));
-        trueInput.value = selectedOptions.map(option => option.getAttribute('data-value')).join(',');
-    }
 }
 
 
-function propertySingleSelectControl(option, input, trueInput) {
+function propertySingleSelectControl(option, input) {
 	input.value = option;
-	trueInput.value = option;
 }
 
 //search through properties options
-function searchProperty(searchText, property, trueInput) {
+function searchProperty(searchText, property) {
 	searchText = searchText.trim();
 	property.options.forEach((option) => {
 	const li = document.getElementById(
@@ -596,7 +579,6 @@ function searchProperty(searchText, property, trueInput) {
 		li.classList.add("hidden");
 	}
 	});
-	trueInput.value = null;
 }
 
 function propertyHandleCheckboxClick(property) {
