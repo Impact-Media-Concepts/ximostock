@@ -14,6 +14,7 @@ use App\Models\WorkSpace;
 use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
 use App\Rules\ValidSalesChannelKeys;
+use App\Rules\ValidWorkspaceKeys;
 use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class ProductController extends BaseProductController
         $perPage = $request->input('perPage', 20);
         if(Auth::user()->role === 'admin'){
             $request->validate([
-                'workspace' => ['required'] //todo valid workspace rule
+                'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
 
             $products = Product::where('work_space_id', $request['workspace']);
@@ -66,14 +67,15 @@ class ProductController extends BaseProductController
             'categories' => $categories,
             'properties' => $properties,
             'perPage' => $perPage,
-            'search' => request('search'),
-            'selectedCategories' => request('categories'),
-            'orderBy' => request('orderByInput'),
+            'search' => $request['search'],
+            'selectedCategories' => $request['categories'],
+            'orderBy' => $request['orderByInput'],
             'sidenavActive' => 'products',
             'discountErrors' => $request->session()->get('discountErrors'),
             'workspaces' => $workspaces,
             'activeWorkspace' => $activeWorkspace,
-            'salesChannels' => $salesChannels
+            'salesChannels' => $salesChannels,
+            'selectedProperties' => $request['properties']
         ];
         return view('product.index', $results);
     }
