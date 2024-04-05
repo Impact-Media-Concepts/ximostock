@@ -1,11 +1,11 @@
-@props(['salesChannel' => []])
+@props(['salesChannels' => []])
 
 <script>
     let salesChannelsData = [
-        @foreach ( $salesChannel as $salesChannel)
+        @foreach ( $salesChannels as $salesChannel)
             {
                 id:{{$salesChannel->id}},
-                name: "{{$salesChannel->name}}"
+                name: "{{ $salesChannel->name }}"
             },
         @endforeach
     ];

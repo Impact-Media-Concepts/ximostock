@@ -11,6 +11,19 @@ document.addEventListener("DOMContentLoaded", () => {
     DiscountFormButton.addEventListener('click', function(){
         BulkForm.action = '/products/bulkdiscount';
     });
+
+    //unlink sales channels
+    const unlinkSalesChannelsButton = document.getElementById('unlinkSalesChannels');
+    unlinkSalesChannelsButton.addEventListener('click', function(){
+        BulkForm.action = '/products/bulkunlinksaleschannel';
+    });
+
+    //link sales channels
+    const linkSalesChannelsButton = document.getElementById('linkSalesChannels');
+    linkSalesChannelsButton.addEventListener('click', function(){
+        BulkForm.action = '/products/bulklinksaleschannel';
+    });
+    
     const round = document.getElementById('roundDiscount');
     const trueRound = document.getElementById('trueRoundDiscount');
     round.addEventListener('click', function(){
@@ -20,5 +33,4 @@ document.addEventListener("DOMContentLoaded", () => {
             trueRound.value = 0;
         }
     });
-
 });

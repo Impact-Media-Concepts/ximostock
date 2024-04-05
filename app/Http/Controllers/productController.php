@@ -211,7 +211,8 @@ class ProductController extends BaseProductController
 
     public function bulkLinkSalesChannel()
     {
-        Gate::authorize('bulk-saleschannel-products');
+        //TODO
+        // Gate::authorize('bulk-saleschannel-products',[[]]);
 
         //validate request
         $validatedData = request()->validate([
@@ -235,7 +236,7 @@ class ProductController extends BaseProductController
 
     public function bulkUnlinkSalesChannel()
     {
-        Gate::authorize('bulk-saleschannel-products');
+        // Gate::authorize('bulk-saleschannel-products');
 
         // Validate request
         $validatedData = request()->validate([
