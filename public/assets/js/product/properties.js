@@ -80,13 +80,13 @@ function renderProperty(property, li, trueInput) {
 	div.classList.add("hidden", "grid", "mt-[0.5rem]");
 	switch (property.type) {
 		case "multiselect":
-			rendermultiselect(property, div, trueInput);
+			rendermultiselect(property, div, trueInput);//
 			break;
 		case "bool":
 			renderBool(property, div, trueInput); //
 			break;
 		case "singleselect":
-			rendersingleselect(property, div); 
+			rendersingleselect(property, div, trueInput); 
 			break;
 		case "text":
 			renderText(div, trueInput); //
@@ -241,16 +241,25 @@ function rendermultiselect(property, div, trueInput) {
 		);
 
 		span.textContent = option;
-		li.id = `property_${property.id}_${index}_${option}`;
+		li.id = `property_${property.id}_${option}`;
 		li.appendChild(span);
 		li.addEventListener("click", (event) =>
 			propertyMultiSelectControl(option, input, property.id, trueInput)
-
 		);
 		options.appendChild(li);
 	});
 	div.appendChild(input);
 	div.appendChild(options);
+}
+
+function setTrueInputValueMulti(trueInput ,optionsDiv){
+	const options = optionsDiv.querySelectorAll('.selected-option');
+	let value = [];
+	options.forEach(option => {
+		value.push(option.getAttribute('data-value'));
+	});
+	trueInput.value = value;
+
 }
 
 function renderBool(property, div, trueInput) {
@@ -549,8 +558,8 @@ function propertyMultiSelectControl(option, input, id, trueInput) {
 	removePropertyIcon.src = '../images/x-icon.png';
 
 	removePropertyIcon.addEventListener('click', function () {
-
 		newDiv.remove();
+		setTrueInputValueMulti(trueInput ,selectedOptionsContainer);
 	});
 
 	span.appendChild(removePropertyIcon);
@@ -564,6 +573,8 @@ function propertyMultiSelectControl(option, input, id, trueInput) {
 	selectedOptionsContainer.appendChild(newDiv);
 
 	input.value = '';
+
+	setTrueInputValueMulti(trueInput, selectedOptionsContainer);
 }
 
 function propertySingleSelectControl(option, input) {
@@ -574,10 +585,10 @@ function propertySingleSelectControl(option, input) {
 function searchProperty(searchText, property) {
 	searchText = searchText.trim();
 	property.options.forEach((option) => {
+
 		const li = document.getElementById(
 			`property_${property.id}_${option}`
 		);
-
 		if (
 			!searchText ||
 			option.toLowerCase().includes(searchText.toLowerCase())
@@ -619,6 +630,7 @@ function removeRotateArrowClass(property) {
 
 function searchProperties(searchText) {
 	propertiesData.forEach((property) => {
+		
 		const li = document.getElementById(`li_${property.id}`);
 		if (
 			!searchText ||
