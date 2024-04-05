@@ -1,9 +1,5 @@
 @props(['salesChannels'])
 
-<?php 
-echo $salesChannels;
-?>
-
 <div
     class="sales-popup w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 999;"
 >
