@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             checkbox.checked = selectAllCheckbox.checked;
         });
     });
-
     
     function renderSalesChannels() {
         
@@ -27,54 +26,55 @@ document.addEventListener("DOMContentLoaded", (event) => {
         salesChannelList.innerHTML = '';
 
         salesChannelsData.forEach(salesChannel => {
-        const divContainer = document.createElement('div');
-        divContainer.classList.add('flex', 'justify-center', 'py-[0.5rem]');
-        divContainer.id = `sales_div_${salesChannel.id}`;
 
-        const innerDiv = document.createElement('div');
-        innerDiv.classList.add('w-[63rem]', 'h-[3.68rem]', 'flex', 'items-center', 'bg-[#F8F8F8]', 'rounded-md');
-        innerDiv.style.border = '1px solid #F0F0F0';
+            const divContainer = document.createElement('div');
+            divContainer.classList.add('flex', 'justify-center', 'py-[0.5rem]');
+            divContainer.id = `sales_div_${salesChannel.id}`;
 
-        const imgDiv = document.createElement('div');
-        imgDiv.classList.add('px-[1.25rem]');
-        const img = document.createElement('img');
-        img.classList.add('w-[3.56rem]', 'h-[2.56rem]');
-        img.src = '../images/save-icon.png';
-        imgDiv.appendChild(img);
-        innerDiv.appendChild(imgDiv);
+            const innerDiv = document.createElement('div');
+            innerDiv.classList.add('w-[63rem]', 'h-[3.68rem]', 'flex', 'items-center', 'bg-[#F8F8F8]', 'rounded-md');
+            innerDiv.style.border = '1px solid #F0F0F0';
 
-        const textDiv = document.createElement('div');
-        textDiv.classList.add('w-full', 'flex');
-        
-        const p = document.createElement('p');
-        p.textContent = salesChannel.name;
-        textDiv.appendChild(p);
-        innerDiv.appendChild(textDiv);
+            const imgDiv = document.createElement('div');
+            imgDiv.classList.add('px-[1.25rem]');
+            const img = document.createElement('img');
+            img.classList.add('w-[3.56rem]', 'h-[2.56rem]');
+            img.src = '../images/save-icon.png';
+            imgDiv.appendChild(img);
+            innerDiv.appendChild(imgDiv);
 
-        const checkboxDiv = document.createElement('div');
-        checkboxDiv.classList.add('flex', 'items-center', 'justify-end', 'mr-[1.5rem]');
+            const textDiv = document.createElement('div');
+            textDiv.classList.add('w-full', 'flex');
+            
+            const p = document.createElement('p');
+            p.textContent = salesChannel.name;
+            textDiv.appendChild(p);
+            innerDiv.appendChild(textDiv);
 
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-        const span = document.createElement('span');
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.classList.add('flex', 'items-center', 'justify-end', 'mr-[1.5rem]');
 
-        label.classList.add("slideon");
-        
-        span.classList.add("slideon-slider");
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            const span = document.createElement('span');
 
-        input.id = `selectSalesItem_${salesChannel.id}`;
-        input.type = 'checkbox';
-        input.classList.add('slideon', 'slideon-auto');
-        input.name = 'sales_channel_ids[]';
-        input.value = `${salesChannel.id}`;
+            label.classList.add("slideon");
+            
+            span.classList.add("slideon-slider");
 
-        label.appendChild(input);
-        label.appendChild(span);
-        checkboxDiv.appendChild(label);
-        
-        innerDiv.appendChild(checkboxDiv);
+            input.id = `selectSalesItem_${salesChannel.id}`;
+            input.type = 'checkbox';
+            input.classList.add('slideon', 'slideon-auto');
+            input.name = 'sales_channel_ids[]';
+            input.value = `${salesChannel.id}`;
 
-        divContainer.appendChild(innerDiv);
+            label.appendChild(input);
+            label.appendChild(span);
+            checkboxDiv.appendChild(label);
+            
+            innerDiv.appendChild(checkboxDiv);
+
+            divContainer.appendChild(innerDiv);
             salesChannelList.appendChild(divContainer);
         });
     }
