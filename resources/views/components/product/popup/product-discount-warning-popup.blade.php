@@ -65,9 +65,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", (event) => {
-
         const discountWarningPopup = document.querySelector(".discount-warning-popup");
-
         document.querySelectorAll('.skip-discountWarningError-item').forEach(function(button) {
             button.addEventListener('click', function() {
                 let discountWarningError = button.closest('.discountWarningError-item');
@@ -81,20 +79,21 @@
         if (error) {
             document.querySelector(".discount-warning-popup").classList.remove("hidden");
         }
-        document.querySelector(".discount-warning-popup").addEventListener("click", function (event) {
-            if (
-                event.target.matches(".discount-warning-popup-close") ||
-                event.target.matches(".discount-warningCancel")
-            ) {
-                event.preventDefault();
-                discountWarningPopup.classList.add("fade-out");
-                discountWarningPopup.addEventListener("animationend", function(event) {
-                    if (event.animationName === "fadeOut") {
-                        discountWarningPopup.classList.add("hidden");
-                    }
-                }, false);
-                discountWarningPopup.classList.remove("fade-in");
-            }
-        });
+
+        if (discountWarningPopup) {
+            document.querySelector(".discount-warning-popup").addEventListener("click", function (event) {
+                if (
+                    event.target.matches(".discount-warning-popup-close") ||
+                    event.target.matches(".discount-warningCancel")
+                ) {
+                    event.preventDefault();
+                    discountWarningPopup.style.animation = "fadeOut 0.3s forwards"; 
+
+                    discountWarningPopup.addEventListener("animationend", function() {
+                        discountWarningPopup.style.display = "none";
+                    });
+                }
+            });   
+        }
     });   
 </script>
