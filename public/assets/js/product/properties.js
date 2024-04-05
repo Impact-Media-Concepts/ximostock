@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		propertyList.style.overflowY = 'scroll';
 		propertiesData.forEach((property) => {
 			const li = document.createElement("li");
-			li.id = `li_${property.id}`;
+			li.id = `properties_li_${property.id}`;
 			li.classList.add('pt-[0.35rem]', 'pb-[0.35rem]');
 			//build components
 			const checkbox = document.createElement("input");
@@ -656,7 +656,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	function searchProperties(searchText) {
 		propertiesData.forEach((property) => {
 
-			const li = document.getElementById(`li_${property.id}`);
+			const li = document.getElementById(`properties_li_${property.id}`);
 			if (
 				!searchText ||
 				property.name.toLowerCase().includes(searchText.toLowerCase())
