@@ -27,6 +27,29 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         salesChannelsData.forEach(salesChannel => {
 
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            const span = document.createElement('span');
+
+            label.classList.add("slideon");
+            
+            span.classList.add("slideon-slider");
+
+            input.id = `selectSalesItem_${salesChannel.id}`;
+            input.type = 'checkbox';
+            input.classList.add('slideon', 'slideon-auto');
+            input.name = 'sales_channel_ids[]';
+            input.value = `${salesChannel.id}`;
+
+            input.addEventListener('change', function() {
+                if (this.checked) {
+                    console.log(`Checkbox with id ${this.id} is checked.`);
+                } else {
+                    console.log(`Checkbox with id ${this.id} is unchecked.`);
+                }
+            });
+
+
             const divContainer = document.createElement('div');
             divContainer.classList.add('flex', 'justify-center', 'py-[0.5rem]');
             divContainer.id = `sales_div_${salesChannel.id}`;
@@ -53,20 +76,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             const checkboxDiv = document.createElement('div');
             checkboxDiv.classList.add('flex', 'items-center', 'justify-end', 'mr-[1.5rem]');
-
-            const label = document.createElement('label');
-            const input = document.createElement('input');
-            const span = document.createElement('span');
-
-            label.classList.add("slideon");
-            
-            span.classList.add("slideon-slider");
-
-            input.id = `selectSalesItem_${salesChannel.id}`;
-            input.type = 'checkbox';
-            input.classList.add('slideon', 'slideon-auto');
-            input.name = 'sales_channel_ids[]';
-            input.value = `${salesChannel.id}`;
 
             label.appendChild(input);
             label.appendChild(span);
