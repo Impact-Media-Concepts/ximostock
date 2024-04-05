@@ -48,7 +48,7 @@
                                 <span class="relative right-[1.5rem] font-[16px]">%</span>
                             </div>
                             <div class="flex gap-[0.5rem]">
-                                <input type="checkbox" id="roundDiscount" x-on:click="showDecimals = !showDecimals">
+                                <input class="hover:cursor-pointer" type="checkbox" id="roundDiscount" x-on:click="showDecimals = !showDecimals">
                                 <input type="hidden" name="round" value="0" id="trueRoundDiscount">
                                 <label class="text-[14px] font-bold" for="discountPercentage">Afronden op decimalen?</label>
                             </div>

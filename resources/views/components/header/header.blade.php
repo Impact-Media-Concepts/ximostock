@@ -19,7 +19,7 @@
             </svg>
         </button>
         <input id="searchBar" class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
-            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search..."
+            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Zoeken..."
             autocomplete="off" value="{{ $search }}">
     </div>
 
@@ -147,10 +147,10 @@
                     </div>
                 </div>
             </div>
-        @endcan
 
-        <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
-        </div>
+            <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
+            </div>
+        @endcan
 
         <div class="flex items-center gap-3.5">
             <a href="/user" class="w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"
@@ -218,47 +218,50 @@
     function renderWorkspaces() {
         const workspaceList = document.getElementById('workspaceList');
 
-        workspaceList.innerHTML = '';
-        
-        workspacesData.forEach(workspace => {
-            const activeWorkspace = {{ $activeWorkspace ?? 'null' }};
-            const li = document.createElement('li');
-            li.classList.add('flex', 'items-center', 'justify-start');
-            li.id = `li_${workspace.id}`;
+        // Check if workspaceList exists and workspacesData is not null or undefined because of role rights
+        if (workspaceList && workspacesData) {
+            workspaceList.innerHTML = '';
 
-            const a = document.createElement('a');
-            a.href = `?workspace=${workspace.id}`;
+            workspacesData.forEach(workspace => {
+                const activeWorkspace = {{ $activeWorkspace ?? 'null' }};
+                const li = document.createElement('li');
+                li.classList.add('flex', 'items-center', 'justify-start');
+                li.id = `li_${workspace.id}`;
 
-            const button = document.createElement('button');
-            button.classList.add('hover:bg-[#3999BE]', 'duration-100', 'block', 'w-[15.5rem]', 'h-[2.3rem]', 'px-4', 'py-2', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'focus:outline-none', 'flex', 'justify-start', 'items-center');
-            button.addEventListener('click', () => {
-                selectedProperty = 'Instellingen';
-                open = false;
-            });
+                const a = document.createElement('a');
+                a.href = `?workspace=${workspace.id}`;
 
-            const span = document.createElement('span');
-            span.classList.add('flex', 'items-center', 'justify-start', 'pr-3', 'text-[#717171]');
-            span.textContent = workspace.name;
+                const button = document.createElement('button');
+                button.classList.add('hover:bg-[#3999BE]', 'duration-100', 'block', 'w-[15.5rem]', 'h-[2.3rem]', 'px-4', 'py-2', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'focus:outline-none', 'flex', 'justify-start', 'items-center');
+                button.addEventListener('click', () => {
+                    selectedProperty = 'Instellingen';
+                    open = false;
+                });
 
-            button.appendChild(span);
-
-            // Check if the workspace id matches the active workspace id from props
-            if (workspace.id === activeWorkspace) {
-                const div = document.createElement('div');
-                div.classList.add("w-full", "flex", "items-center", "justify-end")
                 const span = document.createElement('span');
-                span.style.width = '0.5rem';
-                span.style.height = '0.5rem';
-                span.style.backgroundColor = '#3999BE';
-                span.style.borderRadius= "50%";
-                div.appendChild(span);
-                button.appendChild(div);
-            }
+                span.classList.add('flex', 'items-center', 'justify-start', 'pr-3', 'text-[#717171]');
+                span.textContent = workspace.name;
 
-            a.appendChild(button);
-            li.appendChild(a);
-            workspaceList.appendChild(li);
-        });
+                button.appendChild(span);
+
+                // Check if the workspace id matches the active workspace id from props
+                if (workspace.id === activeWorkspace) {
+                    const div = document.createElement('div');
+                    div.classList.add("w-full", "flex", "items-center", "justify-end")
+                    const span = document.createElement('span');
+                    span.style.width = '0.5rem';
+                    span.style.height = '0.5rem';
+                    span.style.backgroundColor = '#3999BE';
+                    span.style.borderRadius= "50%";
+                    div.appendChild(span);
+                    button.appendChild(div);
+                }
+
+                a.appendChild(button);
+                li.appendChild(a);
+                workspaceList.appendChild(li);
+            });
+        }
     }
 
     renderWorkspaces();
@@ -278,14 +281,17 @@
     }
 
     const workspaceSearchInput = document.getElementById("workspaceInput");
-    workspaceSearchInput.addEventListener("input", () => {
-        const workspaceSearchText = workspaceSearchInput.value.trim();
 
-        // Render Workspaces if search input is empty
-        if (!workspaceSearchText) {
-            renderWorkspaces(); //vervang met show all
-        } else {
-            searchWorkspaces(workspaceSearchText);
-        }
-    });
+    if (workspaceSearchInput) {
+        workspaceSearchInput.addEventListener("input", () => {
+            const workspaceSearchText = workspaceSearchInput.value.trim();
+
+            // Render Workspaces if search input is empty
+            if (!workspaceSearchText) {
+                renderWorkspaces(); //vervang met show all
+            } else {
+                searchWorkspaces(workspaceSearchText);
+            }
+        });
+    }
 </script>

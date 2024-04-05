@@ -1,5 +1,5 @@
 {{-- receives the props from parent --}}
-@props(['products', 'perPage', 'orderBy', 'discountError'])
+@props(['products', 'perPage', 'orderBy', 'discountError', 'salesChannels'])
 
 <style>
     .bulk-actions-hidden {
@@ -13,6 +13,7 @@
     <x-product.product-sub-header :orderBy="$orderBy" :products="$products" />
 
     <x-product.popup.product-discount-warning-popup :discountError="$discountError" />
+    <x-product.popup.sales-channels.product-sales-channels-bulk-popup :salesChannels="$salesChannels" />
 
     <!-- form for bulk actions -->
     <form class="form-height {{ $products->isEmpty() ? 'hd-form-height' : '' }} uhd:h-5/6" id="bulkActionsForm" action="" method="POST">

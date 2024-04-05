@@ -1,7 +1,7 @@
 @props(['discountError'])
 
 @if ($discountError)
-    <form action="/products/bulkdiscountforce" method="POST">
+    <form action="/properties/bulkdiscountforce" method="POST">
         @csrf
         <div
             class="discount-warning-popup w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 999;"
@@ -65,6 +65,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", (event) => {
+        const discountWarningPopup = document.querySelector(".discount-warning-popup");
         document.querySelectorAll('.skip-discountWarningError-item').forEach(function(button) {
             button.addEventListener('click', function() {
                 let discountWarningError = button.closest('.discountWarningError-item');
@@ -72,39 +73,27 @@
                 discountWarningError.parentNode.removeChild(discountWarningError);
             });
         });
-    });
 
-    function restrictNumberInput(event) {
-        let input = event.target;
-        let value = parseInt(input.value, 10);
-        let min = 10;
-        let max = 100;
+        const error = @json($discountError ?? null);
 
-        if (isNaN(value)) {
-            input.value = "";
-            event.preventDefault();
+        if (error) {
+            document.querySelector(".discount-warning-popup").classList.remove("hidden");
         }
-        else if (value > max) {
-            input.value = max;
-            event.preventDefault();
-        }
-    }
-    const error = @json($discountError ?? null);
 
-    if (error) {
-        console.log();
-        document.querySelector(".discount-warning-popup").classList.remove("hidden");
-    }
+        if (discountWarningPopup) {
+            document.querySelector(".discount-warning-popup").addEventListener("click", function (event) {
+                if (
+                    event.target.matches(".discount-warning-popup-close") ||
+                    event.target.matches(".discount-warningCancel")
+                ) {
+                    event.preventDefault();
+                    discountWarningPopup.style.animation = "fadeOut 0.3s forwards"; 
 
-    // Close discount-warning popup
-    document.querySelector(".discount-warning-popup").addEventListener("click", function (event) {
-        if (
-            event.target.matches(".discount-warning-popup-close") ||
-            event.target.matches(".discount-warningCancel") ||
-            event.target.matches(".discount-warningSave")
-        ) {
-            event.preventDefault();
-            this.classList.add("hidden");
+                    discountWarningPopup.addEventListener("animationend", function() {
+                        discountWarningPopup.style.display = "none";
+                    });
+                }
+            });   
         }
-    });
+    });   
 </script>

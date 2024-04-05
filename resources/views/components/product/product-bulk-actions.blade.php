@@ -21,7 +21,7 @@
     
     <div class="flex justify-center items-center pt-1 gap-[0.57rem]">
         @foreach ($buttons as $button)
-            <x-product.buttons.product-bulk-button bulkActionId="bulkAction{{$button['actionId']}}" class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}  {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }}">
+            <x-product.buttons.product-bulk-button bulkActionId="bulkAction{{$button['actionId']}}" class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }} {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }} {{ $button['text'] === 'Verkoopkanalen' ? 'sales-channel-popup-trigger' : '' }}">
                 {{ $button['text'] }}
             </x-product.buttons.product-bulk-button>
         @endforeach
