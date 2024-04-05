@@ -33,12 +33,14 @@ class ProductController extends BaseProductController
             $products = Product::where('work_space_id', $request['workspace']);
             $categories = Category::where('work_space_id', $request['workspace']);
             $properties = Property::where('work_space_id', $request['workspace']);
+            $salesChannels = SalesChannel::where('work_space_id', $request['workspace']);
             $workspaces= WorkSpace::all();
             $activeWorkspace = $request['workspace'];
         }else{
             $products = Product::where('work_space_id', Auth::user()->work_space_id);
             $categories = Category::where('work_space_id', Auth::user()->work_space_id);
             $properties = Property::where('work_space_id', Auth::user()->work_space_id);
+            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id);
             $workspaces = null;
             $activeWorkspace = null;
         }
@@ -56,6 +58,7 @@ class ProductController extends BaseProductController
             ->whereNull('parent_category_id')
             ->get();
         
+        $salesChannels = $salesChannels->get();
         $properties = $properties->get();
 
         $results = [
@@ -69,7 +72,8 @@ class ProductController extends BaseProductController
             'sidenavActive' => 'products',
             'discountErrors' => $request->session()->get('discountErrors'),
             'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
+            'activeWorkspace' => $activeWorkspace,
+            'salesChannels' => $salesChannels
         ];
         return view('product.index', $results);
     }
