@@ -32,7 +32,7 @@
                         <input type="hidden" name="search" id="productSearchInput" value="{{$search}}">
                         <input type="hidden" name="orderByInput" id="orderByInput" value="{{$orderBy}}">
 
-                        <x-product.properties.properties :properties="$properties" />
+                        <x-product.properties.properties :properties="$properties" :selectedProperties="$selectedProperties"/>
                     </form>
                 </div>
             </div>
