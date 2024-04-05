@@ -80,19 +80,19 @@ function renderProperty(property, li, trueInput) {
 	div.classList.add("hidden", "grid", "mt-[0.5rem]");
 	switch (property.type) {
 		case "multiselect":
-			rendermultiselect(property, div, trueInput);//
+			rendermultiselect(property, div, trueInput);
 			break;
 		case "bool":
-			renderBool(property, div, trueInput); //
+			renderBool(property, div, trueInput); 
 			break;
 		case "singleselect":
 			rendersingleselect(property, div, trueInput); 
 			break;
 		case "text":
-			renderText(div, trueInput); //
+			renderText(div, trueInput); 
 			break;
 		case "number":
-			renderNumber(div, trueInput); //
+			renderNumber(div, trueInput); 
 			break;
 		default:
 			break;
@@ -392,7 +392,7 @@ function BoolControl(option, input, trueInput) {
 }
 
 //render the singel select property
-function rendersingleselect(property, div) {
+function rendersingleselect(property, div, trueInput) {
 	const input = document.createElement("input");
 
 	input.type = "text";
@@ -417,9 +417,10 @@ function rendersingleselect(property, div) {
 	input.style.border = "1px solid #D3D3D3";
 	input.id = `searchProp_${property.id}`;
 	input.placeholder = "Zoeken";
-	input.addEventListener("input", (event) =>
-		searchProperty(input.value, property)
-	);
+	input.addEventListener("input", (event) =>{
+		searchProperty(input.value, property);
+		trueInput.value = '';
+	});
 
 	const options = document.createElement("ul");
 	options.classList.add(
@@ -480,7 +481,7 @@ function rendersingleselect(property, div) {
 		li.id = `property_${property.id}_${option}`;
 		li.appendChild(span);
 		li.addEventListener("click", (event) =>
-			propertySingleSelectControl(option, input)
+			propertySingleSelectControl(option, input, trueInput)
 		);
 		options.appendChild(li);
 	});
@@ -577,8 +578,9 @@ function propertyMultiSelectControl(option, input, id, trueInput) {
 	setTrueInputValueMulti(trueInput, selectedOptionsContainer);
 }
 
-function propertySingleSelectControl(option, input) {
+function propertySingleSelectControl(option, input, trueInput) {
 	input.value = option;
+	trueInput.value = option;
 }
 
 //search through properties options
