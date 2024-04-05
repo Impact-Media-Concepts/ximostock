@@ -32,7 +32,14 @@
     <ul>
         @foreach ($product->properties as $property)
             <li>
+                @if (gettype($property->pivot->property_value->value) == 'array')
+                {{ $property->name . ': ' . implode(',',$property->pivot->property_value->value) }}
+                
+                @else
                 {{ $property->name . ': ' . $property->pivot->property_value->value }}
+
+                @endif
+                
             </li>
         @endforeach
     </ul>

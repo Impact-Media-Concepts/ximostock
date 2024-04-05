@@ -206,7 +206,9 @@ class Product extends Model
                                             $query->whereJsonContains('property_value', ['value' => (string)$propertyValue]);
                                             break;
                                         case 'multiselect':
-                                            $query->whereJsonContains('property_value', ['value' => (array)$propertyValue]);
+                                            $propertyValue = explode(',', $propertyValue);
+                                            sort($propertyValue);
+                                            $query->whereJsonContains('property_value', ['value' => $propertyValue]);
                                             break;
                                     }
                                     

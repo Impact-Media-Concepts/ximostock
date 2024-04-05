@@ -90,9 +90,9 @@ class DatabaseSeeder extends Seeder
                 $value = '';
                 switch ($propvalue->type) {
                     case 'multiselect':
-                        $value = fake()->randomElement($propvalue->options);
+                        $value = [fake()->randomElement($propvalue->options), fake()->randomElement($propvalue->options)];
                         break;
-                    case 'singelselect':
+                    case 'singleselect':
                         $value = fake()->randomElement($propvalue->options);
                         break;
                     case 'number':
