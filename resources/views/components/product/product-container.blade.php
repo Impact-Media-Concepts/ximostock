@@ -13,6 +13,7 @@
     <x-product.product-sub-header :orderBy="$orderBy" :products="$products" />
 
     <x-product.popup.product-discount-warning-popup :discountError="$discountError" />
+    <x-product.popup.product-sales-channels-bulk-popup />
 
     <!-- form for bulk actions -->
     <form class="form-height {{ $products->isEmpty() ? 'hd-form-height' : '' }} uhd:h-5/6" id="bulkActionsForm" action="" method="POST">

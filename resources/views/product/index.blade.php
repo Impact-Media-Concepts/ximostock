@@ -10,7 +10,7 @@
 
         <div class="flex w-full h-full pr-10 py-[1.95rem] gap-8">
             <div class="flex justify-start items-start w-full h-full"> 
-                <x-product.product-container :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
+                <x-product.product-container :salesChannels="" :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
             </div>
             <div class="flex justify-center items-start">
                 <div class="w-[16.56rem] h-full bg-white rounded-md" style="padding: 20px 20px; gap: 20px">

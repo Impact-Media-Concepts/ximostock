@@ -76,7 +76,37 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function salesChannelsPopup() {
+        const salesPopup = document.querySelector(".sales-popup");
+        document.querySelectorAll(".sales-channel-popup-trigger").forEach(function (trigger) {
+            trigger.addEventListener("click", function (event) {
+                event.preventDefault();
+                salesPopup.classList.remove("fade-out");
+                salesPopup.classList.add("fade-in");
+                salesPopup.classList.remove("hidden");
+            });
+        });
+    
+        // Close popup
+        document.querySelector(".sales-popup").addEventListener("click", function (event) {
+            if (
+                event.target.matches(".sales-popup-close") ||
+                event.target.matches(".no")
+            ) {
+                event.preventDefault();
+                salesPopup.classList.add("fade-out");
+                salesPopup.addEventListener("animationend", function(event) {
+                    if (event.animationName === "fadeOut") {
+                        salesPopup.classList.add("hidden");
+                    }
+                }, false);
+                salesPopup.classList.remove("fade-in");
+            }
+        });
+    }
+
     archivePopUp();
     discountPopup();
     savePopup();
+    salesChannelsPopup();
 });
