@@ -112,3 +112,143 @@ text-align: center;
 .numberInput[type=number] {
     -moz-appearance: textfield;
 }
+
+
+/* slider */
+.slideon {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+/* Hiding checkbox */
+.slideon>input {
+    display: none;
+}
+
+input.slideon {
+    display: none;
+}
+
+/* End hiding checkbox */
+
+.slideon-slider {
+    position: absolute;
+    cursor: pointer;
+    border-radius: 34px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .3s;
+    transition: .3s;
+}
+
+.slideon-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 1px;
+    bottom: 1px;
+    border-radius: 50%;
+    background-color: white;
+    -webkit-transition: .3s;
+    transition: .3s;
+    -webkit-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.45);
+    -moz-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.45);
+    box-shadow: 0px 0px 3px 0px rgb(0, 0, 0, 0.45);
+}
+
+.slideon input:checked~.slideon-slider {
+    background-color: #3DABD5;
+}
+
+.slideon input:checked~.slideon-slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
+.slideon.slideon-p1 .slideon-slider:before {
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+}
+
+.slideon.slideon-p2 .slideon-slider:before {
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+}
+
+/* Slideon color */
+.slideon.slideon-primary input:checked~.slideon-slider {
+    background-color: #3DABD5;
+}
+
+.slideon.slideon-secondary input:checked~.slideon-slider {
+    background-color: #717172;
+}
+
+/* End slideon color */
+
+
+/* Slideon shape */
+.slideon.slideon-round .slideon-slider {
+    border-radius: 34px;
+}
+
+.slideon.slideon-round .slideon-slider:before {
+    border-radius: 50%;
+}
+
+.slideon.slideon-square .slideon-slider {
+    border-radius: 0;
+}
+
+.slideon.slideon-square .slideon-slider:before {
+    border-radius: 0;
+}
+
+/* End slideon shape */
+
+/* Medium slideon */
+.slideon.slideon-md {
+    width: 42px;
+    height: 24px;
+}
+
+.slideon.slideon-md input:checked~.slideon-slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
+.slideon.slideon-md .slideon-slider:before {
+    height: 22px;
+    width: 22px;
+    left: 1px;
+    bottom: 1px;
+}
+
+.slideon.slideon-md.slideon-p1 .slideon-slider:before {
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+}
+
+.slideon.slideon-md.slideon-p2 .slideon-slider:before {
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+}
+
+/* End Medium slideon */

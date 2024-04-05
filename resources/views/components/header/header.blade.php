@@ -19,7 +19,7 @@
             </svg>
         </button>
         <input id="searchBar" class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
-            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Search..."
+            style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Zoeken..."
             autocomplete="off" value="{{ $search }}">
     </div>
 
