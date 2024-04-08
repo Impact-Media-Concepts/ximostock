@@ -18,12 +18,12 @@
                     d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
         </button>
-        <input id="searchBar" class="w-[30.5rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
+        <input id="searchBar" class="basic:w-[20rem] hd:w-[30.5rem] uhd:w-[50rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
             style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Zoeken..."
             autocomplete="off" value="{{ $search }}">
     </div>
 
-    <div class="flex ml-auto mr-10">
+    <div class="flex ml-auto basic:mr-[1rem] hd:mr-10 uhd:mr-10">
         <div class="border-r-2 w-[0.08rem] h-[2.5rem] ml-[0.93rem] mr-[0.93rem] mt-2 bg-gray-200">
         </div>
 
@@ -74,7 +74,7 @@
                                     </li>
                                     <li class="rounded-md">
                                         <a class="text-[14px] shadow-sm flex items-center rounded-b-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-b-lg py-2 px-4 block whitespace-no-wrap"
-                                            href="/variant/create">
+                                            href="/products/variant/create">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="white" class="w-3 h-3">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -153,7 +153,7 @@
         @endcan
 
         <div class="flex items-center gap-3.5">
-            <a href="/user" class="w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"
+            <a href="/user" class="basic:hidden hd:inline-flex uhd:inline-flex w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"
                 style="border: 1px solid #3dabd5;">
                 <img class="select-none w-[1.7rem] h-[2.1rem] flex mb-1" src="../images/user-icon.png"
                     alt="user icon">
@@ -175,13 +175,23 @@
                         {{ Auth::user()->name }}
                     </span>
                     <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]"
-                        src="../images/arrow-down-icon.png" alt="arrow down">
+                        src="../images/arrow-down-icon.png" alt="Arrow down">
                 </button>
 
                 <div x-cloak x-show="open"
-                    class="absolute flex justify-center items-center h-[5.37rem] w-[10.43rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]"
+                    class="absolute flex justify-center items-center hd:h-[5.37rem] uhd:h-[5.37rem] basic:h-[8rem] w-[10.43rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]"
                     style="border: 1px solid #F0F0F0;">
                     <ul>
+                        <li>
+                            <a href="/user">
+                                <button @click="selectedProperty = 'Instellingen'; open = false;"
+                                    class="hover:bg-[#3999BE] duration-100 block h-[2.37rem] w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex items-center justify-center">
+                                        <img class="select-none w-[2rem] h-[1.5rem] pr-3 flex mb-1" src="../images/user-icon.png"
+                                            alt="user icon">
+                                    <span class="flex items-center justify-center pr-3">Account</span>
+                                </button>
+                            </a>
+                        </li>
                         <li>
                             <a href="/settings">
                                 <button @click="selectedProperty = 'Instellingen'; open = false;"

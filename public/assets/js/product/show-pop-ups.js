@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
    
-
     function salesChannelsPopup() {
         const salesPopup = document.querySelector(".sales-popup");
         document.querySelectorAll(".sales-channel-popup-trigger").forEach(function (trigger) {

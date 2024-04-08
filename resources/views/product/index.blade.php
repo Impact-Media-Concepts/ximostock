@@ -13,16 +13,16 @@
                 <x-product.product-container :salesChannels="$salesChannels" :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
             </div>
             <div class="flex justify-center items-start">
-                <div class="w-[16.56rem] bg-white rounded-md uhd:h-[80.2rem]" style="padding: 20px 20px;">
+                <div class="w-[16.56rem] bg-white rounded-md uhd:h-[71.2rem]" style="padding: 20px 20px;">
                     <form id="searchForm" method="GET" action="/products">
                         <div class="w-full flex justify-end items-center">
                             <button type="submit" @click="open = !open;"
                                 class="hover:bg-[#3999BE] duration-100 flex items-center z-20 w-[8] px-[1.08rem] h-[2.3rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100"
                                 style="border: 1px solid white" @click.away="open = false">
-                                <span class="pl-[0.2rem] text-[14px] text-white">Opslaan</span>
+                                <span class="pl-[0.2rem] text-[14px] text-white">Zoeken</span>
                             </button>
                         </div>
-                        <div class="flex-col flex uhd:gap-[10rem]">
+                        <div class="flex-col flex uhd:gap-[5rem]">
                              <!-- <input type="submit" value="search test"> -->
                             {{-- categories component --}}
                             <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />
