@@ -4,16 +4,16 @@
 <body class="bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
     <x-header.header :activeWorkspace="$activeWorkspace" :workspaces="$workspaces" :search="$search" />
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
-        <div class="h-full">
+        <div>
             <x-sidenav.sidenav :sidenavActive="$sidenavActive" />
         </div>
 
-        <div class="flex w-full h-full pr-10 py-[1.95rem] gap-8">
-            <div class="flex justify-start items-start w-full h-full"> 
+        <div class="flex w-full pr-10 pt-[1.95rem] gap-8">
+            <div class="flex justify-start items-start w-full"> 
                 <x-product.product-container :salesChannels="$salesChannels" :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
             </div>
             <div class="flex justify-center items-start">
-                <div class="w-[16.56rem] h-full bg-white rounded-md" style="padding: 20px 20px; gap: 20px">
+                <div class="w-[16.56rem] bg-white rounded-md uhd:h-[80.2rem]" style="padding: 20px 20px;">
                     <form id="searchForm" method="GET" action="/products">
                         <div class="w-full flex justify-end items-center">
                             <button type="submit" @click="open = !open;"
@@ -22,17 +22,16 @@
                                 <span class="pl-[0.2rem] text-[14px] text-white">Opslaan</span>
                             </button>
                         </div>
+                        <div class="flex-col flex uhd:gap-[10rem]">
+                             <!-- <input type="submit" value="search test"> -->
+                            {{-- categories component --}}
+                            <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />
+                            {{-- eigenschappen/properties component --}}
+                            <input type="hidden" name="search" id="productSearchInput" value="{{$search}}">
+                            <input type="hidden" name="orderByInput" id="orderByInput" value="{{$orderBy}}">
 
-                        <x-product.popup.save-popup/>
-                        
-                        <!-- <input type="submit" value="search test"> -->
-                        {{-- categories component --}}
-                        <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />
-                        {{-- eigenschappen/properties component --}}
-                        <input type="hidden" name="search" id="productSearchInput" value="{{$search}}">
-                        <input type="hidden" name="orderByInput" id="orderByInput" value="{{$orderBy}}">
-
-                        <x-product.properties.properties :properties="$properties" :selectedProperties="$selectedProperties"/>
+                            <x-product.properties.properties :properties="$properties" :selectedProperties="$selectedProperties"/>
+                        <div>
                     </form>
                 </div>
             </div>

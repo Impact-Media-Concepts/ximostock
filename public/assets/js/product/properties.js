@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	function renderProperties() {
 		const propertyList = document.getElementById("propertyList");
 		propertyList.innerHTML = ""; // Clear existing list
-		propertyList.style.maxHeight = '330px';
+		propertyList.classList.add('hd:max-h-[22.5rem]','uhd:max-h-[30rem]');
 		propertyList.style.overflowY = 'scroll';
 		propertiesData.forEach((property) => {
 			const li = document.createElement("li");
@@ -118,8 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		numberselect.addEventListener('input', function () {
 			trueInput.value = this.value;
 		});
-		console.log(property.selectedOption);
-
 
 		const decrement = document.createElement("div");
 		const increment = document.createElement("div");

@@ -62,7 +62,7 @@
     }
 </style>
 
-<div id="sidenav-container" class="side-nav h-full bg-white fixed top-0 z-[1000]">
+<div id="sidenav-container" class="side-nav bg-white fixed top-0 z-[1000] uhd:h-[85rem]">
     <ul class="category-list flex grid items-center">
         @foreach ($sidenavButtons as $button)
             <?php

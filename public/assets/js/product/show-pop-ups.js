@@ -60,21 +60,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
     
-    function savePopup() {
-        /* save pop up fade out*/
-        document.querySelector(".save-popup").addEventListener("click", function (event) {
-            if (event.target.matches(".save-popup-close")) {
-                event.preventDefault();
-                const popup = this;
-                popup.style.animation = "fadeOut 0.5s forwards"; 
-
-                // After animation ends, hide the element
-                popup.addEventListener("animationend", function() {
-                    popup.style.display = "none";
-                });
-            }
-        });
+    const savePopupNotif = document.querySelector(".save-popup");
+    if (savePopupNotif) {
+        function savePopup() {
+            /* save pop up fade out*/
+            document.querySelector(".save-popup").addEventListener("click", function (event) {
+                if (event.target.matches(".save-popup-close")) {
+                    event.preventDefault();
+                    const popup = this;
+                    popup.style.animation = "fadeOut 0.5s forwards"; 
+    
+                    // After animation ends, hide the element
+                    popup.addEventListener("animationend", function() {
+                        popup.style.display = "none";
+                    });
+                }
+            });
+        }
     }
+   
 
     function salesChannelsPopup() {
         const salesPopup = document.querySelector(".sales-popup");
@@ -107,6 +111,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     archivePopUp();
     discountPopup();
-    savePopup();
     salesChannelsPopup();
 });

@@ -210,8 +210,7 @@
         categoriesList.innerHTML = ''; // Clear existing list
 
         const ul = document.createElement('ul');
-        ul.classList.add('mt-[0.8rem]');
-        ul.style.maxHeight = '330px';
+        ul.classList.add('mt-[0.8rem]', 'hd:max-h-[21.5rem]', 'uhd:max-h-[30rem]');
         ul.style.overflowY = 'scroll';
 
         categoriesData.forEach(category => {
