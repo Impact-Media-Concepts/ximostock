@@ -91,19 +91,19 @@ document.addEventListener("DOMContentLoaded", () => {
 		div.classList.add("hidden", "grid", "mt-[0.5rem]");
 		switch (property.type) {
 			case "multiselect":
-				rendermultiselect(property, div, trueInput);
+				rendermultiselect(property, div, trueInput); 
 				break;
 			case "bool":
-				renderBool(property, div, trueInput);
+				renderBool(property, div, trueInput); 
 				break;
 			case "singleselect":
-				rendersingleselect(property, div, trueInput);
+				rendersingleselect(property, div, trueInput); 
 				break;
 			case "text":
-				renderText(div, trueInput);
+				renderText(div, trueInput, property); 
 				break;
 			case "number":
-				renderNumber(div, trueInput);
+				renderNumber(div, trueInput, property);
 				break;
 			default:
 				break;
@@ -111,13 +111,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		li.appendChild(div);
 	}
 
-	function renderNumber(div, trueInput) {
+	function renderNumber(div, trueInput, property) {
 		const numberContainer = document.createElement("div");
 
 		const numberselect = document.createElement("input");
 		numberselect.addEventListener('input', function () {
 			trueInput.value = this.value;
 		});
+		console.log(property.selectedOption);
+
 
 		const decrement = document.createElement("div");
 		const increment = document.createElement("div");
@@ -139,7 +141,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		increment.style.border = "1px solid #D3D3D3";
 
 		numberselect.type = "number";
-		numberselect.value = 0;
+		if(property.selectedOption){
+			numberselect.value = property.selectedOption;
+		}else{
+			numberselect.value = 0;
+		}
 		numberselect.classList.add("numberInput", "text-center", "w-[8.12rem]", "h-[2.12rem]", "flex");
 
 		numberContainer.classList.add("flex", "rounded-md", "w-[12.3rem]");
@@ -209,6 +215,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		input.addEventListener("focus", (event) => focusmultiSelect(options));
 		input.addEventListener("blur", (event) => blurmultiSelect(options));
+		div.appendChild(input);
+
+		const selectedOptionsContainer = document.createElement('div');	
+			selectedOptionsContainer.style.display = "flex";
+			selectedOptionsContainer.style.flexWrap = "wrap";
+			selectedOptionsContainer.id = `selectedOptionsContainer${property.id}`;
+			//input.parentNode.insertBefore(selectedOptionsContainer, input.nextSibling);
+			div.insertBefore(selectedOptionsContainer, div.nextSibling);
 
 		//create options
 		property.options.forEach((option, index) => {
@@ -255,13 +269,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			li.id = `property_${property.id}_${option}`;
 			li.appendChild(span);
 			li.addEventListener("click", (event) =>
-				propertyMultiSelectControl(option, input, property.id, trueInput)
+				propertyMultiSelectControl(option, input, property.id, trueInput, selectedOptionsContainer)
 			);
 			options.appendChild(li);
 
 
 		});
-		div.appendChild(input);
+		
 		div.appendChild(options);
 
 		property.options.forEach((option) => {
@@ -269,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (property.selected && property.selectedOption != null) {
 				selectedOptions = property.selectedOption.split(',');
 				if (selectedOptions.includes(option)) {
-					propertyMultiSelectControl(option, input, property.id, trueInput);
+					propertyMultiSelectControl(option, input, property.id, trueInput, selectedOptionsContainer);
 				}
 			}
 		});
@@ -314,6 +328,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			searchProperty(input.value, property)
 		);
 
+		if(property.selectedOption == 'true'){
+			input.value = 'ja';
+		}else{
+			input.value = 'nee';
+		}
 
 		const options = document.createElement("ul");
 		options.classList.add(
@@ -385,7 +404,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		optionFalse.appendChild(spanFalse);
 		optionTrue.addEventListener("click", (event) =>
 			BoolControl(1, input, trueInput)
-
 		);
 		optionFalse.addEventListener("click", (event) =>
 			BoolControl(0, input, trueInput)
@@ -444,6 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			searchProperty(input.value, property);
 			trueInput.value = '';
 		});
+		input.value = property.selectedOption;
 
 		const options = document.createElement("ul");
 		options.classList.add(
@@ -512,7 +531,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		div.appendChild(options);
 	}
 
-	function renderText(div, trueInput) {
+	function renderText(div, trueInput, property) {
 		const textSpan = document.createElement("span");
 		const text = document.createElement("input");
 
@@ -521,6 +540,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		text.addEventListener('input', function () {
 			trueInput.value = text.value;
 		});
+		text.value = property.selectedOption;
 
 		text.style.border = "1px solid #D3D3D3";
 		textSpan.appendChild(text);
@@ -550,18 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}, 200);
 	}
 
-	function propertyMultiSelectControl(option, input, id, trueInput) {
-		// Check if the surrounding div exists, if not, create it
-		let selectedOptionsContainer = document.getElementById(`selectedOptionsContainer${id}`);
-
-		if (!selectedOptionsContainer) {
-			selectedOptionsContainer = document.createElement('div');
-			selectedOptionsContainer.style.display = "flex";
-			selectedOptionsContainer.style.flexWrap = "wrap";
-			selectedOptionsContainer.id = `selectedOptionsContainer${id}`;
-			input.parentNode.insertBefore(selectedOptionsContainer, input.nextSibling);
-		}
-
+	function propertyMultiSelectControl(option, input, id, trueInput, selectedOptionsContainer) {
 		// Check if the option is already selected
 		if (selectedOptionsContainer.querySelector(`div.selected-option[data-value="${option}"]`)) {
 			// If the option is already selected, do nothing
