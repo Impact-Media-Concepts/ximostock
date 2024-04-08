@@ -4,8 +4,8 @@
     $buttons = [
         ['text' => 'Korting', 'width' => '5.688rem', 'actionId' => 'Discount'],
         ['text' => 'Verkoopkanalen', 'width' => '9.31rem', 'actionId' => 'SalesChannels'],
-        ['text' => 'Voorraad communiceren', 'width' => '10.5rem', 'actionId' => 'CommunicateStock'],
-        ['text' => 'Voorraad niet communiceren', 'width' => '10.5rem', 'actionId' => 'UncommunicateStock'],
+        ['text' => 'Voorraad communiceren', 'width' => '10.5rem', 'actionId' => 'communicateStock'],
+        ['text' => 'Voorraad niet communiceren', 'width' => '10.5rem', 'actionId' => 'unCommunicateStock'],
         ['text' => 'Archiveren', 'width' => '7.12rem', 'actionId' => 'Archive']
     ];
 @endphp
@@ -27,8 +27,8 @@
                 class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}
                 {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }}
                 {{ $button['text'] === 'Verkoopkanalen' ? 'sales-channel-popup-trigger' : '' }}
-                {{ $button['text'] === 'Voorraad communiceren' ? 'communicateStock' : '' }}
-                {{ $button['text'] === 'Voorraad niet communiceren' ? 'uncommunicateStock' : '' }}"
+                {{ $button['text'] === 'Voorraad communiceren' ? 'communicate-stock' : '' }}
+                {{ $button['text'] === 'Voorraad niet communiceren' ? 'uncommunicate-stock' : '' }}"
             >
                 {{ $button['text'] }}
             </x-product.buttons.product-bulk-button>
@@ -37,15 +37,4 @@
     
     <x-product.popup.product-discount-popup :discountError="$discountError" />
     <x-product.popup.product-archive-popup />
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let communicateStock = document.querySelectorAll('.communicateStock');
-            communicateStock.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    console.log('clickeds');
-                });
-            });
-        });
-    </script>
 </div>

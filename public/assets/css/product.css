@@ -63,6 +63,10 @@ input::-ms-input-placeholder {
     transform: rotate(180deg);
 }
 
+.rotate-arrow-no-rotate {
+    transform: rotate(0deg);
+}
+
 /* popUp */
 .discount-input::placeholder, .discount-input::-webkit-input-placeholder,
 .discount-input:-moz-placeholder, .discount-input::-moz-placeholder,

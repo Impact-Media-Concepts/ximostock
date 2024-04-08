@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="w-full h-full">
+<div class="w-full hd:h-[65.7rem] uhd:h-[82rem]">
     {{-- Every component inside this container component--}}
     <x-product.product-header :products="$products"/>
     <x-product.product-sub-header :orderBy="$orderBy" :products="$products" />
