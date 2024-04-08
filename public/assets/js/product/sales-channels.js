@@ -99,7 +99,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             ) {
                 li.classList.remove("hidden");
             } else {
-        
                 li.classList.add("hidden");
             }
         });
@@ -109,14 +108,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     if (salesChannelSearchInput) {
         salesChannelSearchInput.addEventListener("input", () => {
-
             const salesChannelText = salesChannelSearchInput.value.trim();
-            // Render Workspaces if search input is empty
-            if (!salesChannelText) {
-                renderSalesChannels(); //vervang met show all
-            } else {
-                searchSalesChannels(salesChannelText);
-            }
+            searchSalesChannels(salesChannelText);
         });
     }
 });
