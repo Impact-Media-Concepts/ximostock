@@ -8,26 +8,35 @@ document.addEventListener("DOMContentLoaded", function() {
     let isHidden = false;
 
     arrowCollapse.addEventListener("click", function (event) {
-        
-        if (basicBackground.classList.contains("fade-in")) {
-            basicBackground.classList.remove("fade-in");
+        if (!basicBackground.classList.contains("fade-in") && !basicBackground.classList.contains("fade-out")) {
             basicBackground.classList.add("fade-out");
+
             basicBackground.addEventListener("animationend", function (event) {
                 if (event.animationName === "fadeOut") {
                     basicBackground.classList.add("hidden");
                 }
             }, false);
-        } else {
+
+        } else if (basicBackground.classList.contains("fade-in")) {
+            basicBackground.classList.remove("fade-in");
+            basicBackground.classList.add("fade-out");
+
+            basicBackground.addEventListener("animationend", function (event) {
+                if (event.animationName === "fadeOut") {
+                    basicBackground.classList.add("hidden");
+                }
+            }, false);
+
+        } else if (basicBackground.classList.contains("fade-out")) {
             basicBackground.classList.remove("fade-out");
-            basicBackground.classList.add("fade-in");
             basicBackground.classList.remove("hidden");
+            basicBackground.classList.add("fade-in");
         }
     });
 
     function toggleSidenav() {
         arrowCollapse.classList.toggle("rotate-arrows");
         sideNav.classList.toggle("close-sidenav");
-        basicBackground.classList.toggle("hide-basic-bg");
 
         const isCollapsed = sideNav.classList.contains("close-sidenav");
         activeItem.forEach(element => {

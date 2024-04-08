@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="w-full hd:h-[65.7rem] uhd:h-[71rem]">
+<div class="w-full basic:h-[37.05rem] hd:h-[65.7rem] uhd:h-[71rem]">
     {{-- Every component inside this container component--}}
     <x-product.product-header :products="$products"/>
     <x-product.product-sub-header :orderBy="$orderBy" :products="$products" />
@@ -15,7 +15,7 @@
     <x-product.popup.product-discount-warning-popup :discountError="$discountError" />
 
     <!-- form for bulk actions -->
-    <form class="form-height {{ $products->isEmpty() ? 'hd-form-height' : '' }} uhd:h-5/6" id="bulkActionsForm" action="" method="POST">
+    <form class="form-height {{ $products->isEmpty() ? 'hd-form-height' : '' }} basic:h-full hd:h-[49.1rem] uhd:h-5/6" id="bulkActionsForm" action="" method="POST">
         @csrf
         <x-product.popup.sales-channels.product-sales-channels-bulk-popup :salesChannels="$salesChannels" />
         <x-product.product-bulk-actions :discountError="$discountError" :products="$products" :perPage="$perPage"/>

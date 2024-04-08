@@ -1,6 +1,6 @@
 @props(['search' => null, 'workspaces', 'activeWorkspace' => null])
 
-<div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center z-[998]">
+<div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center hd:z-[998] uhd:z-[998] basic:z-[998]">
     <button class="px-11 pt-1 relative left-[0.08rem]">
         <a href="{{ url('/dashboard') }}">
             <img class="select-none w-[10.75] h-[1.31rem] flex" src="../images/ximostock-logo.png" alt="ximostock logo">
