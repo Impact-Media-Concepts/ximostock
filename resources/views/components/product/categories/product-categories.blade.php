@@ -144,7 +144,6 @@
             const arrowDown = li.querySelector('img');
             if (arrowDown) {
                 arrowDown.classList.remove('rotate-arrow');
-                
             }
         });
     }
@@ -210,7 +209,7 @@
         categoriesList.innerHTML = ''; // Clear existing list
 
         const ul = document.createElement('ul');
-        ul.classList.add('mt-[0.8rem]', 'hd:max-h-[21.5rem]', 'uhd:max-h-[30rem]');
+        ul.classList.add('mt-[0.8rem]', 'hd:max-h-[21.5rem]', 'uhd:max-h-[26rem]');
         ul.style.overflowY = 'scroll';
 
         categoriesData.forEach(category => {

@@ -175,7 +175,7 @@
                         {{ Auth::user()->name }}
                     </span>
                     <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]"
-                        src="../images/arrow-down-icon.png" alt="arrow down">
+                        src="../images/arrow-down-icon.png" alt="Arrow down">
                 </button>
 
                 <div x-cloak x-show="open"

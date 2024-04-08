@@ -8,12 +8,12 @@
         <a class="rounded-md border-1 flex gap-10 justify-center items-center w-[2.8rem] h-[2.9rem] relative left-0 top-[0.08rem] mr-2 uhd:mr-[1.5rem]"
             style="border: 1px solid #DBDBDB; overflow:visible">
             <img class="select-none w-[2.3rem] h-[2.3rem] pt-[0.01rem]" style="max-width: none;"
-                src="{{ $product->primaryPhoto->url }}" />
+                src="{{ $product->primaryPhoto->url }}" alt="{{ $product->title }}" />
         </a>
     </div>
     <a class="hoi flex items-center w-full justify-center hd:gap-1 uhd:gap-[1.1rem]" href="/products/{{ $product->id }}">
         <div class="flex w-full hd:max-w-[21.3rem] uhd:max-w-[27.9rem] shd:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
-            title=" {{ $product->title }}">
+            title="{{ $product->title }}">
             <p class="line-clamp-2 hd:max-w-[20rem] uhd:max-w-[27.9rem] shd:max-w-[42.5rem]">
                 {{ $product->title }}
             </p>

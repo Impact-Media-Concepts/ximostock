@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	function renderProperties() {
 		const propertyList = document.getElementById("propertyList");
 		propertyList.innerHTML = ""; // Clear existing list
-		propertyList.classList.add('hd:max-h-[22.5rem]','uhd:max-h-[30rem]');
+		propertyList.classList.add('hd:max-h-[22.5rem]','uhd:max-h-[27rem]');
 		propertyList.style.overflowY = 'scroll';
 		propertiesData.forEach((property) => {
 			const li = document.createElement("li");
