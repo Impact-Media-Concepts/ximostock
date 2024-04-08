@@ -23,6 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
     linkSalesChannelsButton.addEventListener('click', function(){
         BulkForm.action = '/products/bulklinksaleschannel';
     });
+
+
+
+    //link sales channels
+    const communicateStock = document.getElementById('bulkActioncommunicateStock');
+    communicateStock.addEventListener('click', function(){
+        BulkForm.action = '/products/bulkenablecommunicateStock';
+    });
+    
+    //link sales channels
+    const unCommunicateStock = document.getElementById('bulkActionunCommunicateStock');
+    unCommunicateStock.addEventListener('click', function(){
+        BulkForm.action = '/products/bulkdisablecommunicateStock';
+    });
     
     const round = document.getElementById('roundDiscount');
     const trueRound = document.getElementById('trueRoundDiscount');
