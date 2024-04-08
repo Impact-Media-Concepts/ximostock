@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Exports\ProductsExport;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
@@ -19,7 +20,7 @@ use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends BaseProductController
 {
@@ -196,7 +197,7 @@ class ProductController extends BaseProductController
 
     //adds the "discount" even if product is more expansive
     public function BulkDiscountForce(){
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [array_keys(request('product_ids'))]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array', new ValidProductKeys],
@@ -208,7 +209,7 @@ class ProductController extends BaseProductController
             $product->discount = $discount;
             $product->save();
         }
-        redirect()->back();
+        return redirect()->back();
     }
 
     public function bulkLinkSalesChannel()
@@ -434,6 +435,12 @@ class ProductController extends BaseProductController
         //return to product page
         return redirect('/products');
     }
+
+    public function export() 
+    {
+        return Excel::download(new ProductsExport, 'products.xlsx');
+    }
+
 
     protected function createProduct($attributes): Product
     {

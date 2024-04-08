@@ -27,6 +27,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create-product');
+    Route::get('/products/export/', [ProductController::class, 'export']);//export
     Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view-product,product');
     Route::post('/products', [ProductController::class, 'store'])->middleware('can:create-product');
     Route::patch('/products/{product}', [ProductController::class, 'update']);
@@ -43,6 +44,8 @@ Route::middleware('auth')->group(function () {
     //variant product
     Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
     Route::post('/products/variant', [ProductVariationController::class, 'store']);
+    
+
 
     //categories
     Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:index-category');
