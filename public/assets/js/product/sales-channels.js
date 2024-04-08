@@ -2,9 +2,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     //slider
     let slideon = new Slideon();
     slideon.load();
-
-    let salesChecked = false;
-
+    
     // check and uncheck all
     const selectAllCheckbox = document.getElementById("selectAllSalesChannels");
 
