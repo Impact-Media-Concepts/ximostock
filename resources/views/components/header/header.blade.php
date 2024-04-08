@@ -226,7 +226,7 @@
                 const activeWorkspace = {{ $activeWorkspace ?? 'null' }};
                 const li = document.createElement('li');
                 li.classList.add('flex', 'items-center', 'justify-start');
-                li.id = `li_${workspace.id}`;
+                li.id = `workspace_li_${workspace.id}`;
 
                 const a = document.createElement('a');
                 a.href = `?workspace=${workspace.id}`;

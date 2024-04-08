@@ -20,8 +20,6 @@ html {
   display: block;
 }
 
-/* Side nav styling */
-
 /* popup fade in and out styling */
 @keyframes fadeOut {
   from {
@@ -42,9 +40,9 @@ html {
 }
 
 .fade-in {
-  animation: fadeIn 0.3s forwards;
+  animation: fadeIn 0.2s forwards;
 }
 
 .fade-out {
-  animation: fadeOut 0.3s forwards;
+  animation: fadeOut 0.2s forwards;
 }
