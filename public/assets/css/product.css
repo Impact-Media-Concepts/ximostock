@@ -102,7 +102,8 @@ text-align: center;
 .property-search-input::placeholder,
 .multi-select-input::placeholder,
 .bool-input::placeholder,
-.single-input::placeholder {
+.single-input::placeholder,
+.category-search::placeholder {
     color: #DBDBDB;
 }
 
