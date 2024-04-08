@@ -804,6 +804,10 @@ video {
   z-index: 1000;
 }
 
+.z-\[1001\] {
+  z-index: 1001;
+}
+
 .z-\[998\] {
   z-index: 998;
 }
@@ -937,10 +941,6 @@ video {
 
 .mr-1 {
   margin-right: 0.25rem;
-}
-
-.mr-10 {
-  margin-right: 2.5rem;
 }
 
 .mr-2 {
@@ -1232,6 +1232,10 @@ video {
   height: 1.31rem;
 }
 
+.h-\[1\.5rem\] {
+  height: 1.5rem;
+}
+
 .h-\[14\.75rem\] {
   height: 14.75rem;
 }
@@ -1250,6 +1254,10 @@ video {
 
 .h-\[2\.1rem\] {
   height: 2.1rem;
+}
+
+.h-\[2\.37rem\] {
+  height: 2.37rem;
 }
 
 .h-\[2\.3rem\] {
@@ -1362,10 +1370,6 @@ video {
 
 .h-\[5\.18rem\] {
   height: 5.18rem;
-}
-
-.h-\[5\.37rem\] {
-  height: 5.37rem;
 }
 
 .h-\[5\.93rem\] {
@@ -1606,10 +1610,6 @@ video {
 
 .w-\[3\.56rem\] {
   width: 3.56rem;
-}
-
-.w-\[30\.5rem\] {
-  width: 30.5rem;
 }
 
 .w-\[31\.25rem\] {
@@ -3156,8 +3156,32 @@ video {
 }
 
 @media (min-width: 1280px) {
+  .basic\:z-\[998\] {
+    z-index: 998;
+  }
+
+  .basic\:mr-\[1rem\] {
+    margin-right: 1rem;
+  }
+
   .basic\:mr-\[2rem\] {
     margin-right: 2rem;
+  }
+
+  .basic\:hidden {
+    display: none;
+  }
+
+  .basic\:h-\[49rem\] {
+    height: 49rem;
+  }
+
+  .basic\:h-\[8rem\] {
+    height: 8rem;
+  }
+
+  .basic\:w-\[20rem\] {
+    width: 20rem;
   }
 
   .basic\:gap-\[4\.6rem\] {
@@ -3170,6 +3194,10 @@ video {
 }
 
 @media (min-width: 1920px) {
+  .hd\:mr-10 {
+    margin-right: 2.5rem;
+  }
+
   .hd\:mr-\[4\.4rem\] {
     margin-right: 4.4rem;
   }
@@ -3190,8 +3218,16 @@ video {
     margin-right: 8.05rem;
   }
 
+  .hd\:inline-flex {
+    display: inline-flex;
+  }
+
   .hd\:h-\[0\.6rem\] {
     height: 0.6rem;
+  }
+
+  .hd\:h-\[5\.37rem\] {
+    height: 5.37rem;
   }
 
   .hd\:h-\[65\.7rem\] {
@@ -3212,6 +3248,10 @@ video {
 
   .hd\:w-\[10\.8rem\] {
     width: 10.8rem;
+  }
+
+  .hd\:w-\[30\.5rem\] {
+    width: 30.5rem;
   }
 
   .hd\:w-\[7\.5rem\] {
@@ -3252,6 +3292,10 @@ video {
 }
 
 @media (min-width: 2560px) {
+  .uhd\:mr-10 {
+    margin-right: 2.5rem;
+  }
+
   .uhd\:mr-\[1\.5rem\] {
     margin-right: 1.5rem;
   }
@@ -3272,8 +3316,16 @@ video {
     margin-right: 14.85rem;
   }
 
+  .uhd\:inline-flex {
+    display: inline-flex;
+  }
+
   .uhd\:h-5\/6 {
     height: 83.333333%;
+  }
+
+  .uhd\:h-\[5\.37rem\] {
+    height: 5.37rem;
   }
 
   .uhd\:h-\[71\.2rem\] {
@@ -3314,6 +3366,10 @@ video {
 
   .uhd\:w-\[16\.3rem\] {
     width: 16.3rem;
+  }
+
+  .uhd\:w-\[50rem\] {
+    width: 50rem;
   }
 
   .uhd\:w-full {

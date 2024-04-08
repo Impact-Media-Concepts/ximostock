@@ -36,7 +36,6 @@
         position: relative;
         transition: all 500ms ease;
         top: 0;
-        z-index: 20;
     }
 
     .category-item {
@@ -61,7 +60,8 @@
     }
 </style>
 
-<div id="sidenav-container" class="side-nav bg-white fixed top-0 z-[1000] hd:h-[68rem] uhd:h-[74.9rem]">
+
+<div id="sidenav-container" class="side-nav bg-white fixed top-0 basic:z-[998] z-[1001] basic:h-[49rem] hd:h-[68rem] uhd:h-[74.9rem]">
     <ul class="category-list flex grid items-center">
         @foreach ($sidenavButtons as $button)
             <?php
