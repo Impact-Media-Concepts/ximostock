@@ -1,63 +1,65 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let sideNav = document.querySelector(".side-nav");
-    let activeItem = document.querySelectorAll(".side-nav-active-item");
-    let arrowCollapse = document.querySelector(".open-button");
-    let basicBackground = document.querySelector(".basic-bg");
-    let textToHide = document.querySelectorAll(".text");
+function toggleWidth() {
+    let sideNavItemText = document.querySelectorAll('[id^="text_"]');
+    let sidenavContainer = document.getElementById("sidenavContainer");
+    let sideNavItemA = document.querySelectorAll('[id^="sideNavItemA_"]');
+
+    let containsLarge = false;
     
-    let isHidden = false;
+    sidenavContainer.classList.toggle("large");
 
-    arrowCollapse.addEventListener("click", function (event) {
-        if (!basicBackground.classList.contains("fade-in") && !basicBackground.classList.contains("fade-out")) {
-            basicBackground.classList.add("fade-out");
+    function toggleSideNavItem() {
+        sideNavItemA.forEach(element => {
+            element.classList.toggle("large");
+            let isLargeItem = element.classList.contains("large");
 
-            basicBackground.addEventListener("animationend", function (event) {
-                if (event.animationName === "fadeOut") {
-                    basicBackground.classList.add("hidden");
-                }
-            }, false);
+            if (isLargeItem) {
+                containsLarge = true;
+            } else {
+                containsLarge = false;
+            }
 
-        } else if (basicBackground.classList.contains("fade-in")) {
-            basicBackground.classList.remove("fade-in");
-            basicBackground.classList.add("fade-out");
-
-            basicBackground.addEventListener("animationend", function (event) {
-                if (event.animationName === "fadeOut") {
-                    basicBackground.classList.add("hidden");
-                }
-            }, false);
-
-        } else if (basicBackground.classList.contains("fade-out")) {
-            basicBackground.classList.remove("fade-out");
-            basicBackground.classList.remove("hidden");
-            basicBackground.classList.add("fade-in");
-        }
-    });
-
-    function toggleSidenav() {
-        arrowCollapse.classList.toggle("rotate-arrows");
-        sideNav.classList.toggle("close-sidenav");
-
-        const isCollapsed = sideNav.classList.contains("close-sidenav");
-        activeItem.forEach(element => {
-            element.classList.toggle("close-sidenav", isCollapsed);
+            document.cookie = "sideNavItemA_width=" + (isLargeItem ? "" : "large") + "; path=/";
         });
-    
-        const toggleTextVisibility = () => {
-            textToHide.forEach(element => {
-                element.classList.toggle("hidden", isCollapsed);
-            });
-        };
-    
-        if (!isHidden) {
-            toggleTextVisibility();
-            isHidden = true;
-        } else {
-            setTimeout(() => {
-                toggleTextVisibility();
-                isHidden = false;
-            }, 250);
-        }
     }
-    arrowCollapse.onclick = toggleSidenav;
-});
+
+    function toggleSideNavText() {
+        sideNavItemText.forEach(element => {
+            if (containsLarge === true) {
+                setTimeout(() => {
+                    element.classList.remove("hidden");
+                }, 170);
+            } else if (containsLarge === false) {
+                setTimeout(() => {
+                    element.classList.add("hidden");
+                }, 100);
+                
+            }
+            document.cookie = "sideNavItemText_hidden=" + (containsLarge ? "" : "hidden") + "; path=/";
+        });
+    }
+   
+    function toggleSideNavContainerIcon() {
+        let arrowCollapse = document.getElementById("openSideNavButton");
+        let arrowIcon = document.getElementById("arrowIcon");
+        if (containsLarge === true) {
+            arrowIcon.classList.remove("rotate-arrows222");
+            arrowCollapse.classList.remove("rotate-arrows");
+
+        } else if (containsLarge === false) {
+            arrowIcon.classList.remove("rotate-arrows222");
+            arrowCollapse.classList.add("rotate-arrows");
+        }
+        let isRotated = arrowCollapse.classList.contains("rotate-arrows");
+        document.cookie = "openButton_rotate=" + (isRotated ? "" : "arrows") + "; path=/";
+    }
+
+    function toggleContainer() {
+        let isLarge = sidenavContainer.classList.contains("large");
+        document.cookie = "sidenavContainer_width=" + (isLarge ? "" : "large") + "; path=/";
+    }
+
+    toggleSideNavItem();
+    toggleSideNavText();
+    toggleSideNavContainerIcon();
+    toggleContainer();
+}

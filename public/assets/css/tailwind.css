@@ -1112,6 +1112,10 @@ video {
   display: block;
 }
 
+.inline {
+  display: inline;
+}
+
 .flex {
   display: flex;
 }
@@ -3480,6 +3484,10 @@ video {
 
   .shd\:mr-\[24\.4rem\] {
     margin-right: 24.4rem;
+  }
+
+  .shd\:hidden {
+    display: none;
   }
 
   .shd\:w-\[22\.1rem\] {
