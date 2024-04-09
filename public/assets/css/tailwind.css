@@ -808,10 +808,6 @@ video {
   z-index: 1001;
 }
 
-.z-\[998\] {
-  z-index: 998;
-}
-
 .m-0 {
   margin: 0px;
 }
@@ -1114,6 +1110,10 @@ video {
 
 .block {
   display: block;
+}
+
+.inline {
+  display: inline;
 }
 
 .flex {
@@ -3156,6 +3156,10 @@ video {
 }
 
 @media (min-width: 1280px) {
+  .basic\:z-\[997\] {
+    z-index: 997;
+  }
+
   .basic\:z-\[998\] {
     z-index: 998;
   }
@@ -3172,16 +3176,48 @@ video {
     display: none;
   }
 
+  .basic\:h-\[22rem\] {
+    height: 22rem;
+  }
+
+  .basic\:h-\[37\.05rem\] {
+    height: 37.05rem;
+  }
+
   .basic\:h-\[49rem\] {
     height: 49rem;
+  }
+
+  .basic\:h-\[56rem\] {
+    height: 56rem;
+  }
+
+  .basic\:h-\[61rem\] {
+    height: 61rem;
   }
 
   .basic\:h-\[8rem\] {
     height: 8rem;
   }
 
+  .basic\:h-full {
+    height: 100%;
+  }
+
+  .basic\:max-h-\[15rem\] {
+    max-height: 15rem;
+  }
+
+  .basic\:max-h-\[16rem\] {
+    max-height: 16rem;
+  }
+
   .basic\:w-\[20rem\] {
     width: 20rem;
+  }
+
+  .basic\:gap-0 {
+    gap: 0px;
   }
 
   .basic\:gap-\[4\.6rem\] {
@@ -3194,6 +3230,10 @@ video {
 }
 
 @media (min-width: 1920px) {
+  .hd\:z-\[998\] {
+    z-index: 998;
+  }
+
   .hd\:mr-10 {
     margin-right: 2.5rem;
   }
@@ -3222,12 +3262,28 @@ video {
     display: inline-flex;
   }
 
+  .hd\:hidden {
+    display: none;
+  }
+
   .hd\:h-\[0\.6rem\] {
     height: 0.6rem;
   }
 
+  .hd\:h-\[28\.37rem\] {
+    height: 28.37rem;
+  }
+
+  .hd\:h-\[49\.1rem\] {
+    height: 49.1rem;
+  }
+
   .hd\:h-\[5\.37rem\] {
     height: 5.37rem;
+  }
+
+  .hd\:h-\[61rem\] {
+    height: 61rem;
   }
 
   .hd\:h-\[65\.7rem\] {
@@ -3292,6 +3348,10 @@ video {
 }
 
 @media (min-width: 2560px) {
+  .uhd\:z-\[998\] {
+    z-index: 998;
+  }
+
   .uhd\:mr-10 {
     margin-right: 2.5rem;
   }
@@ -3318,6 +3378,10 @@ video {
 
   .uhd\:inline-flex {
     display: inline-flex;
+  }
+
+  .uhd\:hidden {
+    display: none;
   }
 
   .uhd\:h-5\/6 {
@@ -3420,6 +3484,10 @@ video {
 
   .shd\:mr-\[24\.4rem\] {
     margin-right: 24.4rem;
+  }
+
+  .shd\:hidden {
+    display: none;
   }
 
   .shd\:w-\[22\.1rem\] {

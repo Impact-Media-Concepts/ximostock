@@ -13,7 +13,7 @@
                 <x-product.product-container :salesChannels="$salesChannels" :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
             </div>
             <div class="flex justify-center items-start">
-                <div class="w-[16.56rem] bg-white rounded-md uhd:h-[71.2rem]" style="padding: 20px 20px;">
+                <div class="w-[16.56rem] bg-white rounded-md basic:h-[49rem] hd:h-[61rem] uhd:h-[71.2rem]" style="padding: 20px 20px;">
                     <form id="searchForm" method="GET" action="/products">
                         <div class="w-full flex justify-end items-center">
                             <button type="submit" @click="open = !open;"
@@ -22,7 +22,7 @@
                                 <span class="pl-[0.2rem] text-[14px] text-white">Zoeken</span>
                             </button>
                         </div>
-                        <div class="flex-col flex uhd:gap-[5rem]">
+                        <div class="flex-col flex basic:gap-0 uhd:gap-[5rem]">
                              <!-- <input type="submit" value="search test"> -->
                             {{-- categories component --}}
                             <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />

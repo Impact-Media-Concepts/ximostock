@@ -1,6 +1,6 @@
 @props(['categories', 'checkedCategories' => null])
 
-<div class="flex h-[28.37rem] w-[14.1rem]">
+<div class="flex basic:h-[22rem] hd:h-[28.37rem] w-[14.1rem]">
     <div class="w-[14.06rem] h-[5.18rem]">
         <div class="text-[16px] font-[600] relative right-[0.12rem] bottom-[0.18rem]">
             Categorieën
@@ -209,7 +209,7 @@
         categoriesList.innerHTML = ''; // Clear existing list
 
         const ul = document.createElement('ul');
-        ul.classList.add('mt-[0.8rem]', 'hd:max-h-[21.5rem]', 'uhd:max-h-[26rem]');
+        ul.classList.add('mt-[0.8rem]', 'basic:max-h-[15rem]', 'hd:max-h-[21.5rem]', 'uhd:max-h-[26rem]');
         ul.style.overflowY = 'scroll';
 
         categoriesData.forEach(category => {

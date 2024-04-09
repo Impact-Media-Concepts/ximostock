@@ -1,6 +1,6 @@
 @props(['search' => null, 'workspaces', 'activeWorkspace' => null])
 
-<div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center z-[998]">
+<div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center hd:z-[998] uhd:z-[998] basic:z-[998]">
     <button class="px-11 pt-1 relative left-[0.08rem]">
         <a href="{{ url('/dashboard') }}">
             <img class="select-none w-[10.75] h-[1.31rem] flex" src="../images/ximostock-logo.png" alt="ximostock logo">
@@ -182,7 +182,7 @@
                     class="absolute flex justify-center items-center hd:h-[5.37rem] uhd:h-[5.37rem] basic:h-[8rem] w-[10.43rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]"
                     style="border: 1px solid #F0F0F0;">
                     <ul>
-                        <li>
+                        <li class="hd:hidden uhd:hidden shd:hidden">
                             <a href="/user">
                                 <button @click="selectedProperty = 'Instellingen'; open = false;"
                                     class="hover:bg-[#3999BE] duration-100 block h-[2.37rem] w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex items-center justify-center">
