@@ -91,16 +91,16 @@ document.addEventListener("DOMContentLoaded", () => {
 		div.classList.add("hidden", "grid", "mt-[0.5rem]");
 		switch (property.type) {
 			case "multiselect":
-				rendermultiselect(property, div, trueInput); 
+				rendermultiselect(property, div, trueInput);
 				break;
 			case "bool":
-				renderBool(property, div, trueInput); 
+				renderBool(property, div, trueInput);
 				break;
 			case "singleselect":
-				rendersingleselect(property, div, trueInput); 
+				rendersingleselect(property, div, trueInput);
 				break;
 			case "text":
-				renderText(div, trueInput, property); 
+				renderText(div, trueInput, property);
 				break;
 			case "number":
 				renderNumber(div, trueInput, property);
@@ -328,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		if(property.selectedOption == 'true'){
 			input.value = 'ja';
-		}else{
+		}else if(property.selectedOption == 'false'){
 			input.value = 'nee';
 		}
 

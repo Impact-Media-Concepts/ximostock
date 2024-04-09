@@ -1,7 +1,7 @@
 @props(['discountError'])
 
 @if ($discountError)
-    <form action="/properties/bulkdiscountforce" method="POST">
+    <form action="/products/bulkdiscountforce" method="POST">
         @csrf
         <div
             class="discount-warning-popup w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 999;"
@@ -27,7 +27,7 @@
                                 <div class="discountWarningError-item w-[27.75rem] h-[3.68rem] flex justify-between items-center border border-gray-200">
                                     <p class="flex-grow flex justify-start pl-[1.2rem] truncate max-w-[19rem]">
                                         {{ $error->title }}
-                                        <input type="hidden" name="products_ids[{{ $error->id }}]" value="{{ $error->discount }}">
+                                        <input type="hidden" name="product_ids[{{ $error->id }}]" value="{{ $error->discount }}">
                                     </p>
                                     <div class="pr-[1rem]">
                                         <button type="button" class="skip-discountWarningError-item w-[6.06rem] h-[2.12rem] flex justify-center items-center rounded-md hover:bg-gray-100" style="border: 1px solid #717172;">
