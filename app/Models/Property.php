@@ -30,5 +30,4 @@ class Property extends Model
         $json = json_decode($this->values);
         return $json->options;
     }
-
 }

@@ -145,9 +145,10 @@
                                             id="salesChannel{{ $salesChannel->id }}long_description" 
                                             name="long_description" rows="4" cols="80">{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->long_description }}</textarea><br><br>
                                     </li>
+                                    
                                 </ul>
                             @endif
-
+                            
                         </li>
                     @endforeach
                 </ul>
