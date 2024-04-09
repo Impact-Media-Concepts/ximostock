@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\SalesChannelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,6 +64,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/properties',[PropertyController::class, 'store'])->middleware('can:create-property');
     Route::patch('/properties/{property}', [PropertyController::class, 'update']);
     Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);
+
+    //salesChannels
+    Route::get('/saleschannels', [SalesChannelController::class, 'index']);
 });
 
 //authentication
