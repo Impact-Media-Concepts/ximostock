@@ -1,3 +1,6 @@
 <div>
-    <!-- Act only according to that maxim whereby you can, at the same time, will that it should become a universal law. - Immanuel Kant -->
+    <li>
+        <label for="communicate_stock">communicate stock</label>
+        <input type="number" checked id="communicate_stock" value="1" name="communicate_stock">
+    </li>
 </div>
