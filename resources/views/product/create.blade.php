@@ -10,7 +10,7 @@
             <div>
                 <div>
                     <p class="text-[#717171] text-[20px] font-bold">
-                        Product aanmaken
+                        Product aanmaken | simpel
                     </p>
                 <div>
                 <x-product.create.header />
@@ -65,55 +65,6 @@
 
 <x-layout._footer-dependencies />
 <script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
-<script>
-    const steps = document.querySelectorAll('.step');
-    let currentStep = 0;
+<script type="text/javascript" src="{{ asset('./assets/js/product/create-simple.js') }}"></script>
 
-    function showStep(stepIndex) {
-        steps.forEach((step, index) => {
-            if (index === stepIndex) {
-                step.style.display = 'block';
-            } else {
-                step.style.display = 'none';
-            }
-        });
-
-        if (stepIndex === 0) {
-            document.getElementById('prevBtn').style.display = 'none';
-        } else {
-            document.getElementById('prevBtn').style.display = 'inline-block';
-        }
-
-        if (stepIndex === steps.length - 1) {
-            document.getElementById('nextBtn').style.display = 'none';
-        } else {
-            document.getElementById('nextBtn').style.display = 'inline-block';
-        }
-
-        // Update progress bar
-        const progressBar = document.getElementById('progress');
-        const progressPercentage = (stepIndex / (steps.length - 1)) * 100;
-        progressBar.style.width = progressPercentage + '%';
-
-        // Display current step
-        const currentStepText = document.getElementById('currentStep');
-        currentStepText.textContent = `Step ${stepIndex + 1} of ${steps.length}`;
-    }
-
-    document.getElementById('nextBtn').addEventListener('click', () => {
-        if (currentStep < steps.length - 1) {
-            currentStep++;
-            showStep(currentStep);
-        }
-    });
-
-    document.getElementById('prevBtn').addEventListener('click', () => {
-        if (currentStep > 0) {
-            currentStep--;
-            showStep(currentStep);
-        }
-    });
-
-    showStep(currentStep);
-</script>
 </html>

@@ -928,6 +928,10 @@ video {
   margin-left: 1.55rem;
 }
 
+.ml-\[1\.56rem\] {
+  margin-left: 1.56rem;
+}
+
 .ml-\[1\.5rem\] {
   margin-left: 1.5rem;
 }
@@ -1257,12 +1261,20 @@ video {
   height: 1.31rem;
 }
 
+.h-\[1\.56rem\] {
+  height: 1.56rem;
+}
+
 .h-\[1\.5rem\] {
   height: 1.5rem;
 }
 
 .h-\[12\.5rem\] {
   height: 12.5rem;
+}
+
+.h-\[14\.43\] {
+  height: 14.43;
 }
 
 .h-\[14\.5rem\] {
@@ -1397,6 +1409,10 @@ video {
   height: 3.72rem;
 }
 
+.h-\[30\.5rem\] {
+  height: 30.5rem;
+}
+
 .h-\[36\.18rem\] {
   height: 36.18rem;
 }
@@ -1411,6 +1427,10 @@ video {
 
 .h-\[3rem\] {
   height: 3rem;
+}
+
+.h-\[4\.56rem\] {
+  height: 4.56rem;
 }
 
 .h-\[4\.5rem\] {
@@ -1581,6 +1601,10 @@ video {
   width: 1.2rem;
 }
 
+.w-\[1\.56rem\] {
+  width: 1.56rem;
+}
+
 .w-\[1\.7rem\] {
   width: 1.7rem;
 }
@@ -1623,6 +1647,10 @@ video {
 
 .w-\[14\.1rem\] {
   width: 14.1rem;
+}
+
+.w-\[14\.43rem\] {
+  width: 14.43rem;
 }
 
 .w-\[14rem\] {
@@ -1888,6 +1916,10 @@ video {
   align-items: flex-start;
 }
 
+.items-end {
+  align-items: flex-end;
+}
+
 .items-center {
   align-items: center;
 }
@@ -2075,6 +2107,10 @@ video {
   border-width: 2px;
 }
 
+.border-\[3px\] {
+  border-width: 3px;
+}
+
 .\!border-t-0 {
   border-top-width: 0px !important;
 }
@@ -2101,6 +2137,11 @@ video {
 
 .border-none {
   border-style: none;
+}
+
+.border-\[\#3EABD5\] {
+  --tw-border-opacity: 1;
+  border-color: rgb(62 171 213 / var(--tw-border-opacity));
 }
 
 .border-blue-500 {
@@ -2155,6 +2196,11 @@ video {
 .bg-\[\#3DD572\] {
   --tw-bg-opacity: 1;
   background-color: rgb(61 213 114 / var(--tw-bg-opacity));
+}
+
+.bg-\[\#3EABD5\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(62 171 213 / var(--tw-bg-opacity));
 }
 
 .bg-\[\#3dabd5\] {
@@ -2286,6 +2332,11 @@ video {
 
 .stroke-red-500 {
   stroke: #ef4444;
+}
+
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .p-0 {
@@ -3479,6 +3530,10 @@ video {
     z-index: 998;
   }
 
+  .uhd\:\!ml-\[2rem\] {
+    margin-left: 2rem !important;
+  }
+
   .uhd\:mr-10 {
     margin-right: 2.5rem;
   }
@@ -3515,6 +3570,10 @@ video {
     height: 83.333333%;
   }
 
+  .uhd\:h-\[42\.56rem\] {
+    height: 42.56rem;
+  }
+
   .uhd\:h-\[5\.37rem\] {
     height: 5.37rem;
   }
@@ -3537,6 +3596,10 @@ video {
 
   .uhd\:max-h-\[27rem\] {
     max-height: 27rem;
+  }
+
+  .uhd\:\!w-\[119rem\] {
+    width: 119rem !important;
   }
 
   .uhd\:w-\[13\.35rem\] {
