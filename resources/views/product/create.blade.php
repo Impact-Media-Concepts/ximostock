@@ -6,13 +6,8 @@
         <div class="h-full">
             <x-sidenav.sidenav :sidenavActive="$sidenavActive"/>
         </div>
-        <div class="pt-20 hd:w-[98rem] uhd:w-[138rem]">
+        <div class="pt-[1.5rem] hd:w-[98rem] uhd:w-[138rem]">
             <div>
-                <div>
-                    <p class="text-[#717171] text-[20px] font-bold">
-                        Product aanmaken | simpel
-                    </p>
-                <div>
                 <x-product.create.header />
               
                 <form method="POST" action="/products" enctype="multipart/form-data">

@@ -1,5 +1,5 @@
 <button
-    class="hover:bg-[#3999BE] duration-100 flex items-center justify-center z-20 w-[10.53rem] pr-[1.08rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
+    class="hover:bg-[#3999BE] prevBtn duration-100 flex items-center justify-center z-20 w-[10.53rem] pr-[1.08rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
     style="border: 1px solid white"
     type="button">
     <div class="flex items-center justify-center">
