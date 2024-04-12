@@ -1,4 +1,4 @@
-/* create index */
+// #region create index 
 const steps = document.querySelectorAll('.step');
 let currentStep = 0;
 
@@ -48,10 +48,11 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 });
 
 showStep(currentStep);
+//#endregion
 
 
-/* step 2 photos*/
-const fileInput = document.getElementById('photos2');
+// #region step 2 photos
+const fileInput = document.getElementById('hiddenFileInput');
 const previewContainer = document.getElementById('previewContainer');
 const splideList = document.querySelector('.splide__list');
 const splideSection = document.getElementById('splideSection');
@@ -112,8 +113,10 @@ fileInput.addEventListener('change', function(event) {
             images.forEach(image => {
                 image.classList.remove("border-[3px]", "border-[#3EABD5]");
             });
-
+          
             img.classList.add("border-[3px]", "border-[#3EABD5]");
+            fileInput.name = "primaryPhoto"
+            console.log(fileInput);
         });
 
         const span = document.createElement('span');
@@ -138,3 +141,5 @@ document.getElementById('get_file').onclick = function() {
 };
 
 splide.mount();
+
+// #endregion

@@ -31,7 +31,9 @@
                 </div>
             </section>
 
-            <!-- <div>
+
+
+              <!-- <div>
                 <div class="h-[14.43] w-[14.43rem]"> </div>
                 <label for="primaryPhoto">primary Photo</label>
                 <input type="file" id="primaryPhoto" name="primaryPhoto" />
@@ -42,6 +44,7 @@
                 <li><input type="file" id="photos2" name="photos[]" /></li>
             </ul> -->
 
+            
             <div class="flex items-end gap-[0.5rem]">
                 <button
                     class="hover:bg-[#3999BE] js-add-button hover:cursor-pointer text-left text-[14px] text-white duration-100 flex items-center justify-center z-20 w-[14.06rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
@@ -51,9 +54,10 @@
                     accept=".jpg, .jpeg, .png">
                     Voeg foto toe
                     <div class="flex items-center justify-center">
-                        <input type="file" accept=".jpg, .jpeg, .png" class="hidden" id="photos2" name="photos[]"/>
+                        <input class="hidden" type="file" accept=".jpg, .jpeg, .png" id="hiddenFileInput" class="hidden" name="photos[]"/>
                     </div>
                 </button>
+                <!-- if click name = primaryPhoto, if click away name = photos[] -->
 
                 <button
                     class="hover:bg-[#3999BE] duration-100 flex items-center justify-center z-20 w-[14.06rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
