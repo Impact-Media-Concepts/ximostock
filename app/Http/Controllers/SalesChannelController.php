@@ -6,6 +6,7 @@ use App\Models\SalesChannel;
 use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SalesChannelController extends Controller
 {
@@ -23,5 +24,21 @@ class SalesChannelController extends Controller
         return view('salesChannel.index',[
             'salesChannels' => SalesChannel::where('work_space_id', $workspace)->get()
         ]);
+    }
+
+    public function create(){
+        return view('salesChannel.create');
+    }
+
+    public function store(){
+        //authroize
+
+        //validate
+        request()->validate([
+            'name' => ['required', 'string'],
+            'type' => ['required', Rule::in(['WooCommerce'])],
+            'url' => ['required', 'url'],
+        ]);
+        //store
     }
 }
