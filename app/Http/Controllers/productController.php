@@ -31,7 +31,6 @@ class ProductController extends BaseProductController
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
-
             $products = Product::where('work_space_id', $request['workspace']);
             $categories = Category::where('work_space_id', $request['workspace']);
             $properties = Property::where('work_space_id', $request['workspace']);
