@@ -11,6 +11,13 @@ class ProductSalesChannel extends Model
 
     protected $table = 'product_sales_channel';
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class)
+            ->using(CategoryProductSalesChannels::class)
+            ->withPivot('primary');
+    }
+
     public function sales(){
         return $this->hasMany(Sale::class);
     }

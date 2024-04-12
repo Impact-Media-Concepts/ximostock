@@ -30,32 +30,11 @@
         <img src="{{ $photo->url }}" width="200" height="200" />
     @endforeach
     <ul>
-        @foreach ($product->properties as $property)
-            <li>
-                @if (gettype($property->pivot->property_value->value) == 'array')
-                {{ $property->name . ': ' . implode(',',$property->pivot->property_value->value) }}
-                
-                @else
-                {{ $property->name . ': ' . $property->pivot->property_value->value }}
-
-                @endif
-                
-            </li>
-        @endforeach
-    </ul>
-    <ul>
         @foreach ($product->childProducts as $child)
             <li>
                 <strong>
                     {{ $child->title . '  ' . $child->sku . '  ' . $child->ean }}
                 </strong>
-                <ul>
-                    @foreach ($child->decodedProps as $prop)
-                        <li>
-                            {{ $prop['name'] . '   ' . $prop['value'] }}
-                        </li>
-                    @endforeach
-                </ul>
             </li>
         @endforeach
     </ul>
@@ -107,6 +86,9 @@
                 <x-product.show.category-checkbox-list :categories="$categories" :checkedCategories="$product->categories" />
             </li>
             <li>
+                <x-product.properties.properties :properties="$properties" :selectedProperties="$selectedProperties" />
+            </li>
+            <li>
                 SalesChannels:
                 <ul>
                     @foreach ($salesChannels as $salesChannel)
@@ -135,8 +117,7 @@
                                         <label for="salesChannel{{ $salesChannel->id }}short_description">Short
                                             Description:</label><br>
                                         <textarea name="salesChannels[{{ $salesChannel->id }}][short_description]"
-                                            id="salesChannel{{ $salesChannel->id }}short_description" name="short_description"
-                                             rows="4" cols="80">{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->short_description }}</textarea><br><br>
+                                            id="salesChannel{{ $salesChannel->id }}short_description" rows="4" cols="80">{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->short_description }}</textarea><br><br>
                                     </li>
                                     <li>
                                         <label for="salesChannel{{ $salesChannel->id }}long_description">Long
@@ -145,7 +126,28 @@
                                             id="salesChannel{{ $salesChannel->id }}long_description" 
                                             name="long_description" rows="4" cols="80">{{ $selectedSalesChannels->firstWhere('sales_channel_id', $salesChannel->id)->long_description }}</textarea><br><br>
                                     </li>
-                                    
+                                    <li>
+                                        categories
+                                        <ul>
+                                            <li>
+                                                <input type="checkbox" id="salesChannels[{{ $salesChannel->id }}][categories][1]"  name="salesChannels[{{ $salesChannel->id }}][categories][1]" value="0"> {{-- name is saleschannels[saleschannel id][categories][category id] | value is bool primary or not --}}
+                                                <label for="salesChannels[{{ $salesChannel->id }}][categories][1]">{{$categories[1]->name}}</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" id="salesChannels[{{ $salesChannel->id }}][categories][2]"  name="salesChannels[{{ $salesChannel->id }}][categories][2]" value="0"> {{-- name is saleschannels[saleschannel id][categories][category id] | value is bool primary or not --}}
+                                                <label for="salesChannels[{{ $salesChannel->id }}][categories][2]">{{$categories[2]->name}}</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" id="salesChannels[{{ $salesChannel->id }}][categories][3]"  name="salesChannels[{{ $salesChannel->id }}][categories][3]" value="0"> {{-- name is saleschannels[saleschannel id][categories][category id] | value is bool primary or not --}}
+                                                <label for="salesChannels[{{ $salesChannel->id }}][categories][3]">{{$categories[3]->name}}</label>
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" id="salesChannels[{{ $salesChannel->id }}][categories][4]"  name="salesChannels[{{ $salesChannel->id }}][categories][4]" value="0"> {{-- name is saleschannels[saleschannel id][categories][category id] | value is bool primary or not --}}
+                                                <label for="salesChannels[{{ $salesChannel->id }}][categories][4]">{{$categories[4]->name}}</label>
+                                            </li>
+                                        </ul>
+                                        <hr>
+                                    </li>
                                 </ul>
                             @endif
                             
