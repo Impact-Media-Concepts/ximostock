@@ -11,6 +11,4 @@
 
         <span class="pr-[0.2rem] text-left text-[14px] text-white">Vorige</span>
     </div>
-   
-    
 </button>
