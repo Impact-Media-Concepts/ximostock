@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\SalesChannelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create-product');
+    Route::get('/products/export/', [ProductController::class, 'export']);//export
     Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view-product,product');
     Route::post('/products', [ProductController::class, 'store'])->middleware('can:create-product');
     Route::patch('/products/{product}', [ProductController::class, 'update']);
@@ -43,6 +45,8 @@ Route::middleware('auth')->group(function () {
     //variant product
     Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
     Route::post('/products/variant', [ProductVariationController::class, 'store']);
+    
+
 
     //categories
     Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:index-category');
@@ -60,6 +64,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/properties',[PropertyController::class, 'store'])->middleware('can:create-property');
     Route::patch('/properties/{property}', [PropertyController::class, 'update']);
     Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);
+
+    //salesChannels
+    Route::get('/saleschannels', [SalesChannelController::class, 'index']);
+    Route::get('/saleschannels/create',[SalesChannelController::class, 'create']);
 });
 
 //authentication

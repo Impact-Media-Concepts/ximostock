@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductProperty;
 use App\Models\Property;
 use App\Rules\ValidPropertyKeys;
 use Attribute;
@@ -34,21 +35,68 @@ class PropertyController extends Controller
 
         $attributes = request()->validate([
             'options' => ['nullable', 'array'],
-            'options.*' => ['required', 'string'],
+            'options.*' => ['nullable', 'string'],
             'name' => ['required', 'string']
         ]);
         $options = [];
+        if ($property->type === 'multiselect' || $property->type === 'singleselect') {
+            foreach ($attributes['options'] as $option) {
+                array_push($options, $option);
+            }
 
-        foreach ($attributes['options'] as $option) {
-            array_push($options, $option);
+
+            //correct the values of all linked products to match the new options
+            for ($x = 0; $x < Count($property->options); $x++) {
+                if ($property->options[$x] != $options[$x]) {
+                    //get all ProductsProperies. 
+                    //if options[x] === null remove the ProductProperty
+                    //if not alter the value
+                    $productProperties = ProductProperty::where('property_id', $property->id)->whereJsonContains('property_value', ['value' => $property->options[$x]])->get();
+                    foreach ($productProperties as $productProperty) {
+                        if ($options[$x] == null) {
+                            // remove the option if no value left remove the entry
+                            $propValue = json_decode($productProperty->property_value);
+                            $propValue = (array)$propValue;
+                            if ($property->type === 'multiselect') {
+                                $propValue = array_filter($propValue['value'], function ($value) use ($property, $x) {
+                                    return $value != $property->options[$x];
+                                });
+                            } else {
+                                $propValue = [];
+                            }
+
+                            if (!Count($propValue)) {
+                                $productProperty->delete();
+                            } else {
+                                sort($propValue);
+                                $productProperty->property_value = json_encode(['value' => $propValue]);
+                                $productProperty->update();
+                            }
+                        } else {
+                            //alter the value of the entry to the new one
+                            $productProperty->property_value = str_replace($property->options[$x], $options[$x], $productProperty->property_value);
+                            $productProperty->update();
+                        }
+                    }
+                }
+            }
+
+
+            //prepare json values
+            $options = array_filter($options, function ($value) {
+                return $value != null;
+            });
+
+            $options = array_values($options);
         }
         $type = $property->type;
         $values = json_encode(['type' => $type, 'options' => $options]);
-
         $property->update([
             'name' => $attributes['name'],
             'values' => $values
         ]);
+
+
         return redirect()->back();
     }
 
@@ -74,7 +122,7 @@ class PropertyController extends Controller
     {
         $request = request();
         //authorize
-        
+
         //validate
         $attributes = $request->validate([
             'name' => ['required', 'max:255'],

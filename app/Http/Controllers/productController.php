@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Exports\ProductsExport;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
@@ -19,7 +20,7 @@ use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends BaseProductController
 {
@@ -30,7 +31,6 @@ class ProductController extends BaseProductController
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
-
             $products = Product::where('work_space_id', $request['workspace']);
             $categories = Category::where('work_space_id', $request['workspace']);
             $properties = Property::where('work_space_id', $request['workspace']);
@@ -196,7 +196,7 @@ class ProductController extends BaseProductController
 
     //adds the "discount" even if product is more expansive
     public function BulkDiscountForce(){
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulk-products', [array_keys(request('product_ids'))]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array', new ValidProductKeys],
@@ -208,16 +208,20 @@ class ProductController extends BaseProductController
             $product->discount = $discount;
             $product->save();
         }
-        redirect()->back();
+        return redirect()->back();
     }
 
     public function bulkLinkSalesChannel()
     {
-        //TODO
-        // Gate::authorize('bulk-saleschannel-products',[[]]);
+        $request = request();
+        
+        $productIds = isset($request['product_ids'])  ? $request['product_ids'] : [];
+        $salesChannels = isset($request['sales_channel_ids'])  ? $request['sales_channel_ids'] : [];
+        
+        Gate::authorize('bulk-saleschannel-products',[$productIds, $salesChannels ]);
 
         //validate request
-        $validatedData = request()->validate([
+        $validatedData = $request->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
             'sales_channel_ids' => ['required', 'array'],
@@ -238,10 +242,15 @@ class ProductController extends BaseProductController
 
     public function bulkUnlinkSalesChannel()
     {
-        // Gate::authorize('bulk-saleschannel-products');
+        $request = request();
+        
+        $productIds = isset($request['product_ids'])  ? $request['product_ids'] : [];
+        $salesChannels = isset($request['sales_channel_ids'])  ? $request['sales_channel_ids'] : [];
+        
+        Gate::authorize('bulk-saleschannel-products',[$productIds, $salesChannels ]);
 
         // Validate request
-        $validatedData = request()->validate([
+        $validatedData = $request->validate([
             'product_ids' => ['required', 'array'],
             'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
             'sales_channel_ids' => ['required', 'array'],
@@ -425,6 +434,12 @@ class ProductController extends BaseProductController
         //return to product page
         return redirect('/products');
     }
+
+    public function export() 
+    {
+        return Excel::download(new ProductsExport, 'products.xlsx');
+    }
+
 
     protected function createProduct($attributes): Product
     {
