@@ -50,88 +50,114 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 showStep(currentStep);
 //#endregion
 
-
 // #region step 2 photos
-const fileInput = document.getElementById('hiddenFileInput');
+const fileInput = document.getElementById('uploadFoto');
 const previewContainer = document.getElementById('previewContainer');
 const splideList = document.querySelector('.splide__list');
 const splideSection = document.getElementById('splideSection');
+const setPrimary = document.getElementById('setPrimaryPhoto');
 
 let addButton = document.querySelector('.js-add-button');
 let removeButtonsss = document.querySelector('.js-remove-button');
-let huts = true;
+
 let splide = new Splide( '.splide', {
     perPage: 5,
     perMove: 1,
     drag: false
 });
 
+let primaryPhotoInput = null;
+
 fileInput.addEventListener('change', function(event) {
     // Get the selected file
     const file = event.target.files[0];
 
     if (file) {
-        
-        splideSection.classList.remove("hidden");
+        splideSection.classList.remove('hidden');
 
         const img = document.createElement('img');
-
         img.src = URL.createObjectURL(file);
-        img.classList.add("object-contain", "select-image");
+        img.classList.add('object-contain', 'select-image', '!w-[16rem]');
 
         const li = document.createElement('li');
-        li.classList.add('splide__slide');
+        li.classList.add('splide__slide', 'pt-[1.5rem]');
 
         const imgContainer = document.createElement('span');
+        imgContainer.classList.add('relative');
+
+        const removeButtonImg = document.createElement('img');
+        removeButtonImg.src = '../images/white-x-icon.png';
+        removeButtonImg.alt = 'white x icon';
+        removeButtonImg.classList.add('h-[0.68rem]', 'w-[0.68rem]');
+
         const removeButton = document.createElement('button');
-        removeButton.classList.add("w-[1.56rem]","h-[1.56rem]", "bg-[#3EABD5]", "js-remove-button");
-        removeButton.value = "byebye";
-        removeButton.type = "button";
-
+        removeButton.classList.add('w-[1.56rem]','h-[1.56rem]', 'bg-[#3EABD5]', 'js-remove-button', 'absolute', 'right-0', 'flex', 'items-center', 'justify-center', 'hover:bg-[#3999BE]');
+        removeButton.type = 'button';
         removeButton.addEventListener('click', function() {
-
-            // Find the parent li of the clicked remove button and remove it
             const liToRemove = this.closest('.splide__slide');
             liToRemove.remove();
-            
-            // Refreshes the splide so it can know if there are none left
             splide.refresh();
 
             if (splide.length === 0) {
-                console.log(splide.length);
-                splideSection.classList.add("hidden");
+                splideSection.classList.add('hidden');
             }
         });
 
+        removeButton.appendChild(removeButtonImg);
+
+
+        const fotoInputTag = document.createElement('input');
+        fotoInputTag.name = 'photos[]';
+        fotoInputTag.type = 'file';
+        fotoInputTag.classList.add('hidden');
+
+        if (event.target.files[0]) {
+            fotoInputTag.files = event.target.files;
+        }
+
         imgContainer.appendChild(removeButton);
         imgContainer.appendChild(img);
+        imgContainer.appendChild(fotoInputTag);
 
         li.appendChild(imgContainer);
 
         img.addEventListener('click', function() {
             const images = document.querySelectorAll('.select-image');
             images.forEach(image => {
-                image.classList.remove("border-[3px]", "border-[#3EABD5]");
+                image.classList.remove('border-[3px]', 'border-[#3EABD5]');
             });
-          
-            img.classList.add("border-[3px]", "border-[#3EABD5]");
-            fileInput.name = "primaryPhoto"
-            console.log(fileInput);
+
+            img.classList.add('border-[3px]', 'border-[#3EABD5]');
+
+            setPrimary.onclick = function() {
+                img.classList.add("primary-foto-size")
+                const lis = document.querySelectorAll('.splide__slide');
+                lis.forEach(li => {
+                    li.classList.remove('primary-size');
+                });
+                li.classList.add('primary-size');
+    
+                fotoInputTag.name = 'primaryPhoto';
+    
+                if (primaryPhotoInput && primaryPhotoInput !== fotoInputTag) {
+                    primaryPhotoInput.name = 'photos[]';
+                }
+
+                primaryPhotoInput = fotoInputTag;
+            };
         });
 
         const span = document.createElement('span');
-        span.style.height = "100%";
-        span.style.display = "flex";
-        span.style.justifyContent = "center";
-        span.style.alignItems = "flex-end";
-        span.style.marginBottom = "1rem";
+        span.style.height = '100%';
+        span.style.display = 'flex';
+        span.style.justifyContent = 'center';
+        span.style.alignItems = 'flex-end';
         const fileNameNode = document.createTextNode(file.name);
 
         span.appendChild(fileNameNode);
         li.appendChild(span);
-        
-        splideList.appendChild(li);
 
+        splideList.appendChild(li);
         splide.refresh();
     }
 });
@@ -141,5 +167,4 @@ document.getElementById('get_file').onclick = function() {
 };
 
 splide.mount();
-
 // #endregion
