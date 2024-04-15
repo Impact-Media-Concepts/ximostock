@@ -4,7 +4,7 @@
     }
 
     .back-order-btn-options {
-        margin-right: 1.93rem;
+
         margin-top: 3.3rem;
     }
 </style>
@@ -42,7 +42,8 @@
             <ul>
                 <template x-for="backOrder in allowBackorders" :key="backOrder.data">
                     <li>
-                    <button type="button" @click="selectedbackOrder = backOrder; open = false;$refs.backorders.value = backOrder.data; console.log('Updated backorders value:', $refs.backorders.value);" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none">
+                    <button type="button" @click="selectedbackOrder = backOrder; open = false; $refs.backorders.value = backOrder.data;"
+                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none">
                         <span x-text="backOrder.name"></span>
                         <input type="hidden" id="backorders" x-ref="backorders" name="backorders" value="0">
                     </button>

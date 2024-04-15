@@ -1,5 +1,6 @@
 // #region create index 
 const steps = document.querySelectorAll('.step');
+const createButtonContainer = document.getElementById("createButtonContainer");
 let currentStep = 0;
 
 function showStep(stepIndex) {
@@ -21,6 +22,12 @@ function showStep(stepIndex) {
         document.getElementById('nextBtn').style.display = 'none';
     } else {
         document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+
+    if (stepIndex === 5) {
+        document.getElementById('saveBtn').style.display = 'inline-block';
+    } else {
+        document.getElementById('saveBtn').style.display = 'none';
     }
 
     // Update progress bar

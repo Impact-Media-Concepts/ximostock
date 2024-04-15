@@ -11,7 +11,7 @@
     }
 </style>
 
-<div class="bg-white rounded-md uhd:h-[42.56rem]" style="border: 1px solid #F0F0F0;">
+<div class="bg-white rounded-t-lg uhd:h-[42.56rem]" style="border: 1px solid #F0F0F0;">
     <div class="h-[4.56rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg" style="border:  1px solid #F0F0F0;">
         <div class=" ml-[1.56rem] mt-[0.6rem]">
             <div>
