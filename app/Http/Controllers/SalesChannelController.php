@@ -34,11 +34,19 @@ class SalesChannelController extends Controller
         //authroize
 
         //validate
-        request()->validate([
+        $attributes = request()->validate([
             'name' => ['required', 'string'],
             'type' => ['required', Rule::in(['WooCommerce'])],
-            'url' => ['required', 'url'],
+            'url' => ['required'],
+            'flavicon_url' => ['nullable'],
+            'api_key' => ['required'],
+            'secret' => ['nullable']
         ]);
+        $attributes += ['work_space_id' => Auth::user()->work_space_id]; // temperary
         //store
+        SalesChannel::create($attributes);
+
+        //return
+        return redirect('/saleschannels');
     }
 }

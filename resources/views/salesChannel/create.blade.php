@@ -9,7 +9,7 @@
 
 <body>
     <h1>sales Channel create</h1>
-    <form action="" method="POST" >
+    <form action="/saleschannels" method="POST" >
         @csrf
         <ul>
             <li>
@@ -17,8 +17,9 @@
                 <input type="text" id="name" name="name" required>
             </li>
             <li>
-                <select name="channel_type" required>
-                    <option>WooCommerce</option>
+                <select name="type" required>
+                    <option></option>
+                    <option value="WooCommerce">WooCommerce</option>
                 </select>
             </li>
             <li>
@@ -41,7 +42,15 @@
                 <input type="submit" id="save" value="save">
             </li>
         </ul>
-        
+        @if ($errors->any())
+        <div>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     </form>
 </body>
 </html>
