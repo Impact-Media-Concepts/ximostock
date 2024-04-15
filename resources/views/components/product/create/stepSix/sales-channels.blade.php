@@ -10,3 +10,4 @@
         @endforeach
     </ul>
 </div>
+<x-product.buttons.create-save-button />

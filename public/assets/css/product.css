@@ -257,3 +257,30 @@ input.slideon {
 }
 
 /* End Medium slideon */
+
+/* create product step 1 ean */
+.create-prod-ean::-webkit-outer-spin-button,
+.create-prod-ean::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.create-prod-ean[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* create product step 2 photos */
+.splide__slide {
+    width: 18rem !important;
+    height: 15rem !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center !important;
+    margin-left: 0.87rem !important;
+    margin-right: 0.87rem !important;
+}
+
+.select-image:hover {
+    cursor: pointer;
+}
