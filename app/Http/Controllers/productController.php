@@ -656,6 +656,7 @@ class ProductController extends BaseProductController
                     }
                 }
             } else {
+                // If the SalesChannel does  exist, update the existing entry
                 $productSalesChannel = ProductSalesChannel::where('sales_channel_id', $salesChannelId)->where('product_id', $productId)->first();
                 $productSalesChannel->update([
                     'title' => $salesChannelData['salesChannels'][$salesChannelId]['title'],
@@ -663,12 +664,10 @@ class ProductController extends BaseProductController
                     'long_description' => $salesChannelData['salesChannels'][$salesChannelId]['long_description'],
                     'price' =>  $salesChannelData['salesChannels'][$salesChannelId]['price']
                 ]);
-
                 //update categories
                 if (isset($salesChannelData['salesChannels'][$salesChannelId]['categories'])) {
                     $this->updateSalesChannelCategories($productSalesChannel->id, $salesChannelData['salesChannels'][$salesChannelId]['categories']);
                 }
-
                 unset($existingSalesChannelIds[array_search($salesChannelId, $existingSalesChannelIds)]);
             }
         }

@@ -8,6 +8,7 @@ use App\Models\PhotoProduct;
 use App\Models\ProductProperty;
 use App\Rules\ValidPropertyKeys;
 use App\Models\ProductSalesChannel;
+use App\Rules\ValidPropertyOptions;
 use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 
@@ -56,7 +57,7 @@ abstract class BaseProductController extends Controller
     protected function validatePropertyAttributes()
     {
         return [
-            'properties' => ['nullable', 'array', new ValidPropertyKeys],
+            'properties' => ['nullable', 'array', new ValidPropertyKeys, new ValidPropertyOptions],
             'properties.*' => ['string', 'required']
         ];
     }
