@@ -57,7 +57,7 @@ class SalesChannelController extends Controller
 
     public function update(SalesChannel $salesChannel){
         //authorize
-
+        
         //validate
         $attributes = request()->validate([
             'name' => ['required', 'string'],
@@ -67,7 +67,9 @@ class SalesChannelController extends Controller
             'api_key' => ['required'],
             'secret' => ['nullable']
         ]);
+        
         //update
+        $salesChannel->update($attributes);
 
         //return
         return redirect()->back();

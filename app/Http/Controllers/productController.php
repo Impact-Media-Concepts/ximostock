@@ -132,7 +132,6 @@ class ProductController extends BaseProductController
 
     public function destroy($id)
     {
-
         // Find the product by its ID
         $product = Product::findOrFail($id);
 
@@ -354,7 +353,7 @@ class ProductController extends BaseProductController
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
         $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
         $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
-        Gate::authorize('update-product', [
+        Gate::authorize('update', [
             $product,
             $salesChannels,
             $categories,
