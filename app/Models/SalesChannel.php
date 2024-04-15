@@ -10,6 +10,8 @@ class SalesChannel extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = ['id'];
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'product_sales_channel')
