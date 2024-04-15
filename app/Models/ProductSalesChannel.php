@@ -14,8 +14,15 @@ class ProductSalesChannel extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class)
-            ->using(CategoryProductSalesChannels::class)
+            ->using(CategoryProductSalesChannel::class)
             ->withPivot('primary');
+    }
+
+    public function properties()
+    {
+        return $this->belongsToMany(Category::class)
+            ->using(ProductSalesChannelProperty::class)
+            ->withPivot('property_value');
     }
 
     public function sales(){
