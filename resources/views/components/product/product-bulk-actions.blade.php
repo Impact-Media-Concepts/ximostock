@@ -4,8 +4,8 @@
     $buttons = [
         ['text' => 'Korting', 'width' => '5.688rem', 'actionId' => 'Discount'],
         ['text' => 'Verkoopkanalen', 'width' => '9.31rem', 'actionId' => 'SalesChannels'],
-        ['text' => 'Voorraad communiceren', 'width' => '10.5rem', 'actionId' => 'communicateStock'],
-        ['text' => 'Voorraad niet communiceren', 'width' => '10.5rem', 'actionId' => 'unCommunicateStock'],
+        ['text' => 'Voorraad communiceren', 'width' => '12rem', 'actionId' => 'communicateStock'],
+        ['text' => 'Voorraad niet communiceren', 'width' => '13.5rem', 'actionId' => 'unCommunicateStock'],
         ['text' => 'Archiveren', 'width' => '7.12rem', 'actionId' => 'Archive']
     ];
 @endphp
@@ -24,11 +24,7 @@
         @foreach ($buttons as $button)
             <x-product.buttons.product-bulk-button
                 bulkActionId="bulkAction{{$button['actionId']}}"
-                class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}
-                {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }}
-                {{ $button['text'] === 'Verkoopkanalen' ? 'sales-channel-popup-trigger' : '' }}
-                {{ $button['text'] === 'Voorraad communiceren' ? 'communicate-stock' : '' }}
-                {{ $button['text'] === 'Voorraad niet communiceren' ? 'uncommunicate-stock' : '' }}"
+                class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }} {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }} {{ $button['text'] === 'Verkoopkanalen' ? 'sales-channel-popup-trigger' : '' }} {{ $button['text'] === 'Voorraad communiceren' ? 'communicate-stock' : '' }} {{ $button['text'] === 'Voorraad niet communiceren' ? 'uncommunicate-stock' : '' }}"
             >
                 {{ $button['text'] }}
             </x-product.buttons.product-bulk-button>
