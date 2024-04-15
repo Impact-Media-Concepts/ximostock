@@ -54,4 +54,22 @@ class SalesChannelController extends Controller
             'salesChannel' => $salesChannel
         ]);
     }
+
+    public function update(SalesChannel $salesChannel){
+        //authorize
+
+        //validate
+        $attributes = request()->validate([
+            'name' => ['required', 'string'],
+            'type' => ['required', Rule::in(['WooCommerce'])],
+            'url' => ['required'],
+            'flavicon_url' => ['nullable'],
+            'api_key' => ['required'],
+            'secret' => ['nullable']
+        ]);
+        //update
+
+        //return
+        return redirect()->back();
+    }
 }
