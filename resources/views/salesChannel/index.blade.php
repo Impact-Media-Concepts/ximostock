@@ -11,7 +11,7 @@
     <ul>
         @foreach ($salesChannels as $salesChannel)
         <li>
-            {{$salesChannel->name}}
+            <a href="/saleschannels/{{$salesChannel->id}}">{{$salesChannel->name}}</a>
         </li>
         @endforeach
     </ul>

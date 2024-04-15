@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/saleschannels/create',[SalesChannelController::class, 'create']);
     Route::get('/saleschannels/{salesChannel}', [SalesChannelController::class, 'show']);
     Route::post('/saleschannels', [SalesChannelController::class, 'store']);
+    Route::patch('/saleschannels/{salesChannel}', [SalesChannelController::class, 'update']);
 });
 
 //authentication

@@ -10,7 +10,9 @@
 
 <body>
     <h1>saleschannel show</h1>
-    <form action="">
+    <form action="/saleschannels/{{$salesChannel->id}}" method="POST">
+        @csrf
+        @method('PATCH')
         <ul>
             <li>
                 <label for="name">name:</label>
