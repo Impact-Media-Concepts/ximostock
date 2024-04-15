@@ -1,4 +1,4 @@
-<div class="bg-white flex justify-center rounded-md">
+<div class="bg-white flex justify-center rounded-t-lg uhd:max-h-[60rem] overflow-y-auto">
     <div class="hd:w-[95rem] uhd:w-[134rem]">
 
         <div class="h-[15rem] mt-[2rem]">
@@ -30,7 +30,7 @@
             <div class="h-[20.56rem] rounded-b-lg" style="border: 1px solid #F0F0F0;"> <x-product.create.stepOne.long-desc /> </div>
         </div>
 
-        <div class="flex gap-[20rem]">
+        <div class="flex gap-[20rem] pb-[4rem]">
             <div class="h-[9.56rem] rounded-md mt-[2rem] hd:w-[40rem] uhd:w-[60rem]">
                 <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
                     <p class="ml-[1.37rem] text-[14px] text-[#fff]">Backorders toestaan</p>

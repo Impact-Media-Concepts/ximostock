@@ -39,17 +39,17 @@
 
                     <x-product.create.create-error-message :errors="$errors"/>
 
-                    <div class="flex w-full items-center">
-                        <div id="prevBtn" class="mr-[2rem]">
+                    <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg rounded-md">
+                        <div id="prevBtn" class="relative right-[1.4rem]">
                             <x-product.buttons.create-previous-button />
                         </div>
 
-                        <div>
-                            <x-product.buttons.create-cancel-button />
+                        <div class="w-full flex justify-end relative right-[1.4rem]">
+                            <x-product.buttons.create-next-button />
                         </div>
 
-                        <div class="w-full flex justify-end">
-                            <x-product.buttons.create-next-button />
+                        <div>
+                            <x-product.buttons.create-save-button />
                         </div>
                     </div>
                 </form>

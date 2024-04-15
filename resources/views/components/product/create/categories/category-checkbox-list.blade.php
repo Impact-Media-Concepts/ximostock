@@ -262,7 +262,7 @@
         title.textContent = "Categorie titel:";
 
         const titleSubContainer = document.createElement('p');
-        titleSubContainer.classList.add("h-[2.5rem]", "w-[14.68rem]", "rounded-md", "flex", "justify-center", "items-center");
+        titleSubContainer.classList.add("h-[2.5rem]", "w-[14.68rem]", "rounded-md", "flex", "justify-start", "items-center", "pl-[0.5rem]", "truncate");
         titleSubContainer.style.border = "1px solid #D3D3D3";
         titleSubContainer.textContent = `${category.name}`;
 
@@ -277,13 +277,15 @@
         pathTitle.textContent = "Categorie path:";
 
         const pathSubContainer = document.createElement('p');
-        pathSubContainer.classList.add("h-[2.5rem]", "w-[10.81rem]", "rounded-md", "flex", "justify-center", "items-center");
+        pathSubContainer.classList.add("select-none", "h-[2.5rem]", "w-[10.81rem]", "rounded-md", "flex", "justify-start", "items-center", "pl-[0.5rem]", "truncate");
         pathSubContainer.style.border = "1px solid #D3D3D3";
         pathSubContainer.textContent = getCategoryPath(category);
+        pathSubContainer.title = getCategoryPath(category);
 
 
         const imgContainer = document.createElement("div");
-        imgContainer.classList.add("relative", "left-[0.5rem]", "bottom-[1.5rem]");
+        imgContainer.classList.add("relative", "left-[0.5rem]", "bottom-[1.5rem]", "hover:cursor-pointer");
+        imgContainer.addEventListener('click', () => handleCheckboxClick(category));
 
         const x_icon = document.createElement('img');
         x_icon.src = "../images/x-icon.png";
@@ -299,14 +301,16 @@
        
         const setPrimaryButton = document.createElement('button');
         setPrimaryButton.textContent = 'Zet als primaire categorie';
-        setPrimaryButton.addEventListener('click', () => setPrimaryCategory(category));
+        setPrimaryButton.addEventListener('click', () => {
+            const clickedButton = event.target; // Get the clicked button
+            console.log("primary btn before: ", clickedButton);
+            setPrimaryCategory(category, clickedButton);
+            console.log(category);          
+        }); 
         setPrimaryButton.classList.add("h-[2.5rem]", "w-[12.62rem]", "mt-[1.2rem]", "hover:bg-gray-100", "rounded-md", "text-[14px]");
         setPrimaryButton.style.border = "1px solid #717172";
         setPrimaryButton.type = "button";
-        setPrimaryCategory.id = `primaryCategory${category.id}`;
-
-        // const path = document.createElement('p');
-        // path.textContent = getCategoryPath(category);
+        setPrimaryButton.id = `primaryCategory${category.id}`;
 
         const input = document.createElement('input');
         input.type = 'hidden';
@@ -340,10 +344,9 @@
         return path;
     }
 
-    function setPrimaryCategory(category){
+    function setPrimaryCategory(category, button){
+        console.log(categoriesData);
         resetPrimaryForAllCategories(categoriesData);
-        console.log(category);
-        console.log(category.primary);
         category.primary = true;
         renderSelectedCategories();
     }
