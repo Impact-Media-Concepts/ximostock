@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CategoryProductSalesChannels extends Pivot
+class ProductSalesChannelProperty extends Pivot
 {
     //
 }

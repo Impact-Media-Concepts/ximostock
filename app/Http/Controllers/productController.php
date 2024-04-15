@@ -6,17 +6,20 @@ use App\Exports\ProductsExport;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
-use App\Models\CategoryProductSalesChannels;
+use App\Models\CategoryProductSalesChannel;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\Product;
 use App\Models\ProductProperty;
 use App\Models\ProductSalesChannel;
+use App\Models\ProductSalesChannelProperty;
 use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Models\WorkSpace;
 use App\Rules\ValidLocationZoneKeys;
 use App\Rules\ValidProductKeys;
+use App\Rules\ValidPropertyKeys;
+use App\Rules\ValidPropertyOptions;
 use App\Rules\ValidSalesChannelKeys;
 use App\Rules\ValidWorkspaceKeys;
 use App\Rules\VallidCategoryKeys;
@@ -104,16 +107,16 @@ class ProductController extends BaseProductController
             $prop->pivot->property_value = json_decode($prop->pivot->property_value);
         }
         $selectedProperties = [];
-        foreach($product->properties as $property){
+        foreach ($product->properties as $property) {
             $value = ProductProperty::where('product_id', $product->id)->where('property_id', $property->id)->get()->first();
             $value = json_decode($value->property_value);
             $value = $value->value;
-            if(gettype($value) === 'array'){
-                $value = implode(',',$value);
-            }else if(gettype($value) === 'boolean'){
+            if (gettype($value) === 'array') {
+                $value = implode(',', $value);
+            } else if (gettype($value) === 'boolean') {
                 $value = $value ? 'true' : 'false';
             }
-            $selectedProperties += [ $property->id => (string)$value];
+            $selectedProperties += [$property->id => (string)$value];
         }
 
         return view('product.show', [
@@ -571,6 +574,8 @@ class ProductController extends BaseProductController
             'salesChannels.*.discount' => ['nullable', 'numeric'],
             'salesChannels.*.categories' => ['nullable', 'array', new VallidCategoryKeys],
             'salesChannels.*.categories.*' => ['required', 'numeric'],
+            'salesChannels.*.properties' => ['nullable', 'array', new ValidPropertyKeys, new ValidPropertyOptions],
+            'salesChannels.*.properties.*' => ['required'],
             'salesChannelIds' => ['array', 'nullable'],
             'salesChannelIds' => ['nullable', Rule::exists('sales_channels', 'id')]
         ]);
@@ -579,6 +584,7 @@ class ProductController extends BaseProductController
         }
         return $attributes;
     }
+
 
     protected function updateCategories($productId, $categoryData)
     {
@@ -643,15 +649,30 @@ class ProductController extends BaseProductController
                 if (isset($salesChannelData['salesChannels'][$salesChannelId]['price'])) {
                     $attributes += ['price' => $salesChannelData['salesChannels'][$salesChannelId]['price']];
                 }
-
+                //create the saleschannel
                 $productSalesChannel = ProductSalesChannel::create($attributes);
+
                 //after creating the saleschannel add categories to it. (if there are categoreis to add)
                 if (isset($salesChannelData['salesChannels'][$salesChannelId]['categories'])) {
                     foreach ($salesChannelData['salesChannels'][$salesChannelId]['categories'] as $category => $isPrimary) {
-                        CategoryProductSalesChannels::create([
+                        CategoryProductSalesChannel::create([
                             'category_id' => $category,
                             'product_sales_channel_id' => $productSalesChannel->id,
                             'primary' => $isPrimary
+                        ]);
+                    }
+                }
+                //after createing the saleschannel add properties to it (if there are properties to add)
+                if (isset($salesChannelData['salesChannels'][$salesChannelId]['properties'])) {
+                    foreach ($salesChannelData['salesChannels'][$salesChannelId]['properties'] as $property => $value) {
+                        $prop = Property::where('id', $property)->get()->first();
+                        if ($prop->type === 'multislect') {
+                            $value = explode(',', $value);
+                        }
+                        ProductSalesChannelProperty::create([
+                            'property_id' => $property,
+                            'product_sales_channel_id' => $productSalesChannel->id,
+                            'value' => json_encode(['value' => $value])
                         ]);
                     }
                 }
@@ -668,6 +689,10 @@ class ProductController extends BaseProductController
                 if (isset($salesChannelData['salesChannels'][$salesChannelId]['categories'])) {
                     $this->updateSalesChannelCategories($productSalesChannel->id, $salesChannelData['salesChannels'][$salesChannelId]['categories']);
                 }
+                //update properties
+                if (isset($salesChannelData['salesChannels'][$salesChannelId]['properties'])) {
+                    $this->updateSalesChannelProperties($productSalesChannel->id, $salesChannelData['salesChannels'][$salesChannelId]['properties']);
+                }
                 unset($existingSalesChannelIds[array_search($salesChannelId, $existingSalesChannelIds)]);
             }
         }
@@ -680,7 +705,7 @@ class ProductController extends BaseProductController
     protected function updateSalesChannelCategories($productSalesChannelId, array $categories)
     {
         // Get all existing links entries for the given ProductSaleschannel
-        $existingCategoryLinks = CategoryProductSalesChannels::where('product_sales_channel_id', $productSalesChannelId)->get();
+        $existingCategoryLinks = CategoryProductSalesChannel::where('product_sales_channel_id', $productSalesChannelId)->get();
 
         // Create an array to store the IDs of existing categorylinks
         $existingCategoryIds = $existingCategoryLinks->pluck('category_id')->toArray();
@@ -690,7 +715,7 @@ class ProductController extends BaseProductController
             // Check if the category exists in the existing CategoryProductSalesChannels entries
             if (!in_array($categoryId, $existingCategoryIds)) {
                 // If the category does not exist, create a new CategoryProductSalesChannels entry
-                CategoryProductSalesChannels::create([
+                CategoryProductSalesChannel::create([
                     'product_sales_channel_id' => $productSalesChannelId,
                     'category_id' => $categoryId,
                     'primary' => $isPrimary
@@ -707,43 +732,76 @@ class ProductController extends BaseProductController
         }
 
         // Delete CategoryProduct entries for categories not present in the new data
-        CategoryProductSalesChannels::where('product_sales_channel_id', $productSalesChannelId)
+        CategoryProductSalesChannel::where('product_sales_channel_id', $productSalesChannelId)
             ->whereIn('category_id', $existingCategoryIds)
             ->delete();
     }
 
-    protected function updateProperties($productId, $propertyData)
-{
-    // Get all existing ProductProperty entries for the given product
-    $existingProductProperties = ProductProperty::where('product_id', $productId)->get();
+    protected function updateSalesChannelProperties($productSalesChannelId, array $properties)
+    {
+        // Get all existing ProductProperty entries for the given product
+        $existingProductSalesChannelProperties = ProductSalesChannelProperty::where('product_sales_channel_id', $productSalesChannelId)->get();
 
-    // Create an array to store the IDs of existing properties
-    $existingPropertyIds = $existingProductProperties->pluck('property_id')->toArray();
+        // Create an array to store the IDs of existing properties
+        $existingPropertyIds = $existingProductSalesChannelProperties->pluck('property_id')->toArray();
 
-    // Loop through the new property data
-    foreach ($propertyData as $propertyId => $propertyValue) {
-        // Check if the property exists in the existing ProductProperty entries
-        if (!in_array($propertyId, $existingPropertyIds)) {
-            // If the property does not exist, create a new ProductProperty entry
-            ProductProperty::create([
-                'product_id' => $productId,
-                'property_id' => $propertyId,
-                'property_value' => json_encode(['value' => $propertyValue])
-            ]);
-        } else {
-            // If the property exists, update its value
-            $existingProductProperty = $existingProductProperties->where('property_id', $propertyId)->first();
-            $existingProductProperty->update(['property_value' => json_encode(['value' => $propertyValue])]);
-            
-            // Remove the property ID from the existing IDs array
-            unset($existingPropertyIds[array_search($propertyId, $existingPropertyIds)]);
+        // Loop through the new property data
+        foreach ($properties as $propertyId => $propertyValue) {
+            // Check if the property exists in the existing ProductProperty entries
+            if (!in_array($propertyId, $existingPropertyIds)) {
+                // If the property does not exist, create a new ProductProperty entry
+                ProductSalesChannelProperty::create([
+                    'product_sales_channel_id' => $productSalesChannelId,
+                    'property_id' => $propertyId,
+                    'prop_value' => json_encode(['value' => $propertyValue])
+                ]);
+            } else {
+                // If the property exists, update its value
+                $existingProductProperty = $existingProductSalesChannelProperties->where('property_id', $propertyId)->first();
+                $existingProductProperty->update(['property_value' => json_encode(['value' => $propertyValue])]);
+
+                // Remove the property ID from the existing IDs array
+                unset($existingPropertyIds[array_search($propertyId, $existingPropertyIds)]);
+            }
         }
+
+        // Delete ProductProperty entries for properties not present in the new data
+        ProductSalesChannelProperty::where('product_sales_channel_id', $productSalesChannelId)
+            ->whereIn('property_id', $existingPropertyIds)
+            ->delete();
     }
 
-    // Delete ProductProperty entries for properties not present in the new data
-    ProductProperty::where('product_id', $productId)
-        ->whereIn('property_id', $existingPropertyIds)
-        ->delete();
-}
+    protected function updateProperties($productId, $propertyData)
+    {
+        // Get all existing ProductProperty entries for the given product
+        $existingProductProperties = ProductProperty::where('product_id', $productId)->get();
 
+        // Create an array to store the IDs of existing properties
+        $existingPropertyIds = $existingProductProperties->pluck('property_id')->toArray();
+
+        // Loop through the new property data
+        foreach ($propertyData as $propertyId => $propertyValue) {
+            // Check if the property exists in the existing ProductProperty entries
+            if (!in_array($propertyId, $existingPropertyIds)) {
+                // If the property does not exist, create a new ProductProperty entry
+                ProductProperty::create([
+                    'product_id' => $productId,
+                    'property_id' => $propertyId,
+                    'property_value' => json_encode(['value' => $propertyValue])
+                ]);
+            } else {
+                // If the property exists, update its value
+                $existingProductProperty = $existingProductProperties->where('property_id', $propertyId)->first();
+                $existingProductProperty->update(['property_value' => json_encode(['value' => $propertyValue])]);
+
+                // Remove the property ID from the existing IDs array
+                unset($existingPropertyIds[array_search($propertyId, $existingPropertyIds)]);
+            }
+        }
+
+        // Delete ProductProperty entries for properties not present in the new data
+        ProductProperty::where('product_id', $productId)
+            ->whereIn('property_id', $existingPropertyIds)
+            ->delete();
+    }
 }
