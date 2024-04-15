@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\SalesChannel;
 use App\Rules\ValidWorkspaceKeys;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -48,5 +47,11 @@ class SalesChannelController extends Controller
 
         //return
         return redirect('/saleschannels');
+    }
+
+    public function show(SalesChannel $salesChannel){
+        return view('salesChannel.show', [
+            'salesChannel' => $salesChannel
+        ]);
     }
 }
