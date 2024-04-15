@@ -1757,10 +1757,6 @@ video {
   width: 3rem;
 }
 
-.w-\[40\.06rem\] {
-  width: 40.06rem;
-}
-
 .w-\[40\.87rem\] {
   width: 40.87rem;
 }
@@ -3673,6 +3669,10 @@ video {
 
   .uhd\:w-\[50rem\] {
     width: 50rem;
+  }
+
+  .uhd\:w-\[53rem\] {
+    width: 53rem;
   }
 
   .uhd\:w-\[60rem\] {

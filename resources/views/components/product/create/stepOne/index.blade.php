@@ -46,7 +46,5 @@
                 <div class="h-[7.06rem] rounded-b-lg" style="border: 1px solid #F0F0F0;"> <x-product.create.communi-to-channel /> </div>
             </div>
         </div>
-      
     </div>
- 
 </div>

@@ -50,6 +50,18 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 showStep(currentStep);
 //#endregion
 
+// #region step 1 general
+window.allowBackorders = [
+    { data: 1, name: 'Ja'},
+    { data: 0, name: 'Nee'}
+];
+
+window.communicateToChannel = [
+    { data: 1, name: 'Ja'},
+    { data: 0, name: 'Nee'}
+];
+//#endregion
+
 // #region step 2 photos
 const fileInput = document.getElementById('uploadFoto');
 const previewContainer = document.getElementById('previewContainer');
