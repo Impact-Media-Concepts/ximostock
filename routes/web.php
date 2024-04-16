@@ -26,16 +26,16 @@ Route::get('/', function () {
 
 //product
 Route::middleware('auth')->group(function () {
-    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product');
     Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product');
     Route::get('/products/export/', [ProductController::class, 'export']);//export
     Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view,product');
-    Route::post('/products', [ProductController::class, 'store'])->middleware('can:create,App\Models\Product');
-    Route::patch('/products/{product}', [ProductController::class, 'update']);
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:destroy-product,product');
+    Route::post('/products', [ProductController::class, 'store']);//autherized in function
+    Route::patch('/products/{product}', [ProductController::class, 'update']);//autherized in function
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');
     Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
     Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
-    Route::post('/products/bulkdiscountforce', [ProductController::class, 'BulkDiscountForce']);
+    Route::post('/products/bulkdiscountforce', [ProductController::class, 'bulkDiscountForce']);
     Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
     Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
     Route::post('/products/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');

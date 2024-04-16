@@ -33,66 +33,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
 
-
-
-        //checks if you are allowd to do bulkactions with the given products
-        Gate::define('bulk-products', function (User $user, array $product_ids) {
-            $products = Product::whereIn('id', $product_ids)->get();
-            if (Count($product_ids) != Count($products)) {
-                //if some product ids are wrong return bad request
-                return Response::denyWithStatus(400);
-            }
-            if ($user->role === 'admin') {
-                //allow if user is admin
-                return Response::allow();
-            } elseif ($user->role === 'manager') {
-                foreach ($products as $product) {
-                    if ($product->work_space_id != $user->work_space_id) {
-                        //a product was not part of his workspace
-                        return Response::deny();
-                    }
-                }
-                //return true if all manager and all products are part of his workspace
-                return Response::allow();
-            } else {
-                //deny if user is neither admin or manager
-                return Response::deny();
-            }
-        });
-
-        Gate::define('bulk-saleschannel-products', function (User $user, array $product_ids, array $sales_channel_ids) {
-            $products = Product::whereIn('id', $product_ids)->get();
-            $salesChannels = SalesChannel::whereIn('id', $sales_channel_ids)->get();
-
-            if (Count($product_ids) != Count($products) || Count($salesChannels) != Count($sales_channel_ids)) {
-                //if some product or sales channel ids are wrong return bad request
-                return Response::denyWithStatus(400);
-            }
-            if ($user->role === 'admin') {
-                //allow if user is admin
-                return Response::allow();
-            } elseif ($user->role === 'manager') {
-                foreach ($products as $product) {
-                    if ($product->work_space_id != $user->work_space_id) {
-                        //a product was not part of his workspace
-                        return Response::deny();
-                    }
-                }
-                foreach ($salesChannels as $salesChannel) {
-                    if ($salesChannel->work_space_id != $user->work_space_id) {
-                        //a saleschannel was not part of his workspace
-                        return Response::deny();
-                    }
-                }
-                //return true if all manager and all products are part of his workspace
-                return Response::allow();
-            } else {
-                //deny if user is neither admin or manager
-                return Response::deny();
-            }
-        });
-
-
         //category authorization
         Gate::define('index-category', function (User $user) {
             if ($user->role === 'admin' || $user->role === 'manager') {
