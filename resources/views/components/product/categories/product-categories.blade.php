@@ -1,33 +1,33 @@
 @props(['categories', 'checkedCategories' => null])
 
-<div class="flex basic:h-[22rem] hd:h-[28.37rem] w-[14.1rem]">
-    <div class="w-[14.06rem] h-[5.18rem]">
-        <div class="text-[16px] font-[600] relative right-[0.12rem] bottom-[0.18rem]">
+<div class='flex basic:h-[22rem] hd:h-[28.37rem] w-[14.1rem]'>
+    <div class='w-[14.06rem] h-[5.18rem]'>
+        <div class='text-[16px] font-[600] relative right-[0.12rem] bottom-[0.18rem]'>
             Categorieën
         </div>
 
-        <div class="relative right-[0.08rem] underline w-[14rem] h-[0.15rem] bg-[#f8f8f8] mb-2 mt-[0.17rem]">
+        <div class='relative right-[0.08rem] underline w-[14rem] h-[0.15rem] bg-[#f8f8f8] mb-2 mt-[0.17rem]'>
         </div>
 
-        <div id="categoriesContainer">
-            <div class="mt-[0.85rem]">
-                <input class="sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search" style="font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem" type="text" id="categorySearchInput" placeholder="Zoeken">
+        <div id='categoriesContainer'>
+            <div class='mt-[0.85rem]'>
+                <input class='sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search' style='font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem' type='text' id='categorySearchInput' placeholder='Zoeken'>
             </div>
 
-            <ul style="font-family: 'Inter', sans-serif;" id="categoriesList"></ul>
+            <ul style='font-family: 'Inter', sans-serif;' id='categoriesList'></ul>
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById("categorySearchInput").onkeypress = function(e) {
+    document.getElementById('categorySearchInput').onkeypress = function(e) {
         let key = e.charCode || e.keyCode || 0;     
         if (key == 13) {
-                e.preventDefault();
+            e.preventDefault();
         }
     }
     //Find parent function
-    let categoriesData = [<x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>];
+    let categoriesData = [<x-product.categories.product-categories-data :categories='$categories' :checkedCategories='$checkedCategories'/>];
     function findParentCategory(categoryId, categories = categoriesData, parent = null) {
         for (const category of categories) {
             if (category.id === categoryId) {
@@ -121,7 +121,7 @@
             updateParents(category);
         } else {
             uncheckSubcategories(category);
-            console.log("unchecked boiii");
+            console.log('unchecked boiii');
         }
         //open or close the subcategories of this category
         if (category.checked) {
@@ -139,6 +139,7 @@
 
     function removeRotateArrowClass(category) {
         const checkboxes = document.querySelectorAll(`input[type='checkbox'][value='${category.id}']`);
+        console.log(checkboxes);
         checkboxes.forEach(checkbox => {
             const li = checkbox.closest('li');
             const arrowDown = li.querySelector('img');
@@ -296,10 +297,8 @@
             checkbox.classList.add('cursor-pointer');
 
             checkbox.addEventListener('click', () => { 
-                console.log("sub Yooo?");
                 const arrowDown = li.querySelector('img');
                 if (arrowDown) {
-                    console.log("sub if Yooo?");
                     arrowDown.classList.toggle('rotate-arrow');
                 }
                 categoryHandleCheckboxClick(subcategory);

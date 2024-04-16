@@ -688,6 +688,10 @@ video {
   left: 1.5rem;
 }
 
+.left-\[2\.7rem\] {
+  left: 2.7rem;
+}
+
 .left-\[28rem\] {
   left: 28rem;
 }
@@ -992,6 +996,10 @@ video {
   margin-right: 0.25rem;
 }
 
+.mr-\[0\.5rem\] {
+  margin-right: 0.5rem;
+}
+
 .mr-\[0\.8rem\] {
   margin-right: 0.8rem;
 }
@@ -1094,6 +1102,10 @@ video {
 
 .mt-\[0\.3rem\] {
   margin-top: 0.3rem;
+}
+
+.mt-\[0\.4rem\] {
+  margin-top: 0.4rem;
 }
 
 .mt-\[0\.55rem\] {
@@ -1306,6 +1318,10 @@ video {
   height: 1.5rem;
 }
 
+.h-\[12\.58rem\] {
+  height: 12.58rem;
+}
+
 .h-\[12\.5rem\] {
   height: 12.5rem;
 }
@@ -1442,6 +1458,10 @@ video {
   height: 3.72rem;
 }
 
+.h-\[3\.75rem\] {
+  height: 3.75rem;
+}
+
 .h-\[3\.87rem\] {
   height: 3.87rem;
 }
@@ -1458,12 +1478,12 @@ video {
   height: 36.56rem;
 }
 
-.h-\[37\.37rem\] {
-  height: 37.37rem;
-}
-
 .h-\[37rem\] {
   height: 37rem;
+}
+
+.h-\[38\.87rem\] {
+  height: 38.87rem;
 }
 
 .h-\[39rem\] {
@@ -1490,8 +1510,20 @@ video {
   height: 4.75;
 }
 
+.h-\[42rem\] {
+  height: 42rem;
+}
+
 .h-\[43rem\] {
   height: 43rem;
+}
+
+.h-\[47\.18rem\] {
+  height: 47.18rem;
+}
+
+.h-\[4rem\] {
+  height: 4rem;
 }
 
 .h-\[5\.05rem\] {
@@ -1546,8 +1578,12 @@ video {
   max-height: 36.16rem;
 }
 
-.max-h-\[37\.37rem\] {
-  max-height: 37.37rem;
+.max-h-\[38\.87rem\] {
+  max-height: 38.87rem;
+}
+
+.max-h-\[42rem\] {
+  max-height: 42rem;
 }
 
 .max-h-\[8rem\] {
@@ -1686,12 +1722,20 @@ video {
   width: 10.5rem;
 }
 
+.w-\[10\.68rem\] {
+  width: 10.68rem;
+}
+
 .w-\[10\.75\] {
   width: 10.75;
 }
 
 .w-\[10\.81rem\] {
   width: 10.81rem;
+}
+
+.w-\[11\.18rem\] {
+  width: 11.18rem;
 }
 
 .w-\[11rem\] {
@@ -1764,6 +1808,10 @@ video {
 
 .w-\[20rem\] {
   width: 20rem;
+}
+
+.w-\[25rem\] {
+  width: 25rem;
 }
 
 .w-\[27\.75rem\] {
@@ -2669,8 +2717,8 @@ video {
   padding-right: 1.75rem;
 }
 
-.pr-\[0\.2rem\] {
-  padding-right: 0.2rem;
+.pr-\[0\.5rem\] {
+  padding-right: 0.5rem;
 }
 
 .pr-\[1\.08rem\] {
@@ -3605,6 +3653,10 @@ video {
 
   .hd\:w-\[90rem\] {
     width: 90rem;
+  }
+
+  .hd\:w-\[91rem\] {
+    width: 91rem;
   }
 
   .hd\:w-\[95rem\] {

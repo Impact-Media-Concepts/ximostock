@@ -1,3 +1,11 @@
+// properties input:
+// <input type="text" id="property_{{ $property->id }}" name="properties[{{ $property->id }}]">
+
+// properties list:
+
+
+
+
 // #region create index 
 const steps = document.querySelectorAll('.step');
 const createButtonContainer = document.getElementById("createButtonContainer");
@@ -37,7 +45,7 @@ function showStep(stepIndex) {
 
     // Display current step
     const currentStepText = document.getElementById('currentStep');
-    currentStepText.textContent = `Step ${stepIndex + 1} of ${steps.length}`;
+    currentStepText.textContent = `Stap ${stepIndex + 1} van ${steps.length}`;
 }
 
 document.getElementById('nextBtn').addEventListener('click', () => {

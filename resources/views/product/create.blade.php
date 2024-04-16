@@ -26,7 +26,7 @@
                     </div>
 
                     <div id="stepFour" class="step" style="display: none;">
-                        <x-product.create.stepFour.properties :properties="$properties" />
+                        <x-product.create.stepFour.properties :properties="$properties"/>
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
@@ -39,7 +39,7 @@
 
                     <x-product.create.create-error-message :errors="$errors"/>
 
-                    <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg rounded-md">
+                    <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[4rem]">
                         <div id="prevBtn" class="relative right-[1.4rem]">
                             <x-product.buttons.create-previous-button />
                         </div>

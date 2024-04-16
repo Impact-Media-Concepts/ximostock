@@ -1,14 +1,14 @@
 @props(['categories', 'checkedCategories' => null])
 
-<div id="categoriesContainer">
-    <div class="w-full flex justify-center items-center">
-        <input id="createProductCategoriesSearch" class="sticky property-search-input w-[43.43rem] h-[2.5rem] rounded-md mt-[0.55rem]" style="border: 1px solid #D3D3D3;" type="text" placeholder="Zoeken" />
+<div id='categoriesContainer'>
+    <div class='w-full flex justify-center items-center'>
+        <input id='createProductCategoriesSearch' class='sticky property-search-input w-[43.43rem] h-[2.5rem] rounded-md mt-[0.55rem] rounded-b-lg' style='border: 1px solid #D3D3D3;' type='text' placeholder='Zoeken' />
     </div>
-    <ul id="categoriesList"></ul>
+    <ul id='categoriesList' class='max-h-[38.87rem] h-[38.87rem] overflow-y-auto'></ul>
 </div>
 <script>
     let categoriesData = [
-        <x-product.create.categories.category-data :categories="$categories" :checkedCategories="$checkedCategories"/>
+        <x-product.create.categories.category-data :categories='$categories' :checkedCategories='$checkedCategories'/>
     ];
 
     // Find parent function
@@ -38,15 +38,17 @@
     // Function to update subcategories based on parent state
     function uncheckSubcategories(category) {
         const ul = document.getElementById(`category_${category.id}`).querySelector('ul');
-        ul.classList.add('hidden');
-        category.subcategories.forEach(subcategory => {
-            subcategory.checked = false; // Uncheck the subcategory itself
-            const input = document.getElementById(`checkbox_category_${subcategory.id}`);
-            input.checked = false;
-            if (subcategory.subcategories.length > 0) {
-                uncheckSubcategories(subcategory); // Recursively uncheck subcategories
-            }
-        });
+        if (ul) {
+            ul.classList.add('hidden');
+            category.subcategories.forEach(subcategory => {
+                subcategory.checked = false; // Uncheck the subcategory itself
+                const input = document.getElementById(`checkbox_category_${subcategory.id}`);
+                input.checked = false;
+                if (subcategory.subcategories.length > 0) {
+                    uncheckSubcategories(subcategory); // Recursively uncheck subcategories
+                }
+            });
+        }
     }
 
     // Function to search categories and subcategories
@@ -94,8 +96,6 @@
             showParents(parentElement);
         }
     }
-
-
 
     function showSubcategories(category) {
         const li = document.getElementById(`category_${category.id}`);
@@ -159,18 +159,32 @@
         categoriesList.innerHTML = ''; // Clear existing list
 
         const ul = document.createElement('ul');
+        ul.classList.add('mt-[1rem]');
         categoriesData.forEach(category => {
             const li = document.createElement('li');
             li.id = `category_${category.id}`;
-            li.classList.add('ml-5');
+            li.classList.add('ml-5', 'mt-[0.4rem]', 'font-[600]');
+            
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.checked = category.checked;
             checkbox.id = `checkbox_category_${category.id}`;
+            checkbox.classList.add('cursor-pointer');
 
-            checkbox.addEventListener('click', () => handleCheckboxClick(category));
+            checkbox.addEventListener('click', () => {
+                createProdCategoryhandleCheckboxClick(category);
+            });
+
+            const categoryNameSpan = document.createElement('span');
+            categoryNameSpan.textContent = category.name;
+            categoryNameSpan.classList.add('ml-[0.59rem]', 'relative', 'bottom-[0.125rem]', 'select-none');
+            categoryNameSpan.addEventListener('click', () => {
+                checkbox.checked = !checkbox.checked;
+                createProdCategoryhandleCheckboxClick(category);
+            });
+
             li.appendChild(checkbox);
-            li.appendChild(document.createTextNode(category.name));
+            li.appendChild(categoryNameSpan);
             ul.appendChild(li);
 
             if (category.subcategories.length > 0) {
@@ -192,20 +206,36 @@
         subcategories.forEach(subcategory => {
             const li = document.createElement('li');
             li.id = `category_${subcategory.id}`;
-            li.classList.add('ml-5');
+            li.classList.add('ml-5', 'mt-[0.4rem]', 'font-[400]');
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = subcategory.id;
             checkbox.checked = subcategory.checked;
             checkbox.id = `checkbox_category_${subcategory.id}`;
+            checkbox.classList.add('cursor-pointer');
 
-            checkbox.addEventListener('click', () => handleCheckboxClick(subcategory));
+            const subCategoryNameSpan = document.createElement('span');
+            subCategoryNameSpan.textContent = subcategory.name;
+            subCategoryNameSpan.classList.add('ml-[0.59rem]', 'relative', 'bottom-[0.125rem]', 'select-none');
+
+            checkbox.addEventListener('click', () => {
+                createProdCategoryhandleCheckboxClick(subcategory)
+            });
+
+            subCategoryNameSpan.addEventListener('click', () => { 
+                checkbox.checked = !checkbox.checked;
+                createProdCategoryhandleCheckboxClick(subcategory);
+            });
+
             li.appendChild(checkbox);
-            li.appendChild(document.createTextNode(subcategory.name));
+            li.appendChild(subCategoryNameSpan);
             ul.appendChild(li);
 
             if (subcategory.subcategories.length > 0) {
+                li.classList.add('font-[600]');
                 renderSubcategories(subcategory.subcategories, li, subcategory.checked);
+            } else {
+                li.classList.add('font-[400]');
             }
         });
         parentElement.appendChild(ul);
@@ -247,50 +277,50 @@
         
         const li = document.createElement('li');
         li.id = `selectedCategory${category.id}`;
-        li.classList.add("h-[5.87rem]", "w-[42.87rem]", "flex", "justify-center", "items-center", "rounded-md", "mt-[1rem]");
-        li.style.border =  "1px solid #D3D3D3";
+        li.classList.add('h-[5.87rem]', 'w-[42.87rem]', 'flex', 'justify-center', 'items-center', 'rounded-md', 'mt-[1rem]');
+        li.style.border =  '1px solid #D3D3D3';
 
 
         const categoryContainer = document.createElement('div');
-        categoryContainer.classList.add("flex", "gap-[0.5rem]")
+        categoryContainer.classList.add('flex', 'gap-[0.5rem]')
         
         const titleContainer = document.createElement('div');
-        titleContainer.classList.add("h-[3.87rem]");
+        titleContainer.classList.add('h-[3.87rem]');
 
         const title = document.createElement('p');
-        title.classList.add("text-[#717171]", 'text-[14px]');
-        title.textContent = "Categorie titel:";
+        title.classList.add('text-[#717171]', 'text-[14px]');
+        title.textContent = 'Categorie titel:';
 
         const titleSubContainer = document.createElement('p');
-        titleSubContainer.classList.add("h-[2.5rem]", "w-[14.68rem]", "rounded-md", "flex", "justify-start", "items-center", "pl-[0.5rem]", "truncate");
-        titleSubContainer.style.border = "1px solid #D3D3D3";
+        titleSubContainer.classList.add('h-[2.5rem]', 'w-[14.68rem]', 'rounded-md', 'flex', 'justify-start', 'items-center', 'pl-[0.5rem]', 'truncate');
+        titleSubContainer.style.border = '1px solid #D3D3D3';
         titleSubContainer.textContent = `${category.name}`;
 
         titleContainer.appendChild(title);
         titleContainer.appendChild(titleSubContainer);
 
         const pathContainer = document.createElement('div');
-        pathContainer.classList.add("h-[3.87rem]");
+        pathContainer.classList.add('h-[3.87rem]');
 
         const pathTitle = document.createElement('p');
-        pathTitle.classList.add("text-[#717171]", 'text-[14px]');
-        pathTitle.textContent = "Categorie path:";
+        pathTitle.classList.add('text-[#717171]', 'text-[14px]');
+        pathTitle.textContent = 'Categorie path:';
 
         const pathSubContainer = document.createElement('p');
-        pathSubContainer.classList.add("select-none", "h-[2.5rem]", "w-[10.81rem]", "rounded-md", "flex", "justify-start", "items-center", "pl-[0.5rem]", "truncate");
-        pathSubContainer.style.border = "1px solid #D3D3D3";
+        pathSubContainer.classList.add('select-none', 'h-[2.5rem]', 'w-[10.81rem]', 'rounded-md', 'flex', 'justify-start', 'items-center', 'pl-[0.5rem]', 'truncate');
+        pathSubContainer.style.border = '1px solid #D3D3D3';
         pathSubContainer.textContent = getCategoryPath(category);
         pathSubContainer.title = getCategoryPath(category);
 
 
-        const imgContainer = document.createElement("div");
-        imgContainer.classList.add("relative", "left-[0.5rem]", "bottom-[1.5rem]", "hover:cursor-pointer");
-        imgContainer.addEventListener('click', () => handleCheckboxClick(category));
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('relative', 'left-[0.5rem]', 'bottom-[1.5rem]', 'hover:cursor-pointer');
+        imgContainer.addEventListener('click', () => createProdCategoryhandleCheckboxClick(category));
 
         const x_icon = document.createElement('img');
-        x_icon.src = "../images/x-icon.png";
-        x_icon.alt = "x icon";
-        x_icon.classList.add("select-none", "size-[1rem]")
+        x_icon.src = '../images/x-icon.png';
+        x_icon.alt = 'x icon';
+        x_icon.classList.add('select-none', 'size-[1rem]')
 
         imgContainer.appendChild(x_icon);
 
@@ -303,13 +333,13 @@
         setPrimaryButton.textContent = 'Zet als primaire categorie';
         setPrimaryButton.addEventListener('click', () => {
             const clickedButton = event.target; // Get the clicked button
-            console.log("primary btn before: ", clickedButton);
+            console.log('primary btn before: ', clickedButton);
             setPrimaryCategory(category, clickedButton);
             console.log(category);          
         }); 
-        setPrimaryButton.classList.add("h-[2.5rem]", "w-[12.62rem]", "mt-[1.2rem]", "hover:bg-gray-100", "rounded-md", "text-[14px]");
-        setPrimaryButton.style.border = "1px solid #717172";
-        setPrimaryButton.type = "button";
+        setPrimaryButton.classList.add('h-[2.5rem]', 'w-[12.62rem]', 'mt-[1.2rem]', 'hover:bg-gray-100', 'rounded-md', 'text-[14px]');
+        setPrimaryButton.style.border = '1px solid #717172';
+        setPrimaryButton.type = 'button';
         setPrimaryButton.id = `primaryCategory${category.id}`;
 
         const input = document.createElement('input');
@@ -362,7 +392,7 @@
     }
 
     // Function to handle checkbox click
-    function handleCheckboxClick(category) {
+    function createProdCategoryhandleCheckboxClick(category) {
         category.checked = !category.checked;
         if (category.checked) {
             updateParents(category);
@@ -388,6 +418,7 @@
 
         renderSelectedCategories();
     }
+
 
     // Initialize rendering
     renderCategories();
