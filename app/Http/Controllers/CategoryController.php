@@ -39,7 +39,7 @@ class CategoryController extends Controller
         $request = request();
         $parentCategoryId = $request->has('parent_category_id') ? $request['parent_category_id'] : null;
 
-        Gate::authorize('store-category',[ $parentCategoryId]);
+        Gate::authorize('store',[Category::class, $parentCategoryId]);
 
         //validate
         $attributes = $request->validate([
@@ -61,7 +61,7 @@ class CategoryController extends Controller
 
     public function update(Category $category){
         $request = request();
-        Gate::authorize('update-category', [$category, $request['parent_category_id']]); 
+        Gate::authorize('update', [$category, $request['parent_category_id']]); 
         $attributes = $request->validate([
             'name'=>['required', 'string'],
             'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
