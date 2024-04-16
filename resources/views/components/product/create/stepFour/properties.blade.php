@@ -1,54 +1,5 @@
 @props(['properties'])
 
-<style>
-    .menu-btn {
-    padding: 10px;
-    margin: 5px 0px 0px 0px;
-    }
-
-    .drop_container {
-        display: none;
-        animation: animateFromTop .5s;
-    }
-
-    .drop_container.show {
-        display: block;
-    }
-
-    .drop_container.show.animate-out {
-    animation: animateToTop .6s;
-    }
-
-    .drop_container>.item {
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-    padding: 10px 0px 0px 0px;
-    }
-
-    @keyframes animateFromTop {
-    from {
-        transform: translate3d(0, -10px, 0);
-        opacity: 0;
-    }
-    to {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-    }
-    }
-
-    @keyframes animateToTop {
-    from {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-    }
-    to {
-        transform: translate3d(0, -10px, 0);
-        opacity: 0;
-    }
-    }
-
-</style>
 <div class="bg-white h-[47.18rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg">
     <div class="h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg" style="border: 1px solid #F0F0F0;">
         <div class="w-full ml-[1rem] mt-[1rem]">
@@ -66,43 +17,47 @@
             </div>
             
             <div>
-                <div class="flex flex-col items-center h-[47.18rem]" style="border: 1px solid #F0F0F0;">
-                    <button type="button" class="w-[10.68rem] h-[2.5rem] bg-[#3DABD5] hover:bg-[#3999BE] font-light rounded-md text-white">
-                        <p>
-                            Nieuw toevoegen
-                        </p>
-                    </button>
-
-                    <div class="property-dropdown-huge-container h-[3.75rem] hd:w-[91rem] uhd:w-[130rem] bg-[#F8F8F8] rounded-md" style="border: 1px solid #F0F0F0;">
-                        <div class="w-full h-full flex justify-start items-center">
-                            <div>
-                                <p class="font-bold text-[18px] w-[25rem] pl-[2.5rem]">
-                                    $property title
-                                </p>
-                            </div>
-                           
-                            <div class="w-full flex items-center justify-end dropdown-menu">
-                                <button type="button" class="w-[11.18rem] h-[2.5rem] rounded-md hover:bg-gray-100 flex justify-center items-center" style="border: 1px solid #717172">
-                                    <div>
-                                        <img class="mr-[0.5rem] hover:cursor-pointer" src="../images/archive-icon.png" alt="archive">
-                                    </div>
-                                    <p>
-                                        Verwijderen
+                <button type="button" class="w-[10.68rem] h-[2.5rem] bg-[#3DABD5] hover:bg-[#3999BE] font-light rounded-md text-white">
+                    <p>
+                        Nieuw toevoegen
+                    </p>
+                </button>
+                <div class=" flex flex-col items-center h-[47.18rem] max-h-[36rem] overflow-y-auto" style="border: 1px solid #F0F0F0;">
+                    <div class="flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]">
+                        <div class="property-dropdown-huge-container h-[3.75rem] hd:w-[91rem] uhd:w-[130rem] bg-[#F8F8F8] rounded-md" style="border: 1px solid #F0F0F0;">
+                            <div class="w-full h-full flex justify-start items-center">
+                                <div>
+                                    <p class="font-bold text-[18px] w-[25rem] pl-[2.5rem]">
+                                        $property title
                                     </p>
-                                </button>
-                                <div id="f" class="menu-btn pl-[1rem] pr-[1rem] hover:cursor-pointer">
-                                    <img src="../images/arrow-left-icon.png" alt="left icon">
+                                </div>
+                            
+                                <div class="w-full flex items-center justify-end dropdown-menu">
+                                    <button id="deletePropsBtn" type="button" class="delete-props-btn w-[11.18rem] h-[2.5rem] rounded-md hover:bg-gray-100 flex justify-center items-center" style="border: 1px solid #717172">
+                                        <div>
+                                            <img class="mr-[0.5rem] hover:cursor-pointer" src="../images/archive-icon.png" alt="archive">
+                                        </div>
+                                        <p>
+                                            Verwijderen
+                                        </p>
+                                    </button>
+                                    <div id="f" class="menu-btn pl-[1rem] pr-[1rem] hover:cursor-pointer">
+                                        <img src="../images/arrow-left-icon.png" alt="left icon">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="dropdown-menu">
-                            <div class="drop_container bg-[#F8F8F8] uhd:w-[130rem] h-[12.58rem] rounded-b-lg" style="border: 1px solid #F0F0F0;">
+                            <div class="dropdown-menu">
+                                <div class="drop_container bg-[#F8F8F8] uhd:w-[130rem] h-[12.58rem] rounded-b-lg" style="border: 1px solid #F0F0F0;">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+    <input class="sticky property-search-input w-[14.06rem] h-[2.5rem] rounded-md mt-[0.55rem]"type="text" id="createProdPropertySearchInput" placeholder="Zoeken" />
+<ul class="mt-[0.85rem]" id="createProdPropertyList"></ul>
         </div>
     </div>
 </div>
@@ -111,19 +66,27 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-
-
+        
         const dropdownBtns = document.querySelectorAll('.menu-btn');
         const propertyContainers = document.querySelectorAll('.property-dropdown-huge-container');
+        
+        document.querySelectorAll('.delete-props-btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                let propertyContainers22 = button.closest('.property-dropdown-huge-container');
+            
+                propertyContainers22.parentNode.removeChild(propertyContainers22);
+            });
+        });
+
         propertyContainers.forEach((propertyContainer, index) => {
             propertyContainer.id = index;
         });
-
+        
         let lastOpened = null;
 
         dropdownBtns.forEach(btn => btn.addEventListener('click', function() {
       
-            const menuContent = document.querySelector('.drop_container');
+            const menuContents = document.querySelectorAll('.drop_container');
             if (lastOpened !== null) {
                 const target = lastOpened;
             
@@ -139,11 +102,12 @@
 
                 target.classList.add('animate-out');
             }
-
-            if (lastOpened !== menuContent) {
-                menuContent.classList.add('show');
-                lastOpened = menuContent;
-            }
+            menuContents.forEach(function(menuContent) {
+                if (lastOpened !== menuContent) {
+                    menuContent.classList.add('show');
+                    lastOpened = menuContent;
+                }
+            });
         }));
 
 

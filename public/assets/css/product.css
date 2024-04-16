@@ -284,3 +284,51 @@ input.slideon {
 .select-image:hover {
     cursor: pointer;
 }
+
+/* create product step 4 properties */
+.menu-btn {
+    padding: 10px;
+    margin: 5px 0px 0px 0px;
+}
+
+.drop_container {
+    display: none;
+    animation: animateFromTop .5s;
+}
+
+.drop_container.show {
+    display: block;
+}
+
+.drop_container.show.animate-out {
+    animation: animateToTop .6s;
+}
+
+.drop_container>.item {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    padding: 10px 0px 0px 0px;
+}
+
+@keyframes animateFromTop {
+    from {
+        transform: translate3d(0, -10px, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes animateToTop {
+    from {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+    to {
+        transform: translate3d(0, -10px, 0);
+        opacity: 0;
+    }
+}
