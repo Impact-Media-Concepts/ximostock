@@ -30,38 +30,38 @@ Route::middleware('auth')->group(function () {
     Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product');
     Route::get('/products/export/', [ProductController::class, 'export']);//export
     Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view,product');
-    Route::post('/products', [ProductController::class, 'store']);//autherized in function
-    Route::patch('/products/{product}', [ProductController::class, 'update']);//autherized in function
+    Route::post('/products', [ProductController::class, 'store']);//autherized in controller
+    Route::patch('/products/{product}', [ProductController::class, 'update']);//autherized in controller
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');
-    Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
-    Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
-    Route::post('/products/bulkdiscountforce', [ProductController::class, 'bulkDiscountForce']);
-    Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
-    Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
-    Route::post('/products/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');
-    Route::post('/products/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');
-    Route::post('/products/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');
-    Route::post('/products/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');
+    Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');//autherized in controller
+    Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');//autherized in controller
+    Route::post('/products/bulkdiscountforce', [ProductController::class, 'bulkDiscountForce']);//autherized in controller
+    Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');//autherized in controller
+    Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');//autherized in controller
+    Route::post('/products/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');//autherized in controller
+    Route::post('/products/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');//autherized in controller
+    Route::post('/products/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');//autherized in controller
+    Route::post('/products/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');//autherized in controller
 
     //variant product
     Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
     Route::post('/products/variant', [ProductVariationController::class, 'store']);
 
     //categories
-    Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:index-category');
-    Route::get('/categories/create', [CategoryController::class, 'create'])->middleware('can:create-category');
-    Route::get('/categories/{category}', [CategoryController::class, 'show'])->middleware('can:show-category,category');
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::patch('/categories/{category}', [CategoryController::class, 'update']);
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware('can:destroy-category,category');
+    Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:viewAny,App\Models\Category');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->middleware('can:create,App\Models\Category');
+    Route::get('/categories/{category}', [CategoryController::class, 'show'])->middleware('can:view,category');
+    Route::post('/categories', [CategoryController::class, 'store']);//autherized in controller
+    Route::patch('/categories/{category}', [CategoryController::class, 'update']);//autherized in controller
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware('can:delete,category');
 
     //properties
-    Route::get('/properties', [PropertyController::class, 'index'])->middleware('can:index-property');
-    Route::get('/properties/create', [PropertyController::class, 'create'])->middleware('can:create-property');
-    Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('can:show-property,property');
-    Route::post('/properties',[PropertyController::class, 'store'])->middleware('can:create-property');
-    Route::patch('/properties/{property}', [PropertyController::class, 'update']);
-    Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);
+    Route::get('/properties', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property');
+    Route::get('/properties/create', [PropertyController::class, 'create'])->middleware('can:create,App\Models\Property');
+    Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('can:view,property');
+    Route::post('/properties',[PropertyController::class, 'store'])->middleware('can:create,App\Models\Property');
+    Route::patch('/properties/{property}', [PropertyController::class, 'update'])->middleware('can:update,property');
+    Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);//autherized in controller
 
     //salesChannels
     Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel');

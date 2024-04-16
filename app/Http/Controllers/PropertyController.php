@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductProperty;
 use App\Models\Property;
-use App\Rules\ValidPropertyKeys;
-use Attribute;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -31,8 +28,6 @@ class PropertyController extends Controller
 
     public function update(Property $property)
     {
-        Gate::authorize('update-property', [$property]);
-
         $attributes = request()->validate([
             'options' => ['nullable', 'array'],
             'options.*' => ['nullable', 'string'],
@@ -102,8 +97,9 @@ class PropertyController extends Controller
 
     public function bulkDelete()
     {
+
         $request = request();
-        Gate::authorize('bulk-property', [$request['properties']]);
+        Gate::authorize('bulkDelete', [Property::class, $request['properties']]);
 
         $attributes = $request->validate([
             'properties' => ['required', 'array'],

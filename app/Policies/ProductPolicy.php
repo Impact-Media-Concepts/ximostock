@@ -146,7 +146,7 @@ class ProductPolicy
      /**
      * Determine whether the user can bulk delete the model.
      */
-    public function bulkDelete(User $user, array $product_ids)
+    public function bulkDelete(User $user, array $product_ids): Response
     {
         $products = Product::whereIn('id', $product_ids)->get();
         if (Count($product_ids) != Count($products)) {
@@ -172,7 +172,7 @@ class ProductPolicy
      /**
      * Determine whether the user can bulk update the model.
      */
-    public function bulkUpdate(User $user, array $product_ids)
+    public function bulkUpdate(User $user, array $product_ids): Response
     {
         $products = Product::whereIn('id', $product_ids)->get();
         if (Count($product_ids) != Count($products)) {
@@ -198,7 +198,7 @@ class ProductPolicy
      /**
      * Determine whether the user can bulk link or unlink saleschannels to the model
      */
-    public function bulkSaleschannels(User $user, array $product_ids, array $sales_channel_ids)
+    public function bulkSaleschannels(User $user, array $product_ids, array $sales_channel_ids): Response
     {
         $products = Product::whereIn('id', $product_ids)->get();
             $salesChannels = SalesChannel::whereIn('id', $sales_channel_ids)->get();
