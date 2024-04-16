@@ -17,11 +17,14 @@
             </div>
             
             <div>
-                <button type="button" class="w-[10.68rem] h-[2.5rem] bg-[#3DABD5] hover:bg-[#3999BE] font-light rounded-md text-white">
-                    <p>
-                        Nieuw toevoegen
-                    </p>
-                </button>
+                <div class="h-[5.06rem] flex justify-start items-center" style="border: 1px solid #F0F0F0;">
+                    <button type="button" class="ml-[1.87rem] w-[10.68rem] h-[2.5rem] bg-[#3DABD5] hover:bg-[#3999BE] font-light rounded-md text-white">
+                        <p>
+                            Nieuw toevoegen
+                        </p>
+                    </button>
+                </div>
+               
                 <div class=" flex flex-col items-center h-[47.18rem] max-h-[36rem] overflow-y-auto" style="border: 1px solid #F0F0F0;">
                     <div class="flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]">
                         <div class="property-dropdown-huge-container h-[3.75rem] hd:w-[91rem] uhd:w-[130rem] bg-[#F8F8F8] rounded-md" style="border: 1px solid #F0F0F0;">
@@ -81,7 +84,7 @@
         propertyContainers.forEach((propertyContainer, index) => {
             propertyContainer.id = index;
         });
-        
+
         let lastOpened = null;
 
         dropdownBtns.forEach(btn => btn.addEventListener('click', function() {
