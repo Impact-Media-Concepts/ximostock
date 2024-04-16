@@ -132,7 +132,6 @@ class ProductController extends BaseProductController
 
     public function destroy($id)
     {
-
         // Find the product by its ID
         $product = Product::findOrFail($id);
 
@@ -146,7 +145,7 @@ class ProductController extends BaseProductController
 
     public function bulkDelete()
     {
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulkDelete', [Product::class, request('product_ids')]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -162,7 +161,7 @@ class ProductController extends BaseProductController
 
     public function bulkDiscount()
     {
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -216,9 +215,9 @@ class ProductController extends BaseProductController
     }
 
     //adds the "discount" even if product is more expansive
-    public function BulkDiscountForce()
+    public function bulkDiscountForce()
     {
-        Gate::authorize('bulk-products', [array_keys(request('product_ids'))]);
+        Gate::authorize('bulkUpdate', [Product::class, array_keys(request('product_ids'))]);
 
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array', new ValidProductKeys],
@@ -240,7 +239,7 @@ class ProductController extends BaseProductController
         $productIds = isset($request['product_ids'])  ? $request['product_ids'] : [];
         $salesChannels = isset($request['sales_channel_ids'])  ? $request['sales_channel_ids'] : [];
 
-        Gate::authorize('bulk-saleschannel-products', [$productIds, $salesChannels]);
+        Gate::authorize('bulkSaleschannels', [Product::class, $productIds, $salesChannels]);
 
         //validate request
         $validatedData = $request->validate([
@@ -269,7 +268,7 @@ class ProductController extends BaseProductController
         $productIds = isset($request['product_ids'])  ? $request['product_ids'] : [];
         $salesChannels = isset($request['sales_channel_ids'])  ? $request['sales_channel_ids'] : [];
 
-        Gate::authorize('bulk-saleschannel-products', [$productIds, $salesChannels]);
+        Gate::authorize('bulkSaleschannels', [Product::class, $productIds, $salesChannels]);
 
         // Validate request
         $validatedData = $request->validate([
@@ -288,7 +287,7 @@ class ProductController extends BaseProductController
 
     public function bulkEnableBackorders()
     {
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -303,7 +302,7 @@ class ProductController extends BaseProductController
 
     public function bulkDisableBackorders()
     {
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -318,7 +317,7 @@ class ProductController extends BaseProductController
 
     public function bulkEnableCommunicateStock()
     {
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -333,7 +332,7 @@ class ProductController extends BaseProductController
 
     public function bulkDisableCommunicateStock()
     {
-        Gate::authorize('bulk-products', [request('product_ids')]);
+        Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
 
         // Validate request
         $validatedData = request()->validate([
@@ -354,7 +353,7 @@ class ProductController extends BaseProductController
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
         $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
         $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
-        Gate::authorize('update-product', [
+        Gate::authorize('update', [
             $product,
             $salesChannels,
             $categories,
@@ -418,7 +417,8 @@ class ProductController extends BaseProductController
         $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
 
 
-        Gate::authorize('store-product', [
+        Gate::authorize('store', [
+            Product::class,
             $salesChannels,
             $categories,
             $properties,
