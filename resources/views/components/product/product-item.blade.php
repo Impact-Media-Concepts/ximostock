@@ -50,7 +50,7 @@
 
             <div class="flex hd:w-[7.5rem] uhd:w-[13.35rem] shd:w-[26.7rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
                 <p>
-                    {{ $product->sales }}
+                    {{ $product->totalSales }}
                 </p>
             
             </div>

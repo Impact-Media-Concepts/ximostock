@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained();
             $table->foreignId('sales_channel_id')->constrained();
+            $table->bigInteger('external_id')->nullable();
             $table->decimal('price')->nullable();
             $table->decimal('discount')->nullable();
             $table->string('title')->nullable();

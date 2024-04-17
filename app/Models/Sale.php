@@ -9,7 +9,5 @@ class Sale extends Model
 {
     use HasFactory;
 
-    public function productSalesChannel(){
-        return $this->belongsTo(ProductSalesChannel::class);
-    }
+    
 }

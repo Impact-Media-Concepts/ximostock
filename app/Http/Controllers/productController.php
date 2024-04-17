@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\CategoryProductSalesChannel;
+use App\Models\CategorySalesChannel;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\Product;
@@ -23,6 +24,8 @@ use App\Rules\ValidPropertyOptions;
 use App\Rules\ValidSalesChannelKeys;
 use App\Rules\ValidWorkspaceKeys;
 use App\Rules\VallidCategoryKeys;
+use Automattic\WooCommerce\Client;
+use Exception;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -53,8 +56,8 @@ class ProductController extends BaseProductController
         }
 
         $products = $products
-            ->with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
-            ->withExists(['salesChannels'])
+            ->with('photos', 'locationZones', 'productSalesChannels', 'childProducts', 'categories')
+            ->withExists(['productSalesChannels'])
             ->whereNull('parent_product_id')
             ->filter(request(['search', 'categories', 'orderByInput', 'properties']))
             ->paginate($perPage)
@@ -403,6 +406,8 @@ class ProductController extends BaseProductController
         $this->updateProperties($product->id, $attributes['properties']);
         $this->updateSalesChannels($product->id, $saleschannelAttributes);
 
+        //upload the product WIP
+        $this->uploadProductToSalesChannels($product);
 
         return redirect()->back();
     }
@@ -803,5 +808,74 @@ class ProductController extends BaseProductController
         ProductProperty::where('product_id', $productId)
             ->whereIn('property_id', $existingPropertyIds)
             ->delete();
+    }
+ 
+    //WIP for now just woocommerce
+    protected function uploadProductToSalesChannels(Product $product)
+    {
+        foreach($product->salesChannels as $salesChannel){
+            //dd($salesChannel);
+            if($salesChannel != null){
+                $woocommerce = $this->createSalesChannelsClient($salesChannel);
+                $images = [];
+                foreach($product->photos as $photo){
+                    array_push($images, ['src' => $photo->url]) ;
+                }
+                
+                $data = [
+                    'name' => $product->title,
+                    'type' => 'simple',
+                    'sku' => $product->sku,
+                    'regular_price' => $product->price,
+                    'sale_price' => $product->discount,
+                    'description' => $product->long_description,
+                    'short_description' => $product->short_description,
+                    'backorders' => $product->backorders ? 'yes' : 'no',
+                ];
+                $result = $woocommerce->post('products', $data);
+                $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+                $productSalesChannel->external_id = $result->id;
+                $productSalesChannel->save();
+            }
+        }
+    }
+
+    protected function createSalesChannelsClient(SalesChannel $salesChannel): Client|null
+    {
+        try {
+            $woocommerce = new Client(
+                $salesChannel->url, 
+                $salesChannel->api_key, 
+                $salesChannel->secret,
+                [
+                    'timeout' => 30
+                ]
+            );
+            return $woocommerce;
+        } catch (Exception $ex) {
+            return null;
+        }        
+    }
+
+    protected function uploadProductCategoriesToSalesChannel(Product $product, SalesChannel $salesChannel)
+    {
+        $categories = $product->categories;
+        $categories = array_diff($categories, $salesChannel->categories);
+        $woocommerce = $this->createSalesChannelsClient($salesChannel);
+        $data = [];
+        foreach($categories as $category){
+            $categorydata = [
+                'name' => $category->name,
+                'parent' => $category->parent_category_id
+            ];
+            array_push($data, $categorydata);
+        }
+        $data = ['create' => $data];
+        $response = $woocommerce->post('products/categories/batch', $data);
+        foreach($response->create as $category){
+            CategorySalesChannel::create([
+                //TODO
+            ]);
+        }
     }
 }

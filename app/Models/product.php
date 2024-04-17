@@ -114,18 +114,36 @@ class Product extends Model
 
     public function salesChannels()
     {
+        return $this->belongsToMany(SalesChannel::class, 'product_sales_channel')
+            ->using(ProductSalesChannel::class);
+    }
+
+    //is for online
+    public function productSalesChannels()
+    {
         return $this->hasMany(ProductSalesChannel::class);
     }
 
-    //calulate the total sales of this product
-    public function getSalesAttribute(): int
+    public function sales()
     {
-        $totalStock = 0;
-        foreach ($this->salesChannels as $salesChannel) {
-            $totalStock += $salesChannel->sales->sum('stock');
-        }
-        return $totalStock;
+        return $this->hasMany(Sale::class);
     }
+
+
+    //calulate the total sales of this product
+    public function getTotalSalesAttribute(): int
+    {
+        $totalSales = 0;
+
+        // Loop through each sale related to the product
+        foreach ($this->sales as $sale) {
+            // Add the stock of each sale to the total sales count
+            $totalSales += $sale->stock;
+        }
+
+        return $totalSales;
+    }
+
 
     //returns true if the product is a concept and cant be set to online 
     public function getConceptAttribute(): bool
@@ -187,10 +205,10 @@ class Product extends Model
                         foreach ($properties as $propertyId => $propertyValue) {
                             $query->orWhere(function ($query) use ($propertyId, $propertyValue) {
                                 $query->where('property_id', $propertyId);
-
                                 // Apply the condition based on the property value
                                 if ($propertyValue !== null) {
                                     $propertyType = Property::find($propertyId)->type ?? null;
+
                                     // Cast the property value based on its type
                                     switch ($propertyType) {
                                         case 'bool':
@@ -211,7 +229,6 @@ class Product extends Model
                                             $query->whereJsonContains('property_value', ['value' => $propertyValue]);
                                             break;
                                     }
-                                    
                                 }
                             });
                         }
