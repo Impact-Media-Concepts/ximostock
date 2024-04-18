@@ -56,3 +56,4 @@ bulkActionsSelectAll.addEventListener('click', function() {
     // Update the displayed count of selected items
     selectedCountElementBulk.textContent = totalChecked;
 });
+

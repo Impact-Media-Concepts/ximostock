@@ -1,9 +1,6 @@
 // properties input:
 // <input type="text" id="property_{{ $property->id }}" name="properties[{{ $property->id }}]">
 
-// properties list:
-
-
 
 
 // #region create index 

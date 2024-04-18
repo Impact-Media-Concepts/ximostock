@@ -102,7 +102,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/"
+                            <a href="/properties/create"
                                 class="hover:bg-[#3999BE] hover:rounded-b-lg  duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="white" class="w-3 h-3">
