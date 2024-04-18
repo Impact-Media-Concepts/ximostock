@@ -18,9 +18,15 @@ class Category extends Model
         ->using(CategoryProduct::class);
     }
 
+    public function salesChannels(){
+        return $this->belongsToMany(SalesChannel::class)
+        ->using(CategorySalesChannel::class)
+        ->withPivot('external_id');
+    }
+
     public function ProductSalesChannels(){
         return $this->belongsToMany(ProductSalesChannel::class)
-        ->using(CategoryProductSalesChannels::class);
+        ->using(CategoryProductSalesChannel::class);
     }
 
     public function parent_category(){
