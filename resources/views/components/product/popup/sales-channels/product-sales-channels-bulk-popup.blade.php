@@ -40,7 +40,7 @@
                             </div>
 
                             <div class="flex mt-[0.08rem] items-center">
-                                <button type="submit" class="relative flex items-center left-10">
+                                <button type="button" class="relative flex items-center left-10">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                                         stroke="#D3D3D3" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
