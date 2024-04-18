@@ -410,7 +410,6 @@ class ProductController extends BaseProductController
     public function store()
     {
         $request = request();
-        dd($request);
         //authorize
         $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];

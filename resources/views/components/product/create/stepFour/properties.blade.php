@@ -1,6 +1,6 @@
 @props(['properties'])
 
-<div class='bg-white h-[47.18rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg'>
+<div class='bg-white h-[50.18rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1rem] mt-[1rem]'>
             <p class='font-bold text-[18px] text-[#717171]'>Lorem, ipsum dolor.</p>

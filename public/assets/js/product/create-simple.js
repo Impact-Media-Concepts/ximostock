@@ -101,7 +101,7 @@ fileInput.addEventListener('change', function(event) {
 
         const img = document.createElement('img');
         img.src = URL.createObjectURL(file);
-        img.classList.add('object-contain', 'select-image', '!w-[16rem]');
+        img.classList.add('object-contain', 'select-image', '!w-[16rem]', 'select-none');
 
         const li = document.createElement('li');
         li.classList.add('splide__slide', 'pt-[1.5rem]');
@@ -112,7 +112,7 @@ fileInput.addEventListener('change', function(event) {
         const removeButtonImg = document.createElement('img');
         removeButtonImg.src = '../images/white-x-icon.png';
         removeButtonImg.alt = 'white x icon';
-        removeButtonImg.classList.add('h-[0.68rem]', 'w-[0.68rem]');
+        removeButtonImg.classList.add('h-[0.68rem]', 'w-[0.68rem]', 'select-none');
 
         const removeButton = document.createElement('button');
         removeButton.classList.add('w-[1.56rem]','h-[1.56rem]', 'bg-[#3EABD5]', 'js-remove-button', 'absolute', 'right-0', 'flex', 'items-center', 'justify-center', 'hover:bg-[#3999BE]');
