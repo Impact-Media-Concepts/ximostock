@@ -1,12 +1,14 @@
-// properties input:
-// <input type="text" id="property_{{ $property->id }}" name="properties[{{ $property->id }}]">
-
-
-
 // #region create index 
 const steps = document.querySelectorAll('.step');
 const createButtonContainer = document.getElementById("createButtonContainer");
 let currentStep = 0;
+
+
+const prevBtns = document.querySelectorAll('.prevBtn');
+const nextBtns = document.querySelectorAll('.nextBtn');
+const prevBtnId = document.getElementById('prevBtn');
+const nextBtnId = document.getElementById('nextBtnId');
+const headerNextBtnId = document.getElementById('headerNextBtnId');
 
 function showStep(stepIndex) {
     steps.forEach((step, index) => {
@@ -17,16 +19,16 @@ function showStep(stepIndex) {
         }
     });
 
-    if (stepIndex === 0) {
-        document.getElementById('prevBtn').style.display = 'none';
-    } else {
-        document.getElementById('prevBtn').style.display = 'inline-block';
-    }
-
     if (stepIndex === steps.length - 1) {
-        document.getElementById('nextBtn').style.display = 'none';
+        nextBtnId.style.display = 'none';
     } else {
-        document.getElementById('nextBtn').style.display = 'inline-block';
+        nextBtnId.style.display = 'inline-block';
+    }
+    
+    if (stepIndex === 0) {
+        prevBtnId.style.display = 'none';
+    } else {
+        prevBtnId.style.display = 'inline-block';
     }
 
     if (stepIndex === 5) {
@@ -45,19 +47,23 @@ function showStep(stepIndex) {
     currentStepText.textContent = `Stap ${stepIndex + 1} van ${steps.length}`;
 }
 
-document.getElementById('nextBtn').addEventListener('click', () => {
-    if (currentStep < steps.length - 1) {
-        currentStep++;
-        showStep(currentStep);
-    }
-});
+prevBtns.forEach((prevBtn) => { 
+    prevBtn.addEventListener('click', () => {
+        if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
+})
 
-document.getElementById('prevBtn').addEventListener('click', () => {
-    if (currentStep > 0) {
-        currentStep--;
-        showStep(currentStep);
-    }
-});
+nextBtns.forEach((nextBtn) => { 
+    nextBtn.addEventListener('click', () => {
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    });
+})
 
 showStep(currentStep);
 //#endregion
