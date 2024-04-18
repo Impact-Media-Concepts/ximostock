@@ -1,5 +1,5 @@
 
-<div class="hd:w-[99rem] uhd:w-[138rem] bg-white h-[51.75rem] rounded-t-lg">
+<div class="hd:w-[99rem] uhd:w-[138rem] bg-white h-[51.75rem] uhd:h-[59rem] rounded-t-lg">
     <div>
         <div class="h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg" style="border: 1px solid #F0F0F0;">
             <div class="w-full ml-[1rem] mt-[1rem]">
