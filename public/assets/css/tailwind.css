@@ -1850,10 +1850,6 @@ video {
   width: 20rem;
 }
 
-.w-\[25rem\] {
-  width: 25rem;
-}
-
 .w-\[27\.75rem\] {
   width: 27.75rem;
 }
@@ -2249,6 +2245,10 @@ video {
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.whitespace-nowrap {
   white-space: nowrap;
 }
 
@@ -3707,10 +3707,6 @@ video {
     width: 90rem;
   }
 
-  .hd\:w-\[91rem\] {
-    width: 91rem;
-  }
-
   .hd\:w-\[95rem\] {
     width: 95rem;
   }
@@ -3749,10 +3745,6 @@ video {
 }
 
 @media (min-width: 2560px) {
-  .uhd\:left-\[137\.5rem\] {
-    left: 137.5rem;
-  }
-
   .uhd\:z-\[998\] {
     z-index: 998;
   }

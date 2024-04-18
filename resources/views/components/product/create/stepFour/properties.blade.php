@@ -23,9 +23,7 @@
                             Nieuw toevoegen
                         </p>
                     </button>
-
                     <div x-data="{ open: false, selectedProperty: '' }" class='relative flex items-center justify-start text-left right-6'>
-                        <input type='hidden' name='selected_property_id' x-bind:value='selectedProperty.id'>
                         <button
                             type='button'
                             @click='open = !open;'
@@ -151,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
             arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]');
             
             const textSpan = document.createElement('span');
-            const text = document.createTextNode(prop.name);
-            textSpan.classList.add('ml-[2.5rem]', 'font-bold', 'relative', 'bottom-[0.125rem]', 'select-none', 'text-[18px]');
+            const text = document.createTextNode(prop.name + ` (${prop.type})`);
+            textSpan.classList.add('ml-[2.5rem]', 'font-bold', 'relative', 'bottom-[0.125rem]', 'select-none', 'text-[18px]', 'whitespace-nowrap');
             textSpan.appendChild(text);
             
             const propertyTitleContainer = document.createElement('div');
@@ -220,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPropertyTitles() {
         const propertyTitleList = document.getElementById('propertyLists');
         propertyTitleList.innerHTML = '';
-        console.log("propertyTitleData initial render", propertyTitleData);
         propertyTitleData.forEach(property => {
             const li = document.createElement('li');
             li.classList.add('flex', 'items-center', 'justify-start');
