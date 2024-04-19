@@ -1,15 +1,24 @@
-// properties input:
-// <input type="text" id="property_{{ $property->id }}" name="properties[{{ $property->id }}]">
-
-// properties list:
-
-
-
-
 // #region create index 
+const createInputFields = document.querySelectorAll('input');
+createInputFields.forEach(input => {
+    input.addEventListener('keydown', function(event) {
+        if (!input.classList.contains('allow-enter') && event.key === 'Enter') {
+            event.preventDefault();
+        }
+    });
+});
+
+
 const steps = document.querySelectorAll('.step');
 const createButtonContainer = document.getElementById("createButtonContainer");
 let currentStep = 0;
+
+
+const prevBtns = document.querySelectorAll('.prevBtn');
+const nextBtns = document.querySelectorAll('.nextBtn');
+const prevBtnId = document.getElementById('prevBtn');
+const nextBtnId = document.getElementById('nextBtnId');
+const headerNextBtnId = document.getElementById('headerNextBtnId');
 
 function showStep(stepIndex) {
     steps.forEach((step, index) => {
@@ -20,16 +29,16 @@ function showStep(stepIndex) {
         }
     });
 
-    if (stepIndex === 0) {
-        document.getElementById('prevBtn').style.display = 'none';
-    } else {
-        document.getElementById('prevBtn').style.display = 'inline-block';
-    }
-
     if (stepIndex === steps.length - 1) {
-        document.getElementById('nextBtn').style.display = 'none';
+        nextBtnId.style.display = 'none';
     } else {
-        document.getElementById('nextBtn').style.display = 'inline-block';
+        nextBtnId.style.display = 'inline-block';
+    }
+    
+    if (stepIndex === 0) {
+        prevBtnId.style.display = 'none';
+    } else {
+        prevBtnId.style.display = 'inline-block';
     }
 
     if (stepIndex === 5) {
@@ -48,19 +57,23 @@ function showStep(stepIndex) {
     currentStepText.textContent = `Stap ${stepIndex + 1} van ${steps.length}`;
 }
 
-document.getElementById('nextBtn').addEventListener('click', () => {
-    if (currentStep < steps.length - 1) {
-        currentStep++;
-        showStep(currentStep);
-    }
-});
+prevBtns.forEach((prevBtn) => { 
+    prevBtn.addEventListener('click', () => {
+        if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
+})
 
-document.getElementById('prevBtn').addEventListener('click', () => {
-    if (currentStep > 0) {
-        currentStep--;
-        showStep(currentStep);
-    }
-});
+nextBtns.forEach((nextBtn) => { 
+    nextBtn.addEventListener('click', () => {
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    });
+})
 
 showStep(currentStep);
 //#endregion
@@ -104,7 +117,7 @@ fileInput.addEventListener('change', function(event) {
 
         const img = document.createElement('img');
         img.src = URL.createObjectURL(file);
-        img.classList.add('object-contain', 'select-image', '!w-[16rem]');
+        img.classList.add('object-contain', 'select-image', '!w-[16rem]', 'select-none');
 
         const li = document.createElement('li');
         li.classList.add('splide__slide', 'pt-[1.5rem]');
@@ -115,7 +128,7 @@ fileInput.addEventListener('change', function(event) {
         const removeButtonImg = document.createElement('img');
         removeButtonImg.src = '../images/white-x-icon.png';
         removeButtonImg.alt = 'white x icon';
-        removeButtonImg.classList.add('h-[0.68rem]', 'w-[0.68rem]');
+        removeButtonImg.classList.add('h-[0.68rem]', 'w-[0.68rem]', 'select-none');
 
         const removeButton = document.createElement('button');
         removeButton.classList.add('w-[1.56rem]','h-[1.56rem]', 'bg-[#3EABD5]', 'js-remove-button', 'absolute', 'right-0', 'flex', 'items-center', 'justify-center', 'hover:bg-[#3999BE]');

@@ -2,9 +2,9 @@
 
 <div id='categoriesContainer'>
     <div class='w-full flex justify-center items-center'>
-        <input id='createProductCategoriesSearch' class='sticky property-search-input w-[43.43rem] h-[2.5rem] rounded-md mt-[0.55rem] rounded-b-lg' style='border: 1px solid #D3D3D3;' type='text' placeholder='Zoeken' />
+        <input id='createProductCategoriesSearch' class='sticky property-search-input w-[43.43rem] h-[2.5rem] rounded-md mt-[1.5rem] rounded-b-lg' style='border: 1px solid #D3D3D3;' type='text' placeholder='Zoeken' />
     </div>
-    <ul id='categoriesList' class='max-h-[38.87rem] h-[38.87rem] overflow-y-auto'></ul>
+    <ul id='categoriesList' class='max-h-[44rem] h-[44rem] overflow-y-auto'></ul>
 </div>
 <script>
     let categoriesData = [
@@ -177,7 +177,7 @@
 
             const categoryNameSpan = document.createElement('span');
             categoryNameSpan.textContent = category.name;
-            categoryNameSpan.classList.add('ml-[0.59rem]', 'relative', 'bottom-[0.125rem]', 'select-none');
+            categoryNameSpan.classList.add('ml-[0.57rem]', 'relative', 'bottom-[0.125rem]', 'select-none');
             categoryNameSpan.addEventListener('click', () => {
                 checkbox.checked = !checkbox.checked;
                 createProdCategoryhandleCheckboxClick(category);
@@ -216,7 +216,7 @@
 
             const subCategoryNameSpan = document.createElement('span');
             subCategoryNameSpan.textContent = subcategory.name;
-            subCategoryNameSpan.classList.add('ml-[0.59rem]', 'relative', 'bottom-[0.125rem]', 'select-none');
+            subCategoryNameSpan.classList.add('ml-[0.57rem]', 'relative', 'bottom-[0.125rem]', 'select-none');
 
             checkbox.addEventListener('click', () => {
                 createProdCategoryhandleCheckboxClick(subcategory)

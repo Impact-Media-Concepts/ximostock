@@ -18,7 +18,7 @@
                     d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
         </button>
-        <input id="searchBar" class="basic:w-[20rem] hd:w-[30.5rem] uhd:w-[50rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
+        <input id="searchBar" class="allow-enter basic:w-[20rem] hd:w-[30.5rem] uhd:w-[50rem] h-[3.12rem] rounded-md pl-[3rem] pt-[0.1rem] pr-[1rem] text-[#717171] header-search"
             style="font-size: 16px; border:1px solid #D3D3D3;" name="search" type="text" placeholder="Zoeken..."
             autocomplete="off" value="{{ $search }}">
     </div>
@@ -102,7 +102,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/"
+                            <a href="/properties/create"
                                 class="hover:bg-[#3999BE] hover:rounded-b-lg  duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="white" class="w-3 h-3">

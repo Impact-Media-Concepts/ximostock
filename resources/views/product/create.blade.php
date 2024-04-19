@@ -39,12 +39,12 @@
 
                     <x-product.create.create-error-message :errors="$errors"/>
 
-                    <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[4rem]">
-                        <div id="prevBtn" class="relative right-[1.4rem]">
+                    <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[6rem] create-button-container-border">
+                        <div id="prevBtn" class="relative right-[1rem]">
                             <x-product.buttons.create-previous-button />
                         </div>
 
-                        <div class="w-full flex justify-end relative right-[1.4rem]">
+                        <div class="w-full flex justify-end relative right-[2rem]">
                             <x-product.buttons.create-next-button />
                         </div>
 
@@ -53,6 +53,7 @@
                         </div>
                     </div>
                 </form>
+                <x-product.popup.create-product-create-property-popup/>
             </div>
         </div>
     </div>
@@ -61,5 +62,6 @@
 <x-layout._footer-dependencies />
 <script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/create-simple.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/show-pop-ups.js') }}"></script>
 
 </html>
