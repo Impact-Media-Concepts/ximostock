@@ -16,10 +16,9 @@ class ValidWorkspaceKeys implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $workspaceIds = WorkSpace::pluck('id')->toArray();
-        foreach ($value as $key => $data) {
-            if (!in_array($key, $workspaceIds)) {
-                $fail("The key $key does not correspond to a valid Workspace ID.");
-            }
+
+        if (!in_array((int)$value, $workspaceIds)) {
+            $fail("The key $value does not correspond to a valid Workspace ID.");
         }
     }
 }

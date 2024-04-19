@@ -431,7 +431,7 @@ class ProductController extends BaseProductController
     public function store()
     {
         $request = request();
-        dd($request);
+        // dd($request);
         //authorize
         $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
@@ -466,7 +466,7 @@ class ProductController extends BaseProductController
         $product = $this->createProduct($attributes);
         $this->linkCategoriesToProduct($product, $attributes);
         $this->uploadAndLinkPhotosToProduct($product, $request);
-        $this->linkPropertiesToProduct($product, $request);
+        $this->linkPropertiesToProduct($product, $attributes);
         $this->createInventories($product, $request);
 
         //link sales channels if there are any.
@@ -824,5 +824,16 @@ class ProductController extends BaseProductController
         ProductProperty::where('product_id', $productId)
             ->whereIn('property_id', $existingPropertyIds)
             ->delete();
+    }
+
+    protected function linkPropertiesToProduct($product, $attributes)
+    {
+        foreach ($attributes['properties'] as $propertyId => $propertyValue) {
+            ProductProperty::create([
+                'product_id' => $product->id,
+                'property_id' => $propertyId,
+                'property_value' => json_encode(['value' => $propertyValue])
+            ]);
+        }
     }
 }
