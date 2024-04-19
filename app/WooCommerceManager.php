@@ -39,9 +39,14 @@ class WooCommerceManager
     protected function productOnSalesChannel(Product $product, SalesChannel $salesChannel): bool
     {
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
-        $external_id = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first()->external_id;
-        $OnlineProduct = $woocommerce->get('products/'.$external_id);
-        return $OnlineProduct != null;
+        $external_id = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+        if ($external_id != null) {
+            $external_id = $external_id->external_id;
+            $OnlineProduct = $woocommerce->get('products/' . $external_id);
+            return $OnlineProduct != null;
+        } else {
+            return false;
+        }
     }
 
     public function uploadOrUpdateProduct(Product $product)
@@ -51,16 +56,15 @@ class WooCommerceManager
         }
     }
 
-    
+
 
     public function uploadOrUpdateProductSalesChannel(Product $product, SalesChannel $salesChannel)
     {
         if (ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->whereNotNull('external_id')->exists()) {
-            if($this->productOnSalesChannel($product, $salesChannel)){
+            if ($this->productOnSalesChannel($product, $salesChannel)) {
                 $this->updateProductToSalesChannel($product, $salesChannel);
-
-            }else{
-            $this->uploadProductToSalesChannel($product, $salesChannel);
+            } else {
+                $this->uploadProductToSalesChannel($product, $salesChannel);
             }
         } else {
             $this->uploadProductToSalesChannel($product, $salesChannel);
@@ -69,9 +73,11 @@ class WooCommerceManager
 
     public function deleteProductFromSalesChannel(Product $product, SalesChannel $salesChannel)
     {
-        $woocommerce = $this->createSalesChannelsClient($salesChannel);
-        $external_id = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first()->external_id;
-        $woocommerce->delete('products/' . $external_id, ['force' => true]);
+        if($this->productOnSalesChannel($product,$salesChannel)){
+            $woocommerce = $this->createSalesChannelsClient($salesChannel);
+            $external_id = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first()->external_id;
+            $woocommerce->delete('products/' . $external_id, ['force' => true]);
+        }
     }
 
     public function uploadProductToSalesChannel(Product $product, SalesChannel $salesChannel)

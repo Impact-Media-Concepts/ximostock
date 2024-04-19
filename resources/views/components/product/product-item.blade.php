@@ -55,7 +55,8 @@
             
             </div>
             <div class="flex items-center hd:w-[8.2rem] uhd:w-[14.9rem] shd:w-[27.8rem] h-[1.06rem] mt-1">
-                @if ($product->sales_channels_exists)
+
+                @if ($product->product_sales_channels_exists)
                     <div class="mt-[0.15rem] w-1.5 h-1.5 bg-[#3DABD5] rounded-full"></div>
                     <p class="text-[#3DABD5] z-10 flex items-center relative left-1">
                         Online
