@@ -1,4 +1,14 @@
 // #region create index 
+const createInputFields = document.querySelectorAll('input');
+createInputFields.forEach(input => {
+    input.addEventListener('keydown', function(event) {
+        if (!input.classList.contains('allow-enter') && event.key === 'Enter') {
+            event.preventDefault();
+        }
+    });
+});
+
+
 const steps = document.querySelectorAll('.step');
 const createButtonContainer = document.getElementById("createButtonContainer");
 let currentStep = 0;

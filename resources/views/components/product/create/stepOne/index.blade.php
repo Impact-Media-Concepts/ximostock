@@ -1,4 +1,4 @@
-<div class="bg-white flex justify-center rounded-t-lg uhd:max-h-[59rem] overflow-y-auto">
+<div class="bg-white flex justify-center rounded-t-lg uhd:max-h-[57rem] overflow-y-auto create-container-border">
     <div class="hd:w-[95rem] uhd:w-[134rem]">
 
         <div class="h-[15rem] mt-[2rem]">
