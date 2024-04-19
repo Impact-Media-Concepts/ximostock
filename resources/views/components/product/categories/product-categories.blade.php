@@ -116,7 +116,6 @@
             updateParents(category);
         } else {
             uncheckSubcategories(category);
-            console.log("unchecked boiii");
         }
         //open or close the subcategories of this category
         if (category.checked) {
@@ -292,10 +291,8 @@
             checkbox.classList.add('cursor-pointer');
 
             checkbox.addEventListener('click', () => { 
-                console.log("sub Yooo?");
                 const arrowDown = li.querySelector('img');
                 if (arrowDown) {
-                    console.log("sub if Yooo?");
                     arrowDown.classList.toggle('rotate-arrow');
                 }
                 categoryHandleCheckboxClick(subcategory);
@@ -305,7 +302,7 @@
             categoryNameSpan.textContent = subcategory.name;
             categoryNameSpan.classList.add('ml-2', 'relative', 'bottom-[0.15rem]', 'inline-flex');
             categoryNameSpan.style.display = 'inline-flex';
-            categoryNameSpan.style.width = '75%';
+            categoryNameSpan.style.width = '85%';
             categoryNameSpan.classList.add('no-select');
 
             categoryNameSpan.addEventListener('click', () => { 

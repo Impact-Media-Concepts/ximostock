@@ -50,13 +50,13 @@
                             <div class="flex gap-[0.5rem]">
                                 <input class="hover:cursor-pointer" type="checkbox" id="roundDiscount" x-on:click="showDecimals = !showDecimals">
                                 <input type="hidden" name="round" value="0" id="trueRoundDiscount">
-                                <label class="text-[14px] font-bold" for="discountPercentage">Afronden op decimalen?</label>
+                                <label class="text-[14px] font-bold" for="roundDiscount">Afronden op decimalen?</label>
                             </div>
                         </div>
                     </div>
                     <div x-show="showDecimals" class="flex justify-start items-center pt-[0.5rem]" style="">
                         <input id="discountDecimalsInput" name="cents" class="discount-input discount-decimals-input text-center w-[18.68rem] h-[2.5rem] font-[16px] rounded-md" style="border: 1px solid #d3d3d3;" type="number" for="discountDecimals" placeholder="Centen">
-                        <label for="discountDecimals"></label>
+                        <label for="discountDecimalsInput"></label>
                     </div>
                 </div>
                 

@@ -5,17 +5,25 @@ let selectedCountElementBulk = document.getElementById('selectedCount');
 document.addEventListener('DOMContentLoaded', function() {
     const bulkActionsCheckboxSubheader = document.getElementById('bulkActionsCheckboxSubheader');
     const productBulkActionsContainer = document.getElementById('productBulkActionsContainer');
+    const productContainerDiv = document.getElementById('productContainerDiv');
+
     bulkActionsCheckboxSubheader.addEventListener('change', function() {
         if (this.checked) {
             productBulkActionsContainer.classList.remove('bulk-actions-hidden');
+            if (!productBulkActionsContainer.classList.contains('bulk-actions-hidden')) {
+                productContainerDiv.style.height = '94%';
+            }
         } else {
             productBulkActionsContainer.classList.add('bulk-actions-hidden');
+            if (productBulkActionsContainer.classList.contains('bulk-actions-hidden')) {
+                productContainerDiv.style.height = '100%';
+            } 
         }
     });
 });
 
 // listens if checkbox inside product-sub-header to changed
-// it takes the cound of totalchecked and increases i
+// it takes the count of totalchecked and increases i
 // when a checkbox is checked
 bulkActionsCheckboxSubheader.addEventListener('change', function() {
     // gets all items with thhat classname and after it has id.
