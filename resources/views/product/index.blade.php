@@ -5,7 +5,7 @@
     <x-header.header :activeWorkspace="$activeWorkspace" :workspaces="$workspaces" :search="$search" />
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div>
-            <x-sidenav.sidenav :sidenavActive="$sidenavActive" />
+            <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive" />
         </div>
 
         <div class="flex w-full pr-10 pt-[1.95rem] gap-8">
