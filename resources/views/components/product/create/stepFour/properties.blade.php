@@ -822,6 +822,7 @@
         checkboxes.forEach(checkbox => {
             const li = checkbox.closest('li');
             const arrowDown = li.querySelector('img');
+            console.log(arrowDown);
             if (arrowDown) {
                 arrowDown.classList.remove('rotate-arrow');
             }

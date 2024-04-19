@@ -14,7 +14,7 @@
                 <input class='sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search' style='font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem' type='text' id='categorySearchInput' placeholder='Zoeken'>
             </div>
 
-            <ul style='font-family: 'Inter', sans-serif;' id='categoriesList'></ul>
+            <ul style="font-family: 'Inter', sans-serif;'" id='categoriesList'></ul>
         </div>
     </div>
 </div>
@@ -121,7 +121,6 @@
             updateParents(category);
         } else {
             uncheckSubcategories(category);
-            console.log('unchecked boiii');
         }
         //open or close the subcategories of this category
         if (category.checked) {
@@ -139,10 +138,10 @@
 
     function removeRotateArrowClass(category) {
         const checkboxes = document.querySelectorAll(`input[type='checkbox'][value='${category.id}']`);
-        console.log(checkboxes);
         checkboxes.forEach(checkbox => {
             const li = checkbox.closest('li');
             const arrowDown = li.querySelector('img');
+            console.log(arrowDown);
             if (arrowDown) {
                 arrowDown.classList.remove('rotate-arrow');
             }

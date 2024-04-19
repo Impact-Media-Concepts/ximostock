@@ -7,7 +7,7 @@
 
 <script>
     // set button type based on pop up
-    let bulkBtns = document.querySelectorAll({{$bulkActionId}});
+    let bulkBtns = document.querySelectorAll('{{$bulkActionId}}');
     bulkBtns.forEach(bulkBtn => {
         const classes = bulkBtn.className.split(' ');
         if (classes.includes('cd-popup-trigger')) {
