@@ -332,3 +332,17 @@ input.slideon {
         opacity: 0;
     }
 }
+
+/* create product container border */
+.create-container-border {
+    border-top: 1px solid #F0F0F0;
+    border-left: 1px solid #F0F0F0;
+    border-right: 1px solid #F0F0F0;
+}
+
+/* create product button container button */
+.create-button-container-border {
+    border-bottom: 1px solid #F0F0F0;
+    border-left: 1px solid #F0F0F0; 
+    border-right: 1px solid #F0F0F0;
+}

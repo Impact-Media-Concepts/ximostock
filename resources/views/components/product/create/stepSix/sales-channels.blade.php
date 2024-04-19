@@ -1,4 +1,4 @@
-<div class="bg-white rounded-t-lg uhd:h-[59rem]" style="border: 1px solid #F0F0F0;">
+<div class="bg-white rounded-t-lg uhd:h-[57rem] create-container-border">
     <div class="h-[4.56rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg" style="border:  1px solid #F0F0F0;">
         <div class=" ml-[1.56rem] mt-[0.6rem]">
             <div>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="flex justify-center w-full">
-        <div class="mt-[2rem] mb-[0.5rem] h-[51rem] uhd:w-[134rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
+        <div class="mt-[2rem] mb-[0.5rem] h-[50rem] uhd:w-[134rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
             <div class="h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white">
                 <p>Verkoopkanalen</p>
             </div>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
 
-                <div class="max-h-[38rem] overflow-y-auto pb-[1rem]" id="salesChannelList">
+                <div class="max-h-[36rem] overflow-y-auto pb-[1rem]" id="salesChannelList">
                 </div>
             </div>
         </div>

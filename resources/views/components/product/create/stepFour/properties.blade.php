@@ -1,6 +1,6 @@
 @props(['properties'])
 
-<div class='bg-white h-[59rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg'>
+<div class='bg-white h-[57rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg create-container-border'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1rem] mt-[1rem]'>
             <p class='font-bold text-[18px] text-[#717171]'>Lorem, ipsum dolor.</p>
@@ -48,7 +48,7 @@
 
                 </div>
                
-                <div class=' flex flex-col items-center h-[47.18rem] max-h-[36rem] overflow-y-auto' style='border: 1px solid #F0F0F0;'>
+                <div class=' flex flex-col items-center h-[43rem] max-h-[43rem] overflow-y-auto' style='border: 1px solid #F0F0F0;'>
                     <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
                         <ul class='mt-[0.85rem]' id='createProdPropertyList'></ul>
                     </div>
@@ -116,7 +116,6 @@
     const createProdPropertyList = document.getElementById('createProdPropertyList');
     createProdPropertyList.innerHTML = ''; // Clear existing list
     createProdPropertyList.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
-    createProdPropertyList.style.overflowY = 'scroll';
     
     // Render all clicked properties
     clickedProperties.forEach(prop => {
@@ -152,7 +151,7 @@
         textSpan.appendChild(text);
         
         const propertyTitleContainer = document.createElement('div');
-        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[3.75rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer');
+        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer');
         propertyTitleContainer.style.border = '1px solid #D3D3D3';
         
         propertyTitleContainer.addEventListener('click', () => {
