@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\CategoryProductSalesChannel;
-use App\Models\CategorySalesChannel;
 use App\Models\Inventory;
 use App\Models\InventoryLocation;
 use App\Models\Product;
@@ -24,13 +23,12 @@ use App\Rules\ValidPropertyOptions;
 use App\Rules\ValidSalesChannelKeys;
 use App\Rules\ValidWorkspaceKeys;
 use App\Rules\VallidCategoryKeys;
-use Automattic\WooCommerce\Client;
-use Exception;
+use App\WooCommerceManager;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
-use PHPUnit\Framework\Constraint\Count;
+
 
 class ProductController extends BaseProductController
 {
@@ -162,7 +160,6 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-
     public function bulkDiscount()
     {
         Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
@@ -260,6 +257,10 @@ class ProductController extends BaseProductController
                     'product_id' => $product,
                     'sales_channel_id' => $salesChannel
                 ]);
+                $salesChannel = SalesChannel::findOrFail($salesChannel);
+                $product = Product::findOrFail($product);
+                $woocommerce = new WooCommerceManager;
+                $woocommerce->uploadOrUpdateProductSalesChannel($product, $salesChannel);
             }
         }
         return redirect('/products');
@@ -282,10 +283,24 @@ class ProductController extends BaseProductController
             'sales_channel_ids.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
 
+
+        //remove from the saleschannel
+        $woocommerce = new WooCommerceManager;
+        foreach($validatedData['product_ids'] as $product){
+            $product = Product::findOrFail($product);
+            foreach($validatedData['sales_channel_ids'] as $salesChannel){
+                $salesChannel = SalesChannel::findOrFail($salesChannel);
+
+                $woocommerce->deleteProductFromSalesChannel($product, $salesChannel);
+            }
+        }
+
         // Unlink sales channels from products
         ProductSalesChannel::whereIn('product_id', $validatedData['product_ids'])
             ->whereIn('sales_channel_id', $validatedData['sales_channel_ids'])
             ->delete();
+
+        
         return redirect()->back();
     }
 
@@ -386,6 +401,7 @@ class ProductController extends BaseProductController
 
             $attributes['communicate_stock'] = false;
         }
+
         //update product
         $product->update([
             'sku' => $attributes['sku'],
@@ -407,9 +423,8 @@ class ProductController extends BaseProductController
         $this->updateProperties($product->id, $attributes['properties']);
         $this->updateSalesChannels($product->id, $saleschannelAttributes);
 
-        //upload the product WIP
-        $this->uploadProductToSalesChannels($product);
-
+        $wooCommerce = new WooCommerceManager;
+        $wooCommerce->uploadOrUpdateProduct($product);
         return redirect()->back();
     }
 
@@ -466,7 +481,6 @@ class ProductController extends BaseProductController
     {
         return Excel::download(new ProductsExport, 'products.xlsx');
     }
-
 
     protected function createProduct($attributes): Product
     {
@@ -809,133 +823,5 @@ class ProductController extends BaseProductController
         ProductProperty::where('product_id', $productId)
             ->whereIn('property_id', $existingPropertyIds)
             ->delete();
-    }
-
-    //WIP for now just woocommerce
-    protected function uploadProductToSalesChannels(Product $product)
-    {
-        foreach ($product->salesChannels as $salesChannel) {
-            //dd($salesChannel);
-            if ($salesChannel != null) {
-                $woocommerce = $this->createSalesChannelsClient($salesChannel);
-                $this->uploadProductCategoriesToSalesChannel($product, $salesChannel);
-                $categories = [];
-                foreach($product->categories as $category){
-                    $externalId = CategorySalesChannel::where('category_id',$category->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-                    $externalId = $externalId->external_id;
-                    array_push($categories, ['id' => $externalId]);
-                }
-                $data = [
-                    'name' => $product->title,
-                    'type' => 'simple',
-                    'sku' => $product->sku,
-                    'regular_price' => $product->price,
-                    'sale_price' => $product->discount,
-                    'description' => $product->long_description,
-                    'short_description' => $product->short_description,
-                    'backorders' => $product->backorders ? 'yes' : 'no',
-                    'categories' => $categories
-                ];
-                $result = $woocommerce->post('products', $data);
-                $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-                $productSalesChannel->external_id = $result->id;
-                $productSalesChannel->save();
-            }
-        }
-    }
-
-    protected function createSalesChannelsClient(SalesChannel $salesChannel): Client|null
-    {
-        try {
-            $woocommerce = new Client(
-                $salesChannel->url,
-                $salesChannel->api_key,
-                $salesChannel->secret,
-                [
-                    'timeout' => 30
-                ]
-            );
-            return $woocommerce;
-        } catch (Exception $ex) {
-            return null;
-        }
-    }
-
-    protected function uploadProductCategoriesToSalesChannel(Product $product, SalesChannel $salesChannel)
-    {
-        $categories = $product->categories->pluck('id')->toArray();
-        $categories = array_diff($categories, $salesChannel->categories->pluck('id')->toArray());
-        $categories = Category::whereIn('id',$categories)->get();
-        $woocommerce = $this->createSalesChannelsClient($salesChannel);
-
-        foreach ($categories as $category) {
-            if(!CategorySalesChannel::where('category_id', '=', $category->id)->where('sales_channel_id', '=', $salesChannel->id)->exists()){
-                if ($category->parent_category_id != null) {
-                    $parent = CategorySalesChannel::where('category_id', '=', $category->parent_category_id)->where('sales_channel_id', '=', $salesChannel->id)->get()->first();
-                    if ($parent != null) //check if the parent is uploaded
-                    {
-                        $data = [
-                            'name' => $category->name,
-                            'parent' => $parent->external_id
-                        ];
-                        $response = $woocommerce->post('products/categories', $data);
-                        CategorySalesChannel::create([
-                            'category_id' => $category->id,
-                            'sales_channel_id' => $salesChannel->id,
-                            'external_id' => $response->id
-                        ]);
-                    }else{
-                        $this->UploadParentCategoryRecursive(Category::where('id', $category->parent_category_id)->get()->first(), $salesChannel);
-                    }
-                }
-                else{
-                    $data = [
-                        'name' => $category->name
-                    ];
-                    $response = $woocommerce->post('products/categories', $data);
-                    CategorySalesChannel::create([
-                        'category_id' => $category->id,
-                        'sales_channel_id' => $salesChannel->id,
-                        'external_id' => $response->id
-                    ]);
-                }
-            }
-        }
-    }
-
-    protected function UploadParentCategoryRecursive(Category $category, SalesChannel $salesChannel){
-        $woocommerce = $this->createSalesChannelsClient($salesChannel);
-
-        if(!CategorySalesChannel::where('category_id', '=', $category->id)->where('sales_channel_id', '=', $salesChannel->id)->exists()){
-            if ($category->parent_category_id != null) {
-                $parent = CategorySalesChannel::where('category_id', '=', $category->parent_category_id)->where('sales_channel_id', '=', $salesChannel->id)->get();
-                if ($parent != null) //check if the parent is uploaded
-                {
-                    $data = [
-                        'name' => $category->name,
-                        'parent' => $parent->external_id
-                    ];
-                    $response = $woocommerce->post('products/categories', $data);
-                    CategorySalesChannel::create([
-                        'category_id' => $category->id,
-                        'sales_channel_id' => $salesChannel->id,
-                        'extrenal_id' => $response->id
-                    ]);
-                }else{
-                    $this->UploadParentCategoryRecursive(Category::where('id', $category->parent_category_id)->get()->first(), $salesChannel);
-                }
-            }
-            else{
-                $data = [
-                    'name' => $category->name
-                ];
-                $response = $woocommerce->post('products/categories', $data);
-                CategorySalesChannel::create([
-                    'category_id' => $category->id,
-                    'sales_channel_id' => $salesChannel->id,
-                    'extrenal_id' => $response->id
-                ]);
-            }
-        }
     }
 }

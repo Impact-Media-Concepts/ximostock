@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('product_sales_channel_property', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('property_id')->constrained();
-            $table->foreignId('product_sales_channel_id')->constrained('product_sales_channel');
+            $table->foreignId('property_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_sales_channel_id')->constrained('product_sales_channel')->cascadeOnDelete();
             $table->json('prop_value');
             $table->timestamps();
         });
