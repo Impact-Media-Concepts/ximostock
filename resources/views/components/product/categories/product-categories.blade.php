@@ -1,33 +1,27 @@
 @props(['categories', 'checkedCategories' => null])
 
-<div class='flex basic:h-[22rem] hd:h-[28.37rem] w-[14.1rem]'>
-    <div class='w-[14.06rem] h-[5.18rem]'>
-        <div class='text-[16px] font-[600] relative right-[0.12rem] bottom-[0.18rem]'>
+<div class="flex h-[28.37rem] w-[14.1rem]">
+    <div class="w-[14.06rem] h-[5.18rem]">
+        <div class="text-[16px] font-[600] relative right-[0.12rem] bottom-[0.18rem]">
             Categorieën
         </div>
 
-        <div class='relative right-[0.08rem] underline w-[14rem] h-[0.15rem] bg-[#f8f8f8] mb-2 mt-[0.17rem]'>
+        <div class="relative right-[0.08rem] underline w-[14rem] h-[0.15rem] bg-[#f8f8f8] mb-2 mt-[0.17rem]">
         </div>
 
-        <div id='categoriesContainer'>
-            <div class='mt-[0.85rem]'>
-                <input class='sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search' style='font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem' type='text' id='categorySearchInput' placeholder='Zoeken'>
+        <div id="categoriesContainer">
+            <div class="mt-[0.85rem]">
+                <input class="sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search" style="font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem" type="text" id="categorySearchInput" placeholder="Zoeken">
             </div>
 
-            <ul style="font-family: 'Inter', sans-serif;'" id='categoriesList'></ul>
+            <ul style="font-family: 'Inter', sans-serif;" id="categoriesList"></ul>
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById('categorySearchInput').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-        }
-    });
-    
-    //Find parent function
-    let categoriesData = [<x-product.categories.product-categories-data :categories='$categories' :checkedCategories='$checkedCategories'/>];
+    // // Find parent function
+    let categoriesData = [<x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>];
     function findParentCategory(categoryId, categories = categoriesData, parent = null) {
         for (const category of categories) {
             if (category.id === categoryId) {
@@ -58,10 +52,11 @@
             ul.classList.add('hidden');
             category.subcategories.forEach(subcategory => {
                 subcategory.checked = false; // Uncheck the subcategory itself
-                removeRotateArrowClass(category);
+
                 const input = document.getElementById(`checkbox_category_${subcategory.id}`);
                 input.checked = false;
                 if (subcategory.subcategories.length > 0) {
+                    removeRotateArrowClass(subcategory);
                     uncheckSubcategories(subcategory); // Recursively uncheck subcategories
                 }
             });
@@ -121,6 +116,7 @@
             updateParents(category);
         } else {
             uncheckSubcategories(category);
+            console.log("unchecked boiii");
         }
         //open or close the subcategories of this category
         if (category.checked) {
@@ -137,15 +133,14 @@
     }
 
     function removeRotateArrowClass(category) {
-        const checkboxes = document.querySelectorAll(`input[type='checkbox'][value='${category.id}']`);
-        checkboxes.forEach(checkbox => {
+        const checkbox = document.getElementById(`checkbox_category_${category.id}`);
+        
             const li = checkbox.closest('li');
             const arrowDown = li.querySelector('img');
-            console.log(arrowDown);
             if (arrowDown) {
                 arrowDown.classList.remove('rotate-arrow');
-            }
-        });
+                
+            }   
     }
 
     function showSubcategories(category) {
@@ -209,7 +204,8 @@
         categoriesList.innerHTML = ''; // Clear existing list
 
         const ul = document.createElement('ul');
-        ul.classList.add('mt-[0.8rem]', 'basic:max-h-[15rem]', 'hd:max-h-[21.5rem]', 'uhd:max-h-[26rem]');
+        ul.classList.add('mt-[0.8rem]');
+        ul.style.maxHeight = '330px';
         ul.style.overflowY = 'scroll';
 
         categoriesData.forEach(category => {
@@ -296,8 +292,10 @@
             checkbox.classList.add('cursor-pointer');
 
             checkbox.addEventListener('click', () => { 
+                console.log("sub Yooo?");
                 const arrowDown = li.querySelector('img');
                 if (arrowDown) {
+                    console.log("sub if Yooo?");
                     arrowDown.classList.toggle('rotate-arrow');
                 }
                 categoryHandleCheckboxClick(subcategory);

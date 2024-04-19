@@ -4,16 +4,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
     slideon.load();
     
     // check and uncheck all
-    const selectAllCheckbox = document.getElementById("selectAllSalesChannels");
+    const selectAllSalesCheckbox = document.getElementById("selectAllSalesChannels");
 
-    selectAllCheckbox.addEventListener("change", function() {
+    selectAllSalesCheckbox.addEventListener("change", function() {
 
         // every sales-channels-item.blade with that id
         const selectSalesItems = document.querySelectorAll("[id^=selectSalesItem_]");
 
         selectSalesItems.forEach(function(checkbox) {
 
-            checkbox.checked = selectAllCheckbox.checked;
+            checkbox.checked = selectAllSalesCheckbox.checked;
         });
     });
     
