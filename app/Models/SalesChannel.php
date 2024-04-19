@@ -18,4 +18,10 @@ class SalesChannel extends Model
         ->using(ProductSalesChannel::class)
         ->withPivot(['title','price', 'short_description', 'long_description', 'discount']);
     }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class, 'category_sales_channel')
+        ->using(CategorySalesChannel::class)
+        ->withPivot(['external_id']);
+    }
 }

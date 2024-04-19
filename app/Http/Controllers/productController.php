@@ -23,10 +23,12 @@ use App\Rules\ValidPropertyOptions;
 use App\Rules\ValidSalesChannelKeys;
 use App\Rules\ValidWorkspaceKeys;
 use App\Rules\VallidCategoryKeys;
+use App\WooCommerceManager;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
+
 
 class ProductController extends BaseProductController
 {
@@ -53,8 +55,8 @@ class ProductController extends BaseProductController
         }
 
         $products = $products
-            ->with('photos', 'locationZones', 'salesChannels.sales', 'childProducts', 'categories')
-            ->withExists(['salesChannels'])
+            ->with('photos', 'locationZones', 'productSalesChannels', 'childProducts', 'categories')
+            ->withExists(['productSalesChannels'])
             ->whereNull('parent_product_id')
             ->filter(request(['search', 'categories', 'orderByInput', 'properties']))
             ->paginate($perPage)
@@ -158,7 +160,6 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-
     public function bulkDiscount()
     {
         Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
@@ -256,6 +257,10 @@ class ProductController extends BaseProductController
                     'product_id' => $product,
                     'sales_channel_id' => $salesChannel
                 ]);
+                $salesChannel = SalesChannel::findOrFail($salesChannel);
+                $product = Product::findOrFail($product);
+                $woocommerce = new WooCommerceManager;
+                $woocommerce->uploadOrUpdateProductSalesChannel($product, $salesChannel);
             }
         }
         return redirect('/products');
@@ -278,10 +283,24 @@ class ProductController extends BaseProductController
             'sales_channel_ids.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
 
+
+        //remove from the saleschannel
+        $woocommerce = new WooCommerceManager;
+        foreach($validatedData['product_ids'] as $product){
+            $product = Product::findOrFail($product);
+            foreach($validatedData['sales_channel_ids'] as $salesChannel){
+                $salesChannel = SalesChannel::findOrFail($salesChannel);
+
+                $woocommerce->deleteProductFromSalesChannel($product, $salesChannel);
+            }
+        }
+
         // Unlink sales channels from products
         ProductSalesChannel::whereIn('product_id', $validatedData['product_ids'])
             ->whereIn('sales_channel_id', $validatedData['sales_channel_ids'])
             ->delete();
+
+        
         return redirect()->back();
     }
 
@@ -382,6 +401,7 @@ class ProductController extends BaseProductController
 
             $attributes['communicate_stock'] = false;
         }
+
         //update product
         $product->update([
             'sku' => $attributes['sku'],
@@ -403,7 +423,8 @@ class ProductController extends BaseProductController
         $this->updateProperties($product->id, $attributes['properties']);
         $this->updateSalesChannels($product->id, $saleschannelAttributes);
 
-
+        $wooCommerce = new WooCommerceManager;
+        $wooCommerce->uploadOrUpdateProduct($product);
         return redirect()->back();
     }
 
@@ -461,7 +482,6 @@ class ProductController extends BaseProductController
     {
         return Excel::download(new ProductsExport, 'products.xlsx');
     }
-
 
     protected function createProduct($attributes): Product
     {

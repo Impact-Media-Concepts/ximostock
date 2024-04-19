@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_product_sales_channel', function (Blueprint $table) {
+        Schema::create('category_sales_channel', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_sales_channel_id')->constrained('product_sales_channel')->cascadeOnDelete();
-            $table->boolean('primary');
+            $table->foreignId('sales_channel_id')->constrained();
+            $table->bigInteger('external_id');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_product_sales_channel');
+        Schema::dropIfExists('category_sales_channel');
     }
 };

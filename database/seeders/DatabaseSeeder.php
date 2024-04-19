@@ -197,7 +197,8 @@ class DatabaseSeeder extends Seeder
 
         foreach ($productSalesChannels as $sale) {
             Sale::create([
-                'product_sales_channel_id' => $sale->id,
+                'product_id' => $sale->product_id,
+                'sales_channel_id' =>  $sale->sales_channel_id,
                 'price' => fake()->numberBetween(10, 30),
                 'stock' => fake()->numberBetween(1, 20)
             ]);
