@@ -222,7 +222,6 @@ class WooCommerceManager
         foreach ($product->properties as $property) {
             $this->uploadOrUpdateProperty($property,  $salesChannel);
         }
-        //$this->uploadPropertyTerms($product,  $salesChannel);
     }
 
     protected function uploadOrUpdateProperty(Property $property, SalesChannel $salesChannel)
