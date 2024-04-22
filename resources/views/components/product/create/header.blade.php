@@ -5,7 +5,7 @@
         </p>
     </div>
 
-    <div class="flex items-center gap-[1rem] justify-center w-[95rem]">
+    <div class="flex items-center gap-[1rem] justify-center hd:w-[54rem] uhd:w-[95rem]">
 
         <div class="prevBtn hover:cursor-pointer prevBtn">
             <img class="select-none" src="../images/arrow-left-icon.png" alt="arrow left">

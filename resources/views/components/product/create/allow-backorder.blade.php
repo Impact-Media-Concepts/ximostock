@@ -1,10 +1,23 @@
 <style>
-    .back-order-btn {
-        width: 53rem;
+    @media only screen and (min-width: 1280px) {
+        .back-order-btn {
+            width: 53rem;
+        }
+    }
+
+    @media only screen and (min-width: 1920px) {
+        .back-order-btn {
+            width: 32rem;
+        }
+    }
+    
+    @media only screen and (min-width: 2560px) {
+        .back-order-btn {
+            width: 53rem;
+        }
     }
 
     .back-order-btn-options {
-
         margin-top: 3.3rem;
     }
 </style>

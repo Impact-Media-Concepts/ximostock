@@ -272,7 +272,7 @@ input.slideon {
 
 /* create product step 2 photos */
 .splide__slide {
-    width: 18rem !important;
+    width: 16rem !important;
     height: 15rem !important;
     display: flex !important;
     flex-direction: column;

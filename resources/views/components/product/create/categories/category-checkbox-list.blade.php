@@ -4,7 +4,7 @@
     <div class='w-full flex justify-center items-center'>
         <input id='createProductCategoriesSearch' class='sticky property-search-input w-[43.43rem] h-[2.5rem] rounded-md mt-[1.5rem] rounded-b-lg' style='border: 1px solid #D3D3D3;' type='text' placeholder='Zoeken' />
     </div>
-    <ul id='categoriesList' class='max-h-[44rem] h-[44rem] overflow-y-auto'></ul>
+    <ul id='categoriesList' class='hd:max-h-[37.5rem] hd:h-[37.5rem] uhd:max-h-[44rem] uhd:h-[44rem] overflow-y-auto'></ul>
 </div>
 <script>
     let categoriesData = [

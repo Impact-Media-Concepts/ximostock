@@ -2,12 +2,20 @@
 
 <style>
     .primary-size {
-        width: calc(22%) !important;
-        height: unset !important;
+        width: 20rem !important;
+        height: 20rem !important;
     }
 
     .primary-foto-size {
         width: unset !important;
+    }
+
+    .primary-span-size {
+        width: 350px !important;
+        height: 350px !important;
+        display: flex !important;
+        justify-content: center !important;
+        overflow: hidden !important;
     }
 
     /* .splide__arrow {
@@ -25,31 +33,23 @@
     } */
 </style>
 
-<div class="bg-white rounded-t-lg uhd:h-[57rem] create-container-border">
-    <div class="h-[4.56rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg">
-        <div class=" ml-[1.56rem] mt-[0.6rem]">
-            <div>
-                <p class="text-[18px] font-bold text-[#717171]">
-                    Foto's
-                </p>
-            </div>
-            <div>
-                <p class="text-[14px] text-[#717171]">
-                    Hier kan je foto's kiezen voor je product
-                </p>
-            </div>
+<div class="bg-white rounded-t-lg hd:h-[50rem] uhd:h-[57rem] create-container-border">
+    <div class="h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg" style="border: 1px solid #F0F0F0;">
+        <div class="w-full ml-[1.56rem] mt-[0.6rem]">
+            <p class="font-bold text-[18px] text-[#717171]">Lorem, ipsum dolor.</p>
+            <p class="text-[14px]">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ea autem corrupti officia provident, maxime distinctio!</p>
         </div>
     </div>
 
-    <div class="flex justify-center items-center w-full">
-        <div class="flex flex-col justify-between items-center h-[30.5rem] uhd:w-[134rem] rounded-md" style="border: 1px solid #F0F0F0;">
-            <div class="hd:w-[95rem] uhd:w-[134rem] rounded-md mt-[1.5rem]">
+    <div class="flex justify-center items-center w-full mt-[1.5rem]">
+        <div class="flex flex-col justify-between items-center hd:h-[44rem] hd:w-[94rem] uhd:h-[50.5rem] uhd:w-[134rem] rounded-md" style="border: 1px solid #F0F0F0;">
+            <div class="hd:w-[94rem] uhd:w-[134rem] rounded-md">
                 <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
                     <p class="ml-[1.37rem] text-[14px] text-[#fff]">Foto's instellen</p>
                 </div>
 
-                <section class="splide hidden rounded-md" id="splideSection" aria-label="Splide Basic HTML Example">
-                    <div class="splide__track">
+                <section class="splide hidden rounded-md flex justify-center" id="splideSection" aria-label="Splide Basic HTML Example">
+                    <div class="splide__track w-[124rem]">
                         <ul class="splide__list uhd:!w-[119rem] uhd:!ml-[2rem]"  id="splideList">
                             
                         </ul>
@@ -67,7 +67,7 @@
                     Voeg foto toe
                     <div class="flex items-center justify-center">
                         <!-- todo add img file types -->
-                        <input class="hidden" type="file" accept=".jpg, .jpeg, .png, avif, svg, webp" id="uploadFoto" class="hidden"/>
+                        <input class="hidden" type="file" accept=".jpg, .jpeg, .png, .avif, .svg, .webp" id="uploadFoto" class="hidden"/>
                     </div>
                 </button>
 
