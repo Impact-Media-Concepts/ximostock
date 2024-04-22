@@ -2,18 +2,17 @@
 
 <?php
     $sidenavButtons = [
-        ['text' => 'Dashboard', 'icon' => '../images/dashboard-icon.png', 'url' => '/dashboard', 'adminUrl' => $activeWorkspace ? '/dashboard?workspaces=' . $activeWorkspace : '', 'id' => '1', 'slug' => 'dashboard'],
-        ['text' => 'Producten', 'icon' => '../images/product-icon.png', 'url' => '/products', 'adminUrl' => $activeWorkspace ? '/products/?workspaces=' . $activeWorkspace : '', 'id' => '2', 'slug' => 'products'],
-        ['text' => 'Logboek', 'icon' => '../images/logbook-icon.png', 'url' => '/logbook', 'adminUrl' => $activeWorkspace ? '/logbook/?workspaces=' . $activeWorkspace : '', 'id' => '3', 'slug' => 'logbook'],
-        ['text' => 'Instellingen', 'icon' => '../images/settings-icon.png','id' => '4', 'slug' => 'dashboard'],
-        ['text' => 'Verkoopkanalen', 'icon' => '../images/selling-channels-icon.png', 'url' => '/saleschannels', 'adminUrl' => $activeWorkspace ? '/saleschannels/?workspaces=' . $activeWorkspace : '', 'id' => '5', 'slug' => 'selling-channels'],
-        ['text' => 'Categorieën', 'icon' => '../images/dashboard-icon.png', 'url' => '/categories', 'adminUrl' => $activeWorkspace ? '/categories/?workspaces=' . $activeWorkspace : '', 'id' => '6', 'slug' => 'categories'],
-        ['text' => 'Archief', 'icon' => '../images/archive-icon.png', 'url' => '/archive', 'adminUrl' => $activeWorkspace ? '/archive/?workspaces=' . $activeWorkspace : '', 'id' => '7', 'slug' => 'archive'],
-        ['text' => 'Eigenschappen', 'icon' => '../images/properties-icon.png', 'url' => '/properties', 'adminUrl' => $activeWorkspace ? '/properties/?workspaces=' . $activeWorkspace : '', 'id' => '8', 'slug' => 'properties'],
-        ['text' => 'Opslaglocaties', 'icon' => '../images/store-location-icon.png', 'url' => '/store-location', 'adminUrl' => $activeWorkspace ? '/store-location/?workspaces=' . $activeWorkspace : '', 'id' => '9', 'slug' => 'store-location'],
-        ['text' => 'Thema', 'icon' => '../images/thema-icon.png', 'url' => '/theme', 'adminUrl' => $activeWorkspace ? '/theme/?workspaces=' . $activeWorkspace : '', 'id' => '10', 'slug' => 'theme'],
-        ['text' => 'Leveranciers', 'icon' => '../images/suppliers-icon.png', 'url' => '/suppliers', 'adminUrl' => $activeWorkspace ? '/suppliers/?workspaces=' . $activeWorkspace : '', 'id' => '11', 'slug' => 'suppliers'],
-        ['text' => 'Gebruikers', 'icon' => '../images/users-icon.png', 'url' => '/users', 'adminUrl' => $activeWorkspace ? '/users/?workspaces=' . $activeWorkspace : '', 'id' => '12', 'slug' => 'users']
+        ['text' => 'Dashboard', 'icon' => '../images/dashboard-icon.png', 'url' => '/dashboard', 'adminUrl' => $activeWorkspace ? '/dashboard?workspace=' . $activeWorkspace : '', 'id' => '1', 'slug' => 'dashboard'],
+        ['text' => 'Producten', 'icon' => '../images/product-icon.png', 'url' => '/products', 'adminUrl' => $activeWorkspace ? '/products?workspaces=' . $activeWorkspace : '', 'id' => '2', 'slug' => 'products'],
+        ['text' => 'Logboek', 'icon' => '../images/logbook-icon.png', 'url' => '/logbook', 'adminUrl' => $activeWorkspace ? '/logbook?workspace=' . $activeWorkspace : '', 'id' => '3', 'slug' => 'logbook'],
+        ['text' => 'Verkoopkanalen', 'icon' => '../images/selling-channels-icon.png', 'url' => '/saleschannels', 'adminUrl' => $activeWorkspace ? '/saleschannels?workspace=' . $activeWorkspace : '', 'id' => '4', 'slug' => 'selling-channels'],
+        ['text' => 'Categorieën', 'icon' => '../images/dashboard-icon.png', 'url' => '/categories', 'adminUrl' => $activeWorkspace ? '/categories?workspace=' . $activeWorkspace : '', 'id' => '5', 'slug' => 'categories'],
+        ['text' => 'Archief', 'icon' => '../images/archive-icon.png', 'url' => '/archive', 'adminUrl' => $activeWorkspace ? '/archive?workspace=' . $activeWorkspace : '', 'id' => '6', 'slug' => 'archive'],
+        ['text' => 'Eigenschappen', 'icon' => '../images/properties-icon.png', 'url' => '/properties', 'adminUrl' => $activeWorkspace ? '/properties?workspace=' . $activeWorkspace : '', 'id' => '7', 'slug' => 'properties'],
+        ['text' => 'Opslaglocaties', 'icon' => '../images/store-location-icon.png', 'url' => '/store-location', 'adminUrl' => $activeWorkspace ? '/store-location?workspace=' . $activeWorkspace : '', 'id' => '8', 'slug' => 'store-location'],
+        ['text' => 'Thema', 'icon' => '../images/thema-icon.png', 'url' => '/theme', 'adminUrl' => $activeWorkspace ? '/theme?workspace=' . $activeWorkspace : '', 'id' => '9', 'slug' => 'theme'],
+        ['text' => 'Leveranciers', 'icon' => '../images/suppliers-icon.png', 'url' => '/suppliers', 'adminUrl' => $activeWorkspace ? '/suppliers?workspace=' . $activeWorkspace : '', 'id' => '10', 'slug' => 'suppliers'],
+        ['text' => 'Gebruikers', 'icon' => '../images/users-icon.png', 'url' => '/users', 'adminUrl' => $activeWorkspace ? '/users?workspace=' . $activeWorkspace : '', 'id' => '11', 'slug' => 'users']
     ];
 ?>
 
@@ -83,4 +82,5 @@
             <img id="arrowIcon" class="select-none w-4.5 h-4.5 <?php echo (isset($_COOKIE['openButton_rotate']) && $_COOKIE['openButton_rotate'] === '') || (isset($_COOKIE['sidenavContainer_width']) && $_COOKIE['sidenavContainer_width'] === '') ? '' : 'rotate-arrows222'; ?>" src="../images/double-arrow-left.png" alt="Arrow down">
         </button>
     </div>
+
 </div>
