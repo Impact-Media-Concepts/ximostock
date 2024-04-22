@@ -247,38 +247,7 @@ class WooCommerceManager
             $result = $woocommerce->post('products/attributes/' . $propertySalesChannel->external_id, $data);
         }
     }
-
-    // protected function uploadPropertyTerms(Product $product, SalesChannel $salesChannel) //after attrubutes are uploaded set the terms
-    // {
-    //     $woocommerce = $this->createSalesChannelsClient($salesChannel);
-    //     $propertyIds = $product->properties->pluck('id')->toArray();
-    //     $properties = PropertySalesChannel::whereIn('property_id', $propertyIds)->get();
-
-    //     foreach ($properties as $property) {
-    //         //gather the value top be linked
-    //         $options = ProductProperty::where('property_id', $property->property_id)->where('product_id', $product->id)->get()->first();
-    //         if ($options != null) {
-    //             $options = (array)json_decode($options->property_value)->value;
-    //         }
-    //         //gather the already uploaded options
-    //         $rawTerms = $woocommerce->get('products/attributes/' . $property->external_id . '/terms');
-    //         $terms = [];
-    //         foreach ($rawTerms as $term) {
-    //             $terms += [$term->name => $term->id];
-    //         }
-    //         //upload all options not already present in the sales channel 
-    //         foreach ($options as $option) {
-    //             if (!isset($terms[$option])) {
-    //                 $data = [
-    //                     'name' => (string)$option
-    //                 ];
-    //                 $endpoint = 'products/attributes/' . $property->external_id . '/terms';
-    //                 $woocommerce->post($endpoint, $data);
-    //             }
-    //         }
-    //     }
-    // }
-
+    
     //check if theree are any differences between the sales channel and the ximostock database and if so. correct these differences.
     protected function overrideWoocommerce()
     {
