@@ -96,18 +96,27 @@ class ProductController extends BaseProductController
             ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
+            $salesChannels = SalesChannel::where('work_space_id', $request['workspace']);
+            $location_zones = InventoryLocation::with(['location_zones'])->where('work_space_id', $request['workspace'])->get();
+            $properties = Property::where('work_space_id', $request['workspace']);
+            $categories = Category::where('work_space_id', $request['workspace']);
 
         }else{
             $workspaces = null;
             $activeWorkspace = null;
+            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id);
+            $location_zones = InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get();
+            $properties = Property::where('work_space_id', Auth::user()->work_space_id);
+            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
+
         }
 
         return view('product.create', [
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
-            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
-            'locations' => InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get(),
+            'categories' => $categories,
+            'properties' => $properties,
+            'locations' =>  $location_zones,
             'sidenavActive' => 'products',
-            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'salesChannels' => $salesChannels,
             'workspaces' => $workspaces,
             'activeWorkspace' => $activeWorkspace
         ]);
