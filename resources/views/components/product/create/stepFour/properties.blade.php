@@ -141,9 +141,9 @@
         const arrowDown = document.createElement('img');
         arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'select-none', 'mr-[1.5rem]');
         arrowDownDiv.appendChild(arrowDown);
-        arrowDown.src = '../../images/arrow-down-icon.png';
+        arrowDown.src = '../../images/big-arrow-down-icon.png';
         arrowDown.alt = 'Arrow Down';
-        arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]');
+        arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
         
         const textSpan = document.createElement('span');
         const text = document.createTextNode(prop.name + ` (${prop.type})`);
