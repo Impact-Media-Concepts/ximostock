@@ -1,5 +1,5 @@
-<div class="bg-white flex justify-center rounded-t-lg uhd:max-h-[57rem] overflow-y-auto create-container-border">
-    <div class="hd:w-[95rem] uhd:w-[134rem]">
+<div class="bg-white flex justify-center rounded-t-lg hd:max-h-[50rem] uhd:max-h-[57rem] overflow-y-auto create-container-border">
+    <div class="hd:w-[93rem] uhd:w-[134rem]">
 
         <div class="h-[15rem] mt-[2rem]">
             <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
@@ -7,7 +7,7 @@
             </div>
 
             <div class="h-[12.5rem] rounded-b-lg" style="border: 1px solid #F0F0F0;">
-                <div class="mt-[2rem] ml-[2rem]  flex flex-wrap columns-2" style="column-gap: 10rem; row-gap: 1rem">
+                <div class="mt-[2rem] ml-[2rem]  flex flex-wrap columns-2" style="column-gap: 9rem; row-gap: 1rem">
                     <x-product.create.stepOne.title />
                     <x-product.create.stepOne.ean />
                     <x-product.create.stepOne.sku />

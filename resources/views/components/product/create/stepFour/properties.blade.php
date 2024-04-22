@@ -1,15 +1,15 @@
 @props(['properties'])
 
-<div class='bg-white h-[57rem] hd:w-[95rem] uhd:w-[138rem] rounded-t-lg create-container-border'>
-    <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg' style='border: 1px solid #F0F0F0;'>
-        <div class='w-full ml-[1rem] mt-[1rem]'>
+<div class='bg-white hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
+    <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg hd:relative hd:bottom[2.62rem]' style='border: 1px solid #F0F0F0;'>
+        <div class='w-full ml-[1.56rem] mt-[0.6rem]'>
             <p class='font-bold text-[18px] text-[#717171]'>Lorem, ipsum dolor.</p>
             <p class='text-[14px]'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ea autem corrupti officia provident, maxime distinctio!</p>
         </div>
     </div>
 
-    <div class='w-full flex justify-center items-center mt-[1.5rem]'>
-        <div class='h-[47.18rem] hd:w-[95rem] uhd:w-[134rem]'>
+    <div class='w-full flex justify-center items-center hd:mt-[1.5rem] uhd:mt-[1.5rem]'>
+        <div class='h-[47.18rem] hd:w-[94rem] uhd:w-[134rem]'>
             <div class='bg-[#3DABD5] rounded-t-lg h-[2.5rem] flex items-center justify-start'>
                 <p class='pl-[1.56rem] text-[#fff]'>
                     Beschikbare eigenschappen
@@ -48,7 +48,7 @@
 
                 </div>
                
-                <div class=' flex flex-col items-center h-[43rem] max-h-[43rem] overflow-y-auto' style='border: 1px solid #F0F0F0;'>
+                <div class=' flex flex-col items-center hd:h-[36.5rem] hd:max-h-[36.5rem] uhd:h-[43.5rem] uhd:max-h-[43.5rem] overflow-y-auto rounded-b-lg' style='border: 1px solid #F0F0F0;'>
                     <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
                         <ul class='mt-[0.85rem]' id='createProdPropertyList'></ul>
                     </div>
@@ -151,7 +151,7 @@
         textSpan.appendChild(text);
         
         const propertyTitleContainer = document.createElement('div');
-        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer');
+        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
         propertyTitleContainer.style.border = '1px solid #D3D3D3';
         
         propertyTitleContainer.addEventListener('click', () => {
@@ -241,7 +241,7 @@
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
         const div = document.createElement('div');
         div.id = `div_${property.id}`;
-        div.classList.add('hidden', 'grid', 'h-[6.58rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg');
+        div.classList.add('hidden', 'grid', 'h-[6.58rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg');
         div.style.border = '1px solid #D3D3D3';
         hiddenContainer.appendChild(div);
         switch (property.type) {

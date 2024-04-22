@@ -48,7 +48,7 @@
                             <x-product.buttons.create-next-button />
                         </div>
 
-                        <div>
+                        <div class="relative right-[1.5rem]">
                             <x-product.buttons.create-save-button />
                         </div>
                     </div>

@@ -124,6 +124,11 @@ fileInput.addEventListener('change', function(event) {
 
         const imgContainer = document.createElement('span');
         imgContainer.classList.add('relative');
+        imgContainer.style.width = '254px';
+        imgContainer.style.height = '254px';
+        imgContainer.style.display = 'flex';
+        imgContainer.style.justifyContent = 'center';
+        imgContainer.style.overflow = 'hidden';
 
         const removeButtonImg = document.createElement('img');
         removeButtonImg.src = '../images/white-x-icon.png';
@@ -188,7 +193,6 @@ fileInput.addEventListener('change', function(event) {
         });
 
         const span = document.createElement('span');
-        span.style.height = '100%';
         span.style.display = 'flex';
         span.style.justifyContent = 'center';
         span.style.alignItems = 'flex-end';
