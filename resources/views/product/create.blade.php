@@ -4,7 +4,7 @@
 <x-header.header :activeWorkspace="$activeWorkspace" :workspaces="$workspaces"/>
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div class="h-full">
-            <x-sidenav.sidenav :sidenavActive="$sidenavActive"/>
+            <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
         </div>
         <div class="pt-[1.5rem] hd:w-[98rem] uhd:w-[138rem]">
             <div>

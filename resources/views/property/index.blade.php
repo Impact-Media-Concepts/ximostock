@@ -4,7 +4,7 @@
 
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div class="h-full">
-            <x-sidenav.sidenav :sidenavActive="$sidenavActive"/>
+            <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
         </div>
         <div class=" pt-20 ">
             <form action="/properties/bulkdelete" method="POST">
