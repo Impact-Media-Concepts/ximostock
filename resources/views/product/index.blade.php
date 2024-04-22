@@ -10,7 +10,7 @@
 
         <div class="flex w-full pr-10 pt-[1.95rem] gap-8">
             <div class="flex justify-start items-start w-full"> 
-                <x-product.product-container :salesChannels="$salesChannels" :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
+                <x-product.product-container :activeWorkspace="$activeWorkspace" :salesChannels="$salesChannels" :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
             </div>
             <div class="flex justify-center items-start">
                 <div class="w-[16.56rem] bg-white rounded-md basic:h-[49rem] hd:h-[61rem] uhd:h-[71.2rem]" style="padding: 20px 20px;">
