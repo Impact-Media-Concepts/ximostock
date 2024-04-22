@@ -90,27 +90,26 @@ class ProductController extends BaseProductController
 
     public function create(Request $request)
     {
+        
         if (Auth::user()->role === 'admin') {
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
-            $salesChannels = SalesChannel::where('work_space_id', $request['workspace']);
+            $salesChannels = SalesChannel::where('work_space_id', $request['workspace'])->get();
             $location_zones = InventoryLocation::with(['location_zones'])->where('work_space_id', $request['workspace'])->get();
-            $properties = Property::where('work_space_id', $request['workspace']);
-            $categories = Category::where('work_space_id', $request['workspace']);
-
+            $properties = Property::where('work_space_id', $request['workspace'])->get();
+            $categories = Category::where('work_space_id', $request['workspace'])->get();
         }else{
             $workspaces = null;
             $activeWorkspace = null;
-            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id);
+            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get();
             $location_zones = InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get();
-            $properties = Property::where('work_space_id', Auth::user()->work_space_id);
-            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
-
+            $properties = Property::where('work_space_id', Auth::user()->work_space_id)->get();
+            $categories = Category::where('work_space_id', Auth::user()->work_space_id)->get();
         }
-
+        
         return view('product.create', [
             'categories' => $categories,
             'properties' => $properties,
