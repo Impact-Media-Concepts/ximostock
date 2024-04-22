@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			//build components
 			const checkbox = document.createElement("input");
 			checkbox.type = "checkbox";
+			checkbox.id= `properties_checkbox_${property.id}`;
 			checkbox.classList.add("hover:cursor-pointer");
 
 			//add true input
@@ -115,6 +116,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		const numberContainer = document.createElement("div");
 
 		const numberselect = document.createElement("input");
+        
+        numberselect.id = `properties_number_${property.id}`;
+
 		numberselect.addEventListener('input', function () {
 			trueInput.value = this.value;
 		});
@@ -534,6 +538,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const text = document.createElement("input");
 
 		text.type = "text";
+        text.id = `properties_text_${property.id}`;
 		text.classList.add("w-[12.3rem]", "rounded-md", "h-[2.12rem]", "text-input");
 		text.addEventListener('input', function () {
 			trueInput.value = text.value;
