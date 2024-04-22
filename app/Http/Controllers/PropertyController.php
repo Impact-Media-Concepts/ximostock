@@ -143,9 +143,23 @@ class PropertyController extends Controller
         return redirect('/properties');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('property.create', []);
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
+        return view('property.create', [
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace,
+            'sidenavActive' => 'properties'
+        ]);
     }
 
     public function store()
