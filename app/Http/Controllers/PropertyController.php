@@ -4,17 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductProperty;
 use App\Models\Property;
+use App\Models\WorkSpace;
+use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
+
 
 class PropertyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $properties = Property::where('work_space_id', $request['workspace'])->get();
+            $activeWorkspace = $request['workspace'];
+            
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+            $properties = Property::where('work_space_id', Auth::user()->work_space_id)->get();
+        }
+
+
         return view('property.index', [
             'sidenavActive' => 'properties',
-            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'properties' => $properties,
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 
