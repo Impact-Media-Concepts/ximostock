@@ -39,11 +39,24 @@ class PropertyController extends Controller
         ]);
     }
 
-    public function show(Property $property)
+    public function show(Request $request, Property $property)
     {
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
+
         return view('property.show', [
             'sidenavActive' => 'properties',
-            'property' => $property
+            'property' => $property,
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 

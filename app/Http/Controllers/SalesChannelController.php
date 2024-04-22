@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\SalesChannel;
+use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +16,6 @@ class SalesChannelController extends Controller
             $attributes = request()->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
-
             $workspace = $attributes['workspace'];
         }else{ 
             $workspace = Auth::user()->work_space_id;
@@ -25,7 +26,18 @@ class SalesChannelController extends Controller
         ]);
     }
 
-    public function create(){
+    public function create(Request $request){
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
+
         return view('salesChannel.create');
     }
 
