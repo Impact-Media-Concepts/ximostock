@@ -88,14 +88,28 @@ class ProductController extends BaseProductController
         return view('product.index', $results);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
+
         return view('product.create', [
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get(),
             'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
             'locations' => InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get(),
             'sidenavActive' => 'products',
-            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get()
+            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 
