@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\WorkSpace;
+use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -10,27 +12,68 @@ use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
-    public function index()
-    {
+    public function index(Request $request)
+    {   
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+            $categories = Category::where('work_space_id', $request['workspace']);
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
+        }
+        $categories = $categories->with('child_categories_recursive','products')->whereNull('parent_category_id')->get();
+
         return view('category.index',[
             'sidenavActive' => 'categories',
-            'categories' => Category::with('child_categories_recursive','products')->whereNull('parent_category_id')->where('work_space_id', Auth::user()->work_space_id)->get()
+            'categories' => $categories,
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 
-    public function show(Category $category)
+    public function show(Request $request, Category $category)
     {
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
         return view('category.show', [
             'sidenavActive' => 'categories',
-            'category' => $category
+            'category' => $category,
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
+
         return view('category.create', [
             'sidenavActive' => 'categories',
-            'categories' => Category::all()
+            'categories' => Category::all(),
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 
