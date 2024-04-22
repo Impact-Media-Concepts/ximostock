@@ -9,13 +9,29 @@ use App\Models\Property;
 use App\Models\Product;
 use App\Models\Inventory;
 use App\Models\ProductProperty;
+use App\Models\WorkSpace;
 use App\Rules\ValidLocationZoneKeys;
+use App\Rules\ValidWorkspaceKeys;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class ProductVariationController extends BaseProductController
 {
-    public function create()
+    public function create(Request $request)
     {
+
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
+        
         $properties = Property::all();
 
         foreach ($properties as $prop) {
@@ -25,7 +41,9 @@ class ProductVariationController extends BaseProductController
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'locations' => InventoryLocation::with(['location_zones'])->get(),
-            'salesChannels' => SalesChannel::all()
+            'salesChannels' => SalesChannel::all(),
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 
