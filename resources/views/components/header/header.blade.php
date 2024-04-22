@@ -60,6 +60,20 @@
                             <ul class="dropdown-content absolute hidden rounded-md right-[1rem] pr-[9.8rem] w-[18rem]">
                                 <div class="shadow-lg rounded-md ">
                                     <li class="rounded-md">
+                                        @can('index-workspaces')
+                                            <a class="text-[14px] shadow-sm flex items-center rounded-t-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-t-lg py-2 px-4 block whitespace-no-wrap"
+                                                href="/products/create?workspace={{ $activeWorkspace }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="white" class="w-3 h-3">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M12 4.5v15m7.5-7.5h-15" />
+                                                </svg>
+                                                <p class="pl-[0.2rem]">
+                                                    Simpel
+                                                </p>
+                                            </a>
+                                        @endcan
+                                        @cannot('index-workspaces')
                                         <a class="text-[14px] shadow-sm flex items-center rounded-t-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-t-lg py-2 px-4 block whitespace-no-wrap"
                                             href="/products/create">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -71,19 +85,35 @@
                                                 Simpel
                                             </p>
                                         </a>
+                                        @endcannot
                                     </li>
                                     <li class="rounded-md">
-                                        <a class="text-[14px] shadow-sm flex items-center rounded-b-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-b-lg py-2 px-4 block whitespace-no-wrap"
-                                            href="/products/variant/create">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="white" class="w-3 h-3">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M12 4.5v15m7.5-7.5h-15" />
-                                            </svg>
-                                            <p class="pl-[0.2rem]">
-                                                Variable
-                                            </p>
-                                        </a>
+                                        @can('index-workspaces')
+                                            <a class="text-[14px] shadow-sm flex items-center rounded-b-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-b-lg py-2 px-4 block whitespace-no-wrap"
+                                                href="/products/variant/create?workspace={{ $activeWorkspace }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="white" class="w-3 h-3">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M12 4.5v15m7.5-7.5h-15" />
+                                                </svg>
+                                                <p class="pl-[0.2rem]">
+                                                    Variable
+                                                </p>
+                                            </a>
+                                        @endcan
+                                        @cannot('index-workspaces')
+                                            <a class="text-[14px] shadow-sm flex items-center rounded-b-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-b-lg py-2 px-4 block whitespace-no-wrap"
+                                                href="/products/variant/create">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="white" class="w-3 h-3">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M12 4.5v15m7.5-7.5h-15" />
+                                                </svg>
+                                                <p class="pl-[0.2rem]">
+                                                    Variable
+                                                </p>
+                                            </a>
+                                        @endcannot
                                     </li>
                                 </div>
                             </ul>
@@ -91,25 +121,53 @@
                     </ul>
                     <ul class="flex-col !border-t-0">
                         <li>
-                            <a href="/categories/create"
-                                class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="white" class="w-3 h-3">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                <span
-                                    class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Categorie</span>
-                            </a>
+                            @can('index-workspaces')
+                                <a href="/categories/create?workspace={{ $activeWorkspace }}"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="white" class="w-3 h-3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <span
+                                        class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Categorie</span>
+                                </a>
+                            @endcan
+
+                            @cannot('index-workspaces')
+                                <a href="/categories/create"
+                                    class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="white" class="w-3 h-3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <span
+                                        class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Categorie</span>
+                                </a>
+                            @endcannot
                         </li>
                         <li>
-                            <a href="/properties/create"
-                                class="hover:bg-[#3999BE] hover:rounded-b-lg  duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="white" class="w-3 h-3">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                <span class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Eigenschap</span>
-                            </a>
+                            @can('index-workspaces')
+                                <a href="/properties/create?workspace={{ $activeWorkspace }}"
+                                    class="hover:bg-[#3999BE] hover:rounded-b-lg  duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="white" class="w-3 h-3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <span class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Eigenschap</span>
+                                </a>
+                            @endcan
+
+                            @cannot('index-workspaces')
+                                <a href="/properties/create"
+                                    class="hover:bg-[#3999BE] hover:rounded-b-lg  duration-100 block w-[10.43rem] px-4 py-2 hover:bg-[#3999BE] focus:outline-none flex items-center justify-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="white" class="w-3 h-3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <span class="text-[14px] text-white flex items-center justify-center pl-[0.2rem]">Eigenschap</span>
+                                </a>
+                            @endcannot
+
                         </li>
                     </ul>
                 </div>
