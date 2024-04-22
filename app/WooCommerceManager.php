@@ -56,8 +56,6 @@ class WooCommerceManager
         }
     }
 
-
-
     public function uploadOrUpdateProductSalesChannel(Product $product, SalesChannel $salesChannel)
     {
         if (ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->whereNotNull('external_id')->exists()) {
@@ -73,7 +71,7 @@ class WooCommerceManager
 
     public function deleteProductFromSalesChannel(Product $product, SalesChannel $salesChannel)
     {
-        if($this->productOnSalesChannel($product,$salesChannel)){
+        if ($this->productOnSalesChannel($product, $salesChannel)) {
             $woocommerce = $this->createSalesChannelsClient($salesChannel);
             $external_id = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first()->external_id;
             $woocommerce->delete('products/' . $external_id, ['force' => true]);
@@ -84,6 +82,8 @@ class WooCommerceManager
     {
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
         $this->uploadProductCategoriesToSalesChannel($product, $salesChannel);
+        $this->uploadOrUpdateProperties($product, $salesChannel);
+
         foreach ($product->properties as $property) {
             $this->UploadProperty($property, $salesChannel);
         }
@@ -103,7 +103,12 @@ class WooCommerceManager
             'description' => $product->long_description,
             'short_description' => $product->short_description,
             'backorders' => $product->backorders ? 'yes' : 'no',
-            'categories' => $categories
+            'categories' => $categories,
+            // 'images' => [
+            //     [
+            //         'src' => 'https://nerf-pijltjes.nl/wp-content/uploads/2022/03/NERF-Elite-2.0-Eaglepoint-RD-8-1.jpg'
+            //     ]
+            // ]
         ];
         $result = $woocommerce->post('products', $data);
         $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
@@ -216,21 +221,39 @@ class WooCommerceManager
         }
     }
 
-    protected function UploadProperty(Property $property, SalesChannel $salesChannel)
+    protected function uploadOrUpdateProperties(Product $product, SalesChannel $salesChannel)
     {
-        if (PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->whereNotNull('external_id')->exists()) {
-            $woocommerce = $this->createSalesChannelsClient($salesChannel);
+        foreach ($product->properties as $property) {
+            $this->uploadProperty($property, $salesChannel);
+        }
+    }
+
+    protected function uploadProperty(Property $property, SalesChannel $salesChannel, bool $update)
+    {
+        $woocommerce = $this->createSalesChannelsClient($salesChannel);
+        $propertySalesChannel = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->whereNotNull('external_id')->get()->first();
+        if ($propertySalesChannel == null) {
             $data = [
                 'name' => $property->name,
                 'type' => 'select',
                 'order_by' => 'menu_order'
             ];
-            $result = $woocommerce->post('products/attributes', $data);
-            PropertySalesChannel::create([
-                'property_id' => $property->id,
-                'sales_channel_id' => $salesChannel->id,
-                'external_id' => $result->id
-            ]);
+            if($update){
+                
+                $result = $woocommerce->post('products/attributes', $data);
+            }else{
+                $result = $woocommerce->post('products/attributes', $data);
+                PropertySalesChannel::create([
+                    'property_id' => $property->id,
+                    'sales_channel_id' => $salesChannel->id,
+                    'external_id' => $result->id
+                ]);
+            }
         }
+    }
+
+    //check if theree are any differences between the sales channel and the ximostock database and if so. correct these differences.
+    protected function overrideWoocommerce(){
+
     }
 }
