@@ -3,7 +3,7 @@
 <?php
     $sidenavButtons = [
         ['text' => 'Dashboard', 'icon' => '../images/dashboard-icon.png', 'url' => '/dashboard', 'adminUrl' => $activeWorkspace ? '/dashboard?workspace=' . $activeWorkspace : '', 'id' => '1', 'slug' => 'dashboard'],
-        ['text' => 'Producten', 'icon' => '../images/product-icon.png', 'url' => '/products', 'adminUrl' => $activeWorkspace ? '/products?workspaces=' . $activeWorkspace : '', 'id' => '2', 'slug' => 'products'],
+        ['text' => 'Producten', 'icon' => '../images/product-icon.png', 'url' => '/products', 'adminUrl' => $activeWorkspace ? '/products?workspace=' . $activeWorkspace : '', 'id' => '2', 'slug' => 'products'],
         ['text' => 'Logboek', 'icon' => '../images/logbook-icon.png', 'url' => '/logbook', 'adminUrl' => $activeWorkspace ? '/logbook?workspace=' . $activeWorkspace : '', 'id' => '3', 'slug' => 'logbook'],
         ['text' => 'Verkoopkanalen', 'icon' => '../images/selling-channels-icon.png', 'url' => '/saleschannels', 'adminUrl' => $activeWorkspace ? '/saleschannels?workspace=' . $activeWorkspace : '', 'id' => '4', 'slug' => 'selling-channels'],
         ['text' => 'Categorieën', 'icon' => '../images/dashboard-icon.png', 'url' => '/categories', 'adminUrl' => $activeWorkspace ? '/categories?workspace=' . $activeWorkspace : '', 'id' => '5', 'slug' => 'categories'],
