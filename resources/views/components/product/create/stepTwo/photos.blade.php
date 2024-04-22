@@ -10,6 +10,14 @@
         width: unset !important;
     }
 
+    .primary-span-size {
+        width: 350px !important;
+        height: 350px !important;
+        display: flex !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+    }
+
     /* .splide__arrow {
         background: #3DABD5;
         width: 2em !important;
@@ -34,14 +42,14 @@
     </div>
 
     <div class="flex justify-center items-center w-full mt-[1.5rem]">
-        <div class="flex flex-col justify-between items-center h-[44rem] hd:w-[94rem] uhd:w-[134rem] rounded-md" style="border: 1px solid #F0F0F0;">
+        <div class="flex flex-col justify-between items-center hd:h-[44rem] hd:w-[94rem] uhd:h-[50.5rem] uhd:w-[134rem] rounded-md" style="border: 1px solid #F0F0F0;">
             <div class="hd:w-[94rem] uhd:w-[134rem] rounded-md">
                 <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
                     <p class="ml-[1.37rem] text-[14px] text-[#fff]">Foto's instellen</p>
                 </div>
 
-                <section class="splide hidden rounded-md" id="splideSection" aria-label="Splide Basic HTML Example">
-                    <div class="splide__track">
+                <section class="splide hidden rounded-md flex justify-center" id="splideSection" aria-label="Splide Basic HTML Example">
+                    <div class="splide__track w-[124rem]">
                         <ul class="splide__list uhd:!w-[119rem] uhd:!ml-[2rem]"  id="splideList">
                             
                         </ul>

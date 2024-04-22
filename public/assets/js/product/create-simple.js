@@ -103,7 +103,10 @@ let removeButtonsss = document.querySelector('.js-remove-button');
 let splide = new Splide( '.splide', {
     perPage: 5,
     perMove: 1,
-    drag: false
+    drag: false,
+    focus  : 0,
+    omitEnd: true,
+    pagination: false
 });
 
 let primaryPhotoInput = null;
@@ -175,7 +178,8 @@ fileInput.addEventListener('change', function(event) {
             img.classList.add('border-[3px]', 'border-[#3EABD5]');
 
             setPrimary.onclick = function() {
-                img.classList.add("primary-foto-size")
+                img.classList.add("primary-foto-size");
+                imgContainer.classList.add("primary-span-size");
                 const lis = document.querySelectorAll('.splide__slide');
                 lis.forEach(li => {
                     li.classList.remove('primary-size');
