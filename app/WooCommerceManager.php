@@ -5,6 +5,7 @@ namespace App;
 use App\Models\Category;
 use App\Models\CategorySalesChannel;
 use App\Models\Product;
+use App\Models\ProductProperty;
 use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\PropertySalesChannel;
@@ -60,12 +61,14 @@ class WooCommerceManager
     {
         if (ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->whereNotNull('external_id')->exists()) {
             if ($this->productOnSalesChannel($product, $salesChannel)) {
-                $this->updateProductToSalesChannel($product, $salesChannel);
+                $this->uploadOrUpdateProductToSalesChannel($product, $salesChannel, true);
             } else {
-                $this->uploadProductToSalesChannel($product, $salesChannel);
+                $this->uploadOrUpdateProductToSalesChannel($product, $salesChannel, false);
+
             }
         } else {
-            $this->uploadProductToSalesChannel($product, $salesChannel);
+            $this->uploadOrUpdateProductToSalesChannel($product, $salesChannel, false);
+
         }
     }
 
@@ -78,54 +81,40 @@ class WooCommerceManager
         }
     }
 
-    public function uploadProductToSalesChannel(Product $product, SalesChannel $salesChannel)
-    {
-        $woocommerce = $this->createSalesChannelsClient($salesChannel);
-        $this->uploadProductCategoriesToSalesChannel($product, $salesChannel);
-        $this->uploadOrUpdateProperties($product, $salesChannel);
-
-        foreach ($product->properties as $property) {
-            $this->UploadProperty($property, $salesChannel);
-        }
-
-        $categories = [];
-        foreach ($product->categories as $category) {
-            $externalId = CategorySalesChannel::where('category_id', $category->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-            $externalId = $externalId->external_id;
-            array_push($categories, ['id' => $externalId]);
-        }
-        $data = [
-            'name' => $product->title,
-            'type' => 'simple',
-            'sku' => $product->sku,
-            'regular_price' => $product->price,
-            'sale_price' => $product->discount,
-            'description' => $product->long_description,
-            'short_description' => $product->short_description,
-            'backorders' => $product->backorders ? 'yes' : 'no',
-            'categories' => $categories,
-            // 'images' => [
-            //     [
-            //         'src' => 'https://nerf-pijltjes.nl/wp-content/uploads/2022/03/NERF-Elite-2.0-Eaglepoint-RD-8-1.jpg'
-            //     ]
-            // ]
-        ];
-        $result = $woocommerce->post('products', $data);
-        $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-        $productSalesChannel->external_id = $result->id;
-        $productSalesChannel->save();
-    }
-
-    public function updateProductToSalesChannel(Product $product, SalesChannel $salesChannel)
+    public function uploadOrUpdateProductToSalesChannel(Product $product, SalesChannel $salesChannel, bool $update)
     {
         if ($salesChannel != null) {
             $woocommerce = $this->createSalesChannelsClient($salesChannel);
             $this->uploadProductCategoriesToSalesChannel($product, $salesChannel);
+            $this->uploadOrUpdateProperties($product, $salesChannel);
+
+            //setup category data
             $categories = [];
             foreach ($product->categories as $category) {
                 $externalId = CategorySalesChannel::where('category_id', $category->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
                 $externalId = $externalId->external_id;
                 array_push($categories, ['id' => $externalId]);
+            }
+            //setup property/attributes data
+            $attributes = [];
+            foreach($product->properties as $property){
+                $propertySalesChannel = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->whereNotNull('external_id')->get()->first();
+                $values = ProductProperty::where('property_id', $property->id)->where('product_id', $product->id)->get()->first();
+                $values = (array)json_decode($values->property_value)->value;
+                $options = [];
+                foreach ($values as $value){
+                    if(gettype($value) === 'string'){
+                        array_push($options, $value);
+                    }else{
+                        array_push($options, json_encode($value));
+                    }
+                }
+                $attribute = [
+                    'id' => $propertySalesChannel->external_id,
+                    'visible' => true,
+                    'options' => $options
+                ];
+                array_push($attributes, $attribute);
             }
             $data = [
                 'name' => $product->title,
@@ -136,11 +125,18 @@ class WooCommerceManager
                 'description' => $product->long_description,
                 'short_description' => $product->short_description,
                 'backorders' => $product->backorders ? 'yes' : 'no',
-                'categories' => $categories
+                'categories' => $categories,
+                'attributes' => $attributes
             ];
-
-            $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-            $result = $woocommerce->post('products/' . $productSalesChannel->external_id, $data);
+            if ($update) {
+                $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+                $result = $woocommerce->post('products/' . $productSalesChannel->external_id, $data);
+            } else {
+                $result = $woocommerce->post('products', $data);
+                $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+                $productSalesChannel->external_id = $result->id;
+                $productSalesChannel->save();
+            }
         }
     }
 
@@ -224,36 +220,67 @@ class WooCommerceManager
     protected function uploadOrUpdateProperties(Product $product, SalesChannel $salesChannel)
     {
         foreach ($product->properties as $property) {
-            $this->uploadProperty($property, $salesChannel);
+            $this->uploadOrUpdateProperty($property,  $salesChannel);
         }
+        //$this->uploadPropertyTerms($product,  $salesChannel);
     }
 
-    protected function uploadProperty(Property $property, SalesChannel $salesChannel, bool $update)
+    protected function uploadOrUpdateProperty(Property $property, SalesChannel $salesChannel)
     {
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
         $propertySalesChannel = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->whereNotNull('external_id')->get()->first();
-        if ($propertySalesChannel == null) {
-            $data = [
-                'name' => $property->name,
-                'type' => 'select',
-                'order_by' => 'menu_order'
-            ];
-            if($update){
-                
-                $result = $woocommerce->post('products/attributes', $data);
-            }else{
-                $result = $woocommerce->post('products/attributes', $data);
-                PropertySalesChannel::create([
-                    'property_id' => $property->id,
-                    'sales_channel_id' => $salesChannel->id,
-                    'external_id' => $result->id
-                ]);
-            }
+        $data = [
+            'name' => $property->name,
+            'type' => 'select',
+            'order_by' => 'menu_order'
+        ];
+        if ($propertySalesChannel === null) {
+            //if it does not exist upload.
+            $result = $woocommerce->post('products/attributes', $data);
+            PropertySalesChannel::create([
+                'property_id' => $property->id,
+                'sales_channel_id' => $salesChannel->id,
+                'external_id' => $result->id
+            ]);
+        } else {
+            //if it exists update
+            $result = $woocommerce->post('products/attributes/' . $propertySalesChannel->external_id, $data);
         }
     }
 
-    //check if theree are any differences between the sales channel and the ximostock database and if so. correct these differences.
-    protected function overrideWoocommerce(){
+    // protected function uploadPropertyTerms(Product $product, SalesChannel $salesChannel) //after attrubutes are uploaded set the terms
+    // {
+    //     $woocommerce = $this->createSalesChannelsClient($salesChannel);
+    //     $propertyIds = $product->properties->pluck('id')->toArray();
+    //     $properties = PropertySalesChannel::whereIn('property_id', $propertyIds)->get();
 
+    //     foreach ($properties as $property) {
+    //         //gather the value top be linked
+    //         $options = ProductProperty::where('property_id', $property->property_id)->where('product_id', $product->id)->get()->first();
+    //         if ($options != null) {
+    //             $options = (array)json_decode($options->property_value)->value;
+    //         }
+    //         //gather the already uploaded options
+    //         $rawTerms = $woocommerce->get('products/attributes/' . $property->external_id . '/terms');
+    //         $terms = [];
+    //         foreach ($rawTerms as $term) {
+    //             $terms += [$term->name => $term->id];
+    //         }
+    //         //upload all options not already present in the sales channel 
+    //         foreach ($options as $option) {
+    //             if (!isset($terms[$option])) {
+    //                 $data = [
+    //                     'name' => (string)$option
+    //                 ];
+    //                 $endpoint = 'products/attributes/' . $property->external_id . '/terms';
+    //                 $woocommerce->post($endpoint, $data);
+    //             }
+    //         }
+    //     }
+    // }
+
+    //check if theree are any differences between the sales channel and the ximostock database and if so. correct these differences.
+    protected function overrideWoocommerce()
+    {
     }
 }
