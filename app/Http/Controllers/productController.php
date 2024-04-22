@@ -125,12 +125,24 @@ class ProductController extends BaseProductController
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Request $request, Product $product)
     {
         //if the product is a variant product return 404
         if ($product->parent_product_id != null) {
             return abort(404);
         }
+
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $workspaces = null;
+            $activeWorkspace = null;
+        }
+
         foreach ($product->properties as $prop) {
             $prop->pivot->property_value = json_decode($prop->pivot->property_value);
         }
@@ -154,7 +166,9 @@ class ProductController extends BaseProductController
             'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
             'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get(),
             'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
-            'selectedProperties' => $selectedProperties
+            'selectedProperties' => $selectedProperties,
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace
         ]);
     }
 
