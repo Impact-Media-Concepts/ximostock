@@ -12,35 +12,38 @@ class Category extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
-    protected $touches = ['product'];
 
 
-    public function products(){
+    public function products()
+    {
         return $this->belongsToMany(Product::class)
-        ->using(CategoryProduct::class);
+            ->using(CategoryProduct::class);
     }
 
-    public function salesChannels(){
+    public function salesChannels()
+    {
         return $this->belongsToMany(SalesChannel::class)
-        ->using(CategorySalesChannel::class)
-        ->withPivot('external_id');
+            ->using(CategorySalesChannel::class)
+            ->withPivot('external_id');
     }
 
-    public function ProductSalesChannels(){
+    public function ProductSalesChannels()
+    {
         return $this->belongsToMany(ProductSalesChannel::class)
-        ->using(CategoryProductSalesChannel::class);
+            ->using(CategoryProductSalesChannel::class);
     }
 
-    public function parent_category(){
+    public function parent_category()
+    {
         return $this->belongsTo(Category::class, 'parent_category_id');
     }
 
-    public function child_categories(){
-        return $this->hasMany(Category::class,'parent_category_id');
+    public function child_categories()
+    {
+        return $this->hasMany(Category::class, 'parent_category_id');
     }
     public function child_categories_recursive()
     {
         return $this->hasMany(Category::class, 'parent_category_id')->with('child_categories_recursive');
     }
-    
 }

@@ -74,9 +74,16 @@ class DatabaseSeeder extends Seeder
         $products = $products->concat($primeProducts);
 
 
-        $properties = Property::factory(20)->create();
+        $properties = Property::factory(5)->create();
 
-        $saleschannels = SalesChannel::factory(5)->create([
+        SalesChannel::factory()->create([
+            'work_space_id' => 1,
+            'name' => 'XimostockCommerce',
+            'url' => 'http://ximostockcommerce.test',
+            'api_key' => 'ck_cc7e1e85dbe0f56504134ee5caa3a114351e0012',
+            'secret' => 'cs_9d52cf66d9fc3d26cf693b912f2d41c1db005020'
+        ]);
+        $saleschannels = SalesChannel::factory(4)->create([
             'work_space_id' => 1,
         ]);
         SalesChannel::factory(3)->create([

@@ -11,7 +11,6 @@ class SalesChannel extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
-    protected $touches = ['Product'];
 
 
     public function products()
@@ -24,6 +23,12 @@ class SalesChannel extends Model
     public function categories(){
         return $this->belongsToMany(Category::class, 'category_sales_channel')
         ->using(CategorySalesChannel::class)
+        ->withPivot(['external_id']);
+    }
+
+    public function Properties(){
+        return $this->belongsToMany(Property::class, 'property_sales_channel')
+        ->using(PropertySalesChannel::class)
         ->withPivot(['external_id']);
     }
 }
