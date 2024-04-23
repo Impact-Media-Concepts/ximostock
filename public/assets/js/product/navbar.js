@@ -1,7 +1,11 @@
+let sideNavOverlay = document.getElementById("sideNavOverlay");
+
+sideNavOverlay.classList.add('hidden');
+
 function toggleWidth() {
     let sideNavItemText = document.querySelectorAll('[id^="text_"]');
     let sidenavContainer = document.getElementById("sidenavContainer");
-    let sideNavOverlay = document.getElementById("sideNavOverlay");
+
     let sideNavItemA = document.querySelectorAll('[id^="sideNavItemA_"]');
 
     let containsLarge = false;

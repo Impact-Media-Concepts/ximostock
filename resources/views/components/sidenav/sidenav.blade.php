@@ -17,9 +17,25 @@
 ?>
 
 <style>
-    .side-nav {
-        position: relative;
-        top: 0;
+     @media only screen and (min-width: 1280px) {
+       .side-nav {
+            position: absolute;
+            top: 5rem;
+        }
+    }
+
+    @media only screen and (min-width: 1920px) {
+        .side-nav {
+            position: relative;
+            top: 0;
+        }
+    }
+    
+    @media only screen and (min-width: 2560px) {
+       .side-nav {
+            position: relative;
+            top: 0;
+        }
     }
 
     .rotate-arrows {
@@ -82,5 +98,4 @@
             <img id="arrowIcon" class="select-none w-4.5 h-4.5 <?php echo (isset($_COOKIE['openButton_rotate']) && $_COOKIE['openButton_rotate'] === '') || (isset($_COOKIE['sidenavContainer_width']) && $_COOKIE['sidenavContainer_width'] === '') ? '' : 'rotate-arrows222'; ?>" src="../images/double-arrow-left.png" alt="Arrow down">
         </button>
     </div>
-
 </div>

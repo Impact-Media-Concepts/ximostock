@@ -6,7 +6,7 @@
         <div class="h-full">
             <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
         </div>
-        <div class="pt-[1.5rem] basic:w-[71rem] hd:w-[98rem] uhd:w-[138rem]">
+        <div class="pt-[1.5rem] basic:w-[71rem] hd:w-[98rem] uhd:w-[138rem] basic:ml-[4rem] hd:ml-0 uhd:ml-0">
             <div>
                 <x-product.create.header />
               

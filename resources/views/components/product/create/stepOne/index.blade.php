@@ -1,5 +1,5 @@
 <div class="bg-white flex justify-center rounded-t-lg hd:max-h-[50rem] uhd:max-h-[57rem] overflow-y-auto create-container-border">
-    <div class="basic:w-[66rem] basic:h-[38rem] uhd:h-[61rem] hd:h-[78rem] hd:w-[93rem] uhd:w-[134rem]">
+    <div class="basic:w-[66rem] basic:h-[38rem] uhd:h-[61rem] hd:h-[78rem] hd:w-[93rem] uhd:w-[133rem]">
 
         <div class="h-[15rem] mt-[2rem]">
             <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
