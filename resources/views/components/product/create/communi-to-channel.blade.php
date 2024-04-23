@@ -1,4 +1,26 @@
+<style>
+    @media only screen and (min-width: 1280px) {
+        .communi-to-chann-btn {
+            width: 26rem;
+        }
+    }
 
+    @media only screen and (min-width: 1920px) {
+        .communi-to-chann-btn {
+            width: 32rem;
+        }
+    }
+    
+    @media only screen and (min-width: 2560px) {
+        .communi-to-chann-btn {
+            width: 53rem;
+        }
+    }
+
+    .back-order-btn-options {
+        margin-top: 3.3rem;
+    }
+</style>
 
 <ul>
     <div
@@ -10,7 +32,7 @@
         <button
             type="button"
             @click="open = !open;"
-            class="flex items-center back-order-btn px-4 h-12 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative"
+            class="communi-to-chann-btn flex items-center back-order-btn px-4 h-12 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative"
             x-cloak
             @click.away="open = false"
             >
@@ -28,7 +50,7 @@
         <div
         x-cloak
         x-show="open"
-        class="absolute right-0 back-order-btn back-order-btn-options bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        class="communi-to-chann-btn absolute right-0 back-order-btn back-order-btn-options bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
             <ul>
                 <template x-for="communiToChannel in communicateToChannel" :key="communiToChannel.data">

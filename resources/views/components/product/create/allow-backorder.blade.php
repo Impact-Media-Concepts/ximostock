@@ -1,7 +1,7 @@
 <style>
     @media only screen and (min-width: 1280px) {
         .back-order-btn {
-            width: 53rem;
+            width: 26rem;
         }
     }
 

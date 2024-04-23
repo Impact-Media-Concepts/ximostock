@@ -1,6 +1,7 @@
 function toggleWidth() {
     let sideNavItemText = document.querySelectorAll('[id^="text_"]');
     let sidenavContainer = document.getElementById("sidenavContainer");
+    let sideNavOverlay = document.getElementById("sideNavOverlay");
     let sideNavItemA = document.querySelectorAll('[id^="sideNavItemA_"]');
 
     let containsLarge = false;
@@ -13,8 +14,10 @@ function toggleWidth() {
             let isLargeItem = element.classList.contains("large");
 
             if (isLargeItem) {
+                sideNavOverlay.classList.remove('hidden');
                 containsLarge = true;
             } else {
+                sideNavOverlay.classList.add('hidden');
                 containsLarge = false;
             }
 
@@ -25,10 +28,12 @@ function toggleWidth() {
     function toggleSideNavText() {
         sideNavItemText.forEach(element => {
             if (containsLarge === true) {
+                
                 setTimeout(() => {
                     element.classList.remove("hidden");
                 }, 170);
             } else if (containsLarge === false) {
+                
                 setTimeout(() => {
                     element.classList.add("hidden");
                 }, 100);

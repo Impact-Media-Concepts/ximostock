@@ -33,7 +33,7 @@
     } */
 </style>
 
-<div class="bg-white rounded-t-lg hd:h-[50rem] uhd:h-[57rem] create-container-border">
+<div class="bg-white rounded-t-lg basic:h-[38rem] hd:h-[50rem] uhd:h-[57rem] create-container-border">
     <div class="h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg" style="border: 1px solid #F0F0F0;">
         <div class="w-full ml-[1.56rem] mt-[0.6rem]">
             <p class="font-bold text-[18px] text-[#717171]">Lorem, ipsum dolor.</p>
@@ -42,8 +42,8 @@
     </div>
 
     <div class="flex justify-center items-center w-full mt-[1.5rem]">
-        <div class="flex flex-col justify-between items-center hd:h-[44rem] hd:w-[94rem] uhd:h-[50.5rem] uhd:w-[134rem] rounded-md" style="border: 1px solid #F0F0F0;">
-            <div class="hd:w-[94rem] uhd:w-[134rem] rounded-md">
+        <div class="flex flex-col justify-between items-center basic:w-[67rem] basic:h-[32rem] hd:h-[44rem] hd:w-[94rem] uhd:h-[50.5rem] uhd:w-[134rem] rounded-md" style="border: 1px solid #F0F0F0;">
+            <div class="basic:w-[67rem] hd:w-[94rem] uhd:w-[134rem] rounded-md">
                 <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
                     <p class="ml-[1.37rem] text-[14px] text-[#fff]">Foto's instellen</p>
                 </div>
