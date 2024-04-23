@@ -11,6 +11,8 @@ class SalesChannel extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $touches = ['Product'];
+
 
     public function products()
     {

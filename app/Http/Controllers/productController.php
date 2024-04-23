@@ -302,6 +302,7 @@ class ProductController extends BaseProductController
                 $woocommerce = new WooCommerceManager;
                 $woocommerce->uploadOrUpdateProductSalesChannel($product, $salesChannel);
             }
+            $product->touch();
         }
         return redirect('/products');
     }
@@ -330,9 +331,9 @@ class ProductController extends BaseProductController
             $product = Product::findOrFail($product);
             foreach($validatedData['sales_channel_ids'] as $salesChannel){
                 $salesChannel = SalesChannel::findOrFail($salesChannel);
-
                 $woocommerce->deleteProductFromSalesChannel($product, $salesChannel);
             }
+            $product->touch();
         }
 
         // Unlink sales channels from products
