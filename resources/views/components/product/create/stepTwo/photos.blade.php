@@ -48,9 +48,9 @@
                     <p class="ml-[1.37rem] text-[14px] text-[#fff]">Foto's instellen</p>
                 </div>
 
-                <section class="splide hidden rounded-md flex justify-center" id="splideSection" aria-label="Splide Basic HTML Example">
-                    <div class="splide__track w-[124rem]">
-                        <ul class="splide__list uhd:!w-[119rem] uhd:!ml-[2rem]"  id="splideList">
+                <section class="splide hidden rounded-md flex hd:justify-start uhd:justify-center" id="splideSection" aria-label="Splide Basic HTML Example">
+                    <div class="splide__track hd:ml-[3rem] hd:w-[89rem] uhd:w-[124rem]">
+                        <ul class="splide__list uhd:!w-[119rem] uhd:!ml-[2rem]" id="splideList">
                             
                         </ul>
                     </div>
@@ -67,7 +67,7 @@
                     Voeg foto toe
                     <div class="flex items-center justify-center">
                         <!-- todo add img file types -->
-                        <input class="hidden" type="file" accept=".jpg, .jpeg, .png, .avif, .svg, .webp" id="uploadFoto" class="hidden"/>
+                        <input class="hidden" type="file" accept=".jpg" id="uploadFoto" class="hidden" multiple/>
                     </div>
                 </button>
 
