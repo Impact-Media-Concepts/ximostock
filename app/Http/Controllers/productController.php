@@ -90,7 +90,7 @@ class ProductController extends BaseProductController
 
     public function create(Request $request)
     {
-        
+
         if (Auth::user()->role === 'admin') {
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
@@ -101,7 +101,7 @@ class ProductController extends BaseProductController
             $location_zones = InventoryLocation::with(['location_zones'])->where('work_space_id', $request['workspace'])->get();
             $properties = Property::where('work_space_id', $request['workspace'])->get();
             $categories = Category::where('work_space_id', $request['workspace']);
-        }else{
+        } else {
             $workspaces = null;
             $activeWorkspace = null;
             $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get();
@@ -110,9 +110,9 @@ class ProductController extends BaseProductController
             $categories = Category::where('work_space_id', Auth::user()->work_space_id);
         }
         $categories = $categories
-        ->with('child_categories_recursive')
-        ->whereNull('parent_category_id')
-        ->get();
+            ->with('child_categories_recursive')
+            ->whereNull('parent_category_id')
+            ->get();
 
         return view('product.create', [
             'categories' => $categories,
@@ -138,7 +138,7 @@ class ProductController extends BaseProductController
             ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
-        }else{
+        } else {
             $workspaces = null;
             $activeWorkspace = null;
         }
@@ -291,18 +291,20 @@ class ProductController extends BaseProductController
         ]);
 
         // link saleschannels to product
-        foreach ($validatedData['product_ids'] as $product) {
-            foreach ($validatedData['sales_channel_ids'] as $salesChannel) {
+        $products = Product::whereIn('id', $validatedData['product_ids'])->with('photos', 'locationZones', 'productSalesChannels', 'properties', 'categories')->get();
+        $salesChannels = SalesChannel::whereIn('id', $validatedData['sales_channel_ids'])->get();
+        foreach ($products as $product) {
+            $product->touch();
+            foreach ($salesChannels as $salesChannel) {
                 ProductSalesChannel::create([
-                    'product_id' => $product,
-                    'sales_channel_id' => $salesChannel
+                    'product_id' => $product->id,
+                    'sales_channel_id' => $salesChannel->id
                 ]);
-                $salesChannel = SalesChannel::findOrFail($salesChannel);
-                $product = Product::findOrFail($product);
-                $woocommerce = new WooCommerceManager;
-                $woocommerce->uploadOrUpdateProductSalesChannel($product, $salesChannel);
             }
         }
+        $woocommerce = new WooCommerceManager;
+        $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
+
         return redirect('/products');
     }
 
@@ -326,21 +328,20 @@ class ProductController extends BaseProductController
 
         //remove from the saleschannel
         $woocommerce = new WooCommerceManager;
-        foreach($validatedData['product_ids'] as $product){
-            $product = Product::findOrFail($product);
-            foreach($validatedData['sales_channel_ids'] as $salesChannel){
-                $salesChannel = SalesChannel::findOrFail($salesChannel);
-
-                $woocommerce->deleteProductFromSalesChannel($product, $salesChannel);
-            }
+        foreach ($validatedData['sales_channel_ids'] as $salesChannel) {
+            $salesChannel = SalesChannel::findOrFail($salesChannel);
+            $woocommerce->deleteProductsFromSalesChannel($validatedData['product_ids'], $salesChannel);
         }
-
+        $products = Product::whereIn('id', $validatedData['product_ids'])->get();
+        foreach($products as $product){
+            $product->touch();
+        }
         // Unlink sales channels from products
         ProductSalesChannel::whereIn('product_id', $validatedData['product_ids'])
             ->whereIn('sales_channel_id', $validatedData['sales_channel_ids'])
             ->delete();
 
-        
+
         return redirect()->back();
     }
 
@@ -463,8 +464,6 @@ class ProductController extends BaseProductController
         $this->updateProperties($product->id, $attributes['properties']);
         $this->updateSalesChannels($product->id, $saleschannelAttributes);
 
-        $wooCommerce = new WooCommerceManager;
-        $wooCommerce->uploadOrUpdateProduct($product);
         return redirect()->back();
     }
 
@@ -645,7 +644,6 @@ class ProductController extends BaseProductController
         }
         return $attributes;
     }
-
 
     protected function updateCategories($productId, $categoryData)
     {

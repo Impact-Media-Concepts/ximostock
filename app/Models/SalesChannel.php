@@ -12,6 +12,7 @@ class SalesChannel extends Model
 
     protected $guarded = ['id'];
 
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'product_sales_channel')
@@ -22,6 +23,12 @@ class SalesChannel extends Model
     public function categories(){
         return $this->belongsToMany(Category::class, 'category_sales_channel')
         ->using(CategorySalesChannel::class)
+        ->withPivot(['external_id']);
+    }
+
+    public function Properties(){
+        return $this->belongsToMany(Property::class, 'property_sales_channel')
+        ->using(PropertySalesChannel::class)
         ->withPivot(['external_id']);
     }
 }
