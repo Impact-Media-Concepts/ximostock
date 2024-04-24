@@ -291,7 +291,7 @@ class ProductController extends BaseProductController
         ]);
 
         // link saleschannels to product
-        $products = Product::whereIn('id', $validatedData['product_ids'])->get();
+        $products = Product::whereIn('id', $validatedData['product_ids'])->with('photos', 'locationZones', 'productSalesChannels', 'properties', 'categories')->get();
         $salesChannels = SalesChannel::whereIn('id', $validatedData['sales_channel_ids'])->get();
         foreach ($products as $product) {
             $product->touch();
@@ -328,15 +328,14 @@ class ProductController extends BaseProductController
 
         //remove from the saleschannel
         $woocommerce = new WooCommerceManager;
-        foreach ($validatedData['product_ids'] as $product) {
-            $product = Product::findOrFail($product);
-            foreach ($validatedData['sales_channel_ids'] as $salesChannel) {
-                $salesChannel = SalesChannel::findOrFail($salesChannel);
-                $woocommerce->deleteProductFromSalesChannel($product, $salesChannel);
-            }
+        foreach ($validatedData['sales_channel_ids'] as $salesChannel) {
+            $salesChannel = SalesChannel::findOrFail($salesChannel);
+            $woocommerce->deleteProductsFromSalesChannel($validatedData['product_ids'], $salesChannel);
+        }
+        $products = Product::whereIn('id', $validatedData['product_ids'])->get();
+        foreach($products as $product){
             $product->touch();
         }
-
         // Unlink sales channels from products
         ProductSalesChannel::whereIn('product_id', $validatedData['product_ids'])
             ->whereIn('sales_channel_id', $validatedData['sales_channel_ids'])
