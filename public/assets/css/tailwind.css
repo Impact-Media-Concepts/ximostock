@@ -1164,10 +1164,6 @@ video {
   margin-top: 1.8rem;
 }
 
-.mt-\[1\.9rem\] {
-  margin-top: 1.9rem;
-}
-
 .mt-\[1rem\] {
   margin-top: 1rem;
 }
@@ -1798,10 +1794,6 @@ video {
   width: 18.68rem;
 }
 
-.w-\[18\.81rem\] {
-  width: 18.81rem;
-}
-
 .w-\[18rem\] {
   width: 18rem;
 }
@@ -2111,10 +2103,6 @@ video {
 
 .gap-8 {
   gap: 2rem;
-}
-
-.gap-\[0\.43rem\] {
-  gap: 0.43rem;
 }
 
 .gap-\[0\.57rem\] {
@@ -4135,6 +4123,10 @@ video {
 
   .uhd\:w-full {
     width: 100%;
+  }
+
+  .uhd\:\!max-w-\[134rem\] {
+    max-width: 134rem !important;
   }
 
   .uhd\:max-w-\[27\.9rem\] {

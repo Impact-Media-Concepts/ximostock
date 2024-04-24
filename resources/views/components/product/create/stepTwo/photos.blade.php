@@ -31,6 +31,28 @@
         width: 1.2em !important;
         height: 1.2em !important;
     } */
+
+    @media only screen and (min-width: 1280px) {
+        .splide {
+            max-width: 94rem !important;
+        }
+
+    }
+
+    @media only screen and (min-width: 1920px) {
+       .splide {
+            max-width: 94rem !important;
+        }
+
+    }
+    
+    @media only screen and (min-width: 2560px) {
+       .splide {
+            max-width: 134rem !important;
+        }
+
+    }
+
 </style>
 
 <div class="bg-white rounded-t-lg basic:h-[38rem] hd:h-[50rem] uhd:h-[57rem] create-container-border">
