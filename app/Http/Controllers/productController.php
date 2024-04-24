@@ -195,6 +195,8 @@ class ProductController extends BaseProductController
         ]);
 
         // Delete selected products
+        $woocommerce = new WooCommerceManager;
+        $woocommerce->deleteProductsFromAll($validatedData['product_ids']);
         Product::whereIn('id', $validatedData['product_ids'])->delete();
 
         return redirect()->back();
@@ -303,7 +305,9 @@ class ProductController extends BaseProductController
             }
         }
         $woocommerce = new WooCommerceManager;
-        $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
+        foreach($salesChannels as $salesChannel){
+            $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
+        }
 
         return redirect('/products');
     }
