@@ -117,8 +117,10 @@ async function handleFileInputChange(event) {
     const files = event.target.files;
     
     if (files.length === 1) {
+        console.log("single");
         await uploadSingleFile(files[0], event);
     } else if (files.length > 1) {
+        console.log("multi");
         await uploadMultipleFiles(files, event);
     }
 }
@@ -135,8 +137,6 @@ async function uploadSingleFile(file, event) {
     if (event.target.files[0]) {
         fotoInputTag.files = event.target.files;
     }
-
-    primaryPhotoInput = fotoInputTag;
 
     const img = createImageElement(file, fotoInputTag);
     const li = createSlideElement(img, file.name, fotoInputTag);
@@ -156,7 +156,6 @@ async function uploadMultipleFiles(files, event) {
         fotoInputTag.name = 'photos[]';
         fotoInputTag.type = 'file';
         fotoInputTag.classList.add('hidden');
-
         if (event.target.files[0]) {
             fotoInputTag.files = event.target.files;
         }
@@ -276,12 +275,13 @@ function handleSetPrimaryClick(img, fotoInputTag) {
             console.log(" imgContainer", imgContainer);
             console.log(" li", li);
             fotoInputTag.name = 'primaryPhoto';
-            console.log("primaryPhotoInput:", primaryPhotoInput);
+            console.log("primaryPhotoInput Before:", primaryPhotoInput);
             if (primaryPhotoInput && primaryPhotoInput !== fotoInputTag) {
                 primaryPhotoInput.name = 'photos[]';
             }
             
             primaryPhotoInput = fotoInputTag;
+            console.log("primaryPhotoInput After:", primaryPhotoInput);
         }
     };
 }
@@ -293,7 +293,6 @@ function handleSetPrimaryClick(img, fotoInputTag) {
 //     imgContainer.classList.remove("primary-span-size");
 //     const lis = document.querySelectorAll('.splide__slide');
 //     lis.forEach(li => li.classList.remove('primary-size'));
-//     const primaryPhotoInput = document.querySelector('input[name="photos[]"]');
 //     if (primaryPhotoInput && primaryPhotoInput !== fotoInputTag) {
 //         primaryPhotoInput.name = 'photos[]';
 //         console.log("primaryPhotoInput if not primary:", primaryPhotoInput);
