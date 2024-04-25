@@ -53,26 +53,27 @@ class WooCommerceManager
         }
     }
 
-    public function deleteProductsFromAll(array $productIds){
+    public function deleteProductsFromAll(array $productIds)
+    {
         $productSalesChannels = ProductSalesChannel::whereIn('product_id', $productIds)->get();
 
         // Initialize an empty array to store the result
         $results = [];
-    
+
         // Organize the data into an array where sales channel IDs are keys and product IDs are values
         foreach ($productSalesChannels as $productSalesChannel) {
             $salesChannelId = $productSalesChannel->sales_channel_id;
             $productId = $productSalesChannel->product_id;
-    
+
             // Create a new array element if it doesn't exist
             if (!isset($results[$salesChannelId])) {
                 $results[$salesChannelId] = [];
             }
-    
+
             // Add the product ID to the array of product IDs for the sales channel
             $results[$salesChannelId][] = $productId;
         }
-        foreach($results as $salesChannelId => $productIds){
+        foreach ($results as $salesChannelId => $productIds) {
             $salesChannel = SalesChannel::findOrFail($salesChannelId);
             $this->deleteProductsFromSalesChannel($productIds, $salesChannel);
         }
@@ -82,17 +83,19 @@ class WooCommerceManager
     {
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
         $externalIds = ProductSalesChannel::whereIn('product_id', $productIds)
-        ->where('sales_channel_id', $salesChannel->id)
-        ->pluck('external_id')
-        ->toArray();
+            ->where('sales_channel_id', $salesChannel->id)
+            ->pluck('external_id')
+            ->toArray();
         $batches = array_chunk($externalIds, 100);
         foreach ($batches as $batch) {
             $data = ['delete' => $batch];
-           $woocommerce->post('products/batch', $data);
+            $woocommerce->post('products/batch', $data);
         }
     }
 
+    protected function getSaleschannelProductData(Product $product, SalesChannel $salesChannel){
 
+    }
 
     public function uploadOrUpdateProductsSalesChannel($products, SalesChannel $salesChannel)
     {
@@ -161,7 +164,7 @@ class WooCommerceManager
                 'type' => 'simple',
                 'regular_price' => $product->price,
                 'sale_price' => $product->discount ? $product->discount : '', //if discount is null set value empty string
-                'description' => $product->long_descrition,
+                'description' => $product->long_description,
                 'short_description' => $product->short_description,
                 'sku' => $product->sku,
                 'categories' => $categories,
