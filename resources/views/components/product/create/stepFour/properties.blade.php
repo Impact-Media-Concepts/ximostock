@@ -78,8 +78,7 @@
         propertyTitleData.forEach((property) => {
             const li = document.getElementById(`add_property_li_${property.id}`);
             if (
-                !propertySearchText ||
-                property.name.toLowerCase().includes(propertySearchText.toLowerCase())
+                !propertySearchText || property.name.toLowerCase().includes(propertySearchText.toLowerCase()) || property.type.toLowerCase().includes(propertySearchText.toLowerCase())
             ) {
                 li.classList.remove('hidden');
             } else {
@@ -168,6 +167,7 @@
         delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
 
         delPropBtn.addEventListener('click', (event) => {
+            console.log(event);
             event.stopPropagation();
             clickedProperties.splice(prop, 1);
             // add removed prop back to propertyTitles
@@ -303,9 +303,9 @@
         } else{
             numberselect.value = 0;
         }
-        numberselect.classList.add('numberInput', 'text-center', 'w-[8.12rem]', 'h-[2.12rem]', 'flex');
+        numberselect.classList.add('numberInput', 'text-center', 'basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.6rem]', 'h-[2.12rem]', 'flex');
 
-        numberContainer.classList.add('flex', 'rounded-md', 'w-[12.3rem]', 'h-[2.12rem]');
+        numberContainer.classList.add('flex', 'rounded-md','basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.6rem]', 'h-[2.12rem]');
         numberContainer.style.border = '1px solid #D3D3D3';
 
         numberContainer.appendChild(decrement);
@@ -341,7 +341,9 @@
         input.classList.add(
             'flex',
             'z-20',
-            'w-[12.3rem]',
+            'basic:w-[31rem]',
+            'hd:w-[41rem]',
+            'uhd:w-[50.06rem]',
             'h-[2.12rem]',
             'items-center',
             'justify-start',
@@ -369,8 +371,12 @@
             'hidden',
             'overflow-y-auto',
             'overflow-x-hidden',
-            'w-[12.3rem]',
-            'max-h-[12.37rem]',
+            'basic:w-[31rem]',
+            'basic:max-h-[30.67rem]',
+            'hd:w-[41rem]',
+            'hd:max-h-[40.67rem]',
+            'uhd:w-[50.6rem]',
+            'uhd:max-h-[50.67rem]',
             'rounded-mb',
         );
 
@@ -406,7 +412,7 @@
                     'flex',
                     'items-center',
                     'block',
-                    'w-[11rem]',
+                    'uhd:w-[50.06rem]',
                     'h-[2.12rem]',
                     'px-4',
                     'py-2.5',
@@ -470,7 +476,9 @@
         input.type = 'text';
         input.classList.add(
             'z-20',
-            'w-[uhd:30rem]',
+            'basic:w-[31rem]',
+            'hd:w-[41rem]',
+            'uhd:w-[50.06rem]',
             'h-[2.12rem]',
             'pl-3',
             'flex',
@@ -517,7 +525,9 @@
             'flex',
             'items-center',
             'block',
-            'w-[12.3rem]',
+            'basic:w-[30.4rem]',
+            'hd:w-[40.4rem]',
+            'uhd:w-[50rem]',
             'h-[2.12rem]',
             'px-4',
             'py-2.5',
@@ -534,7 +544,9 @@
             'flex',
             'items-center',
             'block',
-            'w-[12.3rem]',
+            'basic:w-[30.4rem]',
+            'hd:w-[40.4rem]',
+            'uhd:w-[50rem]',
             'h-[2.12rem]',
             'px-4',
             'py-2.5',
@@ -599,12 +611,16 @@
 
     //render the singel select property
     function rendersingleselect(property, div, trueInput) {
+    div.style.height = '13.58rem';
     const input = document.createElement('input');
-
+    singleSelectSubContainer = document.createElement('div');
+    singleSelectSubContainer.classList.add('ml-[2rem]', 'mt-[1rem]');
     input.type = 'text';
     input.classList.add(
         'z-20',
-        'w-[12.3rem]',
+        'basic:w-[31rem]',
+        'hd:w-[41rem]',
+        'uhd:w-[50.06rem]',
         'h-[2.12rem]',
         'pl-3',
         'flex',
@@ -627,15 +643,25 @@
         searchProperty(input.value, property);
         trueInput.value = '';
     });
-    input.value = property.selectedOption;
+    if (!property.selectedOption) {
+        input.value = 'Zoeken';
+    } else  {
+        input.value = property.selectedOption;
+    }
+
+
 
     const options = document.createElement('ul');
     options.classList.add(
         'hidden',
         'overflow-y-auto',
         'overflow-x-hidden',
-        'w-[12.3rem]',
-        'max-h-[12.37rem]',
+        'basic:w-[31rem]',
+        'basic:max-h-[31.67rem]',
+        'hd:w-[41rem]',
+        'hd:max-h-[40.67rem]',
+        'uhd:w-[50.6rem]',
+        'uhd:max-h-[50.67rem]',
         'rounded-mb',
     );
 
@@ -659,7 +685,7 @@
                 'flex',
                 'items-center',
                 'block',
-                'w-[11rem]',
+                'uhd:w-[50.06rem]',
                 'h-[2.12rem]',
                 'px-4',
                 'py-2.5',
@@ -696,6 +722,10 @@
     }
     div.appendChild(input);
     div.appendChild(options);
+
+    singleSelectSubContainer.appendChild(input);
+    singleSelectSubContainer.appendChild(options);
+    div.appendChild(singleSelectSubContainer);
     }
 
     function renderText(div, trueInput, property) {
@@ -704,7 +734,7 @@
 
         const text = document.createElement('input');
         text.type = 'text';
-        text.classList.add('w-[12.3rem]', 'rounded-md', 'h-[2.12rem]', 'text-input', 'uhd:w-[30rem]');
+        text.classList.add('basic:w-[31rem]', 'hd:w-[41rem]' 'uhd:w-[50.06rem]', 'rounded-md', 'h-[2.12rem]', 'text-input', 'uhd:w-[30rem]');
         text.addEventListener('input', function () {
             trueInput.value = text.value;
         });
@@ -789,6 +819,7 @@
             const li = document.getElementById(
                 `property_${property.id}_${option}`
             );
+
             if (
                 !createProdPropertiesSearchText ||
                 option.toLowerCase().includes(createProdPropertiesSearchText.toLowerCase())

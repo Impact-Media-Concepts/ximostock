@@ -71,10 +71,8 @@
                 </div>
 
                 <section class="splide hidden rounded-md flex hd:justify-start uhd:justify-center" id="splideSection" aria-label="Splide Basic HTML Example">
-                    <div class="splide__track hd:ml-[3rem] hd:w-[89rem] uhd:w-[124rem]">
-                        <ul class="splide__list uhd:!w-[119rem] uhd:!ml-[2rem]" id="splideList">
-                            
-                        </ul>
+                    <div class="splide__track hd:ml-[3rem] hd:w-[89rem] uhd:w-[124rem] uhd:!ml-0">
+                        <ul class="splide__list uhd:!w-[119rem]" id="splideList"></ul>
                     </div>
                 </section>
             </div>

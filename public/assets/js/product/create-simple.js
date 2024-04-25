@@ -106,8 +106,7 @@ let splide = new Splide( '.splide', {
     drag: false,
     focus  : 0,
     omitEnd: true,
-    pagination: false,
-    width: '89rem'
+    pagination: false
 });
 
 let primaryPhotoInput = null;
