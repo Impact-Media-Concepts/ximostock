@@ -6,7 +6,7 @@
         height: 20rem !important;
     }
 
-    .primary-foto-size {
+    .primary-photo-size {
         width: unset !important;
     }
 
@@ -87,7 +87,7 @@
                     Voeg foto toe
                     <div class="flex items-center justify-center">
                         <!-- todo add img file types -->
-                        <input class="hidden" type="file" accept=".jpg" id="uploadFoto" class="hidden" multiple/>
+                        <input class="hidden" type="file" accept=".jpg" id="uploadPhoto" class="hidden" multiple/>
                     </div>
                 </button>
 

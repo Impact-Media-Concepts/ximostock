@@ -734,7 +734,7 @@
 
         const text = document.createElement('input');
         text.type = 'text';
-        text.classList.add('basic:w-[31rem]', 'hd:w-[41rem]' 'uhd:w-[50.06rem]', 'rounded-md', 'h-[2.12rem]', 'text-input', 'uhd:w-[30rem]');
+        text.classList.add('basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.06rem]', 'rounded-md', 'h-[2.12rem]', 'text-input', 'uhd:w-[30rem]');
         text.addEventListener('input', function () {
             trueInput.value = text.value;
         });

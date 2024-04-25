@@ -91,7 +91,7 @@ window.communicateToChannel = [
 //#endregion
 
 // #region step 2 photos
-const fileInput = document.getElementById('uploadFoto');
+const fileInput = document.getElementById('uploadPhoto');
 const previewContainer = document.getElementById('previewContainer');
 const splideList = document.querySelector('.splide__list');
 const splideSection = document.getElementById('splideSection');
@@ -231,23 +231,46 @@ function handleRemoveButtonClick() {
 //primary click
 function handleSetPrimaryClick(img) {
     return function() {
-        img.classList.add("primary-foto-size");
-        const imgContainer = img.parentElement;
-        imgContainer.classList.add("primary-span-size");
-        const lis = document.querySelectorAll('.splide__slide');
-        lis.forEach(li => li.classList.remove('primary-size'));
-        const li = imgContainer.parentElement;
-        li.classList.add('primary-size');
-        
-        const primaryPhotoInput = document.querySelector('input[name="primaryPhoto"]');
-        if (primaryPhotoInput) {
-            primaryPhotoInput.name = 'photos[]';
-        }
-        const fotoInputTag = imgContainer.querySelector('input[type="file"]');
-        if (fotoInputTag) {
-            fotoInputTag.name = 'primaryPhoto';
+        console.log("clean img", img);
+        if (img.classList.contains("primary-photo-size")) {
+            console.log("unset img", img);
+            unsetPrimaryPhoto(img);
+        } else {
+            img.classList.add("primary-photo-size");
+            const imgContainer = img.parentElement;
+            imgContainer.classList.add("primary-span-size");
+            const lis = document.querySelectorAll('.splide__slide');
+            lis.forEach(li => li.classList.remove('primary-size'));
+            const li = imgContainer.parentElement;
+            li.classList.add('primary-size');
+            
+            const primaryPhotoInput = document.querySelector('input[name="primaryPhoto"]');
+            if (primaryPhotoInput) {
+                primaryPhotoInput.name = 'photos[]';
+            }
+            const photoInputTag = imgContainer.querySelector('input[type="file"]');
+            if (photoInputTag) {
+                photoInputTag.name = 'primaryPhoto';
+            }
         }
     };
+}
+
+function unsetPrimaryPhoto(img) {
+    console.log("unsetprimaryPhoto function", img);
+    img.classList.remove("primary-photo-size");
+    const imgContainer = img.parentElement;
+    imgContainer.classList.remove("primary-span-size");
+    const lis = document.querySelectorAll('.splide__slide');
+    lis.forEach(li => li.classList.remove('primary-size'));
+    const primaryPhotoInput = document.querySelector('input[name="photos[]"]');
+    if (primaryPhotoInput) {
+        primaryPhotoInput.name = 'primaryPhoto';
+    }
+    const photoInputTag = imgContainer.querySelector('input[type="file"]');
+    if (photoInputTag) {
+        photoInputTag.name = 'photos[]';
+    }
 }
 
 document.getElementById('get_file').onclick = function() {
