@@ -83,6 +83,13 @@ class DatabaseSeeder extends Seeder
             'api_key' => 'ck_cc7e1e85dbe0f56504134ee5caa3a114351e0012',
             'secret' => 'cs_9d52cf66d9fc3d26cf693b912f2d41c1db005020'
         ]);
+        SalesChannel::factory()->create([
+            'work_space_id' => 1,
+            'name' => 'TestCommerce',
+            'url' => 'http://testcommerce.test',
+            'api_key' => 'ck_d64b84dd557c58239d8e7381ae3a27a5e4cb6e30',
+            'secret' => 'cs_13cedf2d445dd7cec4630dfe2cbde724a0268a83'
+        ]);
         $saleschannels = SalesChannel::factory(4)->create([
             'work_space_id' => 1,
         ]);

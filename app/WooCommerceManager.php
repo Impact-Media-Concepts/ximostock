@@ -10,6 +10,7 @@ use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\PropertySalesChannel;
 use App\Models\SalesChannel;
+use App\View\Components\index;
 use Automattic\WooCommerce\Client;
 use Carbon\Carbon;
 use Exception;
@@ -53,19 +54,45 @@ class WooCommerceManager
         }
     }
 
+    public function deleteProductsFromAll(array $productIds)
+    {
+        $productSalesChannels = ProductSalesChannel::whereIn('product_id', $productIds)->get();
 
+        // Initialize an empty array to store the result
+        $results = [];
+
+        // Organize the data into an array where sales channel IDs are keys and product IDs are values
+        foreach ($productSalesChannels as $productSalesChannel) {
+            $salesChannelId = $productSalesChannel->sales_channel_id;
+            $productId = $productSalesChannel->product_id;
+
+            // Create a new array element if it doesn't exist
+            if (!isset($results[$salesChannelId])) {
+                $results[$salesChannelId] = [];
+            }
+
+            // Add the product ID to the array of product IDs for the sales channel
+            $results[$salesChannelId][] = $productId;
+        }
+        foreach ($results as $salesChannelId => $productIds) {
+            $salesChannel = SalesChannel::findOrFail($salesChannelId);
+            $this->deleteProductsFromSalesChannel($productIds, $salesChannel);
+        }
+    }
 
     public function deleteProductsFromSalesChannel(array $productIds, SalesChannel $salesChannel)
     {
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
-        $batches = array_chunk($productIds, 100);
+        $externalIds = ProductSalesChannel::whereIn('product_id', $productIds)
+            ->where('sales_channel_id', $salesChannel->id)
+            ->pluck('external_id')
+            ->toArray();
+        $batches = array_chunk($externalIds, 100);
         foreach ($batches as $batch) {
             $data = ['delete' => $batch];
             $woocommerce->post('products/batch', $data);
         }
     }
-
-
 
     public function uploadOrUpdateProductsSalesChannel($products, SalesChannel $salesChannel)
     {
@@ -75,11 +102,10 @@ class WooCommerceManager
             'create' => [],
             'update' => []
         ];
-
         //prepare categories and poperties
         $categories = [];
         $properties = [];
-
+        $failedToUpdate = [];
         foreach ($products as $product) {
             foreach ($product->categories as $category) {
                 if (!in_array($category->id, $categories)) {
@@ -134,7 +160,7 @@ class WooCommerceManager
                 'type' => 'simple',
                 'regular_price' => $product->price,
                 'sale_price' => $product->discount ? $product->discount : '', //if discount is null set value empty string
-                'description' => $product->long_descrition,
+                'description' => $product->long_description,
                 'short_description' => $product->short_description,
                 'sku' => $product->sku,
                 'categories' => $categories,
@@ -157,20 +183,60 @@ class WooCommerceManager
             $requestCount = Count($data['create']) + Count($data['update']);
             if ($requestCount >= 100 || $index === count($products) - 1) {
                 $results = $woocommerce->post('products/batch', $data);
+
+                //create external ids for created producst
                 if (Count($data['create'])) {
-                    foreach ($results->create as $result) {
-                        $product = $products->first(function ($product) use ($result) {
-                            return $product->sku == $result->sku;
-                        });
-                        $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-                        $productSalesChannel->external_id = $result->id;
-                        $productSalesChannel->save();
+                    $this->setExternalIds($results, $products, $salesChannel);
+                }
+
+                //handle errors for updated products
+                if (isset($results->update)) {
+                    foreach ($results->update as $result) {
+                        if (isset($result->error)) {
+                            $failedData = array_filter($data['update'], function ($product) use ($result) {
+                                return $product['id'] == $result->id;
+                            });
+                            array_push($failedToUpdate, reset($failedData));
+                        }
+                    }
+                    if (count($failedToUpdate)) {
+                        //remove the id from the products so i can create them instead of updating
+                        $failedToUpdate = array_map(function ($product) {
+                            unset($product['id']);
+                            return $product;
+                        }, $failedToUpdate);
+                        $batches = array_chunk($failedToUpdate, 100);
+                        foreach ($batches as $batch) {
+                            $data = ['create' => $batch];
+                            $results = $woocommerce->post('products/batch', $data);
+                            if ($results) {
+                                $this->setExternalIds($results, $products, $salesChannel);
+                            }
+                        }
                     }
                 }
+                //reset data for next batch
                 $data = [
                     'create' => [],
                     'update' => []
                 ];
+            }
+        }
+    }
+
+    protected function setExternalIds($results, $products, $salesChannel)
+    {
+        foreach ($results->create as $result) {
+            if (!isset($result->error)) {
+                $product = $products->first(function ($product) use ($result) {
+                    if (!isset($product->sku) || !isset($result->sku)) { //dd for bugtesting
+                        dd($product, $result);
+                    }
+                    return $product->sku == $result->sku;
+                });
+                $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+                $productSalesChannel->external_id = $result->id;
+                $productSalesChannel->save();
             }
         }
     }
@@ -253,7 +319,6 @@ class WooCommerceManager
 
     protected function uploadProperties(array $propertyIds, SalesChannel $salesChannel, Client $woocommerce)
     {
-
         $properties = array_diff($propertyIds, $salesChannel->properties->pluck('id')->toArray());
         $properties = Property::whereIn('id', $properties)->get();
         if (Count($properties)) {
@@ -265,15 +330,17 @@ class WooCommerceManager
             }
             $results = $woocommerce->post('products/attributes/batch', $data);
             foreach ($results->create as $result) {
-                $propertyName = $result->name;
-                $property = $properties->first(function ($property) use ($propertyName) {
-                    return $property->name == $propertyName;
-                });
-                PropertySalesChannel::create([
-                    'sales_channel_id' => $salesChannel->id,
-                    'property_id' => $property->id,
-                    'external_id' => $result->id
-                ]);
+                if (!isset($result->error)) {
+                    $propertyName = $result->name;
+                    $property = $properties->first(function ($property) use ($propertyName) {
+                        return $property->name == $propertyName;
+                    });
+                    PropertySalesChannel::create([
+                        'sales_channel_id' => $salesChannel->id,
+                        'property_id' => $property->id,
+                        'external_id' => $result->id
+                    ]);
+                }
             }
         }
     }
