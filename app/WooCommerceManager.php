@@ -10,6 +10,7 @@ use App\Models\ProductSalesChannel;
 use App\Models\Property;
 use App\Models\PropertySalesChannel;
 use App\Models\SalesChannel;
+use App\View\Components\index;
 use Automattic\WooCommerce\Client;
 use Carbon\Carbon;
 use Exception;
@@ -93,10 +94,6 @@ class WooCommerceManager
         }
     }
 
-    protected function getSaleschannelProductData(Product $product, SalesChannel $salesChannel){
-
-    }
-
     public function uploadOrUpdateProductsSalesChannel($products, SalesChannel $salesChannel)
     {
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
@@ -105,11 +102,10 @@ class WooCommerceManager
             'create' => [],
             'update' => []
         ];
-
         //prepare categories and poperties
         $categories = [];
         $properties = [];
-
+        $failedToUpdate = [];
         foreach ($products as $product) {
             foreach ($product->categories as $category) {
                 if (!in_array($category->id, $categories)) {
@@ -187,20 +183,60 @@ class WooCommerceManager
             $requestCount = Count($data['create']) + Count($data['update']);
             if ($requestCount >= 100 || $index === count($products) - 1) {
                 $results = $woocommerce->post('products/batch', $data);
+
+                //create external ids for created producst
                 if (Count($data['create'])) {
-                    foreach ($results->create as $result) {
-                        $product = $products->first(function ($product) use ($result) {
-                            return $product->sku == $result->sku;
-                        });
-                        $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-                        $productSalesChannel->external_id = $result->id;
-                        $productSalesChannel->save();
+                    $this->setExternalIds($results, $products, $salesChannel);
+                }
+
+                //handle errors for updated products
+                if (isset($results->update)) {
+                    foreach ($results->update as $result) {
+                        if (isset($result->error)) {
+                            $failedData = array_filter($data['update'], function ($product) use ($result) {
+                                return $product['id'] == $result->id;
+                            });
+                            array_push($failedToUpdate, reset($failedData));
+                        }
+                    }
+                    if (count($failedToUpdate)) {
+                        //remove the id from the products so i can create them instead of updating
+                        $failedToUpdate = array_map(function ($product) {
+                            unset($product['id']);
+                            return $product;
+                        }, $failedToUpdate);
+                        $batches = array_chunk($failedToUpdate, 100);
+                        foreach ($batches as $batch) {
+                            $data = ['create' => $batch];
+                            $results = $woocommerce->post('products/batch', $data);
+                            if ($results) {
+                                $this->setExternalIds($results, $products, $salesChannel);
+                            }
+                        }
                     }
                 }
+                //reset data for next batch
                 $data = [
                     'create' => [],
                     'update' => []
                 ];
+            }
+        }
+    }
+
+    protected function setExternalIds($results, $products, $salesChannel)
+    {
+        foreach ($results->create as $result) {
+            if (!isset($result->error)) {
+                $product = $products->first(function ($product) use ($result) {
+                    if (!isset($product->sku) || !isset($result->sku)) { //dd for bugtesting
+                        dd($product, $result);
+                    }
+                    return $product->sku == $result->sku;
+                });
+                $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+                $productSalesChannel->external_id = $result->id;
+                $productSalesChannel->save();
             }
         }
     }
@@ -283,7 +319,6 @@ class WooCommerceManager
 
     protected function uploadProperties(array $propertyIds, SalesChannel $salesChannel, Client $woocommerce)
     {
-
         $properties = array_diff($propertyIds, $salesChannel->properties->pluck('id')->toArray());
         $properties = Property::whereIn('id', $properties)->get();
         if (Count($properties)) {
@@ -295,15 +330,17 @@ class WooCommerceManager
             }
             $results = $woocommerce->post('products/attributes/batch', $data);
             foreach ($results->create as $result) {
-                $propertyName = $result->name;
-                $property = $properties->first(function ($property) use ($propertyName) {
-                    return $property->name == $propertyName;
-                });
-                PropertySalesChannel::create([
-                    'sales_channel_id' => $salesChannel->id,
-                    'property_id' => $property->id,
-                    'external_id' => $result->id
-                ]);
+                if (!isset($result->error)) {
+                    $propertyName = $result->name;
+                    $property = $properties->first(function ($property) use ($propertyName) {
+                        return $property->name == $propertyName;
+                    });
+                    PropertySalesChannel::create([
+                        'sales_channel_id' => $salesChannel->id,
+                        'property_id' => $property->id,
+                        'external_id' => $result->id
+                    ]);
+                }
             }
         }
     }
