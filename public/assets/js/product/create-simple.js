@@ -266,16 +266,18 @@ function handleSetPrimaryClick(img, fotoInputTag) {
             img.classList.add("primary-photo-size");
             const imgContainer = img.parentElement;
             const liContainer = imgContainer.parentElement;
-            console.log("Li container: ", liContainer);
             imgContainer.classList.add("primary-span-size");
             const lis = document.querySelectorAll('.splide__slide');
             lis.forEach(li => li.classList.remove('primary-size'));
             const li = imgContainer.parentElement;
             li.classList.add('primary-size');
             console.log(" imgContainer", imgContainer);
-            console.log(" li", li);
+            console.log("li: ", li);
+            console.log("fotoInputTag Before:", fotoInputTag);
             fotoInputTag.name = 'primaryPhoto';
+
             console.log("primaryPhotoInput Before:", primaryPhotoInput);
+
             if (primaryPhotoInput && primaryPhotoInput !== fotoInputTag) {
                 primaryPhotoInput.name = 'photos[]';
             }

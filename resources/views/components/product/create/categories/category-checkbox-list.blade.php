@@ -1,5 +1,9 @@
 @props(['categories', 'checkedCategories' => null])
 
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
+
 <div id='categoriesContainer'>
     <div class='w-full flex justify-center items-center'>
         <input id='createProductCategoriesSearch' class='sticky property-search-input basic:w-[28.5rem] hd:w-[43.43rem] uhd:w-[61.43rem] h-[2.5rem] rounded-md mt-[1.5rem] rounded-b-lg' style='border: 1px solid #D3D3D3;' type='text' placeholder='Zoeken' />
@@ -318,7 +322,7 @@
         imgContainer.addEventListener('click', () => createProdCategoryhandleCheckboxClick(category));
 
         const x_icon = document.createElement('img');
-        x_icon.src = '../images/x-icon.png';
+        x_icon.src = '{{$app_url}}/images/x-icon.png';
         x_icon.alt = 'x icon';
         x_icon.classList.add('select-none', 'size-[1rem]')
 

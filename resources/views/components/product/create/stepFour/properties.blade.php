@@ -1,5 +1,9 @@
 @props(['properties'])
 
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
+
 <div class='bg-white basic:h-[38rem] hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg hd:relative hd:bottom[2.62rem]' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1.56rem] mt-[0.6rem]'>
@@ -140,7 +144,7 @@
         const arrowDown = document.createElement('img');
         arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'select-none', 'mr-[1.5rem]');
         arrowDownDiv.appendChild(arrowDown);
-        arrowDown.src = '../../images/big-arrow-down-icon.png';
+        arrowDown.src = '{{$app_url}}/images/big-arrow-down-icon.png';
         arrowDown.alt = 'Arrow Down';
         arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
         
@@ -178,7 +182,7 @@
         });
 
         const delImg = document.createElement('img');
-        delImg.src = '../images/archive-icon.png';
+        delImg.src = '{{$app_url}}/images/archive-icon.png';
         delImg.alt = 'delete icon';
         delImg.classList.add('mr-[0.5rem]', 'hover:cursor-pointer', 'select-none');
         
@@ -283,12 +287,12 @@
 
         const decrementIcon = document.createElement('img');
         decrementIcon.classList.add('select-none');
-        decrementIcon.src = '../images/minus-icon.png';
+        decrementIcon.src = '{{$app_url}}/images/minus-icon.png';
         decrement.appendChild(decrementIcon);
 
         const incrementIcon = document.createElement('img');
         incrementIcon.classList.add('select-none');
-        incrementIcon.src = '../images/plus-icon.png';
+        incrementIcon.src = '{{$app_url}}/images/plus-icon.png';
         increment.appendChild(incrementIcon);
 
         decrement.classList.add('w-[2.12rem]', 'h-[2.12rem]', 'flex', 'items-center', 'justify-center', 'hover:cursor-pointer', 'active:bg-gray-100', 'rounded-md');
@@ -784,7 +788,7 @@
         span.classList.add('flex', 'pt-[0.16rem]', 'pl-[0.2rem]');
         const removePropertyIcon = document.createElement('img');
         removePropertyIcon.classList.add('select-none', 'w-[0.75rem]', 'h-[0.75rem]', 'hover:cursor-pointer');
-        removePropertyIcon.src = '../images/x-icon.png';
+        removePropertyIcon.src = '{{$app_url}}/images/x-icon.png';
 
         removePropertyIcon.addEventListener('click', function () {
             newDiv.remove();

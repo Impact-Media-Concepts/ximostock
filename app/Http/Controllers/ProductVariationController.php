@@ -20,30 +20,44 @@ class ProductVariationController extends BaseProductController
 {
     public function create(Request $request)
     {
-
+        $perPage = $request->input('perPage', 20);
         if (Auth::user()->role === 'admin') {
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
+            $products = Product::where('work_space_id', $request['workspace']);
+            $categories = Category::where('work_space_id', $request['workspace']);
+            $properties = Property::where('work_space_id', $request['workspace']);
+            $salesChannels = SalesChannel::where('work_space_id', $request['workspace']);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
         }else{
+            $products = Product::where('work_space_id', Auth::user()->work_space_id);
+            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
+            $properties = Property::where('work_space_id', Auth::user()->work_space_id);
+            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id);
             $workspaces = null;
             $activeWorkspace = null;
         }
         
         $properties = Property::all();
+        $salesChannels = $salesChannels->get();
 
-        foreach ($properties as $prop) {
-            $prop->values = json_decode($prop->values);
-        }
         return view('product.createVariant', [
             'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'locations' => InventoryLocation::with(['location_zones'])->get(),
             'salesChannels' => SalesChannel::all(),
             'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
+            'activeWorkspace' => $activeWorkspace,
+            'sidenavActive' => 'products',
+            'products' => $products,
+            'perPage' => $perPage,
+            'search' => $request['search'],
+            'selectedCategories' => $request['categories'],
+            'orderBy' => $request['orderByInput'],
+            'discountErrors' => $request->session()->get('discountErrors'),
+            'selectedProperties' => $request['properties']
         ]);
     }
 

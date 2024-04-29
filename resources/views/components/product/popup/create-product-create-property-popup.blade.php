@@ -1,3 +1,6 @@
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
 
 <div
     class="create-prop-pop-up w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 999;"
@@ -51,11 +54,11 @@
                 
                 <div class="create-prop-buttons flex items-center gap-[0.7rem] absolute bottom-[1.1rem] right-[0.3rem]">
                     <button type="button" class="create-prop-close flex justify-center gap-2 items-center create-propCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
-                        <img class="create-prop-close select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
+                        <img class="create-prop-close select-none w-[0.8rem] h-[0.8rem] flex" src="{{$app_url}}/images/x-icon.png" alt="x icon">
                         <p class="create-prop-close flex text-[#717171]">Annuleren</p>
                     </button>
                     <button type="button" class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
-                        <img src="../images/save-icon.png">
+                        <img src="{{$app_url}}/images/save-icon.png">
                         <p class="flex text-[#F8F8F8]">Save</p>
                     </button>
                 </div>

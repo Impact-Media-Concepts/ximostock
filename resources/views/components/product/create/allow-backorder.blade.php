@@ -1,3 +1,7 @@
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
+
 <style>
     @media only screen and (min-width: 1280px) {
         .back-order-btn {
@@ -43,7 +47,7 @@
                 style="left: calc(100% - 44px); border-left: 2px solid #d1d5db"
             >
                 <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]"
-                    src="../images/arrow-down-icon.png" alt="Arrow down">
+                    src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
             </div>
         </button>
 
