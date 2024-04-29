@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ProductSalesChannel extends  Pivot
+class ProductSalesChannel extends  Model
 {
 
     protected $guarded = ['id'];
@@ -22,8 +22,7 @@ class ProductSalesChannel extends  Pivot
 
     public function properties()
     {
-        return $this->belongsToMany(Category::class)
-            ->using(ProductSalesChannelProperty::class)
-            ->withPivot('property_value');
+        return $this->belongsToMany(property::class)
+            ->using(ProductSalesChannelProperty::class);
     }
 }
