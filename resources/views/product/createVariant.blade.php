@@ -18,15 +18,15 @@
                     </div>
 
                     <div id="stepTwo" class="step" style="display: none;">
-                        <x-product.create.variable.stepTwo.photos />
+                        <x-product.create.stepTwo.photos />
                     </div>
 
                     <div id="stepThree" class="step" style="display: none;">
-                        <x-product.create.variable.stepThree.categories :categories="$categories" />
+                        <x-product.create.stepThree.categories :categories="$categories" />
                     </div>
 
                     <div id="stepFour" class="step" style="display: none;">
-                        <x-product.create.variable.stepFour.properties :properties="$properties"/>
+                        <x-product.create.stepFour.properties :properties="$properties"/>
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
@@ -34,11 +34,11 @@
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
-                        <x-product.create.variable.stepSix.stock :locations="$locations" />
+                        <x-product.create.stock.stock :locations="$locations" />
                     </div>
 
                     <div id="stepSeven" class="step" style="display: none;">
-                        <x-product.create.variable.stepSeven.sales-channels :salesChannels="$salesChannels" />
+                        <x-product.create.salesChannels.sales-channels :salesChannels="$salesChannels" />
                     </div>
 
                     <x-product.create.create-error-message :errors="$errors"/>

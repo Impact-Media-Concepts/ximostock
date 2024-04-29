@@ -33,14 +33,14 @@
                 <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
                     <p class="ml-[1.37rem] text-[14px] text-[#fff]">Backorders toestaan</p>
                 </div>
-                <div class="h-[7.06rem] rounded-b-lg flex justify-center items-center" style="border: 1px solid #F0F0F0;"> <x-product.create.variable.allow-backorder /> </div>
+                <div class="h-[7.06rem] rounded-b-lg flex justify-center items-center" style="border: 1px solid #F0F0F0;"> <x-product.create.allow-backorder /> </div>
             </div>
 
             <div class="h-[9.56rem] rounded-md mt-[2rem] basic:w-[30rem] hd:w-[40rem] uhd:w-[60rem]">
                 <div class="bg-[#3DABD5] flex items-center justify-start rounded-t-lg h-[2.5rem]">
                     <p class="ml-[1.37rem] text-[14px] text-[#fff]">Voorraad communiceren naar verkoopkanaal</p>
                 </div>
-                <div class="h-[7.06rem] rounded-b-lg flex justify-center items-center" style="border: 1px solid #F0F0F0;"> <x-product.create.variable.communi-to-channel /> </div>
+                <div class="h-[7.06rem] rounded-b-lg flex justify-center items-center" style="border: 1px solid #F0F0F0;"> <x-product.create.communi-to-channel /> </div>
             </div>
         </div>
     </div>

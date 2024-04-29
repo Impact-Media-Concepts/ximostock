@@ -15,7 +15,7 @@
                 </div>
                 
                 <div class="rounded-b-lg" style="border: 1px solid #F0F0F0;">
-                    <x-product.create.variable.categories.category-checkbox-list :categories="$categories"/>
+                    <x-product.create.categories.category-checkbox-list :categories="$categories"/>
                 </div>
             </div>
 

@@ -18,23 +18,23 @@
                     </div>
 
                     <div id="stepTwo" class="step" style="display: none;">
-                        <x-product.create.simple.stepTwo.photos />
+                        <x-product.create.stepTwo.photos />
                     </div>
 
                     <div id="stepThree" class="step" style="display: none;">
-                        <x-product.create.simple.stepThree.categories :categories="$categories" />
+                        <x-product.create.stepThree.categories :categories="$categories" />
                     </div>
 
                     <div id="stepFour" class="step" style="display: none;">
-                        <x-product.create.simple.stepFour.properties :properties="$properties"/>
+                        <x-product.create.stepFour.properties :properties="$properties"/>
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
-                        <x-product.create.simple.stepFive.stock :locations="$locations" />
+                        <x-product.create.stock.stock :locations="$locations" />
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
-                        <x-product.create.simple.stepSix.sales-channels :salesChannels="$salesChannels" />
+                        <x-product.create.salesChannels.sales-channels :salesChannels="$salesChannels" />
                     </div>
 
                     <x-product.create.create-error-message :errors="$errors"/>
