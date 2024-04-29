@@ -14,32 +14,32 @@
                     @csrf
 
                     <div id="stepOne" class="step">
-                        <x-product.create.stepOne.index />
+                        <x-product.create.simple.stepOne.index />
                     </div>
 
                     <div id="stepTwo" class="step" style="display: none;">
-                        <x-product.create.stepTwo.photos />
+                        <x-product.create.simple.stepTwo.photos />
                     </div>
 
                     <div id="stepThree" class="step" style="display: none;">
-                        <x-product.create.stepThree.categories :categories="$categories" />
+                        <x-product.create.simple.stepThree.categories :categories="$categories" />
                     </div>
 
                     <div id="stepFour" class="step" style="display: none;">
-                        <x-product.create.stepFour.properties :properties="$properties"/>
+                        <x-product.create.simple.stepFour.properties :properties="$properties"/>
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
-                        <x-product.create.stepFive.stock :locations="$locations" />
+                        <x-product.create.simple.stepFive.stock :locations="$locations" />
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
-                        <x-product.create.stepSix.sales-channels :salesChannels="$salesChannels" />
+                        <x-product.create.simple.stepSix.sales-channels :salesChannels="$salesChannels" />
                     </div>
 
                     <x-product.create.create-error-message :errors="$errors"/>
 
-                    <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[6rem] create-button-container-border">
+                    <div id="create.simple.ButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[6rem] create.simple.-button-container-border">
                         <div id="prevBtn" class="relative right-[1rem]">
                             <x-product.buttons.create-previous-button />
                         </div>

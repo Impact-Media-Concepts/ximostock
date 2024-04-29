@@ -14,27 +14,31 @@
                     @csrf
 
                     <div id="stepOne" class="step">
-                        <x-product.create.stepOne.index />
+                        <x-product.create.variable.stepOne.index />
                     </div>
 
                     <div id="stepTwo" class="step" style="display: none;">
-                        <x-product.create.stepTwo.photos />
+                        <x-product.create.variable.stepTwo.photos />
                     </div>
 
                     <div id="stepThree" class="step" style="display: none;">
-                        <x-product.create.stepThree.categories :categories="$categories" />
+                        <x-product.create.variable.stepThree.categories :categories="$categories" />
                     </div>
 
                     <div id="stepFour" class="step" style="display: none;">
-                        <x-product.create.stepFour.properties :properties="$properties"/>
+                        <x-product.create.variable.stepFour.properties :properties="$properties"/>
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
-                        <x-product.create.stepFive.stock :locations="$locations" />
+                        <x-product.create.variable.stepFive.variations :locations="$locations"/>
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
-                        <x-product.create.stepSix.sales-channels :salesChannels="$salesChannels" />
+                        <x-product.create.variable.stepSix.stock :locations="$locations" />
+                    </div>
+
+                    <div id="stepSeven" class="step" style="display: none;">
+                        <x-product.create.variable.stepSeven.sales-channels :salesChannels="$salesChannels" />
                     </div>
 
                     <x-product.create.create-error-message :errors="$errors"/>

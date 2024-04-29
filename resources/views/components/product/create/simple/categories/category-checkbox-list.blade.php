@@ -12,7 +12,7 @@
 </div>
 <script>
     let categoriesData = [
-        <x-product.create.categories.category-data :categories='$categories' :checkedCategories='$checkedCategories'/>
+        <x-product.create.simple.categories.category-data :categories='$categories' :checkedCategories='$checkedCategories'/>
     ];
 
     // Find parent function
