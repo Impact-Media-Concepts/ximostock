@@ -1,20 +1,24 @@
 <x-layout._header-dependencies :sidenavActive="$sidenavActive" />
 
+<?php
+    $simple = 'Simple';
+?>
+
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
 <x-header.header :activeWorkspace="$activeWorkspace" :workspaces="$workspaces"/>
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div class="h-full">
-            <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
+            <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive" />
         </div>
         <div class="pt-[1.5rem] basic:w-[71rem] hd:w-[98rem] uhd:w-[138rem] basic:ml-[4rem] hd:ml-0 uhd:ml-0">
             <div>
-                <x-product.create.header />
-              
+                <x-product.create.header>{{ $simple }}</x-product.create.header>
+                
                 <form method="POST" action="/products" enctype="multipart/form-data">
                     @csrf
 
                     <div id="stepOne" class="step">
-                        <x-product.create.stepOne.index />
+                        <x-product.create.simple.stepOne.index />
                     </div>
 
                     <div id="stepTwo" class="step" style="display: none;">
@@ -26,20 +30,20 @@
                     </div>
 
                     <div id="stepFour" class="step" style="display: none;">
-                        <x-product.create.stepFour.properties :properties="$properties"/>
+                        <x-product.create.stepFour.properties :properties="$properties" />
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
-                        <x-product.create.stepFive.stock :locations="$locations" />
+                        <x-product.create.stock.stock :locations="$locations" />
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
-                        <x-product.create.stepSix.sales-channels :salesChannels="$salesChannels" />
+                        <x-product.create.salesChannels.sales-channels :salesChannels="$salesChannels" />
                     </div>
 
                     <x-product.create.create-error-message :errors="$errors"/>
 
-                    <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[6rem] create-button-container-border">
+                    <div id="create.simple.ButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[6rem] create.simple.-button-container-border">
                         <div id="prevBtn" class="relative right-[1rem]">
                             <x-product.buttons.create-previous-button />
                         </div>

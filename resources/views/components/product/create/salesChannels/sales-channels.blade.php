@@ -1,3 +1,7 @@
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
+
 <div class="bg-white rounded-t-lg basic:h-[38rem] hd:h-[50rem] uhd:h-[57rem] create-container-border">
     <div class="h-[4.56rem] uhd:w-[138rem] rounded-t-lg" style="border: 1px solid #F0F0F0;">
         <div class=" ml-[1.56rem] mt-[0.6rem]">
@@ -132,7 +136,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             imgDiv.classList.add('px-[1.25rem]');
             const img = document.createElement('img');
             img.classList.add('w-[3.56rem]', 'h-[2.56rem]');
-            img.src = '../images/save-icon.png';
+            img.src = '{{$app_url}}/images/save-icon.png';
             imgDiv.appendChild(img);
             innerDiv.appendChild(imgDiv);
 

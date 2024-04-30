@@ -16,13 +16,13 @@
         <div class='basic:w-[67rem] hd:w-[94rem] uhd:w-[134rem]'>
             <div class='bg-[#3DABD5] rounded-t-lg h-[2.5rem] flex items-center justify-start'>
                 <p class='pl-[1.56rem] text-[#fff]'>
-                    Beschikbare eigenschappen
+                    Variaties
                 </p>
             </div>
             
             <div>
                 <div class='h-[5.06rem] flex justify-start items-center gap-[2.3rem]' style='border: 1px solid #F0F0F0;'>
-                    <button type='button' class='create-prop-popup-trigger ml-[1.87rem] w-[10.68rem] h-[2.5rem] bg-[#3DABD5] hover:bg-[#3999BE] font-light rounded-md text-white'>
+                    <button type='button' class='variations-add-prop-popup-trigger ml-[1.87rem] w-[10.68rem] h-[2.5rem] bg-[#3DABD5] hover:bg-[#3999BE] font-light rounded-md text-white'>
                         <p>
                             Nieuw toevoegen
                         </p>
@@ -42,10 +42,10 @@
                                 class='flex absolute mr-[7.9rem] flex-col justify-center items-center max-h-[36.16rem] w-[16.56rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3rem]'
                                 style='border: 1px solid #F0F0F0;'>
                                 <div class='sticky flex justify-center top-0 w-full bg-white border-b border-gray-200'>
-                                    <input @click.stop class='w-[14.06rem] h-[2.5rem] rounded-md mt-[1rem] mb-[1rem] pl-[1rem]' style='border: 1px solid #D3D3D3;' type='text' id='seachPropertyTitles' placeholder='Zoeken' />
+                                    <input @click.stop class='w-[14.06rem] h-[2.5rem] rounded-md mt-[1rem] mb-[1rem] pl-[1rem]' style='border: 1px solid #D3D3D3;' type='text' id='searchVariationPropertyTitles' placeholder='Zoeken' />
                                 </div>
 
-                                <div class='items-center border-none overflow-y-auto' id='propertyLists'></div>
+                                <div class='items-center border-none overflow-y-auto' id='propertyLists2'></div>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                
                 <div class=' flex flex-col items-center basic:h-[24.5rem] basic:max-h-[24.5rem] hd:h-[36.5rem] hd:max-h-[36.5rem] uhd:h-[43rem] uhd:max-h-[43rem] overflow-y-auto rounded-b-lg' style='border: 1px solid #F0F0F0;'>
                     <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
-                        <ul class='mt-[0.85rem]' id='createProdPropertyList'></ul>
+                        <ul class='mt-[0.85rem]' id='createProdPropertyList2'></ul>
                     </div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
 </div>
 
 <script>
-    let propertyTitleData = [
+    let variationsTitleData = [
         @foreach ( $properties as $property)
             {
                 id:{{$property->id}},
@@ -79,7 +79,7 @@
     ];
 
     function searchPropertyTitles(propertySearchText) {
-        propertyTitleData.forEach((property) => {
+        variationsTitleData.forEach((property) => {
             const li = document.getElementById(`add_property_li_${property.id}`);
             if (
                 !propertySearchText || property.name.toLowerCase().includes(propertySearchText.toLowerCase()) || property.type.toLowerCase().includes(propertySearchText.toLowerCase())
@@ -91,11 +91,11 @@
         });
     }
 
-    const seachPropertyTitles = document.getElementById('seachPropertyTitles');
+    const searchVariationPropertyTitles = document.getElementById('searchVariationPropertyTitles');
 
-    if (seachPropertyTitles) {
-        seachPropertyTitles.addEventListener('input', () => {
-            const propertySearchTitles = seachPropertyTitles.value.trim();
+    if (searchVariationPropertyTitles) {
+        searchVariationPropertyTitles.addEventListener('input', () => {
+            const propertySearchTitles = searchVariationPropertyTitles.value.trim();
 
             // Render propertys if search input is empty
             if (!propertySearchTitles) {
@@ -106,116 +106,116 @@
         });
     }
 
-    const clickedProperties = [];
+    const clickedVariationProperty = [];
 
     function renderProperties(property) {
-    // Check if property is already clicked
-    const isClicked = clickedProperties.some(prop => prop.id === property.id);
-    // If not already clicked, add it to clickedProperties
-    if (!isClicked) {
-        clickedProperties.push(property);
-    }
-    
-    const createProdPropertyList = document.getElementById('createProdPropertyList');
-    createProdPropertyList.innerHTML = ''; // Clear existing list
-    createProdPropertyList.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
-    
-    // Render all clicked properties
-    clickedProperties.forEach(prop => {
-        const li = document.createElement('li');
-        li.id = `properties_li_${prop.id}`;
-        li.classList.add('pt-[0.35rem]', 'pb-[0.35rem]');
-        
-        // Build components for the clicked property
-        const trueInput = document.createElement('input');
-        trueInput.id = `properties[${prop.id}]`;
-        trueInput.type = 'hidden';
-        trueInput.value = null;
-
-        const propertyNameSpan = document.createElement('span');
-        propertyNameSpan.textContent = prop.name;
-        propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
-        propertyNameSpan.style.display = 'inline-flex';
-        propertyNameSpan.style.width = '85%';
-        propertyNameSpan.style.zIndex = 99;
-        propertyNameSpan.classList.add('no-select');
-        
-        const arrowDownDiv = document.createElement('span');
-        const arrowDown = document.createElement('img');
-        arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'select-none', 'mr-[1.5rem]');
-        arrowDownDiv.appendChild(arrowDown);
-        arrowDown.src = '{{$app_url}}/images/big-arrow-down-icon.png';
-        arrowDown.alt = 'Arrow Down';
-        arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
-        
-        const textSpan = document.createElement('span');
-        const text = document.createTextNode(prop.name + ` (${prop.type})`);
-        textSpan.classList.add('ml-[2.5rem]', 'font-bold', 'relative', 'bottom-[0.125rem]', 'select-none', 'text-[18px]', 'whitespace-nowrap');
-        textSpan.appendChild(text);
-        
-        const propertyTitleContainer = document.createElement('div');
-        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
-        propertyTitleContainer.style.border = '1px solid #D3D3D3';
-        
-        propertyTitleContainer.addEventListener('click', () => {
-            propertyHandleCheckboxClick(prop, trueInput);
-            arrowDown.classList.toggle('rotate-arrow');
-        });
-
-        const delImgContainer = document.createElement('div');
-        delImgContainer.classList.add('pr-[1rem]', 'w-full', 'flex', 'justify-end', 'items-center');
-
-        const delPropBtn = document.createElement('button');
-        delPropBtn.type = 'button';
-        delPropBtn.style.border = '1px solid #717172';
-        delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
-
-        delPropBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            clickedProperties.splice(prop, 1);
-            // add removed prop back to propertyTitles
-            propertyTitleData.push(prop);
-            li.remove();
-            // Re-render the property list
-            renderPropertyTitles();
-        });
-
-        const delImg = document.createElement('img');
-        delImg.src = '{{$app_url}}/images/archive-icon.png';
-        delImg.alt = 'delete icon';
-        delImg.classList.add('mr-[0.5rem]', 'hover:cursor-pointer', 'select-none');
-        
-        const delPropBtnText = document.createElement('p');
-        const textNode = document.createTextNode('Verwijderen');
-        
-        delPropBtnText.appendChild(textNode);
-        delPropBtn.appendChild(delImg);
-        delPropBtn.appendChild(delPropBtnText);
-        delImgContainer.appendChild(delPropBtn);
-        
-        propertyTitleContainer.appendChild(textSpan);
-        propertyTitleContainer.appendChild(delImgContainer);
-        propertyTitleContainer.appendChild(arrowDownDiv);
-        propertyTitleContainer.appendChild(trueInput);
-        li.appendChild(propertyTitleContainer);
-        renderProperty(prop, li, trueInput);
-        
-        // Add the list item to the list of properties
-        createProdPropertyList.appendChild(li);
-        
-        // Open property if it is already selected
-        if (prop.selected) {
-            propertyHandleCheckboxClick(prop, trueInput);
-            arrowDown.classList.toggle('rotate-arrow');
-            trueInput.value = prop.selectedOption;
+        // Check if property is already clicked
+        const isClicked = clickedVariationProperty.some(prop => prop.id === property.id);
+        // If not already clicked, add it to clickedVariationProperty
+        if (!isClicked) {
+            clickedVariationProperty.push(property);
         }
-    });
+        
+        const createProdPropertyList2 = document.getElementById('createProdPropertyList2');
+        createProdPropertyList2.innerHTML = ''; // Clear existing list
+        createProdPropertyList2.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
+        
+        // Render all clicked properties
+        clickedVariationProperty.forEach(prop => {
+            const li = document.createElement('li');
+            li.id = `properties_li_${prop.id}`;
+            li.classList.add('pt-[0.35rem]', 'pb-[0.35rem]');
+            
+            // Build components for the clicked property
+            const trueInput = document.createElement('input');
+            trueInput.id = `properties[${prop.id}]`;
+            trueInput.type = 'hidden';
+            trueInput.value = null;
+
+            const propertyNameSpan = document.createElement('span');
+            propertyNameSpan.textContent = prop.name;
+            propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
+            propertyNameSpan.style.display = 'inline-flex';
+            propertyNameSpan.style.width = '85%';
+            propertyNameSpan.style.zIndex = 99;
+            propertyNameSpan.classList.add('no-select');
+            
+            const arrowDownDiv = document.createElement('span');
+            const arrowDown = document.createElement('img');
+            arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'select-none', 'mr-[1.5rem]');
+            arrowDownDiv.appendChild(arrowDown);
+            arrowDown.src = '{{$app_url}}/images/big-arrow-down-icon.png';
+            arrowDown.alt = 'Arrow Down';
+            arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
+            
+            const textSpan = document.createElement('span');
+            const text = document.createTextNode(prop.name + ` (${prop.type})`);
+            textSpan.classList.add('ml-[2.5rem]', 'font-bold', 'relative', 'bottom-[0.125rem]', 'select-none', 'text-[18px]', 'whitespace-nowrap');
+            textSpan.appendChild(text);
+            
+            const propertyTitleContainer = document.createElement('div');
+            propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
+            propertyTitleContainer.style.border = '1px solid #D3D3D3';
+            
+            propertyTitleContainer.addEventListener('click', () => {
+                propertyHandleCheckboxClick(prop, trueInput);
+                arrowDown.classList.toggle('rotate-arrow');
+            });
+
+            const delImgContainer = document.createElement('div');
+            delImgContainer.classList.add('pr-[1rem]', 'w-full', 'flex', 'justify-end', 'items-center');
+
+            const delPropBtn = document.createElement('button');
+            delPropBtn.type = 'button';
+            delPropBtn.style.border = '1px solid #717172';
+            delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
+
+            delPropBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                clickedVariationProperty.splice(prop, 1);
+                // add removed prop back to propertyTitles
+                variationsTitleData.push(prop);
+                li.remove();
+                // Re-render the property list
+                renderPropertyTitles();
+            });
+
+            const delImg = document.createElement('img');
+            delImg.src = '{{$app_url}}/images/archive-icon.png';
+            delImg.alt = 'delete icon';
+            delImg.classList.add('mr-[0.5rem]', 'hover:cursor-pointer', 'select-none');
+            
+            const delPropBtnText = document.createElement('p');
+            const textNode = document.createTextNode('Verwijderen');
+            
+            delPropBtnText.appendChild(textNode);
+            delPropBtn.appendChild(delImg);
+            delPropBtn.appendChild(delPropBtnText);
+            delImgContainer.appendChild(delPropBtn);
+            
+            propertyTitleContainer.appendChild(textSpan);
+            propertyTitleContainer.appendChild(delImgContainer);
+            propertyTitleContainer.appendChild(arrowDownDiv);
+            propertyTitleContainer.appendChild(trueInput);
+            li.appendChild(propertyTitleContainer);
+            renderProperty(prop, li, trueInput);
+            
+            // Add the list item to the list of properties
+            createProdPropertyList2.appendChild(li);
+            
+            // Open property if it is already selected
+            if (prop.selected) {
+                propertyHandleCheckboxClick(prop, trueInput);
+                arrowDown.classList.toggle('rotate-arrow');
+                trueInput.value = prop.selectedOption;
+            }
+        });
     }
 
     function renderPropertyTitles() {
-    const propertyTitleList = document.getElementById('propertyLists');
+    const propertyTitleList = document.getElementById('propertyLists2');
     propertyTitleList.innerHTML = '';
-    propertyTitleData.forEach(property => {
+    variationsTitleData.forEach(property => {
         const li = document.createElement('li');
         li.classList.add('flex', 'items-center', 'justify-start');
         li.id = `add_property_li_${property.id}`;
@@ -228,7 +228,7 @@
         button.appendChild(span);
         li.addEventListener('click', () => {
             renderProperties(property);
-            propertyTitleData.splice(property, 1);
+            variationsTitleData.splice(property, 1);
             li.remove();
         });
         li.appendChild(button);
@@ -753,18 +753,18 @@
         });
     }
 
-    let blurMultiDelayTimer;
+    let blurVariationMultiDelayTimer;
     function blurmultiSelect(options) {
-        clearTimeout(blurMultiDelayTimer);
-        blurMultiDelayTimer = setTimeout(() => {
+        clearTimeout(blurVariationMultiDelayTimer);
+        blurVariationMultiDelayTimer = setTimeout(() => {
             options.classList.add('hidden');
         }, 200);
     }
 
-    let blurDelayTimer;
+    let BlurVariationDelayTimer;
         function blurSingleSelect(options) {
-        clearTimeout(blurDelayTimer);
-        blurDelayTimer = setTimeout(() => {
+        clearTimeout(BlurVariationDelayTimer);
+        BlurVariationDelayTimer = setTimeout(() => {
             options.classList.add('hidden');
         }, 200);
     }

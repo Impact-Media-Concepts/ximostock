@@ -1,9 +1,13 @@
 @props(['search' => null, 'workspaces', 'activeWorkspace' => null])
 
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
+
 <div class="w-full h-[5.05rem] absolute shadow-[0_1px_12px_-5px_rgba(0,0,0,0.3)] bg-white flex items-center hd:z-[998] uhd:z-[998] basic:z-[998]">
     <button class="px-11 pt-1 relative left-[0.08rem]">
         <a href="{{ url('/dashboard') }}">
-            <img class="select-none w-[10.75] h-[1.31rem] flex" src="../images/ximostock-logo.png" alt="ximostock logo">
+            <img class="select-none w-[10.75] h-[1.31rem] flex" src="{{$app_url}}/images/ximostock-logo.png" alt="ximostock logo">
         </a>
     </button>
 
@@ -186,7 +190,7 @@
                     style="border: 1px solid #717171" type="button" @click.away="open = false">
                     <div class="flex mt-[0.08rem] relative right-[0.2rem]">
                         <img class="select-none w-[1.2rem] h-[1.2rem] flex"
-                            src="../images/workspaces-icon.png" alt="workspaces icon">
+                            src="{{$app_url}}/images/workspaces-icon.png" alt="workspaces icon">
                     </div>
                     <span class="text-left text-[14px] text-gray-700 line-clamp-1 relative right-2">
                         Workspaces
@@ -213,7 +217,7 @@
         <div class="flex items-center gap-3.5">
             <a href="/user" class="basic:hidden hd:inline-flex uhd:inline-flex w-[3.43rem] h-[3.43rem] bg-white rounded-full flex justify-center items-center"
                 style="border: 1px solid #3dabd5;">
-                <img class="select-none w-[1.7rem] h-[2.1rem] flex mb-1" src="../images/user-icon.png"
+                <img class="select-none w-[1.7rem] h-[2.1rem] flex mb-1" src="{{$app_url}}/images/user-icon.png"
                     alt="user icon">
             </a>
 
@@ -228,7 +232,7 @@
                         {{ Auth::user()->name }}
                     </span>
                     <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]"
-                        src="../images/arrow-down-icon.png" alt="Arrow down">
+                        src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
                 </button>
 
                 <div x-cloak x-show="open"
@@ -239,7 +243,7 @@
                             <a href="/user">
                                 <button @click="selectedProperty = 'Instellingen'; open = false;"
                                     class="hover:bg-[#3999BE] duration-100 block h-[2.37rem] w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex items-center justify-center">
-                                        <img class="select-none w-[2rem] h-[1.5rem] pr-3 flex mb-1" src="../images/user-icon.png"
+                                        <img class="select-none w-[2rem] h-[1.5rem] pr-3 flex mb-1" src="{{$app_url}}/images/user-icon.png"
                                             alt="user icon">
                                     <span class="flex items-center justify-center pr-3">Account</span>
                                 </button>
@@ -249,7 +253,7 @@
                             <a href="/settings">
                                 <button @click="selectedProperty = 'Instellingen'; open = false;"
                                     class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-center">
-                                    <img class="select-none h-5.5 w-5.5 pr-3" src="../images/gray-settings.png"
+                                    <img class="select-none h-5.5 w-5.5 pr-3" src="{{$app_url}}/images/gray-settings.png"
                                         class="w-4 h-4 mr-2" alt="Instellingen Icon">
                                     <span class="flex items-center justify-center pr-3">Instellingen</span>
                                 </button>
@@ -260,7 +264,7 @@
                                 @csrf
                                 <button @click="selectedProperty = 'Uitloggen'; open = false;"
                                     class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-center">
-                                    <img class="select-none h-5.5 w-5.5 pr-3" src="../images/log-out-icon.png"
+                                    <img class="select-none h-5.5 w-5.5 pr-3" src="{{$app_url}}/images/log-out-icon.png"
                                         class="w-4 h-4 mr-2" alt="Uitloggen Icon">
                                     <span class="flex items-center justify-center pr-3">Uitloggen</span>
                                 </button>

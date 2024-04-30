@@ -1,4 +1,3 @@
-
 <div class="basic:h-[38rem] hd:w-[98rem] uhd:w-[138rem] bg-white hd:h-[50rem] uhd:h-[57rem] rounded-t-lg create-container-border">
     <div>
         <div class="h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg" style="border: 1px solid #F0F0F0;">

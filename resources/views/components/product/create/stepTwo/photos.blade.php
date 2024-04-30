@@ -6,7 +6,7 @@
         height: 20rem !important;
     }
 
-    .primary-foto-size {
+    .primary-photo-size {
         width: unset !important;
     }
 
@@ -31,6 +31,28 @@
         width: 1.2em !important;
         height: 1.2em !important;
     } */
+
+    @media only screen and (min-width: 1280px) {
+        .splide {
+            max-width: 94rem !important;
+        }
+
+    }
+
+    @media only screen and (min-width: 1920px) {
+       .splide {
+            max-width: 94rem !important;
+        }
+
+    }
+    
+    @media only screen and (min-width: 2560px) {
+       .splide {
+            max-width: 134rem !important;
+        }
+
+    }
+
 </style>
 
 <div class="bg-white rounded-t-lg basic:h-[38rem] hd:h-[50rem] uhd:h-[57rem] create-container-border">
@@ -49,10 +71,8 @@
                 </div>
 
                 <section class="splide hidden rounded-md flex hd:justify-start uhd:justify-center" id="splideSection" aria-label="Splide Basic HTML Example">
-                    <div class="splide__track hd:ml-[3rem] hd:w-[89rem] uhd:w-[124rem]">
-                        <ul class="splide__list uhd:!w-[119rem] uhd:!ml-[2rem]" id="splideList">
-                            
-                        </ul>
+                    <div class="splide__track hd:ml-[3rem] hd:w-[89rem] uhd:w-[124rem] uhd:!ml-0">
+                        <ul class="splide__list uhd:!w-[119rem]" id="splideList"></ul>
                     </div>
                 </section>
             </div>
@@ -67,7 +87,7 @@
                     Voeg foto toe
                     <div class="flex items-center justify-center">
                         <!-- todo add img file types -->
-                        <input class="hidden" type="file" accept=".jpg" id="uploadFoto" class="hidden" multiple/>
+                        <input class="hidden" type="file" accept=".jpg" id="uploadPhoto" class="hidden" multiple/>
                     </div>
                 </button>
 
