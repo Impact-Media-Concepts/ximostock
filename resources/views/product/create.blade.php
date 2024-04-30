@@ -1,15 +1,19 @@
 <x-layout._header-dependencies :sidenavActive="$sidenavActive" />
 
+<?php
+    $simple = 'Simple';
+?>
+
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
 <x-header.header :activeWorkspace="$activeWorkspace" :workspaces="$workspaces"/>
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
         <div class="h-full">
-            <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
+            <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive" />
         </div>
         <div class="pt-[1.5rem] basic:w-[71rem] hd:w-[98rem] uhd:w-[138rem] basic:ml-[4rem] hd:ml-0 uhd:ml-0">
             <div>
-                <x-product.create.header />
-              
+                <x-product.create.header>{{ $simple }}</x-product.create.header>
+                
                 <form method="POST" action="/products" enctype="multipart/form-data">
                     @csrf
 
@@ -26,7 +30,7 @@
                     </div>
 
                     <div id="stepFour" class="step" style="display: none;">
-                        <x-product.create.stepFour.properties :properties="$properties"/>
+                        <x-product.create.stepFour.properties :properties="$properties" />
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">

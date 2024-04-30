@@ -1,5 +1,9 @@
 <x-layout._header-dependencies :sidenavActive="$sidenavActive" />
 
+<?php
+    $variant = 'Variant';
+?>
+
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
 <x-header.header :activeWorkspace="$activeWorkspace" :workspaces="$workspaces"/>
     <div class="flex h-full pt-20 w-full gap-[1.9rem]">
@@ -8,7 +12,7 @@
         </div>
         <div class="pt-[1.5rem] basic:w-[71rem] hd:w-[98rem] uhd:w-[138rem] basic:ml-[4rem] hd:ml-0 uhd:ml-0">
             <div>
-                <x-product.create.header />
+                <x-product.create.header>{{ $variant }}</x-product.create.header>
               
                 <form method="POST" action="/products" enctype="multipart/form-data">
                     @csrf
@@ -30,7 +34,7 @@
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
-                        <x-product.create.variable.stepFive.variations :locations="$locations"/>
+                        <x-product.create.variable.stepFive.variations :properties="$properties" :locations="$locations"/>
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
@@ -58,6 +62,7 @@
                     </div>
                 </form>
                 <x-product.popup.create-product-create-property-popup/>
+                <x-product.popup.create-product-variations-add-property-popup :properties="$properties"/>
             </div>
         </div>
     </div>

@@ -171,7 +171,6 @@
         delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
 
         delPropBtn.addEventListener('click', (event) => {
-            console.log(event);
             event.stopPropagation();
             clickedProperties.splice(prop, 1);
             // add removed prop back to propertyTitles
@@ -857,7 +856,6 @@
         checkboxes.forEach(checkbox => {
             const li = checkbox.closest('li');
             const arrowDown = li.querySelector('img');
-            console.log(arrowDown);
             if (arrowDown) {
                 arrowDown.classList.remove('rotate-arrow');
             }

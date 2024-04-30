@@ -5,7 +5,7 @@
 <div class="flex justify-start items-center">
     <div class="flex justify-center items-center">
         <p class="w-[20rem] text-[#717171] text-[20px] font-bold">
-            Product aanmaken | simpel
+            Product aanmaken | {{ $slot }}
         </p>
     </div>
 
