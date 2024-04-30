@@ -83,11 +83,11 @@
                     style="border: 1px solid white"
                     type="button"
                     id="get_file"
-                    accept=".jpg, .jpeg, .png">
+                >
                     Voeg foto toe
                     <div class="flex items-center justify-center">
                         <!-- todo add img file types -->
-                        <input class="hidden" type="file" accept=".jpg" id="uploadPhoto" class="hidden" multiple/>
+                        <input class="hidden" type="file" accept=".jpg, .jpeg, .png" id="uploadPhoto" class="hidden" multiple/>
                     </div>
                 </button>
 

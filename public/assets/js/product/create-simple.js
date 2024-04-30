@@ -113,6 +113,20 @@ fileInput.addEventListener('change', function(event) {
     const files = event.target.files;
 
     if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const acceptedExtensions = ['jpg', 'jpeg', 'png'];
+
+            if (!acceptedExtensions.includes(fileExtension)) {
+                // Clear the file input
+                fileInput.value = null;
+                alert('Only [] files are allowed.');
+                return; // Stop if invalid file type is found
+            }
+        }
+
+        // code goes further if file type is valid
         splideSection.classList.remove('hidden');
 
         for (let i = 0; i < files.length; i++) {
