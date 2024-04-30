@@ -149,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const variationsAddPropPopup = document.querySelector('.variations-add-prop-pop-up');
-    console.log(variationsAddPropPopup);
     if (variationsAddPropPopup) {
         function variationsAddPropPopUp() {
             const variationsAddPropPopupTrigger = document.querySelector('.variations-add-prop-popup-trigger');
