@@ -1,7 +1,8 @@
-@props(['properties'])
+@props(['properties','selectedProperties' => null])
 
 <?php
     $app_url = env('VITE_APP_URL');
+    $propertyIds = $selectedProperties ? array_keys($selectedProperties) : [];
 ?>
 
 <style>
@@ -28,11 +29,16 @@
     }
 
     .variation-prop-btn-width {
-        width: 17.75rem;
+        width: 16.75rem;
     }
 
     .variation-prop-btn-right {
         right: 13rem;
+    }
+
+    .propBtnHeight {
+        height: 11.3rem;
+        max-height: 11.3rem;
     }
 </style>
 
@@ -58,35 +64,8 @@
                     </div>
 
                     <div id="variationPropContainer" class="max-h-[27rem] h-[27rem] overflow-y-auto pt-[1rem] pb-[1rem]">
-                        <ul class="flex items-center justify-center gap-[0.5rem]">
-                            <div class="flex flex-col items-start gap-[0.2rem]">
-                                <div>
-                                    <p>Kies een eigenschap:</p>
-                                </div>
-                               
-                                <select name="cars" id="cars">
-                                    
-                                </select>
-                                    <input type="hidden" name="selected_backOrder_id" x-bind:value="selectedbackOrder.id">
-                            </div>
-                            
-                            <div>
-                                <img class="w-[2rem] pt-[1rem]" src="{{$app_url}}/images/long-arrow-right-icon.png" alt="long arrow right icon">
-                            </div>
-
-                            <div class="flex flex-col items-start">
-                                <div>
-                                    <p>Kies een eigenschap waarde:</p>
-                                </div>
-                                <select name="cars" id="cars2">
-                                    
-                                </select>
-                                <input type="hidden" name="selected_backOrder_id" x-bind:value="selectedbackOrder.id">
-                            </div>
-
-                            <div id="variationRemovePropBtn" style="background: red">
-                                <img class="w-[2rem] pt-[1rem] hover:cursor-pointer" src="{{$app_url}}/images/delete-icon.png" alt="long arrow right icon">
-                            </div>
+                        <ul class="flex items-center justify-start gap-[0.5rem] ml-[1rem]">
+                            <div class="flex gap-[13rem] flex-col" id="variationAddPropBtnsContainer"></div>
                         </ul>
 
                     </div>
@@ -111,125 +90,136 @@
 </div>
 
 <script>
-    
-    const properties = @json($properties);
+    let variationAddPropsData = [
+        @foreach ( $properties as $property)
+            {
+                id:{{$property->id}},
+                name: '{{ $property->name }}',
+                type: '{{ $property->type }}',
+                options:[
+                    @foreach ($property->options as $option)
+                        "{{$option}}",
+                    @endforeach
+                ]
+            },
+        @endforeach
+    ];
+    document.addEventListener("DOMContentLoaded", function() {
+        const mainPropsBtnsContainer = document.getElementById('variationAddPropBtnsContainer');
+        const addNewDropdownButton = document.getElementById('variationAddPropBtn');
+        let currentDropdownContainer = null; // Define currentDropdownContainer outside the event listener scope
+        let selectedPropertyTextContent = null; // Track the initial text content of selectedPropertySpan
 
-    const selectElement2 = document.getElementById("cars2");
-    selectElement2.setAttribute('class', 'flex variation-prop-btn-width items-center back-order-btn px-4 h-12 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative hover:cursor-pointer');
-    
-    properties.forEach(property => {
-    
-        const options = document.createElement("option");
-        options.classList.add("!w-[17.75rem]", "block", "w-full", "text-left", "px-4",  "py-2" , "text-sm", "text-gray-700", "hover:bg-gray-100" , "focus:outline-none");
-        options.style.border = '1px solid #D3D3D3';
-        
-        options.value = property.name;
-        
-        options.textContent = property.name;
-        
-        selectElement2.appendChild(options);
-    });
+        addNewDropdownButton.addEventListener('click', () => {
+            const newDropdownContainer = document.createElement('div');
+            
+            newDropdownContainer.classList.add("variationsPropDropdownContainer", "flex", "gap-[1rem]");
+            newDropdownContainer.innerHTML = `
+                <div x-data="{ open: false, selectedProperty: '' }" class="variationsPropDropdown fooo2  relative flex items-center justify-start text-left right-6">
+                    <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
+                    <button @click="open = !open;" class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem] variation-prop-btn-width" style="border: 1px solid #717171" type="button" @click.away="open = false">
+                        <span class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.3rem] overflow-visible selectedPropertySpan" x-text="selectedProperty.name"></span>
+                        <div class="w-full flex justify-end">
+                            <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
+                        </div>
+                    </button>
+                    <div x-cloak x-show="open" class="absolute flex justify-center items-center overflow-y-auto propBtnHeight basic:h-[8rem] variation-prop-btn-width bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]" style="border: 1px solid #F0F0F0; left: 1.5rem;">
+                        <ul class="mt-0 propBtnHeight" id="propertyListContainer"></ul>
+                    </div>
+                </div>
 
-    
-    const selectElement = document.getElementById("cars");
+                <div>
+                    <img class="w-[2rem] pt-[0.7rem]" src="{{$app_url}}/images/long-arrow-right-icon.png" alt="long arrow right icon">
+                </div>
 
-    
-    properties.forEach(property => {
-    
-    const optionw = document.createElement("option");
-    optionw.classList.add('block', 'w-full', 'text-left', 'px-4',  'py-2' , 'text-sm', 'text-gray-700', 'hover:bg-gray-100' , 'focus:outline-none');
-    
-    optionw.value = property.name;
-    
-    
-    optionw.textContent = property.name;
-    
-    
-    selectElement.appendChild(optionw);
-    });
+            `;
+          
+            
+            variationAddPropsData.forEach(property => {
+                const propertyListItem = document.createElement('li');
+                propertyListItem.innerHTML = `
+                    <button type="button" class="variation-prop-btn-width hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start ml-[1rem]">
+                        <span id="variation_Prop_Item_${property.id}" class="flex items-center justify-center pr-3">${property.name}</span>
+                    </button>
+                `;
+                newDropdownContainer.querySelector("#propertyListContainer").appendChild(propertyListItem);
 
+                // Create a closure to capture the current property and currentDropdownContainer
+                propertyListItem.querySelector('button').addEventListener('click', (event) => {
+                    const clickedButton = event.currentTarget;
+                    const selectedPropertySpan = clickedButton.closest('.variationsPropDropdown').querySelector('.selectedPropertySpan');
+                    const propertyNameSpan = clickedButton.querySelector('span');
+                    const selectedPropertyName = propertyNameSpan.innerText;
 
+                    if (!selectedPropertyTextContent) {
+                        selectedPropertyTextContent = selectedPropertySpan.textContent.trim();
+                    }
 
+                    selectedPropertySpan.textContent = selectedPropertyName;
+                    selectedPropertySpan.title = selectedPropertyName;
 
+                    let optionsContainer = newDropdownContainer.querySelector('.propertyOptionsContainer'); // Reference the specific options container within this container
+                    if (!optionsContainer) {
+                        optionsContainer = document.createElement('div');
+                        optionsContainer.classList.add('propertyOptionsContainer', 'flex', "gap-[1rem]");
+                        newDropdownContainer.appendChild(optionsContainer);
+                    } else {
+                        optionsContainer.innerHTML = ''; // Clear previous items
+                    }
 
+                    variationAddPropsData.forEach(property => {
+                        if (selectedPropertyName === property.name) {
+                            optionsContainer.innerHTML = `
+                                <div x-data="{ open: false, selectedOption: '' }" class="variationsPropOptionsDropdown relative flex items-center justify-start text-left right-6">
+                                    <input type="hidden" name="selected_option_id" x-bind:value="selectedOption.id">
+                                    <button @click="open = !open;" class="variation-prop-btn-width flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]" style="border: 1px solid #717171" type="button" @click.away="open = false">
+                                        <span class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.5rem] overflow-visible selectedOptionSpan" x-text="selectedOption.name"></span>
+                                        <div class="w-full flex justify-end">
+                                            <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
+                                        </div>
+                                    </button>
+                                    <div x-cloak x-show="open" class="left-[1.7rem] variation-prop-btn-width absolute flex justify-center items-center overflow-y-auto propBtnHeight basic:h-[8rem] w-[10.43rem] bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]" style="border: 1px solid #F0F0F0;">
+                                        <ul class="mt-0 propBtnHeight" id="optionsListContainer"></ul>
+                                    </div>
+                                </div>
 
+                                <div class="removeVariationsDropdown" id="variationRemovePropBtn" style="background: gray">
+                                    <img class="w-[2rem] pt-[0.3rem] hover:cursor-pointer" src="{{$app_url}}/images/delete-icon.png" alt="long arrow right icon">
+                                </div>
+                            </ul>
+                            `;
 
+                            property.options.forEach(option => {
+                                const optionListItem = document.createElement('li');
+                                optionListItem.innerHTML = `
+                                    <button type="button" class="variation-prop-btn-width hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start ml-[1rem]">
+                                        <span class="flex items-center justify-center pr-3"> ${option} </span>
+                                    </button>
+                                `;
+                                optionListItem.querySelector('button').addEventListener('click', (event) => {
+                                    const clickedOptionButton = event.currentTarget;
+                                    const selectedOptionSpan = clickedOptionButton.closest('.variationsPropOptionsDropdown').querySelector('.selectedOptionSpan');
+                                    const optionSpan = clickedOptionButton.querySelector('span');
+                                    const selectedOptionName = optionSpan.innerText;
 
-    window.addPropsNames = properties.map(property => {
-        return { id: property.id, name: property.name };
-    });
+                                    selectedOptionSpan.textContent = selectedOptionName;
+                                    selectedOptionSpan.title = selectedOptionName;
+                                });
+                                optionsContainer.querySelector("#optionsListContainer").appendChild(optionListItem);
+                            });
 
-    document.getElementById('variationRemovePropBtn').addEventListener('click', (event) => {
-        // Find the closest ul element to the clicked remove button
-        const closestUl = event.target.closest('ul');
-        
-        // Remove the closest ul element
-        closestUl.parentNode.removeChild(closestUl);
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-            const propertyNameInput = document.getElementById('propertyName');
-            const propertyTypeSelect = document.getElementById('propertyType');
-            const optionsList = document.getElementById('optionsList');
-            const addOptionButton = document.getElementById('addOptionButton');
-
-            // Function to create an option item
-            function createOptionItem() {
-                const li = document.createElement('li');
-                const optionInput = document.createElement('input');
-                optionInput.type = 'text';
-                optionInput.name = 'options[]';
-                optionInput.required = true;
-                const removeOptionButton = document.createElement('button');
-                removeOptionButton.type = 'button';
-                removeOptionButton.textContent = '-';
-                removeOptionButton.classList.add('removeOptionButton');
-                li.appendChild(optionInput);
-                li.appendChild(removeOptionButton);
-                return li;
-            }
-
-            // Event listener for adding an option
-            addOptionButton.addEventListener('click', function () {
-                const optionItem = createOptionItem();
-                optionsList.appendChild(optionItem);
-            });
-
-            // Event listener for removing an option
-            optionsList.addEventListener('click', function (event) {
-                if (event.target && event.target.classList.contains('removeOptionButton')) {
-                    const listItem = event.target.parentNode;
-                    optionsList.removeChild(listItem);
-                }
-            });
-
-            // Event listener for property type change
-            propertyTypeSelect.addEventListener('change', function () {
-                const selectedType = propertyTypeSelect.value;
-                const optionItems = document.querySelectorAll('#optionsList li');
-
-                // Remove existing option items
-                optionItems.forEach(item => {
-                    item.classList.add('hidden');
+                            const removeButtons = document.querySelectorAll(".removeVariationsDropdown");
+                            removeButtons.forEach(removeButton => {
+                                removeButton.addEventListener('click', (event) => {
+                                    const itemToRemove = event.target.closest('.variationsPropDropdownContainer');
+                                    itemToRemove.parentNode.removeChild(itemToRemove);
+                                });
+                            });
+                        }
+                    });
                 });
-
-                if (selectedType === 'singleselect' || selectedType === 'multiselect') {
-                    // Add an initial option item
-                    const initialOptionItem = createOptionItem();
-                    optionsList.appendChild(initialOptionItem);
-
-                    // Show option items and add option button
-                    optionItems.forEach(item => {
-                        item.classList.remove('hidden');
-                    });
-                    addOptionButton.classList.remove('hidden');
-                } else {
-                    // Hide option items and add option button
-                    optionItems.forEach(item => {
-                        item.classList.add('hidden');
-                    });
-                    addOptionButton.classList.add('hidden');
-                }
             });
+            mainPropsBtnsContainer.appendChild(newDropdownContainer);
         });
+    });
 </script>
