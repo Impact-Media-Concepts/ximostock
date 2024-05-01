@@ -6,7 +6,7 @@
         <div class="h-full">
             <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
         </div>
-
+        {{ $slot }}
         </div>
 </body>
 
