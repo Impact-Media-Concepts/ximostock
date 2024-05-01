@@ -59,7 +59,7 @@
             <ul>
                 <template x-for="communiToChannel in communicateToChannel" :key="communiToChannel.data">
                     <li>
-                    <button type="button" @click="selectedcommuniToChannel = communiToChannel; open = false;$refs.communiToChannels.value = communiToChannel.data; console.log('Updated communiToChannels value:', $refs.communiToChannels.value);" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none">
+                    <button type="button" @click="selectedcommuniToChannel = communiToChannel; open = false;$refs.communiToChannels.value = communiToChannel.data;" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none">
                         <span x-text="communiToChannel.name"></span>
                         <input type="hidden" id="communicate_stock" x-ref="communiToChannels" name="communicate_stock" value="1">
                     </button>

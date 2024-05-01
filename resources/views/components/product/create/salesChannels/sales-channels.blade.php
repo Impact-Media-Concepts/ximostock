@@ -115,15 +115,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             input.name = 'sales_channel_ids[]';
             input.value = `${salesChannel.id}`;
 
-            input.addEventListener('change', function() {
-                if (this.checked) {
-                    console.log(`Checkbox with id ${this.id} is checked.`);
-                } else {
-                    console.log(`Checkbox with id ${this.id} is unchecked.`);
-                }
-            });
-
-
             const divContainer = document.createElement('div');
             divContainer.classList.add('flex', 'justify-center', 'py-[0.5rem]');
             divContainer.id = `sales_div_${salesChannel.id}`;

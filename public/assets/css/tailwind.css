@@ -692,6 +692,10 @@ video {
   left: 1.5rem;
 }
 
+.left-\[1\.7rem\] {
+  left: 1.7rem;
+}
+
 .left-\[1rem\] {
   left: 1rem;
 }
@@ -956,6 +960,10 @@ video {
   margin-left: 0.59rem;
 }
 
+.ml-\[0\.5rem\] {
+  margin-left: 0.5rem;
+}
+
 .ml-\[0\.73rem\] {
   margin-left: 0.73rem;
 }
@@ -990,6 +998,10 @@ video {
 
 .ml-\[1\.8rem\] {
   margin-left: 1.8rem;
+}
+
+.ml-\[1rem\] {
+  margin-left: 1rem;
 }
 
 .ml-\[2\.2rem\] {
@@ -1070,6 +1082,10 @@ video {
 
 .ms-4 {
   margin-inline-start: 1rem;
+}
+
+.mt-0 {
+  margin-top: 0px;
 }
 
 .mt-1 {
@@ -1638,10 +1654,6 @@ video {
   width: 16rem !important;
 }
 
-.\!w-\[17\.75rem\] {
-  width: 17.75rem !important;
-}
-
 .w-1 {
   width: 0.25rem;
 }
@@ -2153,10 +2165,6 @@ video {
   gap: 2rem;
 }
 
-.gap-\[0\.2rem\] {
-  gap: 0.2rem;
-}
-
 .gap-\[0\.57rem\] {
   gap: 0.57rem;
 }
@@ -2183,6 +2191,10 @@ video {
 
 .gap-\[13\.2rem\] {
   gap: 13.2rem;
+}
+
+.gap-\[13rem\] {
+  gap: 13rem;
 }
 
 .gap-\[1rem\] {
@@ -2232,6 +2244,10 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-visible {
+  overflow: visible;
 }
 
 .overflow-y-auto {
@@ -2861,8 +2877,16 @@ video {
   padding-top: 0.35rem;
 }
 
+.pt-\[0\.3rem\] {
+  padding-top: 0.3rem;
+}
+
 .pt-\[0\.5rem\] {
   padding-top: 0.5rem;
+}
+
+.pt-\[0\.7rem\] {
+  padding-top: 0.7rem;
 }
 
 .pt-\[1\.5rem\] {

@@ -52,7 +52,6 @@
         }
 
     }
-
 </style>
 
 <div class="bg-white rounded-t-lg basic:h-[38rem] hd:h-[50rem] uhd:h-[57rem] create-container-border">
@@ -86,7 +85,6 @@
                 >
                     Voeg foto toe
                     <div class="flex items-center justify-center">
-                        <!-- todo add img file types -->
                         <input class="hidden" type="file" accept=".jpg, .jpeg, .png" id="uploadPhoto" class="hidden" multiple/>
                     </div>
                 </button>

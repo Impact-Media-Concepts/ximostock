@@ -152,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (variationsAddPropPopup) {
         function variationsAddPropPopUp() {
             const variationsAddPropPopupTrigger = document.querySelector('.variations-add-prop-popup-trigger');
-            console.log(variationsAddPropPopupTrigger);
             variationsAddPropPopupTrigger.addEventListener('click', function (event) {
 
                 event.preventDefault();

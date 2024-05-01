@@ -34,7 +34,7 @@
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
-                        <x-product.create.variable.stepFive.variations :properties="$properties" :locations="$locations"/>
+                        <x-product.create.variable.stepFive.variations :selectedProperties="$selectedProperties" :properties="$properties" :locations="$locations"/>
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
@@ -62,7 +62,7 @@
                     </div>
                 </form>
                 <x-product.popup.create-product-create-property-popup/>
-                <x-product.popup.create-product-variations-add-property-popup :properties="$properties"/>
+                <x-product.popup.create-product-variations-add-property-popup :selectedProperties="$selectedProperties" :properties="$properties"/>
             </div>
         </div>
     </div>
