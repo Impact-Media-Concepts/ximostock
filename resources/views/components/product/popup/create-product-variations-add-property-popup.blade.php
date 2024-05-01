@@ -164,7 +164,7 @@
                         optionsContainer.classList.add('propertyOptionsContainer', 'flex', "gap-[1rem]");
                         newDropdownContainer.appendChild(optionsContainer);
                     } else {
-                        optionsContainer.innerHTML = ''; // Clear previous items
+                        optionsContainer.innerHTML = '';
                     }
 
                     variationAddPropsData.forEach(property => {
