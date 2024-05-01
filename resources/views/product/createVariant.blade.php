@@ -2,6 +2,7 @@
 
 <?php
     $variant = 'Variant';
+    $app_url = env('VITE_APP_URL');
 ?>
 
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">

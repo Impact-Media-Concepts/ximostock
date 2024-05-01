@@ -60,7 +60,7 @@
             <div class="relative bottom-8">
                 <div class="w-[43.93rem] h-[29.7rem] mt-[2rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
                     <div class="w-[43.93rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white">
-                        <p>Korting</p>
+                        <p>Eigenschappen</p>
                     </div>
 
                     <div id="variationPropContainer" class="max-h-[27rem] h-[27rem] overflow-y-auto pt-[1rem] pb-[1rem]">
