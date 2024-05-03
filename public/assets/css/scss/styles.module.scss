@@ -1,0 +1,32 @@
+$primary: rgb(61, 171, 213);
+$secondary: rgb(247, 247, 247);
+$light-gray: rgb(219, 219, 219);
+$gray: rgb(113, 113, 114);
+$white: rgb(255, 255, 255);
+
+$dark-primary: darken($primary, 6%);
+$dark-secondary: darken($secondary, 2%);
+
+.primary-btn-hover {
+    background: $primary !important;
+
+    &:hover{
+        background: $dark-primary !important;
+    }
+}
+
+.primary-btn {
+    background: $primary !important;
+}
+
+.secondary-btn-hover {
+    background: $white !important;
+
+    &:hover{
+        background: $dark-secondary !important;
+    }
+}
+
+.secondary-btn {
+    background: $secondary !important;
+}

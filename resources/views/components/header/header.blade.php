@@ -35,7 +35,7 @@
             <div x-data="{ open: false, selectedProperty: '' }" class="relative flex items-center justify-start text-left right-6">
                 <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
                 <button @click="open = !open;"
-                    class="hover:bg-[#3999BE] duration-100 flex items-center z-20 w-[10.53rem] px-[1.08rem] h-[2.78rem] text-sm font-light text-gray-700 bg-[#3dabd5] bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
+                    class="duration-100 flex items-center z-20 w-[10.53rem] px-[1.08rem] h-[2.78rem] text-sm font-light text-gray-700 primary-btn-hover bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3DABD5] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]"
                     style="border: 1px solid white" @click.away="open = false">
                     <div class="flex mt-[0.08rem]">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -48,7 +48,7 @@
                 </button>
 
                 <div x-cloak x-show="open"
-                    class="absolute flex-col justify-center items-center w-[10.43rem] bg-[#3dabd5] divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 left-6 top-[3.2rem]">
+                    class="absolute flex-col justify-center items-center w-[10.43rem] primary-btn divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 left-6 top-[3.2rem]">
                     <ul class="dropdown-content">
                         <li class="dropdown flex justify-start">
                             <div
