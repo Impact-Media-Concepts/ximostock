@@ -12,7 +12,6 @@ use App\Models\ProductSalesChannelProperty;
 use App\Models\Property;
 use App\Models\PropertySalesChannel;
 use App\Models\SalesChannel;
-use App\View\Components\properties;
 use Automattic\WooCommerce\Client;
 
 use Exception;
@@ -100,13 +99,13 @@ class WooCommerceManager
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
 
         $productIds = $products->pluck('id')->toArray();
-        $productSalesChannels = ProductSalesChannel::whereIn('product_id', $productIds)->where('sales_channel_id', $salesChannel->id)->get();
+        $productSalesChannels = ProductSalesChannel::whereIn('product_id', $productIds)->where('sales_channel_id', $salesChannel->id)->with('properties', 'categories')->get();
 
         $data = [
             'create' => [],
             'update' => []
         ];
-        //prepare categories and poperties
+        #region //prepare categories and poperties
         $categories = [];
         $properties = [];
         $failedToUpdate = [];
@@ -117,7 +116,7 @@ class WooCommerceManager
                 }
             }
             foreach ($product->properties as $property) {
-                if (!in_array($property->id, $categories)) {
+                if (!in_array($property->id, $properties)) {
                     array_push($properties, $property->id);
                 }
             }
@@ -130,7 +129,7 @@ class WooCommerceManager
                     }
                 }
                 foreach ($productSalesChannel->properties as $property) {
-                    if (!in_array($property->id, $categories)) {
+                    if (!in_array($property->id, $properties)) {
                         array_push($properties, $property->id);
                     }
                 }
@@ -140,18 +139,19 @@ class WooCommerceManager
         $this->uploadCategoriesToSalesChannel($categories, $salesChannel, $woocommerce);
         $this->uploadProperties($properties, $salesChannel, $woocommerce);
 
-        #region //data for products (less database queries)
+        #endregion
+
         $categorySalesChannels =  CategorySalesChannel::whereIn('category_id', $categories)->where('sales_channel_id', $salesChannel->id)->get();
         $propertySalesChannels = PropertySalesChannel::whereIn('property_id', $properties)->where('sales_channel_id', $salesChannel->id)->get();
         $productProperties = ProductProperty::whereIn('product_id', $productIds)->get();
-        #endregion
-
+        $categoryProductSalesChannels = CategoryProductSalesChannel::where('product_sales_channel_id', $productSalesChannel->id)->get();
+        $propertyProductSaleschannels = ProductSalesChannelProperty::where('product_sales_channel_id', $productSalesChannel->id)->get();
         //prepare data
         foreach ($products as $index => $product) {
             $update = $productSalesChannels->where('product_id', $product->id)->whereNotNull('external_id')->first();
 
             // if the product is presend add it to be updated. if it is not add it to be created
-            $productData = $this->prepareProductData($product, $productSalesChannels, $categorySalesChannels, $propertySalesChannels, $productProperties,);
+            $productData = $this->prepareProductData($product, $productSalesChannels, $categorySalesChannels, $propertySalesChannels, $productProperties, $categoryProductSalesChannels, $propertyProductSaleschannels);
 
             if ($update) {
                 $productData += ['id' => $update->external_id];
@@ -164,7 +164,7 @@ class WooCommerceManager
             if ($requestCount >= 100 || $index === count($products) - 1) {
 
                 $results = $woocommerce->post('products/batch', $data);
-
+                //dd($results, $data);
                 //create external ids for created producst
                 if (Count($data['create'])) {
                     $this->setExternalIds($results, $products, $salesChannel);
@@ -179,7 +179,6 @@ class WooCommerceManager
                             array_push($failedToUpdate, reset($failedData));
                         }
                     }
-                    //dd here
                     if (count($failedToUpdate)) {
                         //remove the id from the products so i can create them instead of updating
                         $failedToUpdate = array_map(function ($product) {
@@ -209,16 +208,14 @@ class WooCommerceManager
     protected function setExternalIds($results, $products, $salesChannel)
     {
         foreach ($results->create as $result) {
-            if (!isset($result->error)) {
+            if (!isset($result->error) && isset($result->id)) {
                 $product = $products->first(function ($product) use ($result) {
-                    if (!isset($product->sku) || !isset($result->sku)) { //dd for bugtesting
-                        dd($product, $result);
-                    }
                     return $product->sku == $result->sku;
                 });
                 $productSalesChannel = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
-                $productSalesChannel->external_id = $result->id;
-                $productSalesChannel->save();
+                $productSalesChannel->update([
+                    'external_id' => $result->id
+                ]);
             }
         }
     }
@@ -228,7 +225,6 @@ class WooCommerceManager
     {
         $categories = array_diff($categoryIds, $salesChannel->categories->pluck('id')->toArray());
         $categories = Category::whereIn('id', $categories)->get();
-
         foreach ($categories as $category) {
             if (!CategorySalesChannel::where('category_id', '=', $category->id)->where('sales_channel_id', '=', $salesChannel->id)->exists()) {
                 if ($category->parent_category_id != null) {
@@ -237,6 +233,7 @@ class WooCommerceManager
                     {
                         $data = [
                             'name' => $category->name,
+                            'slug' => env('XS_PREFIX', 'xs_') . $category->name,
                             'parent' => $parent->external_id
                         ];
                         $response = $woocommerce->post('products/categories', $data);
@@ -250,7 +247,8 @@ class WooCommerceManager
                     }
                 } else {
                     $data = [
-                        'name' => $category->name
+                        'name' => $category->name,
+                        'slug' => env('XS_PREFIX', 'xs_') . $category->name
                     ];
                     $response = $woocommerce->post('products/categories', $data);
                     CategorySalesChannel::create([
@@ -261,6 +259,27 @@ class WooCommerceManager
                 }
             }
         }
+        // get all categories that shoeld be uploaded and find out witch ones are not.
+        $categories = CategorySalesChannel::whereIn('category_id', $categoryIds)->where('sales_channel_id', $salesChannel->id)->get();
+        $categoryIds =  $categories->pluck('external_id')->toArray();
+        $results = $woocommerce->get('products/categories', ['include' => $categoryIds]);
+        $externalCategories = [];
+        foreach($results as $result){
+            array_push($externalCategories, $result->id);
+        }
+        $missingCategories = $categories->reject(function($category) use ($externalCategories){
+            return in_array($category->external_id, $externalCategories);
+        });
+        //upload the missing categories;
+        $data = ['create' => []];
+        foreach($missingCategories as $category){
+            $categoryData = [
+                'name' => $category->name,
+                'slug' => env('XS_PREFIX', 'xs_') . $category->name
+            ];
+            array_push($data['create'], $categoryData);
+        }
+        // $woocommerce->post()
     }
 
     protected function UploadParentCategoryRecursive(Category $category, SalesChannel $salesChannel)
@@ -274,6 +293,7 @@ class WooCommerceManager
                 {
                     $data = [
                         'name' => $category->name,
+                        'slug' => env('XS_PREFIX', 'xs_') . $category->name,
                         'parent' => $parent->external_id
                     ];
                     $response = $woocommerce->post('products/categories', $data);
@@ -287,7 +307,8 @@ class WooCommerceManager
                 }
             } else {
                 $data = [
-                    'name' => $category->name
+                    'name' => $category->name,
+                    'slug' => env('XS_PREFIX', 'xs_') . $category->name
                 ];
                 $response = $woocommerce->post('products/categories', $data);
                 CategorySalesChannel::create([
@@ -301,20 +322,57 @@ class WooCommerceManager
 
     protected function uploadProperties(array $propertyIds, SalesChannel $salesChannel, Client $woocommerce)
     {
-        $properties = array_diff($propertyIds, $salesChannel->properties->pluck('id')->toArray());
-        $properties = Property::whereIn('id', $properties)->get();
-        if (Count($properties)) {
+        //prepare data
+        $createProperties = array_diff($propertyIds, $salesChannel->properties->pluck('id')->toArray());
+        $createProperties = Property::whereIn('id', $createProperties)->get();
+        $updateProperties =  $salesChannel->properties->pluck('id')->toArray();
+        $updateProperties = Property::whereIn('id', $updateProperties)->get();
+
+
+        // //update properties in saleschnanels if any
+        if (Count($updateProperties)) {
+            foreach ($updateProperties as $property) {
+                // $external_id = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+                // $external_id = $external_id->external_id;
+                $data = ['create' => [
+                    [
+                        'name' => $property->name,
+                        'slug' => env('XS_PREFIX', 'xs_') . $property->name
+                    ]
+                ]];
+                $result = $woocommerce->post('products/attributes/batch', $data);
+                $result = reset($result);
+                $result = reset($result);
+
+                if (!isset($result->error)) {
+                    if (isset($result->id)) {
+                        $propSaleschannel = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->get()->first();
+                        $propSaleschannel->update([
+                            'external_id' => $result->id
+                        ]);
+                    }
+                }
+            }
+        }
+        //create proeprties in saleschannel if any
+        if (Count($createProperties)) {
             $data = [
                 'create' => [],
             ];
-            foreach ($properties as $property) {
-                array_push($data['create'], ['name' => $property->name]);
+            foreach ($createProperties as $property) {
+                array_push(
+                    $data['create'],
+                    [
+                        'name' => $property->name,
+                        'slug' => env('XS_PREFIX', 'xs_') . $property->name
+                    ]
+                );
             }
             $results = $woocommerce->post('products/attributes/batch', $data);
             foreach ($results->create as $result) {
                 if (!isset($result->error)) {
                     $propertyName = $result->name;
-                    $property = $properties->first(function ($property) use ($propertyName) {
+                    $property = $createProperties->first(function ($property) use ($propertyName) {
                         return $property->name == $propertyName;
                     });
                     PropertySalesChannel::create([
@@ -322,27 +380,20 @@ class WooCommerceManager
                         'property_id' => $property->id,
                         'external_id' => $result->id
                     ]);
-                } else {
-                    //todo slug in use . get id and save as external id.
                 }
             }
         }
     }
 
-    //check if theree are any differences between the sales channel and the ximostock database and if so. correct these differences.
-    protected function overrideWoocommerce()
-    {
-    }
-
     #region // prepare product data
-    protected function prepareProductData(Product $product, $productSalesChannels, $categorySalesChannels, $propertySalesChannels, $productProperties)
+    protected function prepareProductData(Product $product, $productSalesChannels, $categorySalesChannels, $propertySalesChannels, $productProperties, $categoryProductSalesChannels, $propertyProductSaleschannels)
     {
         $productSalesChannel = $productSalesChannels->where('product_id', $product->id)->first();
 
         //prepare product categories
-        $categories = $this->prepareProductCategoryData($product, $productSalesChannel, $categorySalesChannels);
+        $categories = $this->prepareProductCategoryData($product, $productSalesChannel, $categorySalesChannels, $categoryProductSalesChannels);
         //prepare product properies
-        $properties = $this->prepareProductPropertyData($product, $productSalesChannel, $propertySalesChannels, $productProperties);
+        $properties = $this->prepareProductPropertyData($product, $productSalesChannel, $propertySalesChannels, $productProperties, $propertyProductSaleschannels);
 
         //prepare final product
         $productData = [
@@ -365,9 +416,9 @@ class WooCommerceManager
         return $productData;
     }
 
-    protected function prepareProductCategoryData(Product $product, ProductSalesChannel $productSalesChannel, $categorySalesChannels)
+    protected function prepareProductCategoryData(Product $product, ProductSalesChannel $productSalesChannel, $categorySalesChannels, $categoryProductSalesChannels)
     {
-        $categoryIds = CategoryProductSalesChannel::where('product_sales_channel_id', $productSalesChannel->id)->get()->pluck('category_id')->toArray();
+        $categoryIds = $categoryProductSalesChannels->where('product_sales_channel_id', $productSalesChannel->id)->pluck('category_id')->toArray();
 
         if (Count($categoryIds)) {
             $categoryIds = CategorySalesChannel::whereIn('category_id', $categoryIds)->get()->pluck('external_id')->toArray();
@@ -388,16 +439,18 @@ class WooCommerceManager
         }
     }
 
-    protected function prepareProductPropertyData(Product $product, ProductSalesChannel $productSalesChannel, $propertySalesChannels, $productProperties)
+    protected function prepareProductPropertyData(Product $product, ProductSalesChannel $productSalesChannel, $propertySalesChannels, $productProperties, $propertyProductSaleschannels)
     {
-        $proppertyIds = ProductSalesChannelProperty::where('product_sales_channel_id', $productSalesChannel->id)->get()->pluck('property_id')->toArray();
+        $propertyIds = $propertyProductSaleschannels->where('product_sales_channel_id', $productSalesChannel->id)->pluck('property_id')->toArray();
 
-        if (Count($proppertyIds)) {
-            $propertyIds = PropertySalesChannel::whereIn('property_id', $proppertyIds)->get()->pluck('external_id')->toArray();
+        if (Count($propertyIds)) {
+            $propertyIds = $propertySalesChannels->whereIn('property_id', $propertyIds)->pluck('property_id', 'external_id')->toArray();
             $properties = [];
-            foreach ($propertyIds as $propertyId) {
-                $values = $productProperties->where('external_id', $propertyId)->where('product_id', $product->id)->first();
-                $values = (array)json_decode($values->property_value)->value;
+            foreach ($propertyIds as $externalId => $propertyId) {
+                //get values
+                $values = ProductSalesChannelProperty::where('property_id', $propertyId)->get()->first();
+                $values = (array)json_decode($values->prop_value)->value;
+
                 $options = [];
                 foreach ($values as $value) {
                     if (gettype($value) === 'string') {
@@ -407,7 +460,7 @@ class WooCommerceManager
                     }
                 }
                 $propData = [
-                    'id' => $propertyId,
+                    'id' => $externalId,
                     'options' => $options
                 ];
                 array_push($properties, $propData);

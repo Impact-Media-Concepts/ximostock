@@ -200,22 +200,22 @@ class DatabaseSeeder extends Seeder
         }
 
         //link salesChannels
-        $productSalesChannels = [];
-        for ($x = 1; $x <= 500; $x++) {
-            for ($y = 1; $y <= 3; $y++)
-                array_push($productSalesChannels, ProductSalesChannel::create([
-                    'product_id' => $x,
-                    'sales_channel_id' => $y
-                ]));
-        }
+        // $productSalesChannels = [];
+        // for ($x = 1; $x <= 500; $x++) {
+        //     for ($y = 1; $y <= 3; $y++)
+        //         array_push($productSalesChannels, ProductSalesChannel::create([
+        //             'product_id' => $x,
+        //             'sales_channel_id' => $y
+        //         ]));
+        // }
 
-        foreach ($productSalesChannels as $sale) {
-            Sale::create([
-                'product_id' => $sale->product_id,
-                'sales_channel_id' =>  $sale->sales_channel_id,
-                'price' => fake()->numberBetween(10, 30),
-                'stock' => fake()->numberBetween(1, 20)
-            ]);
-        }
+        // foreach ($productSalesChannels as $sale) {
+        //     Sale::create([
+        //         'product_id' => $sale->product_id,
+        //         'sales_channel_id' =>  $sale->sales_channel_id,
+        //         'price' => fake()->numberBetween(10, 30),
+        //         'stock' => fake()->numberBetween(1, 20)
+        //     ]);
+        // }
     }
 }

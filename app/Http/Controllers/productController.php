@@ -17,6 +17,7 @@ use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Models\WorkSpace;
 use App\Rules\ValidLocationZoneKeys;
+use App\Rules\ValidProductIds;
 use App\Rules\ValidProductKeys;
 use App\Rules\ValidPropertyKeys;
 use App\Rules\ValidPropertyOptions;
@@ -26,6 +27,7 @@ use App\Rules\VallidCategoryKeys;
 use App\WooCommerceManager;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -286,8 +288,8 @@ class ProductController extends BaseProductController
 
         //validate request
         $validatedData = $request->validate([
-            'product_ids' => ['required', 'array'],
-            'product_ids.*' => ['required', 'numeric', Rule::exists('products', 'id')],
+            'product_ids' => ['required', 'array', new ValidProductIds],
+            'product_ids.*' => ['required', 'numeric'],
             'sales_channel_ids' => ['required', 'array'],
             'sales_channel_ids.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
@@ -295,15 +297,18 @@ class ProductController extends BaseProductController
         // link saleschannels to product
         $products = Product::whereIn('id', $validatedData['product_ids'])->with('photos', 'locationZones', 'productSalesChannels', 'properties', 'categories')->get();
         $salesChannels = SalesChannel::whereIn('id', $validatedData['sales_channel_ids'])->get();
+        $data=[];
         foreach ($products as $product) {
-            $product->touch();
             foreach ($salesChannels as $salesChannel) {
-                ProductSalesChannel::create([
+                $productSalesChannel = [
                     'product_id' => $product->id,
                     'sales_channel_id' => $salesChannel->id
-                ]);
+                ];
+                array_push($data, $productSalesChannel);
             }
         }
+        DB::table('products')->whereIn('id', $validatedData['product_ids'])->update(['updated_at' => now()]);
+        DB::table('product_sales_channel')->insert($data);
         $woocommerce = new WooCommerceManager;
         foreach($salesChannels as $salesChannel){
             $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
