@@ -1,6 +1,10 @@
 @props(['properties'])
 
-<div class='bg-white hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
+
+<div class='bg-white basic:h-[38rem] hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg hd:relative hd:bottom[2.62rem]' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1.56rem] mt-[0.6rem]'>
             <p class='font-bold text-[18px] text-[#717171]'>Lorem, ipsum dolor.</p>
@@ -8,8 +12,8 @@
         </div>
     </div>
 
-    <div class='w-full flex justify-center items-center hd:mt-[1.5rem] uhd:mt-[1.5rem]'>
-        <div class='h-[47.18rem] hd:w-[94rem] uhd:w-[134rem]'>
+    <div class='w-full flex justify-center items-center mt-[1.5rem] '>
+        <div class='basic:w-[67rem] hd:w-[94rem] uhd:w-[134rem]'>
             <div class='bg-[#3DABD5] rounded-t-lg h-[2.5rem] flex items-center justify-start'>
                 <p class='pl-[1.56rem] text-[#fff]'>
                     Beschikbare eigenschappen
@@ -48,7 +52,7 @@
 
                 </div>
                
-                <div class=' flex flex-col items-center hd:h-[36.5rem] hd:max-h-[36.5rem] uhd:h-[43rem] uhd:max-h-[43rem] overflow-y-auto rounded-b-lg' style='border: 1px solid #F0F0F0;'>
+                <div class=' flex flex-col items-center basic:h-[24.5rem] basic:max-h-[24.5rem] hd:h-[36.5rem] hd:max-h-[36.5rem] uhd:h-[43rem] uhd:max-h-[43rem] overflow-y-auto rounded-b-lg' style='border: 1px solid #F0F0F0;'>
                     <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
                         <ul class='mt-[0.85rem]' id='createProdPropertyList'></ul>
                     </div>
@@ -78,8 +82,7 @@
         propertyTitleData.forEach((property) => {
             const li = document.getElementById(`add_property_li_${property.id}`);
             if (
-                !propertySearchText ||
-                property.name.toLowerCase().includes(propertySearchText.toLowerCase())
+                !propertySearchText || property.name.toLowerCase().includes(propertySearchText.toLowerCase()) || property.type.toLowerCase().includes(propertySearchText.toLowerCase())
             ) {
                 li.classList.remove('hidden');
             } else {
@@ -141,7 +144,7 @@
         const arrowDown = document.createElement('img');
         arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'select-none', 'mr-[1.5rem]');
         arrowDownDiv.appendChild(arrowDown);
-        arrowDown.src = '../../images/big-arrow-down-icon.png';
+        arrowDown.src = '{{$app_url}}/images/big-arrow-down-icon.png';
         arrowDown.alt = 'Arrow Down';
         arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
         
@@ -151,7 +154,7 @@
         textSpan.appendChild(text);
         
         const propertyTitleContainer = document.createElement('div');
-        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
+        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
         propertyTitleContainer.style.border = '1px solid #D3D3D3';
         
         propertyTitleContainer.addEventListener('click', () => {
@@ -178,7 +181,7 @@
         });
 
         const delImg = document.createElement('img');
-        delImg.src = '../images/archive-icon.png';
+        delImg.src = '{{$app_url}}/images/archive-icon.png';
         delImg.alt = 'delete icon';
         delImg.classList.add('mr-[0.5rem]', 'hover:cursor-pointer', 'select-none');
         
@@ -283,12 +286,12 @@
 
         const decrementIcon = document.createElement('img');
         decrementIcon.classList.add('select-none');
-        decrementIcon.src = '../images/minus-icon.png';
+        decrementIcon.src = '{{$app_url}}/images/minus-icon.png';
         decrement.appendChild(decrementIcon);
 
         const incrementIcon = document.createElement('img');
         incrementIcon.classList.add('select-none');
-        incrementIcon.src = '../images/plus-icon.png';
+        incrementIcon.src = '{{$app_url}}/images/plus-icon.png';
         increment.appendChild(incrementIcon);
 
         decrement.classList.add('w-[2.12rem]', 'h-[2.12rem]', 'flex', 'items-center', 'justify-center', 'hover:cursor-pointer', 'active:bg-gray-100', 'rounded-md');
@@ -303,9 +306,9 @@
         } else{
             numberselect.value = 0;
         }
-        numberselect.classList.add('numberInput', 'text-center', 'w-[8.12rem]', 'h-[2.12rem]', 'flex');
+        numberselect.classList.add('numberInput', 'text-center', 'basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.6rem]', 'h-[2.12rem]', 'flex');
 
-        numberContainer.classList.add('flex', 'rounded-md', 'w-[12.3rem]', 'h-[2.12rem]');
+        numberContainer.classList.add('flex', 'rounded-md','basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.6rem]', 'h-[2.12rem]');
         numberContainer.style.border = '1px solid #D3D3D3';
 
         numberContainer.appendChild(decrement);
@@ -341,7 +344,9 @@
         input.classList.add(
             'flex',
             'z-20',
-            'w-[12.3rem]',
+            'basic:w-[31rem]',
+            'hd:w-[41rem]',
+            'uhd:w-[50.06rem]',
             'h-[2.12rem]',
             'items-center',
             'justify-start',
@@ -369,8 +374,12 @@
             'hidden',
             'overflow-y-auto',
             'overflow-x-hidden',
-            'w-[12.3rem]',
-            'max-h-[12.37rem]',
+            'basic:w-[31rem]',
+            'basic:max-h-[30.67rem]',
+            'hd:w-[41rem]',
+            'hd:max-h-[40.67rem]',
+            'uhd:w-[50.6rem]',
+            'uhd:max-h-[50.67rem]',
             'rounded-mb',
         );
 
@@ -406,7 +415,7 @@
                     'flex',
                     'items-center',
                     'block',
-                    'w-[11rem]',
+                    'uhd:w-[50.06rem]',
                     'h-[2.12rem]',
                     'px-4',
                     'py-2.5',
@@ -470,7 +479,9 @@
         input.type = 'text';
         input.classList.add(
             'z-20',
-            'w-[uhd:30rem]',
+            'basic:w-[31rem]',
+            'hd:w-[41rem]',
+            'uhd:w-[50.06rem]',
             'h-[2.12rem]',
             'pl-3',
             'flex',
@@ -517,7 +528,9 @@
             'flex',
             'items-center',
             'block',
-            'w-[12.3rem]',
+            'basic:w-[30.4rem]',
+            'hd:w-[40.4rem]',
+            'uhd:w-[50rem]',
             'h-[2.12rem]',
             'px-4',
             'py-2.5',
@@ -534,7 +547,9 @@
             'flex',
             'items-center',
             'block',
-            'w-[12.3rem]',
+            'basic:w-[30.4rem]',
+            'hd:w-[40.4rem]',
+            'uhd:w-[50rem]',
             'h-[2.12rem]',
             'px-4',
             'py-2.5',
@@ -599,12 +614,16 @@
 
     //render the singel select property
     function rendersingleselect(property, div, trueInput) {
+    div.style.height = '13.58rem';
     const input = document.createElement('input');
-
+    singleSelectSubContainer = document.createElement('div');
+    singleSelectSubContainer.classList.add('ml-[2rem]', 'mt-[1rem]');
     input.type = 'text';
     input.classList.add(
         'z-20',
-        'w-[12.3rem]',
+        'basic:w-[31rem]',
+        'hd:w-[41rem]',
+        'uhd:w-[50.06rem]',
         'h-[2.12rem]',
         'pl-3',
         'flex',
@@ -627,15 +646,25 @@
         searchProperty(input.value, property);
         trueInput.value = '';
     });
-    input.value = property.selectedOption;
+    if (!property.selectedOption) {
+        input.value = 'Zoeken';
+    } else  {
+        input.value = property.selectedOption;
+    }
+
+
 
     const options = document.createElement('ul');
     options.classList.add(
         'hidden',
         'overflow-y-auto',
         'overflow-x-hidden',
-        'w-[12.3rem]',
-        'max-h-[12.37rem]',
+        'basic:w-[31rem]',
+        'basic:max-h-[31.67rem]',
+        'hd:w-[41rem]',
+        'hd:max-h-[40.67rem]',
+        'uhd:w-[50.6rem]',
+        'uhd:max-h-[50.67rem]',
         'rounded-mb',
     );
 
@@ -659,7 +688,7 @@
                 'flex',
                 'items-center',
                 'block',
-                'w-[11rem]',
+                'uhd:w-[50.06rem]',
                 'h-[2.12rem]',
                 'px-4',
                 'py-2.5',
@@ -696,6 +725,10 @@
     }
     div.appendChild(input);
     div.appendChild(options);
+
+    singleSelectSubContainer.appendChild(input);
+    singleSelectSubContainer.appendChild(options);
+    div.appendChild(singleSelectSubContainer);
     }
 
     function renderText(div, trueInput, property) {
@@ -704,7 +737,7 @@
 
         const text = document.createElement('input');
         text.type = 'text';
-        text.classList.add('w-[12.3rem]', 'rounded-md', 'h-[2.12rem]', 'text-input', 'uhd:w-[30rem]');
+        text.classList.add('basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.06rem]', 'rounded-md', 'h-[2.12rem]', 'text-input', 'uhd:w-[30rem]');
         text.addEventListener('input', function () {
             trueInput.value = text.value;
         });
@@ -754,7 +787,7 @@
         span.classList.add('flex', 'pt-[0.16rem]', 'pl-[0.2rem]');
         const removePropertyIcon = document.createElement('img');
         removePropertyIcon.classList.add('select-none', 'w-[0.75rem]', 'h-[0.75rem]', 'hover:cursor-pointer');
-        removePropertyIcon.src = '../images/x-icon.png';
+        removePropertyIcon.src = '{{$app_url}}/images/x-icon.png';
 
         removePropertyIcon.addEventListener('click', function () {
             newDiv.remove();
@@ -789,6 +822,7 @@
             const li = document.getElementById(
                 `property_${property.id}_${option}`
             );
+
             if (
                 !createProdPropertiesSearchText ||
                 option.toLowerCase().includes(createProdPropertiesSearchText.toLowerCase())
@@ -822,7 +856,6 @@
         checkboxes.forEach(checkbox => {
             const li = checkbox.closest('li');
             const arrowDown = li.querySelector('img');
-            console.log(arrowDown);
             if (arrowDown) {
                 arrowDown.classList.remove('rotate-arrow');
             }

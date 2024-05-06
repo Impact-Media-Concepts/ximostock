@@ -1,4 +1,4 @@
-@props(['product'])
+@props(['product', 'activeWorkspace'])
 
 <li class="flex w-full h-[4.5rem] py-4 gap-2 items-center justify-center hover:bg-gray-100 transition duration-300">
     <div class="flex items-center relative left-[0.8rem]">
@@ -11,7 +11,7 @@
                 src="{{ $product->primaryPhoto->url }}" alt="{{ $product->title }}" />
         </a>
     </div>
-    <a class="hoi flex items-center w-full justify-center hd:gap-1 uhd:gap-[1.1rem]" href="/products/{{ $product->id }}">
+    <a class="hoi flex items-center w-full justify-center hd:gap-1 uhd:gap-[1.1rem]" href="/products/{{ $product->id }}?workspace={{ $activeWorkspace }}">
         <div class="flex w-full hd:max-w-[21.3rem] uhd:max-w-[27.9rem] shd:max-w-[42.5rem] w-full h-[2.62rem] relative items-center left-[0.75rem]"
             title="{{ $product->title }}">
             <p class="line-clamp-2 hd:max-w-[20rem] uhd:max-w-[27.9rem] shd:max-w-[42.5rem]">

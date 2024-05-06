@@ -1,10 +1,14 @@
 @props(['categories', 'checkedCategories' => null])
 
+<?php
+    $app_url = env('VITE_APP_URL');
+?>
+
 <div id='categoriesContainer'>
     <div class='w-full flex justify-center items-center'>
-        <input id='createProductCategoriesSearch' class='sticky property-search-input w-[43.43rem] h-[2.5rem] rounded-md mt-[1.5rem] rounded-b-lg' style='border: 1px solid #D3D3D3;' type='text' placeholder='Zoeken' />
+        <input id='createProductCategoriesSearch' class='sticky property-search-input basic:w-[28.5rem] hd:w-[43.43rem] uhd:w-[61.43rem] h-[2.5rem] rounded-md mt-[1.5rem] rounded-b-lg' style='border: 1px solid #D3D3D3;' type='text' placeholder='Zoeken' />
     </div>
-    <ul id='categoriesList' class='hd:max-h-[37.5rem] hd:h-[37.5rem] uhd:max-h-[44rem] uhd:h-[44rem] overflow-y-auto'></ul>
+    <ul id='categoriesList' class='basic:max-h-[25.4rem] basic:h-[25.4rem] hd:max-h-[37.5rem] hd:h-[37.5rem] uhd:max-h-[44rem] uhd:h-[44rem] overflow-y-auto'></ul>
 </div>
 <script>
     let categoriesData = [
@@ -277,12 +281,12 @@
         
         const li = document.createElement('li');
         li.id = `selectedCategory${category.id}`;
-        li.classList.add('h-[5.87rem]', 'w-[42.87rem]', 'flex', 'justify-center', 'items-center', 'rounded-md', 'mt-[1rem]');
+        li.classList.add('h-[5.87rem]', 'basic:w-[26.87rem]','hd:w-[42.87rem]','uhd:w-[58.87rem]', 'flex', 'justify-center', 'items-center', 'rounded-md', 'mt-[1rem]');
         li.style.border =  '1px solid #D3D3D3';
 
 
         const categoryContainer = document.createElement('div');
-        categoryContainer.classList.add('flex', 'gap-[0.5rem]')
+        categoryContainer.classList.add('flex', 'basic:gap-[0.5rem]', 'hd:gap-[0.5rem]', 'uhd:gap-[2.5rem]')
         
         const titleContainer = document.createElement('div');
         titleContainer.classList.add('h-[3.87rem]');
@@ -292,7 +296,7 @@
         title.textContent = 'Categorie titel:';
 
         const titleSubContainer = document.createElement('p');
-        titleSubContainer.classList.add('h-[2.5rem]', 'w-[14.68rem]', 'rounded-md', 'flex', 'justify-start', 'items-center', 'pl-[0.5rem]', 'truncate');
+        titleSubContainer.classList.add('h-[2.5rem]', 'basic:w-[10rem]', 'hd:w-[13rem]', 'uhd:w-[18rem]', 'rounded-md', 'flex', 'justify-start', 'items-center', 'pl-[0.5rem]', 'truncate');
         titleSubContainer.style.border = '1px solid #D3D3D3';
         titleSubContainer.textContent = `${category.name}`;
 
@@ -300,14 +304,14 @@
         titleContainer.appendChild(titleSubContainer);
 
         const pathContainer = document.createElement('div');
-        pathContainer.classList.add('h-[3.87rem]');
+        pathContainer.classList.add('h-[3.87rem]', 'basic:hidden', 'hd:block', 'uhd:block');
 
         const pathTitle = document.createElement('p');
         pathTitle.classList.add('text-[#717171]', 'text-[14px]');
         pathTitle.textContent = 'Categorie path:';
 
         const pathSubContainer = document.createElement('p');
-        pathSubContainer.classList.add('select-none', 'h-[2.5rem]', 'w-[10.81rem]', 'rounded-md', 'flex', 'justify-start', 'items-center', 'pl-[0.5rem]', 'truncate');
+        pathSubContainer.classList.add('select-none', 'h-[2.5rem]', 'hd:w-[13rem]', 'uhd:w-[18rem]', 'rounded-md', 'flex', 'justify-start', 'items-center', 'pl-[0.5rem]', 'truncate');
         pathSubContainer.style.border = '1px solid #D3D3D3';
         pathSubContainer.textContent = getCategoryPath(category);
         pathSubContainer.title = getCategoryPath(category);
@@ -318,7 +322,7 @@
         imgContainer.addEventListener('click', () => createProdCategoryhandleCheckboxClick(category));
 
         const x_icon = document.createElement('img');
-        x_icon.src = '../images/x-icon.png';
+        x_icon.src = '{{$app_url}}/images/x-icon.png';
         x_icon.alt = 'x icon';
         x_icon.classList.add('select-none', 'size-[1rem]')
 
@@ -331,23 +335,30 @@
        
         const setPrimaryButton = document.createElement('button');
         setPrimaryButton.textContent = 'Zet als primaire categorie';
-        setPrimaryButton.addEventListener('click', () => {
-            const clickedButton = event.target; // Get the clicked button
-            console.log('primary btn before: ', clickedButton);
-            setPrimaryCategory(category, clickedButton);
-            console.log(category);          
-        }); 
         setPrimaryButton.classList.add('h-[2.5rem]', 'w-[12.62rem]', 'mt-[1.2rem]', 'hover:bg-gray-100', 'rounded-md', 'text-[14px]');
         setPrimaryButton.style.border = '1px solid #717172';
         setPrimaryButton.type = 'button';
         setPrimaryButton.id = `primaryCategory${category.id}`;
 
+        if (category.primary) {
+            setPrimaryButton.style.border = 'none';
+            setPrimaryButton.classList.remove('hover:bg-gray-100');
+            setPrimaryButton.classList.add('bg-[#3DABD5]', 'hover:bg-[#3999BE]', 'border-none' ,'text-white');
+        }
+
+        setPrimaryButton.addEventListener('click', (event) => {
+            const clickedButton = event.target;
+            if (category.primary) {
+                unsetPrimaryCategory(category, clickedButton);
+            } else {
+                setPrimaryCategory(category, clickedButton);
+            }
+        });
+
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = `categories[${category.id}]`;
         input.value = category.primary ? 1 : 0;
-
-
 
         categoryContainer.appendChild(titleContainer);
         categoryContainer.appendChild(pathContainer);
@@ -375,9 +386,14 @@
     }
 
     function setPrimaryCategory(category, button){
-        console.log(categoriesData);
         resetPrimaryForAllCategories(categoriesData);
         category.primary = true;
+        renderSelectedCategories();
+    }
+
+    function unsetPrimaryCategory(category, button){
+        resetPrimaryForAllCategories(categoriesData);
+        category.primary = false;
         renderSelectedCategories();
     }
 

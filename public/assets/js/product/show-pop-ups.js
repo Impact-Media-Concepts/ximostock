@@ -148,6 +148,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    const variationsAddPropPopup = document.querySelector('.variations-add-prop-pop-up');
+    if (variationsAddPropPopup) {
+        function variationsAddPropPopUp() {
+            const variationsAddPropPopupTrigger = document.querySelector('.variations-add-prop-popup-trigger');
+            variationsAddPropPopupTrigger.addEventListener('click', function (event) {
+
+                event.preventDefault();
+                variationsAddPropPopup.classList.remove('fade-out');
+                variationsAddPropPopup.classList.add('fade-in');
+                variationsAddPropPopup.classList.remove('hidden');
+            });
+        
+            // Close popup
+            document.querySelector('.variations-add-prop-pop-up').addEventListener('click', function (event) {
+                if (
+                    event.target.matches('.variations-add-prop-close') ||
+                    event.target.matches('.variations-add-propCancel')
+                ) {
+                    event.preventDefault();
+                    variationsAddPropPopup.classList.add('fade-out');
+                    variationsAddPropPopup.addEventListener('animationend', function(event) {
+                        if (event.animationName === 'fadeOut') {
+                            variationsAddPropPopup.classList.add('hidden');
+                        }
+                    }, false);
+                    variationsAddPropPopup.classList.remove('fade-in');
+                }
+            });
+        }
+    }
+
     if (archivePopup) {
         archivePopUp();
     }
@@ -162,5 +193,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     if (createPropPopup) {
         createPropPopUp();
+    }
+    if (variationsAddPropPopup) {
+        variationsAddPropPopUp();
     }
 });
