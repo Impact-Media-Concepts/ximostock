@@ -40,7 +40,8 @@
                     @csrf
 
                     <label for="newPropertyName">Eigenschap naam:</label>
-                    <input type="text" id="newPropertyName" name="name" autocomplete="off" required>
+                    <input type="text" name='' id="newPropertyName" autocomplete="off" required>
+
                     <label for="newPropertyType">Eigenschap type:</label>
                     <select id="newPropertyType" name="type" required>
                         <option value=""></option>
@@ -50,6 +51,10 @@
                         <option value="bool">bool</option>
                         <option value="text">text</option>
                     </select>
+
+                    <input type="hidden" name='' id="propertyNameName" required>
+                    <input type="hidden" name='' id="valueInput" required>
+                    <input type="hidden" name='' id="optionsInputField" required>
                     <ul id="optionsList" class="overflow-y-auto max-h-[14rem]"></ul>
                     <button type="button" id="addOptionButton" class="hidden">Voeg 1 eigenschapswaarde toe</button>
                 </form>
@@ -61,7 +66,7 @@
                     </button>
                     <button id="createNewPropertyBtn" type="button" class="create-property-create-btn flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
                         <img class="create-property-create-btn" src="{{$app_url}}/images/save-icon.png">
-                        <p class="create-property-create-btn flex text-[#F8F8F8]">Save</p>
+                        <p class="create-property-create-btn flex text-[#F8F8F8]">Toevoegen</p>
                     </button>
                 </div>
             </div>
@@ -86,7 +91,10 @@
     ];
 
     const propertyNameInput = document.getElementById('newPropertyName');
+    
     const propertyTypeSelect = document.getElementById('newPropertyType');
+    
+    
     const optionsList = document.getElementById('optionsList');
     const addOptionButton = document.getElementById('addOptionButton');
     const addPropertyButton = document.getElementById('createNewPropertyBtn');
@@ -106,6 +114,7 @@
         optionInput.name = 'options[]';
         optionInput.style.border = '2px solid blue';
         optionInput.required = true;
+        optionInput.value = '';
         
         const removeOptionButton = document.createElement('button');
         removeOptionButton.type = 'button';
@@ -132,6 +141,7 @@
             optionsList.removeChild(listItem);
         }
     });
+
     let selectedType;
 
     propertyTypeSelect.addEventListener('change', function () {
@@ -145,7 +155,6 @@
             // Add an initial option item
             const initialOptionItem = createOptionItem();
             optionsList.appendChild(initialOptionItem);
-
             // Show option items and add option button
             document.querySelectorAll('#optionsList li').forEach(item => {
                 item.classList.remove('hidden');
@@ -161,18 +170,15 @@
     });
 
     
+    let newPropData = {};
+    let newPropId = 0;
 
     document.querySelector('.create-property-create-btn').addEventListener('click', function (event) {
         console.log("selectedType 2: ", typeof(selectedType));
         console.log("propertyNameInput.value: ", propertyNameInput.value);
         const propertyInputs = document.querySelectorAll('.property-input');
-        console.log("propertyInputs before:", propertyInputs);
         console.log("propertyTypeSelect.value: ", typeof(propertyTypeSelect.value));
         
-        addPropertyData.forEach(newProperty => {
-            console.log(newProperty.id);
-        });
-
         if (selectedType !== undefined && selectedType !== '') {
             if (
                 (Array.from(propertyInputs).some(input => input.value !== '') && propertyNameInput.value !== '') ||
@@ -180,10 +186,8 @@
                 (propertyNameInput.value !== '' && selectedType !== 'singleselect' && selectedType !== 'multiselect')
             ) {
                 event.preventDefault();
-
-                propertyInputs.forEach(function(propertyInput) {
-                    // console.log("property Option: ", propertyInput.value);
-                });
+                newPropId++;
+               
 
                 showCreatePropPopup.classList.add('fade-out');
                 showCreatePropPopup.addEventListener('animationend', function(event) {
@@ -193,92 +197,67 @@
                 }, false);
                 showCreatePropPopup.classList.remove('fade-in');
 
-                const li = document.createElement('li');
-                li.id = `new_properties_li_`;
-                li.classList.add('pt-[0.35rem]', 'pb-[0.35rem]');
-                
-                // Build components for the clicked property
-                const trueInput = document.createElement('input');
-                trueInput.id = `new_properties[]`;
-                trueInput.type = 'hidden';
-                trueInput.value = null;
+                const timestamp = new Date().getTime();
 
-                const propertyNameSpan = document.createElement('span');
-                propertyNameSpan.textContent = propertyNameInput.value;
-                propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
-                propertyNameSpan.style.display = 'inline-flex';
-                propertyNameSpan.style.width = '85%';
-                propertyNameSpan.style.zIndex = 99;
-                propertyNameSpan.classList.add('no-select');
-                
-                const arrowDownDiv = document.createElement('span');
-                const arrowDown = document.createElement('img');
-                arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'select-none', 'mr-[1.5rem]');
-                arrowDownDiv.appendChild(arrowDown);
-                arrowDown.src = '{{$app_url}}/images/big-arrow-down-icon.png';
-                arrowDown.alt = 'Arrow Down';
-                arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
-                
-                const textSpan = document.createElement('span');
-                const text = document.createTextNode(propertyNameInput.value + ` (${selectedType})`);
-                textSpan.classList.add('ml-[2.5rem]', 'font-bold', 'relative', 'bottom-[0.125rem]', 'select-none', 'text-[18px]', 'whitespace-nowrap');
-                textSpan.appendChild(text);
-                
-                const propertyTitleContainer = document.createElement('div');
-                propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
-                propertyTitleContainer.style.border = '1px solid #D3D3D3';
-                
-                propertyTitleContainer.addEventListener('click', () => {
-                    propertyHandleCheckboxClick(propertyNameInput, trueInput);
-                    arrowDown.classList.toggle('rotate-arrow');
+                const random = Math.floor(Math.random() * 1000);
+
+                const rndId = timestamp + random;
+
+                propertyInputs.forEach(function(propertyInput) {
+                    // console.log("property Option: ", propertyInput.value);
                 });
 
-                const delImgContainer = document.createElement('div');
-                delImgContainer.classList.add('pr-[1rem]', 'w-full', 'flex', 'justify-end', 'items-center');
+                newPropData.id = newPropId;
+                newPropData.name = propertyNameInput.value;
+                newPropData.type = selectedType;
+                newPropData.options = [];
 
-                const delPropBtn = document.createElement('button');
-                delPropBtn.type = 'button';
-                delPropBtn.style.border = '1px solid #717172';
-                delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
+                
 
+                const propertyNameName = document.getElementById('propertyNameName');
+                const propertyOptionsOptions = document.getElementById('optionsInputField');
+                const propertyTypeType = document.getElementById('valueInput');
 
-                const delImg = document.createElement('img');
-                delImg.src = '{{$app_url}}/images/archive-icon.png';
-                delImg.alt = 'delete icon';
-                delImg.classList.add('mr-[0.5rem]', 'hover:cursor-pointer', 'select-none');
-                
-                const delPropBtnText = document.createElement('p');
-                const textNode = document.createTextNode('Verwijderen');
-                
-                delPropBtnText.appendChild(textNode);
-                delPropBtn.appendChild(delImg);
-                delPropBtn.appendChild(delPropBtnText);
-                delImgContainer.appendChild(delPropBtn);
-                
-                propertyTitleContainer.appendChild(textSpan);
-                propertyTitleContainer.appendChild(delImgContainer);
-                propertyTitleContainer.appendChild(arrowDownDiv);
-                propertyTitleContainer.appendChild(trueInput);
-                li.appendChild(propertyTitleContainer);
-                renderProperty(propertyNameInput, li, trueInput);
-                
-                // Add the list item to the list of properties
-                createPropContainer.appendChild(li);
-                
-                // Open property if it is already selected
-                if (selectedType) {
-                    propertyHandleCheckboxClick(propertyNameInput, trueInput);
-                    arrowDown.classList.toggle('rotate-arrow');
-                    trueInput.value = selectedType;
+                propertyNameName.name = `newProperties[${newPropData.id}][name]`;
+                propertyTypeType.name = `newProperties[${newPropData.id}][type]`;
+                propertyOptionsOptions.name = `newProperties[${newPropData.id}][options][]`;
+
+                propertyNameName.value = propertyNameInput.value;
+
+                propertyTypeType.value = selectedType;
+
+                let optionsArray = JSON.parse(propertyOptionsOptions.value || '[]');
+
+                if (propertyInputs && propertyInputs.length > 0) {
+                    propertyInputs.forEach(function(propertyInput) {
+                        // Add each propertyInput to the newPropData.options array
+                        newPropData.options.push(propertyInput.value);
+                        optionsArray.push(propertyInput.value);
+                    });
                 }
+
+                propertyOptionsOptions.value = JSON.stringify(optionsArray);
+
+                console.log("Before Send: ", propertyNameName, propertyTypeType, propertyOptionsOptions);
+
+                renderCreatedProperties(newPropData, propertyNameName, propertyTypeType, propertyOptionsOptions);
+
                 propertyTypeSelect.value = '';
                 selectedType = '';
                 propertyNameInput.value = '';
                 propertyInputs.forEach(function(propertyInput) {
                     propertyInput.value = '';
                 });
+
                 optionsList.innerHTML = '';
                 addOptionButton.classList.add('hidden');
+
+                propertyNameInput.name = '';
+                propertyNameName.name = '';
+                valueInput.name = '';
+                optionsInputField.name = '';
+
+
             } else if (propertyNameInput.value === '' && Array.from(propertyInputs).some(input => input.value !== '') || propertyNameInput.value === '' && selectedType !== 'singleselect' && selectedType !== 'multiselect') {
                 alert("Vul alstublieft de eigenschap naam in.");
             } else if (Array.from(propertyInputs).every(input => input.value === '') && propertyNameInput.value === '') {
