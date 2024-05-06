@@ -243,7 +243,7 @@ class WooCommerceManager
                             'external_id' => $response->id
                         ]);
                     } else {
-                        $this->UploadParentCategoryRecursive(Category::where('id', $category->parent_category_id)->get()->first(), $salesChannel);
+                        $this->UploadParentCategoryRecursive(Category::where('id', $category->parent_category_id)->get()->first(), $salesChannel, $woocommerce);
                     }
                 } else {
                     $data = [
@@ -264,28 +264,44 @@ class WooCommerceManager
         $categoryIds =  $categories->pluck('external_id')->toArray();
         $results = $woocommerce->get('products/categories', ['include' => $categoryIds]);
         $externalCategories = [];
-        foreach($results as $result){
+        foreach ($results as $result) {
             array_push($externalCategories, $result->id);
         }
-        $missingCategories = $categories->reject(function($category) use ($externalCategories){
+        $missingCategories = $categories->reject(function ($category) use ($externalCategories) {
             return in_array($category->external_id, $externalCategories);
         });
         //upload the missing categories;
-        $data = ['create' => []];
-        foreach($missingCategories as $category){
-            $categoryData = [
-                'name' => $category->name,
-                'slug' => env('XS_PREFIX', 'xs_') . $category->name
-            ];
-            array_push($data['create'], $categoryData);
+        foreach ($missingCategories as $categorySaleschannel) {
+            $parentCategory = $categorySaleschannel->parent_category;
+            $category = Category::findOrFail($categorySaleschannel->category_id);
+            if ($parentCategory) {
+                if ($missingCategories->contains($parentCategory)) {
+                    //first opload parent recursiv then upload this.
+                } else {
+                    $parentExternalId = CategorySalesChannel::where('category_id', $parentCategory->id)->where('sales_channel_id', $salesChannel->id)->get()->first()->external_id;
+                   
+                    $data = [
+                        'name' => $category->name,
+                        'slug' => env('XS_PREFIX', 'xs_') . $category->name,
+                        'parent' => $parentExternalId
+                    ];
+                    $woocommerce->post('products/categories', $data);
+                }
+            } else {
+                $data = [
+                    'name' => $category->name,
+                    'slug' => env('XS_PREFIX', 'xs_') . $category->name
+                ];
+                $result = $woocommerce->post('products/categories', $data);
+                $categorySaleschannel->update([
+                    'external_id' => $result->id
+                ]);
+            }
         }
-        // $woocommerce->post()
     }
 
-    protected function UploadParentCategoryRecursive(Category $category, SalesChannel $salesChannel)
+    protected function UploadParentCategoryRecursive(Category $category, SalesChannel $salesChannel, $woocommerce)
     {
-        $woocommerce = $this->createSalesChannelsClient($salesChannel);
-
         if (!CategorySalesChannel::where('category_id', '=', $category->id)->where('sales_channel_id', '=', $salesChannel->id)->exists()) {
             if ($category->parent_category_id != null) {
                 $parent = CategorySalesChannel::where('category_id', '=', $category->parent_category_id)->where('sales_channel_id', '=', $salesChannel->id)->get();
@@ -303,7 +319,7 @@ class WooCommerceManager
                         'extrenal_id' => $response->id
                     ]);
                 } else {
-                    $this->UploadParentCategoryRecursive(Category::where('id', $category->parent_category_id)->get()->first(), $salesChannel);
+                    $this->UploadParentCategoryRecursive(Category::where('id', $category->parent_category_id)->get()->first(), $salesChannel, $woocommerce);
                 }
             } else {
                 $data = [
