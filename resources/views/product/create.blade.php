@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </form>
-                <x-product.popup.create-product-create-property-popup/>
+                <x-product.popup.create-product-create-property-popup :properties="$properties"/>
             </div>
         </div>
     </div>

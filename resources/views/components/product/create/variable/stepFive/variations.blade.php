@@ -4,7 +4,6 @@
     $app_url = env('VITE_APP_URL');
 ?>
 
-
 <div class='bg-white basic:h-[38rem] hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg hd:relative hd:bottom[2.62rem]' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1.56rem] mt-[0.6rem]'>
@@ -17,7 +16,7 @@
         <div class='basic:w-[67rem] hd:w-[94rem] uhd:w-[134rem]'>
             <div class='bg-[#3DABD5] rounded-t-lg h-[2.5rem] flex items-center justify-start'>
                 <p class='pl-[1.56rem] text-[#fff]'>
-                    Variaties
+                    Variaties aanmaken
                 </p>
             </div>
             

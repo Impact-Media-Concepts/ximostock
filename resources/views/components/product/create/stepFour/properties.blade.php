@@ -4,6 +4,10 @@
     $app_url = env('VITE_APP_URL');
 ?>
 
+<style>
+
+</style>
+
 <div class='bg-white basic:h-[38rem] hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg hd:relative hd:bottom[2.62rem]' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1.56rem] mt-[0.6rem]'>
@@ -22,8 +26,8 @@
             
             <div>
                 <div class='h-[5.06rem] flex justify-start items-center gap-[2.3rem]' style='border: 1px solid #F0F0F0;'>
-                    <button type='button' class='create-prop-popup-trigger ml-[1.87rem] w-[10.68rem] h-[2.5rem] bg-[#3DABD5] hover:bg-[#3999BE] font-light rounded-md text-white'>
-                        <p>
+                    <button type='button' class='create-prop-popup-trigger ml-[1.87rem] primary-btn-hover w-[10.68rem] h-[2.5rem]  ffff font-light rounded-md text-white'>
+                        <p class="zzz">
                             Nieuw toevoegen
                         </p>
                     </button>
@@ -31,7 +35,7 @@
                         <button
                             type='button'
                             @click='open = !open;'
-                            class='w-[12.18rem] h-[2.5rem] rounded-md hover:bg-gray-100 flex justify-center items-center text-[14px] text-gray-700'
+                            class='w-[12.18rem] h-[2.5rem] rounded-md secondary-btn-hover flex justify-center items-center text-[14px] text-[#717171]'
                             style='border: 1px solid #717171' type='button' @click.away='open = false'>
                             <p class=''>
                                 Bestaande toevoegen
@@ -77,6 +81,9 @@
             },
         @endforeach
     ];
+    
+    const clickedProperties = [];
+    const seachPropertyTitles = document.getElementById('seachPropertyTitles');
 
     function searchPropertyTitles(propertySearchText) {
         propertyTitleData.forEach((property) => {
@@ -91,7 +98,6 @@
         });
     }
 
-    const seachPropertyTitles = document.getElementById('seachPropertyTitles');
 
     if (seachPropertyTitles) {
         seachPropertyTitles.addEventListener('input', () => {
@@ -106,34 +112,23 @@
         });
     }
 
-    const clickedProperties = [];
+    function renderCreatedProperties(property, inputName, inputType, inputOptions) {
 
-    function renderProperties(property) {
-    // Check if property is already clicked
-    const isClicked = clickedProperties.some(prop => prop.id === property.id);
-    // If not already clicked, add it to clickedProperties
-    if (!isClicked) {
-        clickedProperties.push(property);
-    }
-    
-    const createProdPropertyList = document.getElementById('createProdPropertyList');
-    createProdPropertyList.innerHTML = ''; // Clear existing list
-    createProdPropertyList.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
-    
-    // Render all clicked properties
-    clickedProperties.forEach(prop => {
+        const createProdPropertyList = document.getElementById('createProdPropertyList');
+        // createProdPropertyList.innerHTML = '';
+        createProdPropertyList.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
         const li = document.createElement('li');
-        li.id = `properties_li_${prop.id}`;
+        li.id = `new_properties_li_${property.id}`;
         li.classList.add('pt-[0.35rem]', 'pb-[0.35rem]');
         
         // Build components for the clicked property
         const trueInput = document.createElement('input');
-        trueInput.id = `properties[${prop.id}]`;
+        trueInput.id = `new_properties[${property.id}]`;
         trueInput.type = 'hidden';
         trueInput.value = null;
 
         const propertyNameSpan = document.createElement('span');
-        propertyNameSpan.textContent = prop.name;
+        propertyNameSpan.textContent = property.name;
         propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
         propertyNameSpan.style.display = 'inline-flex';
         propertyNameSpan.style.width = '85%';
@@ -149,16 +144,17 @@
         arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
         
         const textSpan = document.createElement('span');
-        const text = document.createTextNode(prop.name + ` (${prop.type})`);
+        const text = document.createTextNode(property.name + ` (${property.type})`);
         textSpan.classList.add('ml-[2.5rem]', 'font-bold', 'relative', 'bottom-[0.125rem]', 'select-none', 'text-[18px]', 'whitespace-nowrap');
         textSpan.appendChild(text);
         
         const propertyTitleContainer = document.createElement('div');
         propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
         propertyTitleContainer.style.border = '1px solid #D3D3D3';
+        propertyTitleContainer.id = `newPropertyItemContainer_${property.id}`;
         
         propertyTitleContainer.addEventListener('click', () => {
-            propertyHandleCheckboxClick(prop, trueInput);
+            propertyHandleCreateCheckboxClick(property, trueInput, propertyTitleContainer);
             arrowDown.classList.toggle('rotate-arrow');
         });
 
@@ -172,12 +168,7 @@
 
         delPropBtn.addEventListener('click', (event) => {
             event.stopPropagation();
-            clickedProperties.splice(prop, 1);
-            // add removed prop back to propertyTitles
-            propertyTitleData.push(prop);
             li.remove();
-            // Re-render the property list
-            renderPropertyTitles();
         });
 
         const delImg = document.createElement('img');
@@ -197,43 +188,172 @@
         propertyTitleContainer.appendChild(delImgContainer);
         propertyTitleContainer.appendChild(arrowDownDiv);
         propertyTitleContainer.appendChild(trueInput);
+
+        const n = document.createElement('input');
+        n.name = inputName.name;
+        n.type = 'hidden';
+        n.value = inputName.value;
+
+        const t = document.createElement('input');
+        t.name = inputType.name;
+        t.type = 'hidden';
+        t.value = inputType.value;
+
+        inputOptions.forEach(inputOption => {
+            const o = document.createElement('input');
+            o.name = inputOption.name;
+            o.type = 'hidden';
+            o.value = inputOption.value;
+            propertyTitleContainer.appendChild(o);
+        });
+
+        propertyTitleContainer.appendChild(n);
+        propertyTitleContainer.appendChild(t);
+       
+
         li.appendChild(propertyTitleContainer);
-        renderProperty(prop, li, trueInput);
+        renderCreatedProperty(property, li, trueInput);
         
         // Add the list item to the list of properties
         createProdPropertyList.appendChild(li);
         
         // Open property if it is already selected
-        if (prop.selected) {
-            propertyHandleCheckboxClick(prop, trueInput);
+        if (property.selected) {
+            propertyHandleCreateCheckboxClick(property, trueInput);
             arrowDown.classList.toggle('rotate-arrow');
-            trueInput.value = prop.selectedOption;
         }
-    });
+    }
+    
+    function renderProperties(property) {
+        // Check if property is already clicked
+        const isClicked = clickedProperties.some(prop => prop.id === property.id);
+        // If not already clicked, add it to clickedProperties
+        if (!isClicked) {
+            clickedProperties.push(property);
+        }
+        
+        const createProdPropertyList = document.getElementById('createProdPropertyList');
+        // createProdPropertyList.innerHTML = '';
+        createProdPropertyList.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
+        
+        // Render all clicked properties
+        clickedProperties.forEach(prop => {
+            const beter = document.getElementById(`properties_li_${prop.id}`);
+            if (beter === null) {
+                const li = document.createElement('li');
+                li.id = `properties_li_${prop.id}`;
+                li.classList.add('pt-[0.35rem]', 'pb-[0.35rem]');
+                
+                // Build components for the clicked property
+                const trueInput = document.createElement('input');
+                trueInput.id = `properties[${prop.id}]`;
+                trueInput.type = 'hidden';
+                trueInput.value = null;
+
+                const propertyNameSpan = document.createElement('span');
+                propertyNameSpan.textContent = prop.name;
+                propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
+                propertyNameSpan.style.display = 'inline-flex';
+                propertyNameSpan.style.width = '85%';
+                propertyNameSpan.style.zIndex = 99;
+                propertyNameSpan.classList.add('no-select');
+                
+                const arrowDownDiv = document.createElement('span');
+                const arrowDown = document.createElement('img');
+                arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'select-none', 'mr-[1.5rem]');
+                arrowDownDiv.appendChild(arrowDown);
+                arrowDown.src = '{{$app_url}}/images/big-arrow-down-icon.png';
+                arrowDown.alt = 'Arrow Down';
+                arrowDown.classList.add('w-[1.2rem]', 'flex', 'mt-[0.18rem]');
+                
+                const textSpan = document.createElement('span');
+                const text = document.createTextNode(prop.name + ` (${prop.type})`);
+                textSpan.classList.add('ml-[2.5rem]', 'font-bold', 'relative', 'bottom-[0.125rem]', 'select-none', 'text-[18px]', 'whitespace-nowrap');
+                textSpan.appendChild(text);
+                
+                const propertyTitleContainer = document.createElement('div');
+                propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg');
+                propertyTitleContainer.style.border = '1px solid #D3D3D3';
+                
+                propertyTitleContainer.addEventListener('click', () => {
+                    propertyHandleCheckboxClick(prop, trueInput);
+                    arrowDown.classList.toggle('rotate-arrow');
+                });
+
+                const delImgContainer = document.createElement('div');
+                delImgContainer.classList.add('pr-[1rem]', 'w-full', 'flex', 'justify-end', 'items-center');
+
+                const delPropBtn = document.createElement('button');
+                delPropBtn.type = 'button';
+                delPropBtn.style.border = '1px solid #717172';
+                delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
+
+                delPropBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    clickedProperties.splice(prop, 1);
+                    // add removed prop back to propertyTitles
+                    propertyTitleData.push(prop);
+                    li.remove();
+                    // Re-render the property list
+                    renderPropertyTitles();
+                });
+
+                const delImg = document.createElement('img');
+                delImg.src = '{{$app_url}}/images/archive-icon.png';
+                delImg.alt = 'delete icon';
+                delImg.classList.add('mr-[0.5rem]', 'hover:cursor-pointer', 'select-none');
+                
+                const delPropBtnText = document.createElement('p');
+                const textNode = document.createTextNode('Verwijderen');
+                
+                delPropBtnText.appendChild(textNode);
+                delPropBtn.appendChild(delImg);
+                delPropBtn.appendChild(delPropBtnText);
+                delImgContainer.appendChild(delPropBtn);
+                
+                propertyTitleContainer.appendChild(textSpan);
+                propertyTitleContainer.appendChild(delImgContainer);
+                propertyTitleContainer.appendChild(arrowDownDiv);
+                propertyTitleContainer.appendChild(trueInput);
+                li.appendChild(propertyTitleContainer);
+                renderProperty(prop, li, trueInput);
+                
+                // Add the list item to the list of properties
+                createProdPropertyList.appendChild(li);
+                
+                // Open property if it is already selected
+                if (prop.selected) {
+                    propertyHandleCheckboxClick(prop, trueInput);
+                    arrowDown.classList.toggle('rotate-arrow');
+                    trueInput.value = prop.selectedOption;
+                }
+            }
+            
+        });
     }
 
     function renderPropertyTitles() {
-    const propertyTitleList = document.getElementById('propertyLists');
-    propertyTitleList.innerHTML = '';
-    propertyTitleData.forEach(property => {
-        const li = document.createElement('li');
-        li.classList.add('flex', 'items-center', 'justify-start');
-        li.id = `add_property_li_${property.id}`;
-        const button = document.createElement('button');
-        button.classList.add('hover:bg-[#3999BE]', 'duration-100', 'block', 'w-[15.5rem]', 'h-[2.3rem]', 'px-4', 'py-2', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'focus:outline-none', 'flex', 'justify-start', 'items-center');
-        button.type = 'button';
-        const span = document.createElement('span');
-        span.classList.add('flex', 'items-center', 'justify-start', 'pr-3', 'text-[#717171]');
-        span.textContent = property.name + ` (${property.type})`;
-        button.appendChild(span);
-        li.addEventListener('click', () => {
-            renderProperties(property);
-            propertyTitleData.splice(property, 1);
-            li.remove();
+        const propertyTitleList = document.getElementById('propertyLists');
+        propertyTitleList.innerHTML = '';
+        propertyTitleData.forEach(property => {
+            const li = document.createElement('li');
+            li.classList.add('flex', 'items-center', 'justify-start');
+            li.id = `add_property_li_${property.id}`;
+            const button = document.createElement('button');
+            button.classList.add('hover:bg-[#3999BE]', 'duration-100', 'block', 'w-[15.5rem]', 'h-[2.3rem]', 'px-4', 'py-2', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'focus:outline-none', 'flex', 'justify-start', 'items-center');
+            button.type = 'button';
+            const span = document.createElement('span');
+            span.classList.add('flex', 'items-center', 'justify-start', 'pr-3', 'text-[#717171]');
+            span.textContent = property.name + ` (${property.type})`;
+            button.appendChild(span);
+            li.addEventListener('click', () => {
+                renderProperties(property);
+                propertyTitleData.splice(property, 1);
+                li.remove();
+            });
+            li.appendChild(button);
+            propertyTitleList.appendChild(li);
         });
-        li.appendChild(button);
-        propertyTitleList.appendChild(li);
-    });
     }
 
     // Initial rendering
@@ -244,6 +364,36 @@
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
         const div = document.createElement('div');
         div.id = `div_${property.id}`;
+        div.classList.add('hidden', 'grid', 'h-[6.58rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg');
+        div.style.border = '1px solid #D3D3D3';
+        hiddenContainer.appendChild(div);
+        switch (property.type) {
+            case 'multiselect':
+                rendermultiselect(property, div, trueInput);
+                break;
+            case 'bool':
+                renderBool(property, div, trueInput);
+                break;
+            case 'singleselect':
+                rendersingleselect(property, div, trueInput);
+                break;
+            case 'text':
+                renderText(div, trueInput, property);
+                break;
+            case 'number':
+                renderNumber(div, trueInput, property);
+                break;
+            default:
+                break;
+        }
+        li.appendChild(div);
+    }
+
+    function renderCreatedProperty(property, li, trueInput) {
+        const hiddenContainer = document.createElement('div');
+        hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
+        const div = document.createElement('div');
+        div.id = `new_prop_div_${property.id}`;
         div.classList.add('hidden', 'grid', 'h-[6.58rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg');
         div.style.border = '1px solid #D3D3D3';
         hiddenContainer.appendChild(div);
@@ -603,13 +753,13 @@
     }
 
     function BoolControl(option, input, trueInput) {
-    if (option) {
-        input.value = 'Ja';
-        trueInput.value = true;
-    } else {
-        input.value = 'Nee';
-        trueInput.value = false;
-    }
+        if (option) {
+            input.value = 'Ja';
+            trueInput.value = true;
+        } else {
+            input.value = 'Nee';
+            trueInput.value = false;
+        }
     }
 
     //render the singel select property
@@ -835,6 +985,7 @@
     }
 
     function propertyHandleCheckboxClick(property, trueInput) {
+        trueInput.name = `properties[${property.id}]`;
         property.checked = !property.checked;
         const div = document.getElementById(`div_${property.id}`);
         if (property.checked) {
@@ -842,11 +993,29 @@
         } else {
             div.classList.add('hidden');
         }
+    }
 
-        if (property.checked) {
-            trueInput.name = `properties[${property.id}]`;
-        } else {
-            trueInput.name = '';
+    
+        function extractIdNumber(id) {
+            // Extract numeric part from id using regex
+            const matches = id.match(/\d+/);
+            return matches ? parseInt(matches[0]) : null;
+        }
+
+    function propertyHandleCreateCheckboxClick(property, trueInput, container) {
+        const liIdNumber = extractIdNumber(trueInput.id); // Get numeric part of li id
+        const divIdNumber = extractIdNumber(container.id);
+        
+        if (liIdNumber === divIdNumber) {
+            trueInput.name = `newProperties[${liIdNumber}][value]`;
+            property.checked = !property.checked;
+            const div = document.getElementById(`new_prop_div_${liIdNumber}`);
+
+            if (div.classList.contains('hidden')) {
+                div.classList.remove('hidden');
+            } else {
+                div.classList.add('hidden');
+            }
         }
 
     }

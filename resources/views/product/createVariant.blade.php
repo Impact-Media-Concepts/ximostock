@@ -2,6 +2,7 @@
 
 <?php
     $variant = 'Variant';
+    $app_url = env('VITE_APP_URL');
 ?>
 
 <body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
@@ -61,7 +62,8 @@
                         </div>
                     </div>
                 </form>
-                <x-product.popup.create-product-create-property-popup/>
+                <x-product.popup.create-product-create-property-popup :selectedProperties="$selectedProperties" :properties="$properties"/>
+
                 <x-product.popup.create-product-variations-add-property-popup :selectedProperties="$selectedProperties" :properties="$properties"/>
             </div>
         </div>

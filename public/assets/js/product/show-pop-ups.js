@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('.create-prop-pop-up').addEventListener('click', function (event) {
                 if (
                     event.target.matches('.create-prop-close') ||
-                    event.target.matches('.create-propCancel')
+                    event.target.matches('.create-prop-cancel')
                 ) {
                     event.preventDefault();
                     createPropPopup.classList.add('fade-out');
