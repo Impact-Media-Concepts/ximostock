@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('property_sales_channel', function (Blueprint $table) {
             $table->id();
             $table->foreignId('property_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('sales_channel_id')->constrained();
+            $table->foreignId('sales_channel_id')->constrained()->cascadeOnDelete();
             $table->bigInteger('external_id');
             $table->timestamps();
         });

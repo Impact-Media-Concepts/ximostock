@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('work_space_id')->constrained();
-            $table->foreignId('parent_product_id')->nullable()->constrained('products');
+            $table->foreignId('parent_product_id')->nullable()->constrained('products')->cascadeOnDelete();
             $table->string('sku')->unique()->nullable();
             $table->bigInteger('ean')->unique()->nullable();
             $table->string('title')->nullable();

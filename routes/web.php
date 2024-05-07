@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product');
     Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product');
     Route::get('/products/export/', [ProductController::class, 'export']);//export
+    Route::get('/products/archive',[ProductController::class, 'archive']);//can delete // can restore
     Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view,product');
     Route::post('/products', [ProductController::class, 'store']);//autherized in controller
     Route::patch('/products/{product}', [ProductController::class, 'update']);//autherized in controller
@@ -42,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/products/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');//autherized in controller
     Route::post('/products/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');//autherized in controller
     Route::post('/products/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');//autherized in controller
+    Route::post('/products/restore', [ProductController::class, 'restore']); //can restore
+    Route::post('/products/forcedelete', [ProductController::class, 'forceDelete']); //can delete
 
     //variant product
     Route::get('/products/variant/create', [ProductVariationController::class, 'create']);
