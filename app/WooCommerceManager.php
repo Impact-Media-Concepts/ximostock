@@ -12,6 +12,7 @@ use App\Models\ProductSalesChannelProperty;
 use App\Models\Property;
 use App\Models\PropertySalesChannel;
 use App\Models\SalesChannel;
+use App\View\Components\property as ComponentsProperty;
 use Automattic\WooCommerce\Client;
 
 use Exception;
@@ -203,6 +204,10 @@ class WooCommerceManager
                 ];
             }
         }
+    }
+
+    public function removeProperty(Property $property){
+        
     }
 
     protected function setExternalIds($results, $products, $salesChannel)
@@ -400,6 +405,7 @@ class WooCommerceManager
             }
         }
     }
+
 
     #region // prepare product data
     protected function prepareProductData(Product $product, $productSalesChannels, $categorySalesChannels, $propertySalesChannels, $productProperties, $categoryProductSalesChannels, $propertyProductSaleschannels)

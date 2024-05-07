@@ -297,7 +297,7 @@ class ProductController extends BaseProductController
         // link saleschannels to product
         $products = Product::whereIn('id', $validatedData['product_ids'])->with('photos', 'locationZones', 'productSalesChannels', 'properties', 'categories')->get();
         $salesChannels = SalesChannel::whereIn('id', $validatedData['sales_channel_ids'])->get();
-        $data=[];
+        $data = [];
         foreach ($products as $product) {
             foreach ($salesChannels as $salesChannel) {
                 $productSalesChannel = [
@@ -310,7 +310,7 @@ class ProductController extends BaseProductController
         DB::table('products')->whereIn('id', $validatedData['product_ids'])->update(['updated_at' => now()]);
         DB::table('product_sales_channel')->insert($data);
         $woocommerce = new WooCommerceManager;
-        foreach($salesChannels as $salesChannel){
+        foreach ($salesChannels as $salesChannel) {
             $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
         }
 
@@ -342,7 +342,7 @@ class ProductController extends BaseProductController
             $woocommerce->deleteProductsFromSalesChannel($validatedData['product_ids'], $salesChannel);
         }
         $products = Product::whereIn('id', $validatedData['product_ids'])->get();
-        foreach($products as $product){
+        foreach ($products as $product) {
             $product->touch();
         }
         // Unlink sales channels from products
@@ -529,6 +529,56 @@ class ProductController extends BaseProductController
     public function export()
     {
         return Excel::download(new ProductsExport, 'products.xlsx');
+    }
+
+    public function archive(Request $request)
+    { 
+        $request->validate([
+            'workspace' => ['required', new ValidWorkspaceKeys]
+        ]);
+        $perPage = $request->input('perPage', 20);
+        $products = Product::where('work_space_id', $request['workspace'])
+            ->with('photos', 'locationZones', 'productSalesChannels', 'childProducts', 'categories')
+            ->whereNull('parent_product_id')
+            ->whereNotNull('deleted_at')
+            ->withTrashed()
+            ->paginate($perPage)
+            ->withQueryString();
+        $salesChannels = SalesChannel::where('work_space_id', $request['workspace']);
+        $workspaces = WorkSpace::all();
+        $activeWorkspace = $request['workspace'];
+
+        $results = [
+            'products' => $products,
+            'perPage' => $perPage,
+            'search' => $request['search'],
+            'selectedCategories' => $request['categories'],
+            'sidenavActive' => 'archive',
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace,
+            'salesChannels' => $salesChannels,
+        ];
+        return view('product.archive', $results);
+    }
+
+    public function restore(Request $request){
+        $attributes = $request->validate([
+            'products' => ['array', 'required'],
+            'products.*' => ['numeric', 'required']
+        ]);
+        Product::withTrashed()->whereIn('id', $attributes['products'])->restore();
+        return redirect()->back();
+    }
+
+    public function forceDelete(Request $request)
+    {
+        $attributes = $request->validate([
+            'products' => ['array', 'required'],
+            'products.*' => ['numeric', 'required']
+        ]);
+        Product::withTrashed()->whereIn('id', $attributes['products'])->forceDelete();
+        return redirect()->back();
+
     }
 
     protected function createProduct($attributes): Product
