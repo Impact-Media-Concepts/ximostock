@@ -189,26 +189,26 @@
         propertyTitleContainer.appendChild(arrowDownDiv);
         propertyTitleContainer.appendChild(trueInput);
 
-        const n = document.createElement('input');
-        n.name = inputName.name;
-        n.type = 'hidden';
-        n.value = inputName.value;
+        const nameInput = document.createElement('input');
+        nameInput.name = inputName.name;
+        nameInput.type = 'hidden';
+        nameInput.value = inputName.value;
 
-        const t = document.createElement('input');
-        t.name = inputType.name;
-        t.type = 'hidden';
-        t.value = inputType.value;
+        const typeInput = document.createElement('input');
+        typeInput.name = inputType.name;
+        typeInput.type = 'hidden';
+        typeInput.value = inputType.value;
 
         inputOptions.forEach(inputOption => {
-            const o = document.createElement('input');
-            o.name = inputOption.name;
-            o.type = 'hidden';
-            o.value = inputOption.value;
-            propertyTitleContainer.appendChild(o);
+            const optionsInput = document.createElement('input');
+            optionsInput.name = inputOption.name;
+            optionsInput.type = 'hidden';
+            optionsInput.value = inputOption.value;
+            propertyTitleContainer.appendChild(optionsInput);
         });
 
-        propertyTitleContainer.appendChild(n);
-        propertyTitleContainer.appendChild(t);
+        propertyTitleContainer.appendChild(nameInput);
+        propertyTitleContainer.appendChild(typeInput);
        
 
         li.appendChild(propertyTitleContainer);

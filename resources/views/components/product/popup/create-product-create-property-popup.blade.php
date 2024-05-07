@@ -111,7 +111,7 @@
     const optionsList = document.getElementById('optionsList');
     const addOptionButton = document.getElementById('addOptionButton');
     const addPropertyButton = document.getElementById('createNewPropertyBtn');
-    const showCreatePropPopup = document.querySelector('.create-prop-pop-up');
+    const hideCreatePropPopup = document.querySelector('.create-prop-pop-up');
     const createPropContainer = document.getElementById('createProdPropertyList');
 
     // Function to create an option item
@@ -206,13 +206,13 @@
             newPropId++;
 
             // code for popup close and open animation
-            showCreatePropPopup.classList.add('fade-out');
-            showCreatePropPopup.addEventListener('animationend', function(event) {
+            hideCreatePropPopup.classList.add('fade-out');
+            hideCreatePropPopup.addEventListener('animationend', function(event) {
                 if (event.animationName === 'fadeOut') {
-                    showCreatePropPopup.classList.add('hidden');
+                    hideCreatePropPopup.classList.add('hidden');
                 }
             }, false);
-            showCreatePropPopup.classList.remove('fade-in');
+            hideCreatePropPopup.classList.remove('fade-in');
             
             //set properties for newPropData object
             newPropData.id = newPropId;
