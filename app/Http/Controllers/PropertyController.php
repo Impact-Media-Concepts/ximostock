@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductProperty;
 use App\Models\Property;
+use App\Models\SalesChannel;
 use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Support\Facades\Auth;
@@ -129,17 +130,15 @@ class PropertyController extends Controller
         return redirect()->back();
     }
 
-    public function bulkDelete()
+    public function bulkDelete(Request $request)
     {
-
-        $request = request();
         Gate::authorize('bulkDelete', [Property::class, $request['properties']]);
 
         $attributes = $request->validate([
             'properties' => ['required', 'array'],
             'properties.*' => ['required', 'numeric', Rule::exists('properties', 'id')]
         ]);
-        Property::whereIn('id', $attributes['properties'])->delete();
+        SalesChannel::whereIn('id', $attributes['properties'])->delete();
         return redirect('/properties');
     }
 

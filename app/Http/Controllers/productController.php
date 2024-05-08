@@ -477,16 +477,13 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $request = request();
-        dd($request);
         //authorize
         $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
         $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
         $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
-
 
         Gate::authorize('store', [
             Product::class,
@@ -496,7 +493,14 @@ class ProductController extends BaseProductController
             $location_zones
         ]);
 
-
+        if(Auth::user()->role === 'admin'){
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $workspace = $request['workspace'];
+        }else{
+            $workspace = Auth::user()->work_space_id;
+        }
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
@@ -509,6 +513,7 @@ class ProductController extends BaseProductController
         $validationRules += $this->validatePhotoAttributes($forOnline);
         $validationRules += $this->validatePropertyAttributes();
         $validationRules += $this->validateInventoryAttributes();
+        $validationRules += $this->validateNewProperiesAttributes();
         $attributes =  $request->validate($validationRules);
 
         //create product and links
@@ -516,6 +521,7 @@ class ProductController extends BaseProductController
         $this->linkCategoriesToProduct($product, $attributes);
         $this->uploadAndLinkPhotosToProduct($product, $request);
         $this->linkPropertiesToProduct($product, $attributes);
+        $this->createAndLinkProperties($product, $attributes, $workspace);
         $this->createInventories($product, $request);
 
         //link sales channels if there are any.
@@ -530,6 +536,19 @@ class ProductController extends BaseProductController
     public function export()
     {
         return Excel::download(new ProductsExport, 'products.xlsx');
+    }
+
+    protected function validateNewProperiesAttributes():array
+    {
+        return [
+            'newProperties' => ['nullable', 'array'],
+            'newProperties.*' => ['nullable', 'array'],
+            'newProperties.*.value' => ['required', 'string'],
+            'newProperties.*.name' => ['required', 'string'],
+            'newProperties.*.type' => ['required', Rule::in(['singleselect', 'multiselect', 'number', 'bool', 'text'])],
+            'newProperties.*.options' => ['nullable', 'array'],
+            'newProperties.*.options.*' => ['required', 'string']
+        ];
     }
 
     public function archive(Request $request)
@@ -581,8 +600,6 @@ class ProductController extends BaseProductController
         Product::withTrashed()->whereIn('id', $attributes['products'])->forceDelete();
         return redirect()->back();
     }
-
-  
 
     protected function createProduct($attributes): Product
     {
@@ -933,6 +950,25 @@ class ProductController extends BaseProductController
                 'product_id' => $product->id,
                 'property_id' => $propertyId,
                 'property_value' => json_encode(['value' => $propertyValue])
+            ]);
+        }
+    }
+
+    protected function createAndLinkProperties($product, $attributes, $workspace){
+        foreach($attributes['newProperties'] as $property){
+            if (!isset($property['options'])) {
+                $property['options'] = [];
+            }
+            $values = json_encode(['type' => $property['type'], 'options' => $property['options']]);
+            $newProperty = Property::create([
+                'name' => $property['name'],
+                'work_space_id' => $workspace,
+                'values' => $values
+            ]);
+            ProductProperty::create([
+                'product_id' => $product->id,
+                'property_id' => $newProperty->id,
+                'property_value' => json_encode(['value' => $property['value']])
             ]);
         }
     }
