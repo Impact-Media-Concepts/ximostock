@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/products/forcedelete" method="POST">
+    <form action="/products/restore" method="POST">
         @csrf
 
         <ul>
