@@ -25,6 +25,7 @@ use App\Rules\ValidSalesChannelKeys;
 use App\Rules\ValidWorkspaceKeys;
 use App\Rules\VallidCategoryKeys;
 use App\WooCommerceManager;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -532,7 +533,7 @@ class ProductController extends BaseProductController
     }
 
     public function archive(Request $request)
-    { 
+    {
         $request->validate([
             'workspace' => ['required', new ValidWorkspaceKeys]
         ]);
@@ -561,7 +562,8 @@ class ProductController extends BaseProductController
         return view('product.archive', $results);
     }
 
-    public function restore(Request $request){
+    public function restore(Request $request)
+    {
         $attributes = $request->validate([
             'products' => ['array', 'required'],
             'products.*' => ['numeric', 'required']
@@ -578,8 +580,9 @@ class ProductController extends BaseProductController
         ]);
         Product::withTrashed()->whereIn('id', $attributes['products'])->forceDelete();
         return redirect()->back();
-
     }
+
+  
 
     protected function createProduct($attributes): Product
     {

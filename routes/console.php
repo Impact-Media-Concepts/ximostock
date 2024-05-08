@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -31,4 +32,13 @@ Schedule::call(function(){
             'orderByOnline' => Count($product->salesChannels) > 0
         ]);
     }
+})->daily();
+
+Schedule::call( function(){
+    // Get the current date and time
+    $thirtyDaysAgo = Carbon::now()->subDays(30);
+    // delete products that were archived 30 days ago or longer
+    Product::onlyTrashed()
+        ->whereDate('deleted_at', '<=', $thirtyDaysAgo)
+        ->forceDelete();
 })->daily();

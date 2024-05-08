@@ -53,18 +53,24 @@ Route::middleware('auth')->group(function () {
     //categories
     Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:viewAny,App\Models\Category');
     Route::get('/categories/create', [CategoryController::class, 'create'])->middleware('can:create,App\Models\Category');
+    Route::get('/categories/archive', [CategoryController::class, 'archive']);
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->middleware('can:view,category');
     Route::post('/categories', [CategoryController::class, 'store']);//autherized in controller
     Route::patch('/categories/{category}', [CategoryController::class, 'update']);//autherized in controller
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware('can:delete,category');
+    Route::post('/categories/restore',[CategoryController::class, 'restore']);//can restore
+    Route::post('/categories/forcedelete',[CategoryController::class, 'forceDelete']);//can delete
 
     //properties
     Route::get('/properties', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property');
     Route::get('/properties/create', [PropertyController::class, 'create'])->middleware('can:create,App\Models\Property');
+    Route::get('/properties/archive',[PropertyController::class, 'archive']);//can delete // can restore
     Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('can:view,property');
     Route::post('/properties',[PropertyController::class, 'store'])->middleware('can:create,App\Models\Property');
     Route::patch('/properties/{property}', [PropertyController::class, 'update'])->middleware('can:update,property');
     Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);//autherized in controller
+    Route::post('/properties/restore',[PropertyController::class, 'restore']);//can restore
+    Route::post('/properties/forcedelete',[PropertyController::class, 'forceDelete']);//can delete
 
     //salesChannels
     Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel');
