@@ -75,14 +75,18 @@ Route::middleware('auth')->group(function () {
     //salesChannels
     Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel');
     Route::get('/saleschannels/create',[SalesChannelController::class, 'create'])->middleware('can:create,App\Models\SalesChannel');
+    Route::get('/saleschannels/archive',[SalesChannelController::class, 'archive']);//can delete // can restore
     Route::get('/saleschannels/{salesChannel}', [SalesChannelController::class, 'show'])->middleware('can:view,salesChannel');
     Route::post('/saleschannels', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel');
     Route::patch('/saleschannels/{salesChannel}', [SalesChannelController::class, 'update'])->middleware('can:update,salesChannel');
+    Route::post('/saleschannels/bulkdelete', [SalesChannelController::class, 'bulkDelete']);//autherized in controller
+    Route::post('/saleschannels/restore',[SalesChannelController::class, 'restore']);//can restore
+    Route::post('/saleschannels/forcedelete',[SalesChannelController::class, 'forceDelete']);//can delete
+
 });
 
 //authentication
 Route::get('/dashboard', function () {
-    
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,17 +10,24 @@
 
 <body>
     <h1>sales Channels</h1>
-    <ul>
-        @foreach ($salesChannels as $salesChannel)
-        <li>
-            <p>
-                {{ $salesChannel->id}}
-                {{ $salesChannel->name}}
-                <!-- {{ $salesChannel->favicon_url}} -->
-                {{ $salesChannel->channel_type}}
-            </p>
-        </li>
-        @endforeach
-    </ul>
+    <form action="saleschannels/bulkdelete" method="POST">
+        @csrf
+        <ul>
+            @foreach ($salesChannels as $salesChannel)
+                <li>
+                    <p>
+                        <input name="saleschannels[]" type="checkbox" value="{{$salesChannel->id}}">
+                        {{ $salesChannel->id }}
+                        {{ $salesChannel->name }}
+                        {{ $salesChannel->channel_type }}
+                    </p>
+                </li>
+            @endforeach
+            <li>
+                <input type="submit" value="bulk delete">
+            </li>
+        </ul>
+    </form>
 </body>
+
 </html>
