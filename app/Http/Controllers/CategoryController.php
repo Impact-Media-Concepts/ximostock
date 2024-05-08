@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 class CategoryController extends Controller
 {
     public function index(Request $request)
-    {   
+    {
         if (Auth::user()->role === 'admin') {
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
@@ -21,14 +21,14 @@ class CategoryController extends Controller
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
             $categories = Category::where('work_space_id', $request['workspace']);
-        }else{
+        } else {
             $workspaces = null;
             $activeWorkspace = null;
             $categories = Category::where('work_space_id', Auth::user()->work_space_id);
         }
-        $categories = $categories->with('child_categories_recursive','products')->whereNull('parent_category_id')->get();
+        $categories = $categories->with('child_categories_recursive', 'products')->whereNull('parent_category_id')->get();
 
-        return view('category.index',[
+        return view('category.index', [
             'sidenavActive' => 'categories',
             'categories' => $categories,
             'workspaces' => $workspaces,
@@ -44,7 +44,7 @@ class CategoryController extends Controller
             ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
-        }else{
+        } else {
             $workspaces = null;
             $activeWorkspace = null;
         }
@@ -64,7 +64,7 @@ class CategoryController extends Controller
             ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
-        }else{
+        } else {
             $workspaces = null;
             $activeWorkspace = null;
         }
@@ -82,39 +82,74 @@ class CategoryController extends Controller
         $request = request();
         $parentCategoryId = $request->has('parent_category_id') ? $request['parent_category_id'] : null;
 
-        Gate::authorize('store',[Category::class, $parentCategoryId]);
+        Gate::authorize('store', [Category::class, $parentCategoryId]);
 
         //validate
         $attributes = $request->validate([
             'name' => ['required'],
             'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
-        $attributes += ['work_space_id'=>Auth::user()->work_space_id];
+        $attributes += ['work_space_id' => Auth::user()->work_space_id];
 
         Category::create($attributes);
 
         return redirect('/categories');
     }
 
-    public function destroy(Category $category){
-
+    public function destroy(Category $category)
+    {
         $category->delete();
         return redirect('/categories');
     }
 
-    public function update(Category $category){
+    public function update(Category $category)
+    {
         $request = request();
-        Gate::authorize('update', [$category, $request['parent_category_id']]); 
+        Gate::authorize('update', [$category, $request['parent_category_id']]);
         $attributes = $request->validate([
-            'name'=>['required', 'string'],
+            'name' => ['required', 'string'],
             'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
 
         $category->update([
-            'name'=>$attributes['name'],
+            'name' => $attributes['name'],
             'parent_category_id' => $attributes['parent_category_id']
         ]);
+        return redirect()->back();
+    }
 
+    public function archive(Request $request)
+    {
+        $request->validate([
+            'workspace' => ['required', new ValidWorkspaceKeys]
+        ]);
+        $results = [
+            'perPage' => $request->input('perPage', 20),
+            'search' => $request['search'],
+            'sidenavActive' => 'archive',
+            'workspaces' => WorkSpace::all(),
+            'activeWorkspace' => $request['workspace'],
+            'categories' => Category::onlyTrashed()->get()
+        ];
+        return view('category.archive', $results);
+    }
+
+    public function restore(Request $request){
+        $attributes = $request->validate([
+            'categories' => ['array', 'required'],
+            'categories.*' => ['numeric', 'required']
+        ]);
+        Category::withTrashed()->whereIn('id', $attributes['categories'])->restore();
+        return redirect()->back();
+    }
+
+    public function forceDelete(Request $request)
+    {
+        $attributes = $request->validate([
+            'categories' => ['array', 'required'],
+            'categories.*' => ['numeric', 'required']
+        ]);
+        Category::withTrashed()->whereIn('id', $attributes['categories'])->forceDelete();
         return redirect()->back();
     }
 }

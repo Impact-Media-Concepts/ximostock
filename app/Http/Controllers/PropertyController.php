@@ -188,4 +188,38 @@ class PropertyController extends Controller
 
         return redirect('/properties');
     }
+
+    public function archive(Request $request){
+        $request->validate([
+            'workspace' => ['required', new ValidWorkspaceKeys]
+        ]);
+        $results = [
+            'perPage' => $request->input('perPage', 20),
+            'search' => $request['search'],
+            'sidenavActive' => 'archive',
+            'workspaces' => WorkSpace::all(),
+            'activeWorkspace' => $request['workspace'],
+            'properties' => Property::onlyTrashed()->get()
+        ];
+        return view('property.archive', $results);
+    }
+
+    public function restore(Request $request){
+        $attributes = $request->validate([
+            'properties' => ['array', 'required'],
+            'properties.*' => ['numeric', 'required']
+        ]);
+        Property::withTrashed()->whereIn('id', $attributes['properties'])->restore();
+        return redirect()->back();
+    }
+
+    public function forceDelete(Request $request)
+    {
+        $attributes = $request->validate([
+            'properties' => ['array', 'required'],
+            'properties.*' => ['numeric', 'required']
+        ]);
+        Property::withTrashed()->whereIn('id', $attributes['properties'])->forceDelete();
+        return redirect()->back();
+    }
 }
