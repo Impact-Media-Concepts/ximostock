@@ -49,10 +49,10 @@
                     </div>
                 </div>
                 <div class='flex flex-col items-center basic:h-[24.5rem] basic:max-h-[24.5rem] hd:h-[36.5rem] hd:max-h-[36.5rem] uhd:h-[43rem] uhd:max-h-[43rem] overflow-y-auto rounded-b-lg' style='border: 1px solid #F0F0F0;'>
-                        <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
-                            <ul class='mt-[0.85rem]' id='createProdPropertyList2'></ul>
-                        </div>
+                    <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
+                        <ul class='mt-[0.85rem]' id='createProdPropertyList2'></ul>
                     </div>
+                </div>
             </div>
         </div>
     </div>
