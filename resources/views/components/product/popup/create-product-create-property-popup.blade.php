@@ -111,7 +111,7 @@
     const optionsList = document.getElementById('optionsList');
     const addOptionButton = document.getElementById('addOptionButton');
     const addPropertyButton = document.getElementById('createNewPropertyBtn');
-    const showCreatePropPopup = document.querySelector('.create-prop-pop-up');
+    const hideCreatePropPopup = document.querySelector('.create-prop-pop-up');
     const createPropContainer = document.getElementById('createProdPropertyList');
 
     // Function to create an option item
@@ -192,66 +192,87 @@
     document.querySelector('.create-property-create-btn').addEventListener('click', function (event) {
         const propertyInputs = document.querySelectorAll('.property-input');
 
-        //front-end validations, if inputs are empty or not
-        if (!selectedType) {
-            alert("Kies alstublieft een eigenschapstype.");
-        } else if (!Array.from(propertyInputs).every(input => input.value.trim())) {
-            alert("Eigenschapswaarde mag niet leeg zijn, vul alstublieft de eigenschap naam in");
-        } else if (!Array.from(propertyInputs).some(input => input.value.trim())) {
-            alert("Vul alstublieft minstens één eigenschapswaarde in.");
-        } else if (!propertyNameInput.value.trim()) {
-            alert("Vul alstublieft de eigenschap naam in.");
-        } else {
-            event.preventDefault();
-            newPropId++;
+        //check if selected options if not undefined or empty
+        if (selectedType !== undefined && selectedType !== '') {
+            //checks every option from mutli and single is filled in
+            if ((Array.from(propertyInputs).every(input => input.value.trim() !== ''))) {
+                //checks if at least 1 is filled in and propertyname is filled in
+                // checks if propertyname is filled in & checks if at least 1 is filled
+                // checks if propertyname is filled in and is something else then singleselect and multiselect
+                if (
+                    (Array.from(propertyInputs).some(input => input.value !== '') && propertyNameInput.value !== '') ||
+                    (propertyNameInput.value !== '' && Array.from(propertyInputs).some(input => input.value !== '')) ||
+                    (propertyNameInput.value !== '' && selectedType !== 'singleselect' && selectedType !== 'multiselect')
+                ) {
+                    event.preventDefault();
+                    newPropId++;
+                
+                    //code to hide pop up, animation
+                    hideCreatePropPopup.classList.add('fade-out');
+                    hideCreatePropPopup.addEventListener('animationend', function(event) {
+                        if (event.animationName === 'fadeOut') {
+                            hideCreatePropPopup.classList.add('hidden');
+                        }
+                    }, false);
+                    hideCreatePropPopup.classList.remove('fade-in');
+                    
+                    //sets properties for the newPropdata object
+                    newPropData.id = newPropId;
+                    newPropData.name = propertyNameInput.value;
+                    newPropData.type = selectedType;
+                    newPropData.options = [];
 
-            // code for popup close and open animation
-            showCreatePropPopup.classList.add('fade-out');
-            showCreatePropPopup.addEventListener('animationend', function(event) {
-                if (event.animationName === 'fadeOut') {
-                    showCreatePropPopup.classList.add('hidden');
+                    propertyInputs.forEach(function(propertyInput) {
+                        propertyInput.name = `newProperties[${newPropData.id}][options][]`;
+                        newPropData.options.push(propertyInput.value);
+                    });
+
+                    //sets name & value for inputs
+                    const propertyNameName = document.getElementById('propertyNameName');
+                    propertyNameName.name = `newProperties[${newPropData.id}][name]`;
+                    propertyNameName.value = propertyNameInput.value;
+                    
+                    const propertyTypeType = document.getElementById('valueInput');
+                    propertyTypeType.name = `newProperties[${newPropData.id}][type]`;
+                    propertyTypeType.value = selectedType;
+                    
+                    //call the rendercreatedProperties and passes object with data & inputs
+                    renderCreatedProperties(newPropData, propertyNameName, propertyTypeType, propertyInputs);
+
+                    //resets all values after created
+                    propertyTypeSelect.value = '';
+                    selectedType = '';
+                    propertyNameInput.value = '';
+                    propertyInputs.forEach(function(propertyInput) {
+                        propertyInput.value = '';
+                    });
+
+                    optionsList.innerHTML = '';
+                    addOptionButton.classList.add('hidden');
+
+                    propertyNameInput.name = '';
+                    propertyNameName.name = '';
+                    valueInput.name = '';
+                    optionsInputField.name = '';
+
+                } else if (propertyNameInput.value === '' && Array.from(propertyInputs).some(input => input.value !== '') || propertyNameInput.value === '' && selectedType !== 'singleselect' && selectedType !== 'multiselect') {
+                    //checks if propertyName is left empty and propertyOptions are left empty
+                    //or if propertyName is left empty and type is something else then single or multi
+                    alert("Vul alstublieft de eigenschap naam in.");
+                } else if (Array.from(propertyInputs).every(input => input.value === '') && propertyNameInput.value === '') {
+                    //checks if all propertyOptions are left empty and propertyName is left empty
+                    alert("Vul alstublieft de eigenschap naam en minstens één eigenschapswaarde in.");
+                } else if (Array.from(propertyInputs).every(input => input.value === '') && propertyNameInput.value !== '') {
+                    //checks if all propertyOptions are left empty and propertyName was not empty
+                    alert("Vul alstublieft minstens één eigenschapswaarde in.");
                 }
-            }, false);
-            showCreatePropPopup.classList.remove('fade-in');
-            
-            //set properties for newPropData object
-            newPropData.id = newPropId;
-            newPropData.name = propertyNameInput.value;
-            newPropData.type = selectedType;
-            newPropData.options = [];
-
-            propertyInputs.forEach(function(propertyInput) {
-                propertyInput.name = `newProperties[${newPropData.id}][options][]`;
-                newPropData.options.push(propertyInput.value);
-            });
-
-            //sets names & values of input fields
-            const propertyNameName = document.getElementById('propertyNameName');
-            propertyNameName.name = `newProperties[${newPropData.id}][name]`;
-            propertyNameName.value = propertyNameInput.value;
-
-            const propertyTypeType = document.getElementById('valueInput');
-            propertyTypeType.name = `newProperties[${newPropData.id}][type]`;
-            propertyTypeType.value = selectedType;
-            
-            //calls function to create the new property, and passes the inputs
-            renderCreatedProperties(newPropData, propertyNameName, propertyTypeType, propertyInputs);
-
-            //resets all values after
-            propertyTypeSelect.value = '';
-            selectedType = '';
-            propertyNameInput.value = '';
-            propertyInputs.forEach(function(propertyInput) {
-                propertyInput.value = '';
-            });
-
-            optionsList.innerHTML = '';
-            addOptionButton.classList.add('hidden');
-
-            propertyNameInput.name = '';
-            propertyNameName.name = '';
-            valueInput.name = '';
-            optionsInputField.name = '';
+            } else if (Array.from(propertyInputs).some(input => input.value.trim() === '')) {
+                // if a propertyOption is left empty
+                alert("Eigenschapswaarde mag niet leeg zijn, vul alstublieft de eigenschap naam in");
+            }
+        } else if (selectedType === undefined || selectedType === '') {
+            // if selectedType is undefined or was empty, so no type selected
+            alert("Kies alstublieft een eigenschapstype.");
         }
     });
 
