@@ -137,7 +137,7 @@ class ProductController extends BaseProductController
 
         if (Auth::user()->role === 'admin') {
             $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
+                'workspace' => ['required', Rule::exists('work_spaces', 'id')]
             ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
@@ -479,7 +479,7 @@ class ProductController extends BaseProductController
 
     public function store(Request $request)
     {
-        //authorize
+        #region //authorize
         $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
         $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
@@ -501,7 +501,9 @@ class ProductController extends BaseProductController
         }else{
             $workspace = Auth::user()->work_space_id;
         }
-        //validate
+        #endregion
+
+        #region //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;
         if (Count($saleschannelAttributes['salesChannels']) > 0) {
@@ -515,7 +517,8 @@ class ProductController extends BaseProductController
         $validationRules += $this->validateInventoryAttributes();
         $validationRules += $this->validateNewProperiesAttributes();
         $attributes =  $request->validate($validationRules);
-
+        #endregion
+        
         //create product and links
         $product = $this->createProduct($attributes);
         $this->linkCategoriesToProduct($product, $attributes);

@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductVariationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\SalesChannelController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -82,6 +83,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/saleschannels/bulkdelete', [SalesChannelController::class, 'bulkDelete']);//autherized in controller
     Route::post('/saleschannels/restore',[SalesChannelController::class, 'restore']);//can restore
     Route::post('/saleschannels/forcedelete',[SalesChannelController::class, 'forceDelete']);//can delete
+
+    //Users (only admins can admins these)
+    Route::get('/users', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User');
+    Route::get('/users/{user}', [UserController::class, 'show'])->middleware('can:view,user');
 
 });
 
