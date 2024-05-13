@@ -64,7 +64,7 @@
                     </div>
 
                     <div id="variationPropContainer" class="max-h-[27rem] h-[27rem] overflow-y-auto pt-[1rem] pb-[1rem]">
-                        <ul class="flex items-center justify-start gap-[0.5rem] ml-[1rem]">
+                        <ul id="ul_item_container" class="flex items-center justify-start gap-[0.5rem] ml-[1rem]">
                             <div class="flex gap-[13rem] flex-col" id="variationAddPropBtnsContainer"></div>
                         </ul>
 
@@ -101,18 +101,21 @@
             },
         @endforeach
     ];
-    let selectedPropertyName;
-    let selectedOptionName;
-
-    let variationPropertiesDatass = [];
-
+   
     const mainPropsBtnsContainer = document.getElementById('variationAddPropBtnsContainer');
     const addNewDropdownButton = document.getElementById('variationAddPropBtn');
     const addVariationBtn = document.getElementById('addVariationBtn');
     const hideCreateVariationPopup = document.querySelector('.variations-add-prop-pop-up');
+    const variationAddPropBtnsContainer = document.getElementById('variationAddPropBtnsContainer');
+    const cancelBtn = document.querySelector('.variations-add-prop-close');
+
     let currentDropdownContainer = null; // Define currentDropdownContainer outside the event listener scope
     let selectedPropertyTextContent = null; // Track the initial text content of selectedPropertySpan
     let id = 0;
+
+    let selectedPropertyName;
+    let selectedOptionName;
+    let variationPropertiesDatass = [];
     
     addNewDropdownButton.addEventListener('click', (event) => {
         id++;
@@ -252,6 +255,7 @@
     addVariationBtn.addEventListener('click', () => {
         console.log("BEFORE Send: ", variationPropertiesDatass);
         if (variationPropertiesDatass.length !== 0 ) {
+            
             // code for popup close and open animation
             hideCreateVariationPopup.classList.add('fade-out');
             hideCreateVariationPopup.addEventListener('animationend', function(event) {
@@ -262,10 +266,20 @@
             hideCreateVariationPopup.classList.remove('fade-in');
             
             variationPropertiesDatass.id = id;
+            // send data to function
             renderCreatedVariation(variationPropertiesDatass);
+
+            //clear fields
+            variationPropertiesDatass = [];
+            variationAddPropBtnsContainer.innerHTML = '';
         } else if (variationPropertiesDatass.length === 0) {
             alert("pls");
         }
-        
+    })
+
+    cancelBtn.addEventListener('click', () => {
+        //clear fields
+        variationPropertiesDatass = [];
+        variationAddPropBtnsContainer.innerHTML = '';
     })
 </script>

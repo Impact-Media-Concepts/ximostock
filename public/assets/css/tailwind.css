@@ -3394,6 +3394,10 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+.first\:ml-\[0\.68rem\]:first-child {
+  margin-left: 0.68rem;
+}
+
 .hover\:cursor-pointer:hover {
   cursor: pointer;
 }

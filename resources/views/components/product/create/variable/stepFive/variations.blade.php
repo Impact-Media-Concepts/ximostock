@@ -4,6 +4,22 @@
     $app_url = env('VITE_APP_URL');
 ?>
 
+<style>
+    .store-input {
+        text-align: center;
+    }
+
+    .store-input::-webkit-outer-spin-button,
+    .store-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+
+    .store-input[type=number] {
+    -moz-appearance: textfield;
+    }
+</style>
+
 <div class='bg-white basic:h-[38rem] hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg hd:relative hd:bottom[2.62rem]' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1.56rem] mt-[0.6rem]'>
@@ -123,7 +139,6 @@
         container.appendChild(li);
     }
 
-
     function variationPropertyHandleCheckboxClick(property, trueInput, container) {
         const liIdNumber = extractIdNumber(trueInput.id); // Get numeric part of li id
         const divIdNumber = extractIdNumber(container.id);
@@ -206,50 +221,67 @@
         return generalInfoContainer;
     }
 
-    function renderStoreLocationInfo () {
+    function renderStoreLocationInfo() {
         const storeLocationContainer = document.createElement('div');
-        storeLocationContainer.classList.add('flex', 'justify-center', 'items-center', 'flex-col');
+        storeLocationContainer.classList.add('flex', 'justify-center', 'items-center', 'flex-col', 'gap-[1rem]');
         const storeAmountContainer = document.createElement('div');
-        storeAmountContainer.classList.add('flex', 'gap-[2rem]');
+        storeAmountContainer.classList.add('flex', 'gap-[2rem]', 'w-full', 'mb-[1.5rem]');
 
         const decreaseStoreAmount = document.createElement('button');
-        const decreaseStoreAmountText = document.createElement('p');
-        decreaseStoreAmountText.textContent = 'DD';
-        decreaseStoreAmount.classList.add('bg-[#3DABD5', 'h-[3.75rem]', 'rounded-md', 'flex', 'justify-center', 'items-center');
+        decreaseStoreAmount.textContent = 'DD';
+        decreaseStoreAmount.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'flex', 'justify-center', 'items-center', 'w-full');
         decreaseStoreAmount.type = "button";
-        decreaseStoreAmount.appendChild(decreaseStoreAmountText);
 
         const storeAmount = document.createElement('input');
-        storeAmount.classList.add('bg-[#3DABD5', 'h-[3.75rem]', 'rounded-md', 'font-bold', 'text-[17px]', 'flex', 'justify-center', 'items-center');
+        storeAmount.classList.add('bg-[#F8F8F8]', 'h-[3.75rem]', 'rounded-md', 'font-bold', 'text-[17px]', 'flex', 'justify-center', 'items-center', 'store-input', 'px-[0.5rem]', 'w-full');
         storeAmount.style.border = '1px solid #717171';
+        storeAmount.type = 'number';
+        storeAmount.value = 0;
+        storeAmount.id = 'store-amount';
 
         const increaseStoreAmount = document.createElement('button');
-        const increaseStoreAmountText = document.createElement('p');
-        increaseStoreAmountText.textContent = 'II';
-        increaseStoreAmount.classList.add('bg-[#3DABD5', 'h-[3.75rem]', 'rounded-md');
+        increaseStoreAmount.textContent = 'II';
+        increaseStoreAmount.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'flex', 'justify-center', 'items-center', 'w-full');
         increaseStoreAmount.type = "button";
-        increaseStoreAmount.appendChild(increaseStoreAmountText);
-       
 
         const storeLocationDropdown = document.createElement('div');
+        storeLocationDropdown.classList.add('w-full', 'h-[2.5rem]', 'bg-[#484848]', 'cursor-pointer');
+        const storeLocationDropdownTitle = document.createTextNode('Doel / bestemming');
 
         const addStoreLocation = document.createElement('button');
-        const addStoreLocationText = document.createElement('p');
-        addStoreLocationText.textContent = 'TOEVOEGEN';
-
+        addStoreLocation.textContent = 'TOEVOEGEN';
         addStoreLocation.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'font-bold', 'text-[24px]', 'text-[#fff]', 'flex', 'justify-center', 'items-center', 'w-full');
         addStoreLocation.type = "button";
-        addStoreLocation.appendChild(addStoreLocationText);
+
+        decreaseStoreAmount.addEventListener('click', function(event) {
+            updateCounter(storeAmount, -1);
+        });
+
+        increaseStoreAmount.addEventListener('click', function(event) {
+            updateCounter(storeAmount, 1);
+        });
 
         storeAmountContainer.appendChild(decreaseStoreAmount);
         storeAmountContainer.appendChild(storeAmount);
         storeAmountContainer.appendChild(increaseStoreAmount);
-        storeAmountContainer.appendChild(storeLocationDropdown);
+
+        storeLocationDropdown.appendChild(storeLocationDropdownTitle);
 
         storeLocationContainer.appendChild(storeAmountContainer);
+        storeLocationContainer.appendChild(storeLocationDropdown);
         storeLocationContainer.appendChild(addStoreLocation);
 
         return storeLocationContainer;
+    }
+
+    function updateCounter(amountValue, change) {
+        let value = parseInt(amountValue.value);
+        if (value + change < 0) {
+            amountValue.value = 0;
+        } else {
+            value += change;
+            amountValue.value = value;
+        }
     }
     
     function renderButtons(li, variationObjects, trueInput, propertyTitleContainer) {
@@ -280,10 +312,7 @@
         delPropBtn.style.border = '1px solid #717172';
         delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
 
-        delPropBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            li.remove();
-        });
+        deleteVariationPropertyItem(delPropBtn, li);
 
         const delImg = document.createElement('img');
         delImg.src = '{{$app_url}}/images/archive-icon.png';
@@ -345,7 +374,7 @@
                 propertyValueSpan.classList.add('no-select');
 
                 const propertyTextContainer = document.createElement('div');
-                propertyTextContainer.classList.add('flex', 'items-center', 'h-[4.06rem]', 'p-[0.7rem]', 'gap-[0.5rem]');
+                propertyTextContainer.classList.add('flex', 'items-center', 'h-[4.06rem]', 'p-[0.7rem]', 'gap-[0.5rem]', 'first:ml-[0.68rem]');
                 propertyTextContainer.style.border = " 1px solid #F0F0F0";
 
                 const nameTextSpan = document.createElement('span');
@@ -363,6 +392,13 @@
 
                 propertyTitleContainer.appendChild(propertyTextContainer);
             });
+        });
+    }
+
+    function deleteVariationPropertyItem(deleteBtn, item) {
+        deleteBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            item.remove();
         });
     }
 </script>
