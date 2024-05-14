@@ -44,7 +44,7 @@ class ProductVariationController extends BaseProductController
         $salesChannels = $salesChannels->get();
 
         return view('product.createVariant', [
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
+            'categories' => $categories->with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'locations' => InventoryLocation::with(['location_zones'])->get(),
             'salesChannels' => SalesChannel::all(),

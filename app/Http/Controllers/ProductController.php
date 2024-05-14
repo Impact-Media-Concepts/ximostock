@@ -93,7 +93,6 @@ class ProductController extends BaseProductController
 
     public function create(Request $request)
     {
-
         if (Auth::user()->role === 'admin') {
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
@@ -116,7 +115,6 @@ class ProductController extends BaseProductController
             ->with('child_categories_recursive')
             ->whereNull('parent_category_id')
             ->get();
-
         return view('product.create', [
             'categories' => $categories,
             'properties' => $properties,

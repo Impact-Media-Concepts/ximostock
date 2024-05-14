@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('work_space_id')->nullable()->constrained('work_spaces')->cascadeOnDelete();
             $table->string('name');
-            $table->enum('role', ['admin', 'manager', 'supplier']);
+            $table->enum('role', ['admin', 'manager', 'supplier'])->default('manager');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
