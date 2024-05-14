@@ -23,8 +23,8 @@
         margin-top: 3.3rem;
     }
 
-    .variation-prop-btn-width {
-        width: 16.75rem;
+    .variation-location-btn-width {
+        width: 100%;
     }
 
     .variation-prop-btn-right {
@@ -32,8 +32,8 @@
     }
 
     .propBtnHeight {
-        height: 11.3rem;
-        max-height: 11.3rem;
+        height: 15rem;
+        max-height: 15rem;
     }
 </style>
 
@@ -115,14 +115,18 @@
         trueInput.value = null;
 
         const propertyTitleContainer = document.createElement('div');
-        propertyTitleContainer.classList.add('flex', 'items-center', 'h-[4.75rem]', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg', 'gap-[0.68rem]');
+        propertyTitleContainer.classList.add('flex', 'items-center', 'h-auto', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg', 'gap-[0.68rem]');
         propertyTitleContainer.style.border = '1px solid #D3D3D3';
         propertyTitleContainer.id = `variation_title_container_${variationObjects.id}`
+
+        const variationContainer = document.createElement('div');
+        variationContainer.className = 'w-full h-full flex flex-wrap justify-start items-center ml-[1rem] py-[0.5rem] gap-[1rem]';
         
-        renderVariationOptions(variationObjects, propertyTitleContainer);
+        renderVariationOptions(variationObjects, variationContainer);
 
         const buttonsContainer = renderButtons(li, variationObjects, trueInput, propertyTitleContainer);
 
+        propertyTitleContainer.appendChild(variationContainer)
         propertyTitleContainer.appendChild(buttonsContainer);
         propertyTitleContainer.appendChild(trueInput);
         li.appendChild(propertyTitleContainer);
@@ -153,7 +157,7 @@
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
         const div = document.createElement('div');
         div.id = `variation_div_${property.id}`;
-        div.classList.add('hidden', 'grid','hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg', 'h-auto', 'justify-center', 'items-center');
+        div.classList.add('hidden', 'grid','hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg', 'h-auto', 'justify-center', 'items-center', 'gap-[2rem]');
         div.style.border = '1px solid #D3D3D3';
 
         const generalInfoContainer = renderGeneralInfo();
@@ -167,10 +171,10 @@
 
     function renderGeneralInfo () {
         const generalInfoContainer = document.createElement('div');
-        generalInfoContainer.classList.add('h-[8.93rem]', 'grid', 'grid-cols-2', 'gap-4', 'hd:w-[85rem]', 'uhd:w-[126rem]',);
+        generalInfoContainer.classList.add('h-[8.93rem]', 'grid', 'grid-cols-2', 'gap-4', 'hd:w-[85rem]', 'uhd:w-[126rem]', 'mt-[2rem]');
 
         const eanContainer = document.createElement('div');
-        eanContainer.classList.add('flex', 'flex-col');
+        eanContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const eanTitle = document.createTextNode('EAN:')
         const eanInput = document.createElement('input');
         eanInput.classList.add('h-[2.5rem]');
@@ -179,7 +183,7 @@
         eanContainer.appendChild(eanInput);
 
         const skuContainer = document.createElement('div');
-        skuContainer.classList.add('flex', 'flex-col');
+        skuContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const skuTitle = document.createTextNode('SKU:')
         const skuInput = document.createElement('input');
         skuInput.classList.add('h-[2.5rem]');
@@ -188,7 +192,7 @@
         skuContainer.appendChild(skuInput);
 
         const priceContainer = document.createElement('div');
-        priceContainer.classList.add('flex', 'flex-col');
+        priceContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const priceTitle = document.createTextNode('Prijs:')
         const priceInput = document.createElement('input');
         priceInput.classList.add('h-[2.5rem]');
@@ -197,7 +201,7 @@
         priceContainer.appendChild(priceInput);
 
         const discountContainer = document.createElement('div');
-        discountContainer.classList.add('flex', 'flex-col');
+        discountContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const discountTitle = document.createTextNode('Korting:')
         const discountInput = document.createElement('input');
         discountInput.classList.add('h-[2.5rem]');
@@ -225,7 +229,7 @@
 
         const decreaseStoreAmount = document.createElement('button');
         decreaseStoreAmount.textContent = 'DD';
-        decreaseStoreAmount.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'flex', 'justify-center', 'items-center', 'w-full');
+        decreaseStoreAmount.classList.add('hover:bg-[#3999BE]', 'bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'flex', 'justify-center', 'items-center', 'w-full');
         decreaseStoreAmount.type = "button";
 
         const storeAmount = document.createElement('input');
@@ -237,40 +241,41 @@
 
         const increaseStoreAmount = document.createElement('button');
         increaseStoreAmount.textContent = 'II';
-        increaseStoreAmount.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'flex', 'justify-center', 'items-center', 'w-full');
+        increaseStoreAmount.classList.add('hover:bg-[#3999BE]', 'bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'flex', 'justify-center', 'items-center', 'w-full');
         increaseStoreAmount.type = "button";
 
         const storeLocationDropdown = document.createElement('div');
-        storeLocationDropdown.classList.add("variationsLocationDropdownContainer", "flex", "gap-[1rem]");
+        storeLocationDropdown.classList.add("variationsLocationDropdownContainer", "flex", "gap-[1rem]", "w-full");
 
         storeLocationDropdown.innerHTML =  `
-            <div x-data="{ open: false, selectedProperty: '' }" class="variationsLocationDropdown fooo2  relative flex items-center justify-start text-left right-6">
+            <div x-data="{ open: false, selectedProperty: '' }" class="variationsLocationDropdown fooo2 w-full relative flex items-center justify-start text-left right-6">
                 <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
-                <button @click="open = !open;" class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem] variation-prop-btn-width" style="border: 1px solid #717171" type="button" @click.away="open = false">
-                    <span id="selected_variation_property_name_${id}" class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.3rem] overflow-visible selectedLocationSpan" x-text="selectedProperty.name"></span>
+                <button @click="open = !open;" class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] w-full text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem] variation-location-btn-width" style="border: 1px solid #717171" type="button" @click.away="open = false">
+                    <span id="selected_variation_property_name" class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.3rem] overflow-visible selectedLocationSpan" x-text="selectedProperty.name"></span>
                     <div class="w-full flex justify-end">
                         <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
                     </div>
                 </button>
-                <div x-cloak x-show="open" class="absolute flex justify-center items-center overflow-y-auto propBtnHeight basic:h-[8rem] variation-prop-btn-width bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]" style="border: 1px solid #F0F0F0; left: 1.5rem;">
-                    <ul class="mt-0 propBtnHeight" id="locationListContainer"></ul>
+                <div x-cloak x-show="open" class="w-full absolute flex justify-center items-center overflow-y-auto propBtnHeight basic:h-[8rem] variation-location-btn-width bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]" style="border: 1px solid #F0F0F0; left: 1.5rem;">
+                    <ul class="mt-0 propBtnHeight w-full" id="locationListContainer"></ul>
                 </div>
             </div>
         `;
         
         locations.forEach(location => {
             const locationListItem = document.createElement('li');
+            locationListItem.className = 'w-full';
 
             const locationNameSpan = document.createElement('span');
             locationNameSpan.textContent = location.name;
-            locationNameSpan.className = "variation-prop-btn-width duration-100 block w-[10.43rem] px-4 py-2 font-bold text-sm text-gray-700 flex justify-start ml-[1rem]";
+            locationNameSpan.className = "variation-location-btn-width duration-100 block px-4 py-2 font-bold text-sm text-gray-700 flex justify-start ml-[1rem]";
 
             locationListItem.appendChild(locationNameSpan);
 
             location.location_zones.forEach(zone => {
                 const zoneButton = document.createElement('button');
                 zoneButton.type = "button";
-                zoneButton.className = "variation-prop-btn-width hover:bg-[#3999BE] duration-100 block w-[10.43rem] font-normal px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start";
+                zoneButton.className = "variation-location-btn-width hover:bg-[#3999BE] duration-100 block font-normal px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start";
 
                 zoneButton.addEventListener('click', () => {
                     const selectedLocationSpan = document.querySelector('.selectedLocationSpan');
@@ -297,14 +302,14 @@
 
         });
        
-        const storeLocationDropdownTitle = document.createTextNode('Doel / bestemming');
+        // const storeLocationDropdownTitle = document.createTextNode('Doel / bestemming');
 
 
 
 
         const addStoreLocationBtn = document.createElement('button');
         addStoreLocationBtn.textContent = 'TOEVOEGEN';
-        addStoreLocationBtn.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'font-bold', 'text-[24px]', 'text-[#fff]', 'flex', 'justify-center', 'items-center', 'w-full');
+        addStoreLocationBtn.classList.add('hover:bg-[#3999BE]','bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'font-bold', 'text-[24px]', 'text-[#fff]', 'flex', 'justify-center', 'items-center', 'w-full');
         addStoreLocationBtn.type = "button";
         addStoreLocationBtn.id = 'add_store_location_btn'
 
@@ -319,6 +324,9 @@
         addStoreLocationBtn.addEventListener('click', function() {
             if (storeAmount.value.trim() === '' || storeAmount.value.trim() === '0') {
                 alert('Vul alstublieft een voorraad waarde in');
+                return;
+            } else if (selected_variation_property_name.innerText === '') {
+                alert('Vul alstublieft een voorraad locatie in.');
                 return;
             }
             addLocation(storeAmount.value, storeLocationDataContainer, locationName, selectedLocationZoneName);
@@ -338,10 +346,26 @@
             console.log("received locationName: ", location);
             console.log("received locationName: ", locationZone);
             const locationDiv = document.createElement('div');
-            locationDiv.classList.add('w-full', 'h-[7rem]', 'flex', 'flex-col', 'justify-center', 'items-center', 'rounded-md');
+            locationDiv.classList.add('w-full', 'h-[7rem]', 'flex', 'flex-col', 'justify-center', 'items-center', 'rounded-md', 'locationItem');
 
             const locationNameDiv = document.createElement('div');
-            locationNameDiv.className = 'w-full flex justify-start items-center'
+            locationNameDiv.className = 'w-full flex justify-start items-center';
+            
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'removeLocationBtn flex justify-center items-center cursor-pointer relative left-[24rem] mt-[0.5rem]';
+            removeBtn.type = 'button';
+
+            const removeIcon = document.createElement('img');
+            removeIcon.className = 'select-none w-[0.8rem] h-[0.8rem] flex cursor-pointer';
+            removeIcon.src = '{{$app_url}}/images/x-icon.png';
+            removeIcon.alt = 'x icon';
+
+            removeBtn.addEventListener('click', function() {
+                const liToRemove = this.closest('.locationItem');
+                liToRemove.remove();
+            });
+
             const locationName = document.createElement('span');
             locationName.innerText = location;
             locationName.classList.add('h-[2.5rem]', 'flex', 'justify-center', 'items-center');
@@ -357,7 +381,10 @@
             amount.classList.add('w-[11.56rem]', 'h-[2.5rem]', 'px-[0.5rem]', 'text-left', 'store-input', 'rounded-md');
             amount.value = amountValue;
 
+            removeBtn.appendChild(removeIcon);
             locationNameDiv.appendChild(locationName);
+            locationNameDiv.appendChild(removeBtn);
+            
             locationSubDiv.appendChild(locationZoneName);
             locationSubDiv.appendChild(amount);
 
@@ -371,7 +398,7 @@
         storeAmountContainer.appendChild(storeAmount);
         storeAmountContainer.appendChild(increaseStoreAmount);
 
-        storeLocationDropdown.appendChild(storeLocationDropdownTitle);
+        // storeLocationDropdown.appendChild(storeLocationDropdownTitle);
 
         storeLocationContainer.appendChild(storeAmountContainer);
         storeLocationContainer.appendChild(storeLocationDropdown);
@@ -472,8 +499,8 @@
                 propertyValueSpan.classList.add('no-select');
 
                 const propertyTextContainer = document.createElement('div');
-                propertyTextContainer.classList.add('flex', 'items-center', 'h-[4.06rem]', 'p-[0.7rem]', 'gap-[0.5rem]', 'first:ml-[0.68rem]');
-                propertyTextContainer.style.border = " 1px solid #F0F0F0";
+                propertyTextContainer.classList.add('flex', 'items-center', 'p-[0.7rem]', 'gap-[0.5rem]', 'rounded-md');
+                propertyTextContainer.style.border = "1px solid #F0F0F0";
 
                 const nameTextSpan = document.createElement('span');
                 const nameText = document.createTextNode(variationProp.name);
