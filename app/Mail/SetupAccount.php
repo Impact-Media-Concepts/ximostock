@@ -16,10 +16,8 @@ class SetupAccount extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($password)
-    {
-        //
-    }
+    public function __construct(public string $password, public string $email, public string $name, public string $role)
+    {    }
 
     /**
      * Get the message envelope.

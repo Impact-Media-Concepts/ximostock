@@ -83,7 +83,7 @@ class UserController extends Controller
             'work_space_id' => $request['workspace'],
             'password' => Hash::make($password)
         ]);
-        Mail::to($request['email'])->send(new SetupAccount($password));
+        Mail::to($request['email'])->send(new SetupAccount($password, $request['email'], $request['name'], $request['role']));
         return redirect('/products');
     }
 }
