@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductProperty;
 use App\Models\Property;
+use App\Models\SalesChannel;
 use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Support\Facades\Auth;
@@ -129,17 +130,15 @@ class PropertyController extends Controller
         return redirect()->back();
     }
 
-    public function bulkDelete()
+    public function bulkDelete(Request $request)
     {
-
-        $request = request();
         Gate::authorize('bulkDelete', [Property::class, $request['properties']]);
 
         $attributes = $request->validate([
             'properties' => ['required', 'array'],
             'properties.*' => ['required', 'numeric', Rule::exists('properties', 'id')]
         ]);
-        Property::whereIn('id', $attributes['properties'])->delete();
+        SalesChannel::whereIn('id', $attributes['properties'])->delete();
         return redirect('/properties');
     }
 
@@ -187,5 +186,39 @@ class PropertyController extends Controller
         ]);
 
         return redirect('/properties');
+    }
+
+    public function archive(Request $request){
+        $request->validate([
+            'workspace' => ['required', new ValidWorkspaceKeys]
+        ]);
+        $results = [
+            'perPage' => $request->input('perPage', 20),
+            'search' => $request['search'],
+            'sidenavActive' => 'archive',
+            'workspaces' => WorkSpace::all(),
+            'activeWorkspace' => $request['workspace'],
+            'properties' => Property::onlyTrashed()->get()
+        ];
+        return view('property.archive', $results);
+    }
+
+    public function restore(Request $request){
+        $attributes = $request->validate([
+            'properties' => ['array', 'required'],
+            'properties.*' => ['numeric', 'required']
+        ]);
+        Property::withTrashed()->whereIn('id', $attributes['properties'])->restore();
+        return redirect()->back();
+    }
+
+    public function forceDelete(Request $request)
+    {
+        $attributes = $request->validate([
+            'properties' => ['array', 'required'],
+            'properties.*' => ['numeric', 'required']
+        ]);
+        Property::withTrashed()->whereIn('id', $attributes['properties'])->forceDelete();
+        return redirect()->back();
     }
 }
