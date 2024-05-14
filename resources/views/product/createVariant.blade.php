@@ -35,7 +35,7 @@
                     </div>
 
                     <div id="stepFive" class="step" style="display: none;">
-                        <x-product.create.variable.stepFive.variations :selectedProperties="$selectedProperties" :properties="$properties" :locations="$locations"/>
+                        <x-product.create.variable.stepFive.variations :salesChannels="$salesChannels" :selectedProperties="$selectedProperties" :properties="$properties" :locations="$locations"/>
                     </div>
 
                     <div id="stepSix" class="step" style="display: none;">
