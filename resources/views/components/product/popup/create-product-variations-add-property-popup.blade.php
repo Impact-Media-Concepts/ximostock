@@ -111,22 +111,22 @@
 
     let currentDropdownContainer = null; // Define currentDropdownContainer outside the event listener scope
     let selectedPropertyTextContent = null; // Track the initial text content of selectedPropertySpan
-    let id = 0;
+    let variationPropertyId = 0;
 
     let selectedPropertyName;
     let selectedOptionName;
     let variationPropertiesDatass = [];
     
     addNewDropdownButton.addEventListener('click', (event) => {
-        id++;
+        variationPropertyId++;
         const newDropdownContainer = document.createElement('div');
-        newDropdownContainer.id = `option_container_${id}`
+        newDropdownContainer.id = `option_container_${variationPropertyId}`
         newDropdownContainer.classList.add("variationsPropDropdownContainer", "flex", "gap-[1rem]");
         newDropdownContainer.innerHTML = `
             <div x-data="{ open: false, selectedProperty: '' }" class="variationsPropDropdown fooo2  relative flex items-center justify-start text-left right-6">
                 <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
                 <button @click="open = !open;" class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem] variation-prop-btn-width" style="border: 1px solid #717171" type="button" @click.away="open = false">
-                    <span id="selected_variation_property_name_${id}" class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.3rem] overflow-visible selectedPropertySpan" x-text="selectedProperty.name"></span>
+                    <span id="selected_variation_property_name_${variationPropertyId}" class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.3rem] overflow-visible selectedPropertySpan" x-text="selectedProperty.name"></span>
                     <div class="w-full flex justify-end">
                         <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
                     </div>
@@ -139,15 +139,13 @@
             <div>
                 <img class="w-[2rem] pt-[0.7rem]" src="{{$app_url}}/images/long-arrow-right-icon.png" alt="long arrow right icon">
             </div>
-
         `;
-        
         
         variationAddPropsData.forEach(property => {
             const propertyListItem = document.createElement('li');
             propertyListItem.innerHTML = `
                 <button type="button" class="variation-prop-btn-width hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start ml-[1rem]">
-                    <span id="selected_variation_property_value_${id}" class="flex items-center justify-center pr-3">${property.name}</span>
+                    <span id="selected_variation_property_value_${variationPropertyId}" class="flex items-center justify-center pr-3">${property.name}</span>
                 </button>
             `;
             newDropdownContainer.querySelector("#propertyListContainer").appendChild(propertyListItem);
@@ -168,8 +166,6 @@
                 selectedPropertySpan.textContent = selectedPropertyName;
                 selectedPropertySpan.title = selectedPropertyName;
 
-               
-
                 let optionsContainer = newDropdownContainer.querySelector('.propertyOptionsContainer'); // Reference the specific options container within this container
                 if (!optionsContainer) {
                     optionsContainer = document.createElement('div');
@@ -185,7 +181,7 @@
                             <div x-data="{ open: false, selectedOption: '' }" class="variationsPropOptionsDropdown relative flex items-center justify-start text-left right-6">
                                 <input type="hidden" name="selected_option_id" x-bind:value="selectedOption.id">
                                 <button @click="open = !open;" class="variation-prop-btn-width flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem]" style="border: 1px solid #717171" type="button" @click.away="open = false">
-                                    <span id="selected_option_name_${id}" class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.5rem] overflow-visible selectedOptionSpan" x-text="selectedOption.name"></span>
+                                    <span id="selected_option_name_${variationPropertyId}" class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.5rem] overflow-visible selectedOptionSpan" x-text="selectedOption.name"></span>
                                     <div class="w-full flex justify-end">
                                         <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
                                     </div>
@@ -205,7 +201,7 @@
                             const optionListItem = document.createElement('li');
                             optionListItem.innerHTML = `
                                 <button type="button" class="variation-prop-btn-width hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start ml-[1rem]">
-                                    <span id="options_item_${id}" class="flex items-center justify-center pr-3"> ${option} </span>
+                                    <span id="options_item_${variationPropertyId}" class="flex items-center justify-center pr-3"> ${option} </span>
                                 </button>
                             `;
                             optionListItem.querySelector('button').addEventListener('click', (event) => {
@@ -222,7 +218,8 @@
                                     values: [{
                                         name: selectedPropertyName,
                                         value: selectedOptionName
-                                    }]
+                                    }],
+                                    id: variationPropertyId
                                 };
                                 variationPropertiesDatass.push(variationPropertyData);
                                 
@@ -254,6 +251,8 @@
 
     addVariationBtn.addEventListener('click', () => {
         console.log("BEFORE Send: ", variationPropertiesDatass);
+        let variationPropObjectId = 0;
+        variationPropObjectId++
         if (variationPropertiesDatass.length !== 0 ) {
             
             // code for popup close and open animation
@@ -265,7 +264,7 @@
             }, false);
             hideCreateVariationPopup.classList.remove('fade-in');
             
-            variationPropertiesDatass.id = id;
+            variationPropertiesDatass.id = variationPropObjectId;
             // send data to function
             renderCreatedVariation(variationPropertiesDatass);
 

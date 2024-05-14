@@ -152,15 +152,15 @@
         }
     }
 
-    function renderVariationData(property, li, trueInput) {
+    function renderVariationData(variationObjects, li, trueInput) {
         const hiddenContainer = document.createElement('div');
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
         const div = document.createElement('div');
-        div.id = `variation_div_${property.id}`;
+        div.id = `variation_div_${variationObjects.id}`;
         div.classList.add('hidden', 'grid','hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg', 'h-auto', 'justify-center', 'items-center', 'gap-[2rem]');
         div.style.border = '1px solid #D3D3D3';
 
-        const generalInfoContainer = renderGeneralInfo();
+        const generalInfoContainer = renderGeneralInfo(variationObjects);
         const storeLocationContainer = renderStoreLocationInfo();
         
         div.appendChild(generalInfoContainer);
@@ -169,7 +169,7 @@
         li.appendChild(div);
     }
 
-    function renderGeneralInfo () {
+    function renderGeneralInfo (variationObjects) {
         const generalInfoContainer = document.createElement('div');
         generalInfoContainer.classList.add('h-[8.93rem]', 'grid', 'grid-cols-2', 'gap-4', 'hd:w-[85rem]', 'uhd:w-[126rem]', 'mt-[2rem]');
 
@@ -177,7 +177,8 @@
         eanContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const eanTitle = document.createTextNode('EAN:')
         const eanInput = document.createElement('input');
-        eanInput.classList.add('h-[2.5rem]');
+        eanInput.type = 'number';
+        eanInput.classList.add('h-[2.5rem]', 'store-input');
 
         eanContainer.appendChild(eanTitle);
         eanContainer.appendChild(eanInput);
@@ -186,7 +187,8 @@
         skuContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const skuTitle = document.createTextNode('SKU:')
         const skuInput = document.createElement('input');
-        skuInput.classList.add('h-[2.5rem]');
+        skuInput.type = 'number';
+        skuInput.classList.add('h-[2.5rem]', 'store-input');
 
         skuContainer.appendChild(skuTitle);
         skuContainer.appendChild(skuInput);
@@ -195,16 +197,56 @@
         priceContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const priceTitle = document.createTextNode('Prijs:')
         const priceInput = document.createElement('input');
-        priceInput.classList.add('h-[2.5rem]');
+        priceInput.type = 'number';
+        priceInput.classList.add('h-[2.5rem]', 'store-input');
 
         priceContainer.appendChild(priceTitle);
         priceContainer.appendChild(priceInput);
 
         const discountContainer = document.createElement('div');
         discountContainer.classList.add('flex', 'flex-col', 'rounded-md');
-        const discountTitle = document.createTextNode('Korting:')
+        const discountTitle = document.createTextNode('Korting:');
         const discountInput = document.createElement('input');
-        discountInput.classList.add('h-[2.5rem]');
+        discountInput.type = 'number';
+        discountInput.classList.add('h-[2.5rem]', 'store-input');
+
+        variationObjects.forEach(variationObject => {
+            console.log("1variationObject inputs: ", variationObject);
+            const variantInputId = document.createElement('input');
+            variantInputId.type = 'hidden';
+            variantInputId.name = `variants[${variationObject.id}][property_id][${variationObject.id}]`;
+            variantInputId.id = `variant_id_${variationObject.id}`;
+            variantInputId.value = variationObject.id;
+
+            const variantValue = document.createElement('input');
+            variantValue.type = 'hidden';
+            variantValue.name = `variants[${variationObject.id}][property_value][${variationObject.id}]`;
+            variantValue.id = `variant_value_id_${variationObject.id}`;
+            variationObject.values.forEach(variationValue => {
+                variantValue.value = variationValue.value;
+            });
+
+            
+            
+
+            eanInput.name = `variants[${variationObject.id}][ean]`;
+            skuInput.name = `variants[${variationObject.id}][sku]`;
+            priceInput.name = `variants[${variationObject.id}][price]`;
+
+            eanInput.id = `ean_id_${variationObject.id}`;
+            skuInput.id = `sku_id_${variationObject.id}`;
+            priceInput.id = `price_id_${variationObject.id}`;
+
+            generalInfoContainer.appendChild(variantInputId);
+            generalInfoContainer.appendChild(variantValue);
+
+            console.log("variantInputId: ", variantInputId.name);
+            console.log("variantValue.name: ", variantValue.name);
+            console.log("eanInput.name: ", eanInput.name);
+            console.log("skuInput.name: ", skuInput.name);
+            console.log("priceInput.name: ", priceInput.name);
+        });
+
 
         discountContainer.appendChild(discountTitle);
         discountContainer.appendChild(discountInput);
@@ -322,6 +364,39 @@
         });
 
         addStoreLocationBtn.addEventListener('click', function() {
+            const input1 = document.querySelectorAll('[id^="variant_id_"]');
+            const input2 = document.querySelectorAll('[id^="variant_value_id_"]');
+
+
+
+            const input3 = document.querySelectorAll('[id^="ean_id_"]');
+            const input4 = document.querySelectorAll('[id^="sku_id_"]');
+            const input5 = document.querySelectorAll('[id^="price_id_"]');
+
+            function logInputValues(inputs) {
+                inputs.forEach(input => {
+                    console.log(input);
+                });
+            }
+
+            function logInputValues222(inputs) {
+                inputs.forEach(input => {
+                    console.log(input.value);
+                });
+            }
+
+            // Log values for each NodeList
+            console.log("variant_id_: ");
+            logInputValues(input1);
+            console.log("variant_value_id_: ");
+            logInputValues(input2);
+            console.log("ean_id_: ");
+            logInputValues222(input3);
+            console.log("sku_id_: ");
+            logInputValues222(input4);
+            console.log("price_id_: ");
+            logInputValues222(input5);
+
             if (storeAmount.value.trim() === '' || storeAmount.value.trim() === '0') {
                 alert('Vul alstublieft een voorraad waarde in');
                 return;
