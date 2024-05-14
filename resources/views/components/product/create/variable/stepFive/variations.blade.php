@@ -1,4 +1,4 @@
-@props(['properties'])
+@props(['properties', 'locations', 'locations'])
 
 <?php
     $app_url = env('VITE_APP_URL');
@@ -11,12 +11,29 @@
 
     .store-input::-webkit-outer-spin-button,
     .store-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+        -webkit-appearance: none;
+        margin: 0;
     }
 
     .store-input[type=number] {
-    -moz-appearance: textfield;
+        -moz-appearance: textfield;
+    }
+
+    .back-order-btn-options {
+        margin-top: 3.3rem;
+    }
+
+    .variation-prop-btn-width {
+        width: 16.75rem;
+    }
+
+    .variation-prop-btn-right {
+        right: 13rem;
+    }
+
+    .propBtnHeight {
+        height: 11.3rem;
+        max-height: 11.3rem;
     }
 </style>
 
@@ -68,37 +85,6 @@
                     <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
                         <ul class='mt-[0.85rem]' id='createProdPropertyList2'>
 
-                            <!-- <li id="new_properties_li_1" class="pt-[0.35rem] pb-[0.35rem]">
-                                <div class="flex items-center h-[4.75rem] basic:w-[62rem] hd:w-[89rem] uhd:w-[130rem] bg-[#F8F8F8] rounded-md hover:cursor-pointer border-t-lg" id="newPropertyItemContainer_1" style="border: 1px solid rgb(211, 211, 211);">
-                                    <span class="ml-[2.5rem] font-bold relative bottom-[0.125rem] select-none text-[18px] whitespace-nowrap">asd (number)</span>
-                                    <div class="pr-[1rem] w-full flex justify-end items-center">
-                                        <button type="button" class="delete-props-btn w-[11.18rem] h-[2.5rem] rounded-md hover:bg-gray-100 flex items-center justify-center" style="border: 1px solid rgb(113, 113, 114);">
-                                            <img src="http://127.0.0.1:8000/images/archive-icon.png" alt="delete icon" class="mr-[0.5rem] hover:cursor-pointer select-none">
-                                            <p>Verwijderen</p>
-                                        </button>
-                                    </div>
-                                
-                                    <span class="flex items-center justify-end select-none mr-[1.5rem]">
-                                    <img src="http://127.0.0.1:8000/images/big-arrow-down-icon.png" alt="Arrow Down" class="w-[1.2rem] flex mt-[0.18rem] rotate-arrow"></span>
-                                    <input id="new_properties[1]" type="hidden" value="" name="newProperties[1][value]">
-                                    <input name="newProperties[1][name]" type="hidden" value="asd">
-                                    <input name="newProperties[1][type]" type="hidden" value="number">
-                                </div>
-                                <div id="new_prop_div_1" class="hidden grid h-[6.58rem] hd:w-[89rem] uhd:w-[130rem] bg-[#F8F8F8] rounded-b-lg" style="border: 1px solid rgb(211, 211, 211); height: 4.58rem;">
-                                    <div class="flex items-center ml-[2rem]">
-                                        <div class="flex rounded-md basic:w-[31rem] hd:w-[41rem] uhd:w-[50.6rem] h-[2.12rem]" style="border: 1px solid rgb(211, 211, 211);">
-                                            <div class="w-[2.12rem] h-[2.12rem] flex items-center justify-center hover:cursor-pointer active:bg-gray-100 rounded-md">
-                                                <img class="select-none" src="http://127.0.0.1:8000/images/minus-icon.png">
-                                            </div>
-                                            <input type="number" class="numberInput text-center basic:w-[31rem] hd:w-[41rem] uhd:w-[50.6rem] h-[2.12rem] flex">
-                                            <div class="w-[2.12rem] h-[2.12rem] flex items-center justify-center hover:cursor-pointer active:bg-gray-100 rounded-md" style="border: 1px solid rgb(211, 211, 211);">
-                                                <img class="select-none" src="http://127.0.0.1:8000/images/plus-icon.png">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li> -->
-
                         </ul>
                     </div>
                 </div>
@@ -108,6 +94,12 @@
 </div>
 
 <script>
+    const locations = @json($locations);
+    console.log(locations);
+    let selectedLocationTextContent = null;
+    let selectedLocationZoneName;
+    let locationName;
+
     function renderCreatedVariation(variationObjects) {
         console.log("RECEIVED: ", variationObjects);
         // Build components for the clicked property
@@ -115,7 +107,7 @@
         const container = document.getElementById('createProdPropertyList2');
         container.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
         li.id = `properties_li_${variationObjects.id}`;
-        li.classList.add('pt-[0.35rem]', 'pb-[0.35rem]');
+        li.classList.add('py-[0.5rem]');
         
         const trueInput = document.createElement('input');
         trueInput.id = `properties[${variationObjects.id}]`;
@@ -161,7 +153,7 @@
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
         const div = document.createElement('div');
         div.id = `variation_div_${property.id}`;
-        div.classList.add('hidden', 'grid','hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg', 'h-[32.56rem]', 'justify-center', 'items-center');
+        div.classList.add('hidden', 'grid','hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg', 'h-auto', 'justify-center', 'items-center');
         div.style.border = '1px solid #D3D3D3';
 
         const generalInfoContainer = renderGeneralInfo();
@@ -222,8 +214,12 @@
     }
 
     function renderStoreLocationInfo() {
+        const storeLocationDataContainer = document.createElement('div');
+        storeLocationDataContainer.className = 'w-full grid grid-cols-3 gap-[2rem] justify-center mb-[2rem]';
+
         const storeLocationContainer = document.createElement('div');
         storeLocationContainer.classList.add('flex', 'justify-center', 'items-center', 'flex-col', 'gap-[1rem]');
+        storeLocationContainer.id = 'storeLocationContainer';
         const storeAmountContainer = document.createElement('div');
         storeAmountContainer.classList.add('flex', 'gap-[2rem]', 'w-full', 'mb-[1.5rem]');
 
@@ -245,21 +241,131 @@
         increaseStoreAmount.type = "button";
 
         const storeLocationDropdown = document.createElement('div');
-        storeLocationDropdown.classList.add('w-full', 'h-[2.5rem]', 'bg-[#484848]', 'cursor-pointer');
+        storeLocationDropdown.classList.add("variationsLocationDropdownContainer", "flex", "gap-[1rem]");
+
+        storeLocationDropdown.innerHTML =  `
+            <div x-data="{ open: false, selectedProperty: '' }" class="variationsLocationDropdown fooo2  relative flex items-center justify-start text-left right-6">
+                <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
+                <button @click="open = !open;" class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem] variation-prop-btn-width" style="border: 1px solid #717171" type="button" @click.away="open = false">
+                    <span id="selected_variation_property_name_${id}" class="text-[14px] text-gray-700 line-clamp-1 relative right-2 w-full flex justify-start ml-[0.3rem] overflow-visible selectedLocationSpan" x-text="selectedProperty.name"></span>
+                    <div class="w-full flex justify-end">
+                        <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
+                    </div>
+                </button>
+                <div x-cloak x-show="open" class="absolute flex justify-center items-center overflow-y-auto propBtnHeight basic:h-[8rem] variation-prop-btn-width bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30 top-[3.2rem]" style="border: 1px solid #F0F0F0; left: 1.5rem;">
+                    <ul class="mt-0 propBtnHeight" id="locationListContainer"></ul>
+                </div>
+            </div>
+        `;
+        
+        locations.forEach(location => {
+            const locationListItem = document.createElement('li');
+
+            const locationNameSpan = document.createElement('span');
+            locationNameSpan.textContent = location.name;
+            locationNameSpan.className = "variation-prop-btn-width duration-100 block w-[10.43rem] px-4 py-2 font-bold text-sm text-gray-700 flex justify-start ml-[1rem]";
+
+            locationListItem.appendChild(locationNameSpan);
+
+            location.location_zones.forEach(zone => {
+                const zoneButton = document.createElement('button');
+                zoneButton.type = "button";
+                zoneButton.className = "variation-prop-btn-width hover:bg-[#3999BE] duration-100 block w-[10.43rem] font-normal px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start";
+
+                zoneButton.addEventListener('click', () => {
+                    const selectedLocationSpan = document.querySelector('.selectedLocationSpan');
+                    
+                    selectedLocationSpan.textContent = zone.name;
+                    selectedLocationSpan.title = zone.name;
+                    console.log("zone name: ", zone.name);
+                    console.log("location Name 2: ", location.name);
+                    selectedLocationZoneName = selectedLocationSpan.textContent;
+                    locationName = location.name;
+                    selectedLocationZoneName;
+                    console.log("selectedLocationZoneName: ", selectedLocationZoneName);
+                    console.log("locationName: ", locationName);
+                });
+
+                const zoneNameSpan = document.createElement('span');
+                zoneNameSpan.className = "pl-[2rem]";
+                zoneNameSpan.textContent = zone.name;
+                zoneButton.appendChild(zoneNameSpan);
+                locationListItem.appendChild(zoneButton);
+            });
+
+            storeLocationDropdown.querySelector("#locationListContainer").appendChild(locationListItem);
+
+        });
+       
         const storeLocationDropdownTitle = document.createTextNode('Doel / bestemming');
 
-        const addStoreLocation = document.createElement('button');
-        addStoreLocation.textContent = 'TOEVOEGEN';
-        addStoreLocation.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'font-bold', 'text-[24px]', 'text-[#fff]', 'flex', 'justify-center', 'items-center', 'w-full');
-        addStoreLocation.type = "button";
+
+
+
+        const addStoreLocationBtn = document.createElement('button');
+        addStoreLocationBtn.textContent = 'TOEVOEGEN';
+        addStoreLocationBtn.classList.add('bg-[#3DABD5]', 'h-[3.75rem]', 'rounded-md', 'font-bold', 'text-[24px]', 'text-[#fff]', 'flex', 'justify-center', 'items-center', 'w-full');
+        addStoreLocationBtn.type = "button";
+        addStoreLocationBtn.id = 'add_store_location_btn'
 
         decreaseStoreAmount.addEventListener('click', function(event) {
-            updateCounter(storeAmount, -1);
+            updateCounter(storeAmount, -1, addStoreLocationBtn, storeLocationContainer);
         });
 
         increaseStoreAmount.addEventListener('click', function(event) {
-            updateCounter(storeAmount, 1);
+            updateCounter(storeAmount, 1, addStoreLocationBtn, storeLocationContainer);
         });
+
+        addStoreLocationBtn.addEventListener('click', function() {
+            if (storeAmount.value.trim() === '' || storeAmount.value.trim() === '0') {
+                alert('Vul alstublieft een voorraad waarde in');
+                return;
+            }
+            addLocation(storeAmount.value, storeLocationDataContainer, locationName, selectedLocationZoneName);
+        });
+
+        function updateCounter(amountValue, change) {
+            let value = parseInt(amountValue.value);
+            if (value + change < 0) {
+                amountValue.value = 0;
+            } else {
+                value += change;
+                amountValue.value = value;
+            }
+        }
+
+        function addLocation(amountValue, container, location, locationZone) {
+            console.log("received locationName: ", location);
+            console.log("received locationName: ", locationZone);
+            const locationDiv = document.createElement('div');
+            locationDiv.classList.add('w-full', 'h-[7rem]', 'flex', 'flex-col', 'justify-center', 'items-center', 'rounded-md');
+
+            const locationNameDiv = document.createElement('div');
+            locationNameDiv.className = 'w-full flex justify-start items-center'
+            const locationName = document.createElement('span');
+            locationName.innerText = location;
+            locationName.classList.add('h-[2.5rem]', 'flex', 'justify-center', 'items-center');
+
+            const locationSubDiv = document.createElement('div');
+            locationSubDiv.className = 'flex items-center justify-center w-full h-[7rem] bg-[#dcdcdc] px-[2rem] rounded-md';
+            
+            const locationZoneName = document.createElement('span');
+            locationZoneName.innerText = locationZone;
+            locationZoneName.classList.add('w-[11.56rem]', 'h-[2.5rem]', 'flex', 'justify-center', 'items-center');
+
+            const amount = document.createElement('input');
+            amount.classList.add('w-[11.56rem]', 'h-[2.5rem]', 'px-[0.5rem]', 'text-left', 'store-input', 'rounded-md');
+            amount.value = amountValue;
+
+            locationNameDiv.appendChild(locationName);
+            locationSubDiv.appendChild(locationZoneName);
+            locationSubDiv.appendChild(amount);
+
+            locationDiv.appendChild(locationNameDiv);
+            locationDiv.appendChild(locationSubDiv);
+
+            container.appendChild(locationDiv);
+        }
 
         storeAmountContainer.appendChild(decreaseStoreAmount);
         storeAmountContainer.appendChild(storeAmount);
@@ -269,19 +375,11 @@
 
         storeLocationContainer.appendChild(storeAmountContainer);
         storeLocationContainer.appendChild(storeLocationDropdown);
-        storeLocationContainer.appendChild(addStoreLocation);
+        storeLocationContainer.appendChild(addStoreLocationBtn);
+        storeLocationContainer.appendChild(storeLocationDataContainer);
+        
 
         return storeLocationContainer;
-    }
-
-    function updateCounter(amountValue, change) {
-        let value = parseInt(amountValue.value);
-        if (value + change < 0) {
-            amountValue.value = 0;
-        } else {
-            value += change;
-            amountValue.value = value;
-        }
     }
     
     function renderButtons(li, variationObjects, trueInput, propertyTitleContainer) {
@@ -401,4 +499,7 @@
             item.remove();
         });
     }
+
+    
+    
 </script>
