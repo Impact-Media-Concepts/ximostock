@@ -86,8 +86,9 @@ Route::middleware('auth')->group(function () {
 
     //Users (only admins can admins these)
     Route::get('/users', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User');
+    Route::get('/users/create', [UserController::class, 'create'])->middleware('can:create,App\Models\User');
     Route::get('/users/{user}', [UserController::class, 'show'])->middleware('can:view,user');
-
+    Route::post('/users', [UserController::class, 'store'])->middleware('can:create,App\Models\User');
 });
 
 //authentication
