@@ -46,6 +46,7 @@ class UserController extends Controller
     }
 
     public function destroy(Request $request, User $user){
+        //mail user to nptify acautn deleted
         $user->delete();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -72,7 +73,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'role' => ['required', Rule::in(['manager', 'admin', 'supplier'])],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'workspace'=> ['required']
+            'workspace'=> ['required', Rule::exists('work_spaces','id')]
         ]);
         $password = Str::random(10);
         //create a user generate a password and send an email for them to varify and create a new password.

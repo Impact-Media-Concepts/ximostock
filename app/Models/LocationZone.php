@@ -10,6 +10,8 @@ class LocationZone extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = ['id'];
+
     public function inventory_location(){
         return $this->belongsTo(InventoryLocation::class);
     }

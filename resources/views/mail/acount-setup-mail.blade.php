@@ -9,6 +9,7 @@
         <li>Password: {{ $password }}</li>
     </ul>
     
+    
     <p>Please keep your password secure and do not share it with anyone.</p>
     
     <p>Thank you!</p>

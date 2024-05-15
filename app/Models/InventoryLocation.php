@@ -10,6 +10,9 @@ class InventoryLocation extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = ['id'];
+
+
     public function location_zones(){
         return $this->hasMany(LocationZone::class);
     }
