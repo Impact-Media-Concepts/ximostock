@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InventoryLocationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariationController;
 use App\Http\Controllers\ProfileController;
@@ -84,11 +85,19 @@ Route::middleware('auth')->group(function () {
     Route::post('/saleschannels/restore',[SalesChannelController::class, 'restore']);//can restore
     Route::post('/saleschannels/forcedelete',[SalesChannelController::class, 'forceDelete']);//can delete
 
-    //Users (only admins can admins these)
+    //InentoryLocations
+    Route::get('/locations', [InventoryLocationController::class, 'index']); //can view any
+    Route::get('/locations/create', [InventoryLocationController::class, 'create']); //can create
+    Route::get('/locations/{location}', [InventoryLocationController::class, 'show']); //can view
+    Route::post('/locations', [InventoryLocationController::class, 'store']); //create
+
+
+    //Users (only admins can access these)
     Route::get('/users', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User');
     Route::get('/users/create', [UserController::class, 'create'])->middleware('can:create,App\Models\User');
     Route::get('/users/{user}', [UserController::class, 'show'])->middleware('can:view,user');
     Route::post('/users', [UserController::class, 'store'])->middleware('can:create,App\Models\User');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user');
 });
 
 //authentication

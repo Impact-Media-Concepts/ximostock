@@ -18,6 +18,11 @@
         <li>
             e-mail: {{$user->email}}
         </li>
+        <form action="/users/{{$user->id}}" method="POST">
+            @csrf
+            @method('DELETE')
+            <input type="submit" value="delete">
+        </form>
     </ul>
 </body>
 </html>
