@@ -1,4 +1,6 @@
 @props(['products', 'orderBy'])
+<!-- TODO:  Arrown down, items move position when arrow changes from subheader tab-->
+<!-- TODO:  Items needs to stay in the same place-->
 
 <div class="bg-white w-full h-[3.55rem] flex justify-start items-center basic:gap-[4.6rem] hd:gap-[4.5rem] uhd:gap-[6rem] shd:gap-[5.9rem]"
     style="border-bottom: 1px solid #0000001A; font-family: 'Inter', sans-serif;">

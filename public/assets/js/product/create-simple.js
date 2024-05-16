@@ -11,6 +11,9 @@ createInputFields.forEach(input => {
 
 const steps = document.querySelectorAll('.step');
 const createButtonContainer = document.getElementById("createButtonContainer");
+
+const hoi = document.getElementById('stepSeven');
+
 let currentStep = 0;
 
 const prevBtns = document.querySelectorAll('.prevBtn');
@@ -40,10 +43,18 @@ function showStep(stepIndex) {
         prevBtnId.style.display = 'inline-block';
     }
 
-    if (stepIndex === 5) {
-        document.getElementById('saveBtn').style.display = 'inline-block';
+    if (hoi) {
+        if (stepIndex === 6) {
+            document.getElementById('saveBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('saveBtn').style.display = 'none';
+        }
     } else {
-        document.getElementById('saveBtn').style.display = 'none';
+        if (stepIndex === 5) {
+            document.getElementById('saveBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('saveBtn').style.display = 'none';
+        }
     }
 
     // Update progress bar
@@ -88,7 +99,3 @@ window.communicateToChannel = [
     { data: 0, name: 'Nee'}
 ];
 //#endregion
-
-// #region step 4 variations
-
-// #endregion

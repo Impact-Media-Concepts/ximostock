@@ -187,7 +187,6 @@
         skuContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const skuTitle = document.createTextNode('SKU:')
         
-
         skuContainer.appendChild(skuTitle);
         
         const priceContainer = document.createElement('div');
@@ -196,8 +195,8 @@
         
 
         priceContainer.appendChild(priceTitle);
-       
 
+        //TODO add discount input data's
         const discountContainer = document.createElement('div');
         discountContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const discountTitle = document.createTextNode('Korting:');

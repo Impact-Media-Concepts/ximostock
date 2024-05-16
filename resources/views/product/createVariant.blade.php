@@ -46,6 +46,7 @@
                         <x-product.create.salesChannels.sales-channels :salesChannels="$salesChannels" />
                     </div>
 
+                    <!-- TODO: show error message, styling dorus wireframe -->
                     <x-product.create.create-error-message :errors="$errors"/>
 
                     <div id="createButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[6rem] create-button-container-border">

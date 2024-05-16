@@ -10,6 +10,7 @@
         </div>
 
         <div id="categoriesContainer">
+            <!-- TODO: vragen aan dorus of deze button wel goed is met styling & positioning -->
             <div class="mt-[0.85rem]">
                 <input class="sticky rounded-md pl-[1.085rem] pt-[0.05rem] pr-[1rem] text-[#717171] category-search" style="font-size: 14px; border:1px solid #D3D3D3; width:14.06rem; height:2.5rem" type="text" id="categorySearchInput" placeholder="Zoeken">
             </div>

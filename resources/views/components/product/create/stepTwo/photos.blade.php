@@ -1,5 +1,5 @@
 {{-- Photos --}}
-
+<!-- Todo: scaling of splide js for screensizes -->
 <?php
     $app_url = env('VITE_APP_URL');
 ?>

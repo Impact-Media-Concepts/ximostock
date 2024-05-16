@@ -1,5 +1,7 @@
 @props(['properties','selectedProperties' => null])
 
+<!-- TODO: variationPropBtn meteen laten zien inplaats van eerst een prop kiezen. -->
+
 <?php
     $app_url = env('VITE_APP_URL');
     $propertyIds = $selectedProperties ? array_keys($selectedProperties) : [];
@@ -124,7 +126,6 @@
     addNewDropdownButton.addEventListener('click', (event) => {
         variationPropertyId++;
 
-
         const newDropdownContainer = document.createElement('div');
         newDropdownContainer.id = `option_container_${variationPropertyId}`
         newDropdownContainer.classList.add("variationsPropDropdownContainer", "flex", "gap-[1rem]");
@@ -231,17 +232,17 @@
                         removeButtons.forEach((removeButton, index) => {
                             removeButton.addEventListener('click', (event) => {
                                 const itemToRemove = event.target.closest('.variationsPropDropdownContainer');
+                                //TODO: remove object from variationPropertyData array
                                 itemToRemove.parentNode.removeChild(itemToRemove);
-
                                 variationPropertiesDatass.splice(index, 1);
-
+                                console.log("variationPropertiesDatass on delete: ", variationPropertiesDatass);
+                                console.log("variationPropertyData on delete: ", variationPropertyData);
                             });
                         });
                     }
                 })
             });
         });
-       
         mainPropsBtnsContainer.appendChild(newDropdownContainer);
     });
     
@@ -253,27 +254,44 @@
 
         variationPropObjectId++
         if (variationPropertiesDatass.length !== 0 && variationPropertyData.values.length !== 0) {
-            
-            // code for popup close and open animation
-            hideCreateVariationPopup.classList.add('fade-out');
-            hideCreateVariationPopup.addEventListener('animationend', function(event) {
-                if (event.animationName === 'fadeOut') {
-                    hideCreateVariationPopup.classList.add('hidden');
+            // Check for duplicate names
+            const nameOccurrences = {};
+            let hasDuplicates = false;
+            variationPropertyData.values.forEach(item => {
+                if (nameOccurrences[item.name]) {
+                    hasDuplicates = true;
+                } else {
+                    nameOccurrences[item.name] = true;
                 }
-            }, false);
-            hideCreateVariationPopup.classList.remove('fade-in');
-            
-            variationPropertiesDatass.id = variationPropObjectId;
-            
-            // send data to function
-            renderCreatedVariation(variationPropertyData);
+            });
 
-            //clear fields
-            variationPropertiesDatass = [];
-            variationPropertyData = {
-                values: []
-            };
-            variationAddPropBtnsContainer.innerHTML = '';
+            if (hasDuplicates) {
+                console.log(variationPropertyData);
+                alert("Kan niet dezelfde Eigenschapsnaam hebben.");
+            } else {
+                // code for popup close and open animation
+                hideCreateVariationPopup.classList.add('fade-out');
+                hideCreateVariationPopup.addEventListener('animationend', function(event) {
+                    if (event.animationName === 'fadeOut') {
+                        hideCreateVariationPopup.classList.add('hidden');
+                    }
+                }, false);
+                hideCreateVariationPopup.classList.remove('fade-in');
+                
+                variationPropertiesDatass.id = variationPropObjectId;
+                // send data to function
+                
+                console.log(variationPropertyData);
+
+                renderCreatedVariation(variationPropertyData);
+
+                //clear fields
+                variationPropertiesDatass = [];
+                variationPropertyData = {
+                    values: []
+                };
+                variationAddPropBtnsContainer.innerHTML = '';
+            }
         } else if (variationPropertiesDatass.length === 0) {
             alert("pls");
         } else if (variationPropertyData.values.length === 0) {
