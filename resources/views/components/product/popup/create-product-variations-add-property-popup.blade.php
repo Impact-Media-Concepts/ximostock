@@ -116,9 +116,15 @@
     let selectedPropertyName;
     let selectedOptionName;
     let variationPropertiesDatass = [];
+
+    let variationPropertyData = {
+        values: []
+    };
     
     addNewDropdownButton.addEventListener('click', (event) => {
         variationPropertyId++;
+
+
         const newDropdownContainer = document.createElement('div');
         newDropdownContainer.id = `option_container_${variationPropertyId}`
         newDropdownContainer.classList.add("variationsPropDropdownContainer", "flex", "gap-[1rem]");
@@ -152,13 +158,12 @@
 
             propertyListItem.querySelector('button').addEventListener('click', (event) => {
                 const clickedButton = event.target;
-                console.log(clickedButton);
 
                 const selectedPropertySpan = clickedButton.closest('.variationsPropDropdown').querySelector('.selectedPropertySpan');
                 const propertyNameSpan = clickedButton.querySelector('span');
 
                 selectedPropertyName = propertyNameSpan.innerText;
-                console.log("selecetedOptionNAME: ", selectedPropertyName);
+
                 if (!selectedPropertyTextContent) {
                     selectedPropertyTextContent = selectedPropertySpan.textContent.trim();
                 }
@@ -210,22 +215,14 @@
                                 const selectedOptionSpan = clickedOptionButton.closest('.variationsPropOptionsDropdown').querySelector('.selectedOptionSpan');
                                 const optionSpan = clickedOptionButton.querySelector('span');
                                 selectedOptionName = optionSpan.innerText;
-                                console.log("selecetedOptionNAME: ", selectedOptionName);
+
                                 selectedOptionSpan.textContent = selectedOptionName;
                                 selectedOptionSpan.title = selectedOptionName;
-                                
-                                const variationPropertyData = {
-                                    values: [{
-                                        name: selectedPropertyName,
-                                        value: selectedOptionName
-                                    }],
-                                    id: variationPropertyId
-                                };
-                                variationPropertiesDatass.push(variationPropertyData);
-                                
-                                console.log("variationPropertiesDatass after filled in options: ", variationPropertiesDatass);
-                                
-
+                                variationPropertyData.values.push({
+                                    name: selectedPropertyName,
+                                    value: selectedOptionName,
+                                    id: property.id
+                                });
                             });
                             optionsContainer.querySelector("#optionsListContainer").appendChild(optionListItem);
                         });
@@ -238,7 +235,6 @@
 
                                 variationPropertiesDatass.splice(index, 1);
 
-                                console.log("after Delete: ", variationPropertiesDatass);
                             });
                         });
                     }
@@ -248,12 +244,15 @@
        
         mainPropsBtnsContainer.appendChild(newDropdownContainer);
     });
+    
+    let variationPropObjectId = 0;
 
     addVariationBtn.addEventListener('click', () => {
-        console.log("BEFORE Send: ", variationPropertiesDatass);
-        let variationPropObjectId = 0;
+        
+        variationPropertiesDatass.push(variationPropertyData);
+
         variationPropObjectId++
-        if (variationPropertiesDatass.length !== 0 ) {
+        if (variationPropertiesDatass.length !== 0 && variationPropertyData.values.length !== 0) {
             
             // code for popup close and open animation
             hideCreateVariationPopup.classList.add('fade-out');
@@ -265,20 +264,30 @@
             hideCreateVariationPopup.classList.remove('fade-in');
             
             variationPropertiesDatass.id = variationPropObjectId;
+            
             // send data to function
-            renderCreatedVariation(variationPropertiesDatass);
+            renderCreatedVariation(variationPropertyData);
 
             //clear fields
             variationPropertiesDatass = [];
+            variationPropertyData = {
+                values: []
+            };
             variationAddPropBtnsContainer.innerHTML = '';
         } else if (variationPropertiesDatass.length === 0) {
             alert("pls");
+        } else if (variationPropertyData.values.length === 0) {
+            variationPropertiesDatass = [];
+            alert("EMPTY OBJECT YYA");
         }
     })
 
     cancelBtn.addEventListener('click', () => {
         //clear fields
         variationPropertiesDatass = [];
+        variationPropertyData = {
+            values: []
+        };
         variationAddPropBtnsContainer.innerHTML = '';
     })
 </script>
