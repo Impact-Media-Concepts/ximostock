@@ -1,4 +1,4 @@
-@props(['properties', 'locations', 'locations'])
+@props(['properties', 'locations'])
 
 <?php
     $app_url = env('VITE_APP_URL');
@@ -95,29 +95,29 @@
 
 <script>
     const locations = @json($locations);
-    console.log(locations);
     let selectedLocationTextContent = null;
-    let selectedLocationZoneName;
+
     let locationName;
+    let i = 0;
 
     function renderCreatedVariation(variationObjects) {
-        console.log("RECEIVED: ", variationObjects);
+        i++;
         // Build components for the clicked property
         const li = document.createElement('li');
         const container = document.getElementById('createProdPropertyList2');
         container.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
-        li.id = `properties_li_${variationObjects.id}`;
+        li.id = `properties_li_${i}`;
         li.classList.add('py-[0.5rem]');
         
         const trueInput = document.createElement('input');
-        trueInput.id = `properties[${variationObjects.id}]`;
+        trueInput.id = `properties[${i}]`;
         trueInput.type = 'hidden';
         trueInput.value = null;
 
         const propertyTitleContainer = document.createElement('div');
         propertyTitleContainer.classList.add('flex', 'items-center', 'h-auto', 'basic:w-[62rem]', 'hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-md', 'hover:cursor-pointer', 'border-t-lg', 'gap-[0.68rem]');
         propertyTitleContainer.style.border = '1px solid #D3D3D3';
-        propertyTitleContainer.id = `variation_title_container_${variationObjects.id}`
+        propertyTitleContainer.id = `variation_title_container_${i}`;
 
         const variationContainer = document.createElement('div');
         variationContainer.className = 'w-full h-full flex flex-wrap justify-start items-center ml-[1rem] py-[0.5rem] gap-[1rem]';
@@ -131,7 +131,7 @@
         propertyTitleContainer.appendChild(trueInput);
         li.appendChild(propertyTitleContainer);
 
-        renderVariationData(variationObjects, li, trueInput);
+        renderVariationData(variationObjects, li, trueInput, i);
         container.appendChild(li);
     }
 
@@ -152,16 +152,18 @@
         }
     }
 
-    function renderVariationData(property, li, trueInput) {
+    function renderVariationData(variationObjects, li, trueInput, i) {
         const hiddenContainer = document.createElement('div');
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
         const div = document.createElement('div');
-        div.id = `variation_div_${property.id}`;
+        div.id = `variation_div_${i}`;
         div.classList.add('hidden', 'grid','hd:w-[89rem]', 'uhd:w-[130rem]', 'bg-[#F8F8F8]', 'rounded-b-lg', 'h-auto', 'justify-center', 'items-center', 'gap-[2rem]');
         div.style.border = '1px solid #D3D3D3';
 
-        const generalInfoContainer = renderGeneralInfo();
-        const storeLocationContainer = renderStoreLocationInfo();
+       
+      
+        const generalInfoContainer = renderGeneralInfo(variationObjects, i);
+        const storeLocationContainer = renderStoreLocationInfo(i);
         
         div.appendChild(generalInfoContainer);
         div.appendChild(storeLocationContainer);
@@ -169,42 +171,84 @@
         li.appendChild(div);
     }
 
-    function renderGeneralInfo () {
+    function renderGeneralInfo(variationObjects, id) {
         const generalInfoContainer = document.createElement('div');
         generalInfoContainer.classList.add('h-[8.93rem]', 'grid', 'grid-cols-2', 'gap-4', 'hd:w-[85rem]', 'uhd:w-[126rem]', 'mt-[2rem]');
 
         const eanContainer = document.createElement('div');
         eanContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const eanTitle = document.createTextNode('EAN:')
-        const eanInput = document.createElement('input');
-        eanInput.classList.add('h-[2.5rem]');
+       
 
         eanContainer.appendChild(eanTitle);
-        eanContainer.appendChild(eanInput);
+      
 
         const skuContainer = document.createElement('div');
         skuContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const skuTitle = document.createTextNode('SKU:')
-        const skuInput = document.createElement('input');
-        skuInput.classList.add('h-[2.5rem]');
+        
 
         skuContainer.appendChild(skuTitle);
-        skuContainer.appendChild(skuInput);
-
+        
         const priceContainer = document.createElement('div');
         priceContainer.classList.add('flex', 'flex-col', 'rounded-md');
         const priceTitle = document.createTextNode('Prijs:')
-        const priceInput = document.createElement('input');
-        priceInput.classList.add('h-[2.5rem]');
+        
 
         priceContainer.appendChild(priceTitle);
-        priceContainer.appendChild(priceInput);
+       
 
         const discountContainer = document.createElement('div');
         discountContainer.classList.add('flex', 'flex-col', 'rounded-md');
-        const discountTitle = document.createTextNode('Korting:')
+        const discountTitle = document.createTextNode('Korting:');
         const discountInput = document.createElement('input');
-        discountInput.classList.add('h-[2.5rem]');
+        discountInput.type = 'number';
+        discountInput.classList.add('h-[2.5rem]', 'store-input');
+
+
+
+        const eanInput = document.createElement('input');
+        eanInput.type = 'number';
+        eanInput.classList.add('h-[2.5rem]', 'store-input');
+
+        const skuInput = document.createElement('input');
+        skuInput.type = 'number';
+        skuInput.classList.add('h-[2.5rem]', 'store-input');
+
+        const priceInput = document.createElement('input');
+        priceInput.type = 'number';
+        priceInput.classList.add('h-[2.5rem]', 'store-input');
+
+
+        eanContainer.appendChild(eanInput);
+        skuContainer.appendChild(skuInput);
+
+        priceContainer.appendChild(priceInput);
+
+    
+        eanInput.name = `variants[${id}][ean]`;
+        skuInput.name = `variants[${id}][sku]`;
+        priceInput.name = `variants[${id}][price]`;
+        
+        eanInput.id = `ean_id_${id}`;
+        skuInput.id = `sku_id_${id}`;
+        priceInput.id = `price_id_${id}`;
+
+        if (variationObjects.values && Array.isArray(variationObjects.values)) {
+            variationObjects.values.forEach(variationValue => {
+                let name = variationValue.name;
+                let value = variationValue.value;
+
+                const variantInput = document.createElement('input');
+                variantInput.type = 'hidden';
+                variantInput.name = `variants[${id}][properties][${variationValue.id}]`;
+
+                variantInput.id = `variant_id_${id}`;
+                generalInfoContainer.appendChild(variantInput);
+                variantInput.value = value;
+            });
+        }
+
 
         discountContainer.appendChild(discountTitle);
         discountContainer.appendChild(discountInput);
@@ -217,7 +261,10 @@
         return generalInfoContainer;
     }
 
-    function renderStoreLocationInfo() {
+    let clickedZoneButtonId;
+
+    function renderStoreLocationInfo(variationItemId) {
+        let selectedLocationZoneName;
         const storeLocationDataContainer = document.createElement('div');
         storeLocationDataContainer.className = 'w-full grid grid-cols-3 gap-[2rem] justify-center mb-[2rem]';
 
@@ -247,7 +294,7 @@
         const storeLocationDropdown = document.createElement('div');
         storeLocationDropdown.classList.add("variationsLocationDropdownContainer", "flex", "gap-[1rem]", "w-full");
 
-        storeLocationDropdown.innerHTML =  `
+        storeLocationDropdown.innerHTML = `
             <div x-data="{ open: false, selectedProperty: '' }" class="variationsLocationDropdown fooo2 w-full relative flex items-center justify-start text-left right-6">
                 <input type="hidden" name="selected_property_id" x-bind:value="selectedProperty.id">
                 <button @click="open = !open;" class="flex items-center z-20 w-[9rem] px-[1.08rem] h-[2.68rem] w-full text-sm font-light bottom-[0.05rem] border-1 border-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#717171] focus:ring-offset-2 focus:ring-offset-gray-100 relative left-6 top-[0.02rem] variation-location-btn-width" style="border: 1px solid #717171" type="button" @click.away="open = false">
@@ -275,20 +322,28 @@
             location.location_zones.forEach(zone => {
                 const zoneButton = document.createElement('button');
                 zoneButton.type = "button";
-                zoneButton.className = "variation-location-btn-width hover:bg-[#3999BE] duration-100 block font-normal px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start";
+                zoneButton.className = "variation-location-btn-width variationZoneBtn hover:bg-[#3999BE] duration-100 block font-normal px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-start";
+                zoneButton.id = zone.id;
 
-                zoneButton.addEventListener('click', () => {
-                    const selectedLocationSpan = document.querySelector('.selectedLocationSpan');
-                    
+                zoneButton.addEventListener('click', (event) => {
+                    const clickedButton = event.target;
+
+                    const selectedLocationSpan = clickedButton.closest('.variationsLocationDropdown').querySelector('.selectedLocationSpan');
+                    const locationNameSubSpan = clickedButton.querySelector('span');
+
+                    selectedLocationZoneName = locationNameSubSpan.innerText;
+
+                    const activeClickedZone = event.target.id;
+                    clickedZoneButtonId = activeClickedZone;
+
+                    if (!selectedLocationTextContent) {
+                        selectedLocationTextContent = selectedLocationSpan.textContent.trim();
+                    }
+
                     selectedLocationSpan.textContent = zone.name;
                     selectedLocationSpan.title = zone.name;
-                    console.log("zone name: ", zone.name);
-                    console.log("location Name 2: ", location.name);
-                    selectedLocationZoneName = selectedLocationSpan.textContent;
+
                     locationName = location.name;
-                    selectedLocationZoneName;
-                    console.log("selectedLocationZoneName: ", selectedLocationZoneName);
-                    console.log("locationName: ", locationName);
                 });
 
                 const zoneNameSpan = document.createElement('span');
@@ -299,13 +354,9 @@
             });
 
             storeLocationDropdown.querySelector("#locationListContainer").appendChild(locationListItem);
-
         });
        
         // const storeLocationDropdownTitle = document.createTextNode('Doel / bestemming');
-
-
-
 
         const addStoreLocationBtn = document.createElement('button');
         addStoreLocationBtn.textContent = 'TOEVOEGEN';
@@ -329,7 +380,7 @@
                 alert('Vul alstublieft een voorraad locatie in.');
                 return;
             }
-            addLocation(storeAmount.value, storeLocationDataContainer, locationName, selectedLocationZoneName);
+            addLocation(storeAmount.value, storeLocationDataContainer, locationName, selectedLocationZoneName, variationItemId);
         });
 
         function updateCounter(amountValue, change) {
@@ -342,20 +393,21 @@
             }
         }
 
-        function addLocation(amountValue, container, location, locationZone) {
-            console.log("received locationName: ", location);
-            console.log("received locationName: ", locationZone);
+        function addLocation(amountValue, container, location, locationZone, variationItemId) {
+            const variationZoneBtn = document.querySelector('.variationZoneBtn');
+
             const locationDiv = document.createElement('div');
             locationDiv.classList.add('w-full', 'h-[7rem]', 'flex', 'flex-col', 'justify-center', 'items-center', 'rounded-md', 'locationItem');
 
             const locationNameDiv = document.createElement('div');
             locationNameDiv.className = 'w-full flex justify-start items-center';
             
-
+            const removeBtnContainer = document.createElement('div');
+            removeBtnContainer.className = 'w-full flex justify-end';
             const removeBtn = document.createElement('button');
             removeBtn.className = 'removeLocationBtn flex justify-center items-center cursor-pointer relative left-[24rem] mt-[0.5rem]';
             removeBtn.type = 'button';
-
+            
             const removeIcon = document.createElement('img');
             removeIcon.className = 'select-none w-[0.8rem] h-[0.8rem] flex cursor-pointer';
             removeIcon.src = '{{$app_url}}/images/x-icon.png';
@@ -366,30 +418,41 @@
                 liToRemove.remove();
             });
 
+            const locationNameContainer = document.createElement('div');
+            locationNameContainer.className = 'w-full flex';
+
             const locationName = document.createElement('span');
             locationName.innerText = location;
             locationName.classList.add('h-[2.5rem]', 'flex', 'justify-center', 'items-center');
-
+            
             const locationSubDiv = document.createElement('div');
-            locationSubDiv.className = 'flex items-center justify-center w-full h-[7rem] bg-[#dcdcdc] px-[2rem] rounded-md';
+            locationSubDiv.className = 'locationSubDivs flex items-center justify-center w-full h-[7rem] bg-[#dcdcdc] px-[2rem] rounded-md';
             
             const locationZoneName = document.createElement('span');
             locationZoneName.innerText = locationZone;
             locationZoneName.classList.add('w-[11.56rem]', 'h-[2.5rem]', 'flex', 'justify-center', 'items-center');
 
+            //location zones input to database
             const amount = document.createElement('input');
-            amount.classList.add('w-[11.56rem]', 'h-[2.5rem]', 'px-[0.5rem]', 'text-left', 'store-input', 'rounded-md');
+            amount.classList.add('doei', 'w-[11.56rem]', 'h-[2.5rem]', 'px-[0.5rem]', 'text-left', 'store-input', 'rounded-md');
             amount.value = amountValue;
+            amount.type = 'number';
+            amount.name = `variants[${variationItemId}][location_zones][${clickedZoneButtonId}]`;
 
             removeBtn.appendChild(removeIcon);
-            locationNameDiv.appendChild(locationName);
-            locationNameDiv.appendChild(removeBtn);
+            locationNameContainer.appendChild(locationName);
+            locationNameDiv.appendChild(locationNameContainer);
+
+            removeBtnContainer.appendChild(removeBtn);
+            locationNameDiv.appendChild(removeBtnContainer);
+
             
             locationSubDiv.appendChild(locationZoneName);
             locationSubDiv.appendChild(amount);
 
             locationDiv.appendChild(locationNameDiv);
             locationDiv.appendChild(locationSubDiv);
+            
 
             container.appendChild(locationDiv);
         }
@@ -480,8 +543,7 @@
     }
 
     function renderVariationOptions(variationObjects, propertyTitleContainer) {
-        variationObjects.forEach(variationProperty => {
-            variationProperty.values.forEach(variationProp => {
+            variationObjects.values.forEach(variationProp => {
                 const propertyNameSpan = document.createElement('span');
                 propertyNameSpan.textContent = variationProp.name;
                 propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
@@ -516,7 +578,6 @@
                 propertyTextContainer.appendChild(valueTextSpan);
 
                 propertyTitleContainer.appendChild(propertyTextContainer);
-            });
         });
     }
 
@@ -526,7 +587,4 @@
             item.remove();
         });
     }
-
-    
-    
 </script>

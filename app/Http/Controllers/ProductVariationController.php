@@ -64,6 +64,7 @@ class ProductVariationController extends BaseProductController
     public function store()
     {
         $request = request();
+        dd($request);
         // Validate the incoming request data
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;

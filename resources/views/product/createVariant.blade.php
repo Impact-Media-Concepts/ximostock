@@ -15,7 +15,7 @@
             <div>
                 <x-product.create.header>{{ $variant }}</x-product.create.header>
               
-                <form method="POST" action="/products" enctype="multipart/form-data">
+                <form method="POST" action="/products/variant/" enctype="multipart/form-data">
                     @csrf
 
                     <div id="stepOne" class="step">
