@@ -1,3 +1,4 @@
+<!-- TODO: get design from Dorus/designer, inputs with correct data -->
 <div class="bg-white rounded-t-lg basic:h-[38rem] hd:h-[50rem] uhd:h-[57rem] create-container-border">
     <h3>voorraden</h3>
     <label for="{{ $locations[0]->location_zones[0]->id }}">

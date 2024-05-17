@@ -1,12 +1,13 @@
 // introduce variables
 let bulkActionsCheckboxSubheader = document.getElementById('bulkActionsCheckboxSubheader');
 let selectedCountElementBulk = document.getElementById('selectedCount');
+
 // listens if checkbox inside product-sub-header to changed if so, then hide or show product-bulk-actions component
 document.addEventListener('DOMContentLoaded', function() {
     const bulkActionsCheckboxSubheader = document.getElementById('bulkActionsCheckboxSubheader');
     const productBulkActionsContainer = document.getElementById('productBulkActionsContainer');
     const productContainerDiv = document.getElementById('productContainerDiv');
-
+    
     bulkActionsCheckboxSubheader.addEventListener('change', function() {
         if (this.checked) {
             productBulkActionsContainer.classList.remove('bulk-actions-hidden');
@@ -45,11 +46,11 @@ let bulkActionsSelectAll = document.getElementById('selectAll');
 let selectedCountElementBulkSelectAll = document.getElementById('selectedCount');
 
 bulkActionsSelectAll.addEventListener('click', function() {
-
+    
     if (!bulkActionsCheckboxSubheader.checked) {
         bulkActionsCheckboxSubheader.checked = true;
     }
-
+    
     let productItemCheckboxesSelectAll = document.querySelectorAll('[id^="checkboxProductItem"]');
     let totalCheckedSelected = 0;
     productItemCheckboxesSelectAll.forEach(function(productItemCheckbox) {
@@ -64,4 +65,3 @@ bulkActionsSelectAll.addEventListener('click', function() {
     // Update the displayed count of selected items
     selectedCountElementBulk.textContent = totalChecked;
 });
-

@@ -7,11 +7,12 @@
         <div>
             <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive" />
         </div>
-
+        
         <div class="flex w-full pr-10 pt-[1.95rem] gap-8">
             <div class="flex justify-start items-start w-full"> 
                 <x-product.product-container :activeWorkspace="$activeWorkspace" :salesChannels="$salesChannels" :discountError="$discountErrors" :orderBy="$orderBy" :perPage="$perPage" :products="$products" />
             </div>
+            
             <div class="flex justify-center items-start">
                 <div class="w-[16.56rem] bg-white rounded-md basic:h-[49rem] hd:h-[61rem] uhd:h-[71.2rem]" style="padding: 20px 20px;">
                     <form id="searchForm" method="GET" action="/products">
@@ -22,14 +23,15 @@
                                 <span class="pl-[0.2rem] text-[14px] text-white">Zoeken</span>
                             </button>
                         </div>
+                        
                         <div class="flex-col flex basic:gap-0 uhd:gap-[5rem]">
-                             <!-- <input type="submit" value="search test"> -->
+                            <!-- <input type="submit" value="search test"> -->
                             {{-- categories component --}}
                             <x-product.categories.product-categories :categories="$categories" :checkedCategories="$selectedCategories" />
                             {{-- eigenschappen/properties component --}}
                             <input type="hidden" name="search" id="productSearchInput" value="{{$search}}">
                             <input type="hidden" name="orderByInput" id="orderByInput" value="{{$orderBy}}">
-
+                            
                             <x-product.properties.properties :properties="$properties" :selectedProperties="$selectedProperties"/>
                         <div>
                     </form>

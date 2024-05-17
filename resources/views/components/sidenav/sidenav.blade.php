@@ -1,9 +1,8 @@
 @props(['sidenavActive', 'activeWorkspace' => null])
 
 <?php
-
     $app_url = env('VITE_APP_URL');
-
+    
     $sidenavButtons = [
         ['text' => 'Dashboard', 'icon' => $app_url . '/images/dashboard-icon.png', 'url' => '/dashboard', 'adminUrl' => $activeWorkspace ? '/dashboard?workspace=' . $activeWorkspace : '', 'id' => '1', 'slug' => 'dashboard'],
         ['text' => 'Producten', 'icon' => $app_url . '/images/product-icon.png', 'url' => '/products', 'adminUrl' => $activeWorkspace ? '/products?workspace=' . $activeWorkspace : '', 'id' => '2', 'slug' => 'products'],
@@ -20,13 +19,13 @@
 ?>
 
 <style>
-     @media only screen and (min-width: 1280px) {
-       .side-nav {
+    @media only screen and (min-width: 1280px) {
+    .side-nav {
             position: absolute;
             top: 5rem;
         }
     }
-
+    
     @media only screen and (min-width: 1920px) {
         .side-nav {
             position: relative;
@@ -35,20 +34,20 @@
     }
     
     @media only screen and (min-width: 2560px) {
-       .side-nav {
+        .side-nav {
             position: relative;
             top: 0;
         }
     }
-
+    
     .rotate-arrows {
         transform: rotate(-180deg);
     }
-
+    
     .rotate-arrows222 {
         transform: rotate(180deg);
     }
-
+    
     .arrow-transition {
         transition: transform 0.3s ease-in-out;
     }
@@ -57,7 +56,7 @@
         width: 4.06rem;
         transition: all 500ms ease;
     }
-
+    
     .rectangle.large {
         width: 17.06rem;
     }
@@ -81,7 +80,7 @@
                 </x-sidenav.sidenav-item>
             @endforeach
         @endcan
-
+        
         @cannot('index-workspaces')
             @foreach ($sidenavButtons as $button)
                 <?php

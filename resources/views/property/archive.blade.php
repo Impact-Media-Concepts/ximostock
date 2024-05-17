@@ -9,7 +9,7 @@
 <body>
     <form action="/properties/forcedelete" method="POST">
         @csrf
-
+        
         <ul>
             @foreach ($properties as $property)
             <li>

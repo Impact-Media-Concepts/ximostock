@@ -8,9 +8,8 @@
             Product aanmaken | {{ $slot }}
         </p>
     </div>
-
+    
     <div class="flex items-center gap-[1rem] justify-center basic:w-[33rem] hd:w-[54rem] uhd:w-[95rem]">
-
         <div class="prevBtn hover:cursor-pointer prevBtn">
             <img class="select-none" src="{{$app_url}}/images/arrow-left-icon.png" alt="arrow left">
         </div>
@@ -18,9 +17,8 @@
         <div id="headerNextBtnId" class="nextBtn hover:cursor-pointer nextBtn">
             <img class="select-none" src="{{$app_url}}/images/arrow-right-icon.png" alt="arrow right">
         </div>
-
+    
     </div>
-   
 </div>
 
 <x-product.create.progress-bar />

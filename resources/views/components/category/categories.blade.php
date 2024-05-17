@@ -1,4 +1,5 @@
 @props(['categories'])
+
 <ul>
     @foreach ($categories as $category)
         <li class="ml-12">

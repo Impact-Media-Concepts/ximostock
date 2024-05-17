@@ -4,6 +4,6 @@
             opgeslagen G
         </p>
     </div>
-
+    
     <span class="save-popup-close hover:cursor-pointer">X<span>
 </div>

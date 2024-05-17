@@ -8,5 +8,5 @@
                 name: "{{$workspace->name}}"
             },
         @endforeach
-  ];
+    ];
 </script>

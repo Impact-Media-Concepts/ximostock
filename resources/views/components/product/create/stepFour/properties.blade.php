@@ -4,10 +4,6 @@
     $app_url = env('VITE_APP_URL');
 ?>
 
-<style>
-
-</style>
-
 <div class='bg-white basic:h-[38rem] hd:h-[50rem] hd:w-[98rem] uhd:w-[138rem] uhd:h-[57rem] rounded-t-lg create-container-border'>
     <div class='h-[4.56rem] flex flex-col gap-[0.5rem] rounded-t-lg hd:relative hd:bottom[2.62rem]' style='border: 1px solid #F0F0F0;'>
         <div class='w-full ml-[1.56rem] mt-[0.6rem]'>
@@ -15,7 +11,7 @@
             <p class='text-[14px]'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ea autem corrupti officia provident, maxime distinctio!</p>
         </div>
     </div>
-
+    
     <div class='w-full flex justify-center items-center mt-[1.5rem] '>
         <div class='basic:w-[67rem] hd:w-[94rem] uhd:w-[134rem]'>
             <div class='bg-[#3DABD5] rounded-t-lg h-[2.5rem] flex items-center justify-start'>
@@ -48,14 +44,13 @@
                                 <div class='sticky flex justify-center top-0 w-full bg-white border-b border-gray-200'>
                                     <input @click.stop class='w-[14.06rem] h-[2.5rem] rounded-md mt-[1rem] mb-[1rem] pl-[1rem]' style='border: 1px solid #D3D3D3;' type='text' id='seachPropertyTitles' placeholder='Zoeken' />
                                 </div>
-
+                                
                                 <div class='items-center border-none overflow-y-auto' id='propertyLists'></div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-               
+                
                 <div class=' flex flex-col items-center basic:h-[24.5rem] basic:max-h-[24.5rem] hd:h-[36.5rem] hd:max-h-[36.5rem] uhd:h-[43rem] uhd:max-h-[43rem] overflow-y-auto rounded-b-lg' style='border: 1px solid #F0F0F0;'>
                     <div class='general-prop-cont flex flex-col items-center gap-[0.8rem] mt-[0.8rem] pb-[0.8rem]'>
                         <ul class='mt-[0.85rem]' id='createProdPropertyList'></ul>
@@ -84,7 +79,7 @@
     
     const clickedProperties = [];
     const seachPropertyTitles = document.getElementById('seachPropertyTitles');
-
+    
     function searchPropertyTitles(propertySearchText) {
         propertyTitleData.forEach((property) => {
             const li = document.getElementById(`add_property_li_${property.id}`);
@@ -97,12 +92,11 @@
             }
         });
     }
-
-
+    
     if (seachPropertyTitles) {
         seachPropertyTitles.addEventListener('input', () => {
             const propertySearchTitles = seachPropertyTitles.value.trim();
-
+            
             // Render propertys if search input is empty
             if (!propertySearchTitles) {
                 renderPropertyTitles(); //vervang met show all
@@ -111,9 +105,8 @@
             }
         });
     }
-
+    
     function renderCreatedProperties(property, inputName, inputType, inputOptions) {
-
         const createProdPropertyList = document.getElementById('createProdPropertyList');
         // createProdPropertyList.innerHTML = '';
         createProdPropertyList.classList.add('basic:max-h-[16rem]', 'hd:max-h-[22.5rem]', 'uhd:max-h-[27rem]');
@@ -126,7 +119,7 @@
         trueInput.id = `new_properties[${property.id}]`;
         trueInput.type = 'hidden';
         trueInput.value = null;
-
+        
         const propertyNameSpan = document.createElement('span');
         propertyNameSpan.textContent = property.name;
         propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
@@ -157,20 +150,20 @@
             propertyHandleCreateCheckboxClick(property, trueInput, propertyTitleContainer);
             arrowDown.classList.toggle('rotate-arrow');
         });
-
+        
         const delImgContainer = document.createElement('div');
         delImgContainer.classList.add('pr-[1rem]', 'w-full', 'flex', 'justify-end', 'items-center');
-
+        
         const delPropBtn = document.createElement('button');
         delPropBtn.type = 'button';
         delPropBtn.style.border = '1px solid #717172';
         delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
-
+        
         delPropBtn.addEventListener('click', (event) => {
             event.stopPropagation();
             li.remove();
         });
-
+        
         const delImg = document.createElement('img');
         delImg.src = '{{$app_url}}/images/archive-icon.png';
         delImg.alt = 'delete icon';
@@ -188,17 +181,17 @@
         propertyTitleContainer.appendChild(delImgContainer);
         propertyTitleContainer.appendChild(arrowDownDiv);
         propertyTitleContainer.appendChild(trueInput);
-
+        
         const nameInput = document.createElement('input');
         nameInput.name = inputName.name;
         nameInput.type = 'hidden';
         nameInput.value = inputName.value;
-
+        
         const typeInput = document.createElement('input');
         typeInput.name = inputType.name;
         typeInput.type = 'hidden';
         typeInput.value = inputType.value;
-
+        
         inputOptions.forEach(inputOption => {
             const optionsInput = document.createElement('input');
             optionsInput.name = inputOption.name;
@@ -206,11 +199,10 @@
             optionsInput.value = inputOption.value;
             propertyTitleContainer.appendChild(optionsInput);
         });
-
+        
         propertyTitleContainer.appendChild(nameInput);
         propertyTitleContainer.appendChild(typeInput);
-       
-
+        
         li.appendChild(propertyTitleContainer);
         renderCreatedProperty(property, li, trueInput);
         
@@ -249,7 +241,7 @@
                 trueInput.id = `properties[${prop.id}]`;
                 trueInput.type = 'hidden';
                 trueInput.value = null;
-
+                
                 const propertyNameSpan = document.createElement('span');
                 propertyNameSpan.textContent = prop.name;
                 propertyNameSpan.classList.add('relative', 'bottom-[0.125rem]');
@@ -279,15 +271,15 @@
                     propertyHandleCheckboxClick(prop, trueInput);
                     arrowDown.classList.toggle('rotate-arrow');
                 });
-
+                
                 const delImgContainer = document.createElement('div');
                 delImgContainer.classList.add('pr-[1rem]', 'w-full', 'flex', 'justify-end', 'items-center');
-
+                
                 const delPropBtn = document.createElement('button');
                 delPropBtn.type = 'button';
                 delPropBtn.style.border = '1px solid #717172';
                 delPropBtn.classList.add('delete-props-btn', 'w-[11.18rem]', 'h-[2.5rem]', 'rounded-md', 'hover:bg-gray-100', 'flex', 'items-center', 'justify-center');
-
+                
                 delPropBtn.addEventListener('click', (event) => {
                     event.stopPropagation();
                     clickedProperties.splice(prop, 1);
@@ -297,7 +289,7 @@
                     // Re-render the property list
                     renderPropertyTitles();
                 });
-
+                
                 const delImg = document.createElement('img');
                 delImg.src = '{{$app_url}}/images/archive-icon.png';
                 delImg.alt = 'delete icon';
@@ -331,7 +323,7 @@
             
         });
     }
-
+    
     function renderPropertyTitles() {
         const propertyTitleList = document.getElementById('propertyLists');
         propertyTitleList.innerHTML = '';
@@ -355,10 +347,10 @@
             propertyTitleList.appendChild(li);
         });
     }
-
+    
     // Initial rendering
     renderPropertyTitles();
-
+    
     function renderProperty(property, li, trueInput) {
         const hiddenContainer = document.createElement('div');
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
@@ -388,7 +380,7 @@
         }
         li.appendChild(div);
     }
-
+    
     function renderCreatedProperty(property, li, trueInput) {
         const hiddenContainer = document.createElement('div');
         hiddenContainer.classList.add('w-full', 'flex', 'justify-center', 'items-center', 'select-none');
@@ -418,38 +410,38 @@
         }
         li.appendChild(div);
     }
-
+    
     function renderNumber(div, trueInput, property) {
         div.style.height = '4.58rem';
         const numberMainContainer = document.createElement('div');
         numberMainContainer.classList.add('flex', 'items-center', 'ml-[2rem]')
-
+        
         const numberContainer = document.createElement('div');
         
         const numberselect = document.createElement('input');
             numberselect.addEventListener('input', function () {
             trueInput.value = this.value;
         });
-
+        
         const decrement = document.createElement('div');
         const increment = document.createElement('div');
-
+        
         const decrementIcon = document.createElement('img');
         decrementIcon.classList.add('select-none');
         decrementIcon.src = '{{$app_url}}/images/minus-icon.png';
         decrement.appendChild(decrementIcon);
-
+        
         const incrementIcon = document.createElement('img');
         incrementIcon.classList.add('select-none');
         incrementIcon.src = '{{$app_url}}/images/plus-icon.png';
         increment.appendChild(incrementIcon);
-
+        
         decrement.classList.add('w-[2.12rem]', 'h-[2.12rem]', 'flex', 'items-center', 'justify-center', 'hover:cursor-pointer', 'active:bg-gray-100', 'rounded-md');
         decrement.style.border = '';
-
+        
         increment.classList.add('w-[2.12rem]', 'h-[2.12rem]', 'flex', 'items-center', 'justify-center', 'hover:cursor-pointer', 'active:bg-gray-100', 'rounded-md');
         increment.style.border = '1px solid #D3D3D3';
-
+        
         numberselect.type = 'number';
         if (property.selectedOption) {
             numberselect.value = property.selectedOption;
@@ -457,39 +449,36 @@
             numberselect.value = 0;
         }
         numberselect.classList.add('numberInput', 'text-center', 'basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.6rem]', 'h-[2.12rem]', 'flex');
-
+        
         numberContainer.classList.add('flex', 'rounded-md','basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.6rem]', 'h-[2.12rem]');
         numberContainer.style.border = '1px solid #D3D3D3';
-
+        
         numberContainer.appendChild(decrement);
         numberContainer.appendChild(numberselect);
         numberContainer.appendChild(increment);
-
+        
         numberMainContainer.appendChild(numberContainer)
         div.appendChild(numberMainContainer);
-
+        
         decrement.addEventListener('click', () => {
             if (parseInt(numberselect.value) > 0) {
                 numberselect.value = parseInt(numberselect.value) - 1;
             }
             trueInput.value = numberselect.value;
-
         });
-
+        
         increment.addEventListener('click', () => {
             numberselect.value = parseInt(numberselect.value) + 1;
-
             trueInput.value = numberselect.value;
         });
     }
-
+    
     function rendermultiselect(property, div, trueInput) {
         div.style.height = '16.58rem';
-        
         const multiContainer = document.createElement('div');
         multiContainer.classList.add('flex', 'flex-col', 'max-h-[16.58rem]', 'ml-[2rem]', 'mt-[1rem]')
         const input = document.createElement('input');
-
+        
         input.type = 'text';
         input.classList.add(
             'flex',
@@ -511,14 +500,14 @@
             'multi-select-input',
             'mb-[0.25rem]'
         );
-
+        
         input.id = `searchProp_${property.id}`;
         input.style.border = '1px solid #D3D3D3';
         input.placeholder = 'Zoeken';
         input.addEventListener('input', (event) =>
             searchProperty(input.value, property)
         );
-
+        
         const options = document.createElement('ul');
         options.classList.add(
             'hidden',
@@ -532,35 +521,32 @@
             'uhd:max-h-[50.67rem]',
             'rounded-mb',
         );
-
+        
         input.addEventListener('focus', (event) => focusmultiSelect(options));
         input.addEventListener('blur', (event) => blurmultiSelect(options));
         multiContainer.appendChild(input);
         div.appendChild(multiContainer);
-
+        
         const selectedOptionsContainer = document.createElement('div');	
         selectedOptionsContainer.style.display = 'flex';
         selectedOptionsContainer.style.flexWrap = 'wrap';
         selectedOptionsContainer.id = `selectedOptionsContainer${property.id}`;
-        //input.parentNode.insertBefore(selectedOptionsContainer, input.nextSibling);
-
-
+        
         multiContainer.insertBefore(selectedOptionsContainer, null);
         
         if (Array.isArray(property.options)) {
-        
             // Iterate over options only if it's an array
             property.options.forEach((option, index) => {
                 const li = document.createElement('li');
-
+                
                 if (index === 0) {
                     li.classList.add('rounded-t-lg');
                 }
-
+                
                 if (index === property.options.length - 1) {
                     li.classList.add('rounded-b-lg');
                 }
-
+                
                 li.classList.add(
                     'flex',
                     'items-center',
@@ -577,9 +563,9 @@
                     'line-clamp-2',
                     'bg-white'
                 );
-
+                
                 li.style.border = '1px solid #D3D3D3';
-
+                
                 const span = document.createElement('span');
                 span.classList.add(
                     'flex',
@@ -589,7 +575,7 @@
                     'hover:cursor-pointer',
                     'text-[14px]'
                 );
-
+                
                 span.textContent = option;
                 li.id = `property_${property.id}_${option}`;
                 li.appendChild(span);
@@ -597,7 +583,7 @@
                     propertyMultiSelectControl(option, input, property.id, trueInput, selectedOptionsContainer)
                 );
                 options.appendChild(li);
-
+                
                 if (property.selected && property.selectedOption != null) {
                     selectedOptions = property.selectedOption.split(',');
                     if (selectedOptions.includes(option)) {
@@ -609,7 +595,7 @@
         //create options     
         multiContainer.appendChild(options);
     }
-
+    
     function setTrueInputValueMulti(trueInput, optionsDiv) {
         const options = optionsDiv.querySelectorAll('.selected-option');
         let value = [];
@@ -618,14 +604,14 @@
         });
         trueInput.value = value;
     }
-
+    
     function renderBool(property, div, trueInput) {
         div.style.height = '8.58rem';
         const boolContainer = document.createElement('span');
         boolContainer.classList.add('ml-[2rem]', 'mt-[1rem]', 'rounded-b-lg');
-
+        
         const input = document.createElement('input');
-
+        
         input.type = 'text';
         input.classList.add(
             'z-20',
@@ -653,13 +639,13 @@
         input.addEventListener('input', (event) =>
             searchProperty(input.value, property)
         );
-
+        
         if(property.selectedOption == 'true'){
             input.value = 'ja';
         }else if(property.selectedOption == 'false'){
             input.value = 'nee';
         }
-
+        
         const options = document.createElement('ul');
         options.classList.add(
             'hidden',
@@ -668,10 +654,10 @@
             'gap-1',
             'grid'
         );
-
+        
         input.addEventListener('focus', (event) => focusSingleSelect(options));
         input.addEventListener('blur', (event) => blurSingleSelect(options));
-
+        
         const optionTrue = document.createElement('li');
         const optionFalse = document.createElement('li');
         optionTrue.classList.add(
@@ -744,14 +730,14 @@
         boolContainer.appendChild(options);
         div.appendChild(boolContainer);
     }
-
+    
     function focusmultiSelect(options) {
     options.classList.remove('hidden');
     options.querySelectorAll('li').forEach((option) => {
         option.classList.remove('hidden');
     });
     }
-
+    
     function BoolControl(option, input, trueInput) {
         if (option) {
             input.value = 'Ja';
@@ -761,7 +747,7 @@
             trueInput.value = false;
         }
     }
-
+    
     //render the singel select property
     function rendersingleselect(property, div, trueInput) {
     div.style.height = '13.58rem';
@@ -801,9 +787,7 @@
     } else  {
         input.value = property.selectedOption;
     }
-
-
-
+    
     const options = document.createElement('ul');
     options.classList.add(
         'hidden',
@@ -817,23 +801,23 @@
         'uhd:max-h-[50.67rem]',
         'rounded-mb',
     );
-
+    
     input.addEventListener('focus', (event) => focusSingleSelect(options));
     input.addEventListener('blur', (event) => blurSingleSelect(options));
-
+    
     //create options
     if (Array.isArray(property.options)) {
         property.options.forEach((option, index) => {
             const li = document.createElement('li');
-
+            
             if (index === 0) {
                 li.classList.add('rounded-t-lg');
             }
-
+            
             if (index === property.options.length - 1) {
                 li.classList.add('rounded-b-lg');
             }
-
+            
             li.classList.add(
                 'flex',
                 'items-center',
@@ -851,9 +835,9 @@
                 'line-clamp-2',
                 'bg-white'
             );
-
+            
             const span = document.createElement('span');
-
+            
             span.classList.add(
                 'flex',
                 'items-center',
@@ -861,9 +845,9 @@
                 'text-[#717171]',
                 'text-[14px]'
             );
-
+            
             li.style.border = '1px solid #D3D3D3';
-
+            
             span.textContent = option;
             li.id = `property_${property.id}_${option}`;
             li.appendChild(span);
@@ -875,16 +859,16 @@
     }
     div.appendChild(input);
     div.appendChild(options);
-
+    
     singleSelectSubContainer.appendChild(input);
     singleSelectSubContainer.appendChild(options);
     div.appendChild(singleSelectSubContainer);
     }
-
+    
     function renderText(div, trueInput, property) {
     const textSpan = document.createElement('span');
         textSpan.classList.add('flex', 'items-center', 'ml-[2rem]')
-
+        
         const text = document.createElement('input');
         text.type = 'text';
         text.classList.add('basic:w-[31rem]', 'hd:w-[41rem]', 'uhd:w-[50.06rem]', 'rounded-md', 'h-[2.12rem]', 'text-input', 'uhd:w-[30rem]');
@@ -895,14 +879,14 @@
         textSpan.appendChild(text);
         div.appendChild(textSpan);
     }
-
+    
     function focusSingleSelect(options) {
         options.classList.remove('hidden');
         options.querySelectorAll('li').forEach((option) => {
             option.classList.remove('hidden');
         });
     }
-
+    
     let blurMultiDelayTimer;
     function blurmultiSelect(options) {
         clearTimeout(blurMultiDelayTimer);
@@ -910,7 +894,7 @@
             options.classList.add('hidden');
         }, 200);
     }
-
+    
     let blurDelayTimer;
         function blurSingleSelect(options) {
         clearTimeout(blurDelayTimer);
@@ -918,61 +902,60 @@
             options.classList.add('hidden');
         }, 200);
     }
-
+    
     function propertyMultiSelectControl(option, input, id, trueInput, selectedOptionsContainer) {
         // Check if the option is already selected
         if (selectedOptionsContainer.querySelector(`div.selected-option[data-value='${option}']`)) {
             // If the option is already selected, do nothing
             return;
         }
-
+        
         // Create a new div for the selected option
         const newDiv = document.createElement('div');
         newDiv.classList.add('selected-option', 'flex', 'items-center', 'bg-white', 'w-fit', 'p-[0.3rem]', 'rounded-md', 'm-[0.25rem]');
         newDiv.style.border = '1px solid #D3D3D3';
         newDiv.setAttribute('data-value', option);
-
+        
         // Create a span element
         const span = document.createElement('span');
         span.classList.add('flex', 'pt-[0.16rem]', 'pl-[0.2rem]');
         const removePropertyIcon = document.createElement('img');
         removePropertyIcon.classList.add('select-none', 'w-[0.75rem]', 'h-[0.75rem]', 'hover:cursor-pointer');
         removePropertyIcon.src = '{{$app_url}}/images/x-icon.png';
-
+        
         removePropertyIcon.addEventListener('click', function () {
             newDiv.remove();
             setTrueInputValueMulti(trueInput, selectedOptionsContainer);
         });
-
+        
         span.appendChild(removePropertyIcon);
-
+        
         const textNode = document.createTextNode(option);
-
+        
         newDiv.appendChild(textNode);
         newDiv.appendChild(span);
-
+        
         // Append the new div to the surrounding container
         selectedOptionsContainer.appendChild(newDiv);
-
+        
         input.value = '';
-
+        
         setTrueInputValueMulti(trueInput, selectedOptionsContainer);
     }
-
+    
     function propertySingleSelectControl(option, input, trueInput) {
         input.value = option;
         trueInput.value = option;
     }
-
+    
     //search through properties options
     function searchProperty(createProdPropertiesSearchText, property) {
         createProdPropertiesSearchText = createProdPropertiesSearchText.trim();
         property.options.forEach((option) => {
-
             const li = document.getElementById(
                 `property_${property.id}_${option}`
             );
-
+            
             if (
                 !createProdPropertiesSearchText ||
                 option.toLowerCase().includes(createProdPropertiesSearchText.toLowerCase())
@@ -983,7 +966,7 @@
             }
         });
     }
-
+    
     function propertyHandleCheckboxClick(property, trueInput) {
         trueInput.name = `properties[${property.id}]`;
         property.checked = !property.checked;
@@ -994,14 +977,13 @@
             div.classList.add('hidden');
         }
     }
-
     
-        function extractIdNumber(id) {
-            // Extract numeric part from id using regex
-            const matches = id.match(/\d+/);
-            return matches ? parseInt(matches[0]) : null;
-        }
-
+    function extractIdNumber(id) {
+        // Extract numeric part from id using regex
+        const matches = id.match(/\d+/);
+        return matches ? parseInt(matches[0]) : null;
+    }
+    
     function propertyHandleCreateCheckboxClick(property, trueInput, container) {
         const liIdNumber = extractIdNumber(trueInput.id); // Get numeric part of li id
         const divIdNumber = extractIdNumber(container.id);
@@ -1010,16 +992,15 @@
             trueInput.name = `newProperties[${liIdNumber}][value]`;
             property.checked = !property.checked;
             const div = document.getElementById(`new_prop_div_${liIdNumber}`);
-
+            
             if (div.classList.contains('hidden')) {
                 div.classList.remove('hidden');
             } else {
                 div.classList.add('hidden');
             }
         }
-
     }
-
+    
     function removeRotateArrowClass(property) {
         const checkboxes = document.querySelectorAll(`input[type='checkbox'][value='${property.id}']`);
         checkboxes.forEach(checkbox => {
@@ -1030,10 +1011,9 @@
             }
         });
     }
-
+    
     function searchProperties(createProdPropertiesSearchText) {
         propertiesData.forEach((property) => {
-
             const li = document.getElementById(`properties_li_${property.id}`);
             if (
                 !createProdPropertiesSearchText ||

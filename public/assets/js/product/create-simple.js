@@ -8,9 +8,11 @@ createInputFields.forEach(input => {
     });
 });
 
-
 const steps = document.querySelectorAll('.step');
 const createButtonContainer = document.getElementById("createButtonContainer");
+
+const hoi = document.getElementById('stepSeven');
+
 let currentStep = 0;
 
 const prevBtns = document.querySelectorAll('.prevBtn');
@@ -27,7 +29,7 @@ function showStep(stepIndex) {
             step.style.display = 'none';
         }
     });
-
+    
     if (stepIndex === steps.length - 1) {
         nextBtnId.style.display = 'none';
     } else {
@@ -39,18 +41,26 @@ function showStep(stepIndex) {
     } else {
         prevBtnId.style.display = 'inline-block';
     }
-
-    if (stepIndex === 5) {
-        document.getElementById('saveBtn').style.display = 'inline-block';
+    
+    if (hoi) {
+        if (stepIndex === 6) {
+            document.getElementById('saveBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('saveBtn').style.display = 'none';
+        }
     } else {
-        document.getElementById('saveBtn').style.display = 'none';
+        if (stepIndex === 5) {
+            document.getElementById('saveBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('saveBtn').style.display = 'none';
+        }
     }
-
+    
     // Update progress bar
     const progressBar = document.getElementById('progress');
     const progressPercentage = (stepIndex / (steps.length - 1)) * 100;
     progressBar.style.width = progressPercentage + '%';
-
+    
     // Display current step
     const currentStepText = document.getElementById('currentStep');
     currentStepText.textContent = `Stap ${stepIndex + 1} van ${steps.length}`;
@@ -88,7 +98,3 @@ window.communicateToChannel = [
     { data: 0, name: 'Nee'}
 ];
 //#endregion
-
-// #region step 4 variations
-
-// #endregion
