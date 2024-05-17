@@ -63,36 +63,34 @@
 @endif
 
 <script>
-    document.addEventListener("DOMContentLoaded", (event) => {
-        const discountWarningPopup = document.querySelector(".discount-warning-popup");
-        document.querySelectorAll('.skip-discountWarningError-item').forEach(function(button) {
-            button.addEventListener('click', function() {
-                let discountWarningError = button.closest('.discountWarningError-item');
-                
-                discountWarningError.parentNode.removeChild(discountWarningError);
-            });
+    const discountWarningPopup = document.querySelector(".discount-warning-popup");
+    document.querySelectorAll('.skip-discountWarningError-item').forEach(function(button) {
+        button.addEventListener('click', function() {
+            let discountWarningError = button.closest('.discountWarningError-item');
+            
+            discountWarningError.parentNode.removeChild(discountWarningError);
         });
-        
-        const error = @json($discountError ?? null);
-        
-        if (error) {
-            document.querySelector(".discount-warning-popup").classList.remove("hidden");
-        }
-        
-        if (discountWarningPopup) {
-            document.querySelector(".discount-warning-popup").addEventListener("click", function (event) {
-                if (
-                    event.target.matches(".discount-warning-popup-close") ||
-                    event.target.matches(".discount-warningCancel")
-                ) {
-                    event.preventDefault();
-                    discountWarningPopup.style.animation = "fadeOut 0.3s forwards"; 
-                    
-                    discountWarningPopup.addEventListener("animationend", function() {
-                        discountWarningPopup.style.display = "none";
-                    });
-                }
-            });   
-        }
-    });   
+    });
+    
+    const error = @json($discountError ?? null);
+    
+    if (error) {
+        document.querySelector(".discount-warning-popup").classList.remove("hidden");
+    }
+    
+    if (discountWarningPopup) {
+        document.querySelector(".discount-warning-popup").addEventListener("click", function (event) {
+            if (
+                event.target.matches(".discount-warning-popup-close") ||
+                event.target.matches(".discount-warningCancel")
+            ) {
+                event.preventDefault();
+                discountWarningPopup.style.animation = "fadeOut 0.3s forwards"; 
+                
+                discountWarningPopup.addEventListener("animationend", function() {
+                    discountWarningPopup.style.display = "none";
+                });
+            }
+        });   
+    }
 </script>
