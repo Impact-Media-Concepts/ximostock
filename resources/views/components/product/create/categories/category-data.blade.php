@@ -15,5 +15,5 @@ $category_ids = $checkedCategories ? $checkedCategories->pluck('id')->toArray() 
         subcategories:[
             <x-product.create.categories.category-data :categories="$category->child_categories_recursive" :checkedCategories="$checkedCategories" />
         ]
-    }
+    },
 @endforeach
