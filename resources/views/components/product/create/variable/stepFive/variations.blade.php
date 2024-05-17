@@ -404,7 +404,7 @@
             const removeBtnContainer = document.createElement('div');
             removeBtnContainer.className = 'w-full flex justify-end';
             const removeBtn = document.createElement('button');
-            removeBtn.className = 'removeLocationBtn flex justify-center items-center cursor-pointer relative left-[24rem] mt-[0.5rem]';
+            removeBtn.className = 'removeLocationBtn flex justify-center items-center cursor-pointer relative mt-[0.5rem]';
             removeBtn.type = 'button';
             
             const removeIcon = document.createElement('img');

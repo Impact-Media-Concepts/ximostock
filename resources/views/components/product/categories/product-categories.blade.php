@@ -226,6 +226,11 @@
                 categoryHandleCheckboxClick(category);
             });
 
+            const categoryParentContainer = document.createElement('div');
+            categoryParentContainer.className = 'flex w-full items-center justify-start'
+            const categoryNameSpanContainer = document.createElement('div');
+            categoryNameSpanContainer.className = 'w-full flex items-center';
+
             const categoryNameSpan = document.createElement('span');
             categoryNameSpan.textContent = category.name;
             categoryNameSpan.classList.add('ml-[0.59rem]', 'relative', 'bottom-[0.125rem]');
@@ -245,16 +250,21 @@
             const arrowDown = document.createElement('img');
 
             arrowDownDiv.style.width = '85%';
-            arrowDownDiv.classList.add('flex', 'items-center', 'justify-end');
+            arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'pr-[0.5rem]');
 
             arrowDownDiv.appendChild(arrowDown);
             arrowDown.src = '../../images/arrow-down-icon.png';
             arrowDown.alt = 'Arrow Down';
             arrowDown.classList.add('w-[0.8rem]', 'h-[0.5rem]', 'flex', 'mt-[0.18rem]', 'mr-[0.25rem]', 'cursor-pointer');
+            
+            
+            categoryNameSpanContainer.appendChild(categoryNameSpan);
+            
+            categoryParentContainer.appendChild(checkbox);
+            categoryParentContainer.appendChild(categoryNameSpanContainer);
+            categoryParentContainer.appendChild(arrowDownDiv);
 
-            categoryNameSpan.appendChild(arrowDownDiv);
-            li.appendChild(checkbox);
-            li.appendChild(categoryNameSpan);
+            li.appendChild(categoryParentContainer);
 
             ul.appendChild(li);
 
@@ -325,7 +335,7 @@
                 const arrowDown = document.createElement('img');
 
                 arrowDownDiv.style.width = '85%';
-                arrowDownDiv.classList.add('flex', 'items-center', 'justify-end');
+                arrowDownDiv.classList.add('flex', 'items-center', 'justify-end', 'pr-[1rem]');
 
                 arrowDownDiv.appendChild(arrowDown);
                 arrowDown.src = '../../images/arrow-down-icon.png';

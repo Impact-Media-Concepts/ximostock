@@ -1,6 +1,9 @@
 @props(['properties','selectedProperties' => null])
 
 <!-- TODO: variationPropBtn meteen laten zien inplaats van eerst een prop kiezen. -->
+<!-- TODO fix: soms bij het verwijderen of selecteren van een eigenschapsnaam geeft ie een error: -->
+<!-- Uncaught TypeError: Cannot read properties of null (reading 'innerText') - het selecteren van een eigenschapsnaam -->
+<!-- Uncaught TypeError: Cannot read properties of null (reading 'removeChild') - het verwijderen van een item -->
 
 <?php
     $app_url = env('VITE_APP_URL');
@@ -103,7 +106,7 @@
             },
         @endforeach
     ];
-   
+    
     const mainPropsBtnsContainer = document.getElementById('variationAddPropBtnsContainer');
     const addNewDropdownButton = document.getElementById('variationAddPropBtn');
     const addVariationBtn = document.getElementById('addVariationBtn');
@@ -234,9 +237,8 @@
                                 const itemToRemove = event.target.closest('.variationsPropDropdownContainer');
                                 //TODO: remove object from variationPropertyData array
                                 itemToRemove.parentNode.removeChild(itemToRemove);
+                                removeObjectById(property.id);
                                 variationPropertiesDatass.splice(index, 1);
-                                console.log("variationPropertiesDatass on delete: ", variationPropertiesDatass);
-                                console.log("variationPropertyData on delete: ", variationPropertyData);
                             });
                         });
                     }
@@ -254,7 +256,7 @@
 
         variationPropObjectId++
         if (variationPropertiesDatass.length !== 0 && variationPropertyData.values.length !== 0) {
-            // Check for duplicate names
+            // Checks for duplicate names
             const nameOccurrences = {};
             let hasDuplicates = false;
             variationPropertyData.values.forEach(item => {
@@ -266,8 +268,7 @@
             });
 
             if (hasDuplicates) {
-                console.log(variationPropertyData);
-                alert("Kan niet dezelfde Eigenschapsnaam hebben.");
+                alert("Kan niet meerder eigenschapsnamen hebben die gelijk zijn.");
             } else {
                 // code for popup close and open animation
                 hideCreateVariationPopup.classList.add('fade-out');
@@ -279,10 +280,8 @@
                 hideCreateVariationPopup.classList.remove('fade-in');
                 
                 variationPropertiesDatass.id = variationPropObjectId;
-                // send data to function
-                
-                console.log(variationPropertyData);
 
+                // send data to function
                 renderCreatedVariation(variationPropertyData);
 
                 //clear fields
@@ -290,13 +289,14 @@
                 variationPropertyData = {
                     values: []
                 };
+
                 variationAddPropBtnsContainer.innerHTML = '';
             }
         } else if (variationPropertiesDatass.length === 0) {
-            alert("pls");
+            alert("Kies alstublieft een eigenschapsnaam of waarde.");
         } else if (variationPropertyData.values.length === 0) {
             variationPropertiesDatass = [];
-            alert("EMPTY OBJECT YYA");
+            alert("Kies alstublieft een eigenschapsnaam of waarde.");
         }
     })
 
@@ -307,5 +307,9 @@
             values: []
         };
         variationAddPropBtnsContainer.innerHTML = '';
-    })
+    });
+
+    function removeObjectById(id) {
+        variationPropertyData.values = variationPropertyData.values.filter(obj => obj.id !== id);
+    }
 </script>
