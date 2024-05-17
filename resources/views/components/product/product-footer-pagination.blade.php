@@ -80,6 +80,6 @@
         {
             data_pages: 250,
             name: '250'
-        }
+        },
     ];
 </script>
