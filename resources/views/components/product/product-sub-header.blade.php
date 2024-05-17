@@ -11,23 +11,23 @@
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Name" text="Naam" />
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="SKU" text="SKU" />
         </div>
-
+        
         <div class="basic:mr-[2rem] hd:mr-[7.4rem] uhd:mr-[14.85rem] shd:mr-[21.3rem] flex justify-center items-center w-[2.75] cursor-pointer">
             <x-product.product-sub-header-tab class="mt-[0.12rem]" :orderBy="$orderBy" orderId="Price" text="Prijs" />
         </div>
-
+        
         <div class="basic:mr-[2rem] hd:mr-[5.9rem] uhd:mr-[11.4rem] shd:mr-[24.3rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Stock" class="w-6" text="Voorraad" />
         </div>
-
+        
         <div class="basic:mr-[2rem] hd:mr-[4.4rem] uhd:mr-[10rem] shd:mr-[23.3rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Sold" text="Verkocht" />
         </div>
-
+        
         <div class="basic:mr-[2rem] hd:mr-[4.8rem] uhd:mr-[11.5rem] shd:mr-[24.4rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="Status" text="Status" />
         </div>
-
+        
         <div class="uhd:w-full flex uhd:gap-[10.8rem]">
             <x-product.product-sub-header-tab :orderBy="$orderBy" orderId="UpdatedAt" text="Gewijzigd" />
         </div>

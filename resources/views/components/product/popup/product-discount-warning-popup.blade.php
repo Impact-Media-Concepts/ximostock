@@ -40,16 +40,15 @@
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
-
+                    
                     <div class="discount-buttons flex items-center gap-[13.2rem] mb-[0.5rem]">
-
                         <div class="flex items-center justify-start">
                             <button type="button" class="discount-warning-popup-close flex justify-center gap-2 items-center discountCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
                                 <img class="discount-warning-popup-close select-none w-[0.8rem] h-[0.8rem] flex" src="../images/x-icon.png" alt="x icon">
                                 <p class="discount-warning-popup-close flex text-[#717171]">Annuleren</p>
                             </button>
                         </div>
-                    
+                        
                         <div class="flex items-center justify-end">
                             <button class="flex justify-center items-center w-[7.87rem] h-[2.68rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
                                 <img src="../images/save-icon.png">
@@ -69,17 +68,17 @@
         document.querySelectorAll('.skip-discountWarningError-item').forEach(function(button) {
             button.addEventListener('click', function() {
                 let discountWarningError = button.closest('.discountWarningError-item');
-            
+                
                 discountWarningError.parentNode.removeChild(discountWarningError);
             });
         });
-
+        
         const error = @json($discountError ?? null);
-
+        
         if (error) {
             document.querySelector(".discount-warning-popup").classList.remove("hidden");
         }
-
+        
         if (discountWarningPopup) {
             document.querySelector(".discount-warning-popup").addEventListener("click", function (event) {
                 if (
@@ -88,7 +87,7 @@
                 ) {
                     event.preventDefault();
                     discountWarningPopup.style.animation = "fadeOut 0.3s forwards"; 
-
+                    
                     discountWarningPopup.addEventListener("animationend", function() {
                         discountWarningPopup.style.display = "none";
                     });

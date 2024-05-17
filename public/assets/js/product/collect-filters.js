@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
             searchForm.submit();
         }
     });
-
+    
     orderByEvent("Name");
     orderByEvent("SKU");
     orderByEvent("UpdatedAt");

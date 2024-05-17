@@ -16,7 +16,7 @@
                 {!! __('totaal') !!}
             </p>
         </div>
-
+        
         <div class="flex w-full justify-end mr-7">
             <span class="relative z-0 inline-flex rtl:flex-row-reverse shadow-sm rounded-md">
                 {{-- Previous Page Link --}}
@@ -43,7 +43,7 @@
                         </svg>
                     </a>
                 @endif
-
+                
                 {{-- Pagination Elements --}}
                 @foreach ($elements as $element)
                     {{-- "Three Dots" Separator --}}
@@ -53,7 +53,7 @@
                                 class="relative inline-flex items-center h-10 px-4 py-2 -ml-px text-sm font-medium text-white bg-[#3DABD5] border border-gray-300 cursor-default leading-5">{{ $element }}</span>
                         </span>
                     @endif
-
+                    
                     {{-- Array Of Links --}}
                     @if (is_array($element))
                         @foreach ($element as $page => $url)
@@ -72,7 +72,7 @@
                         @endforeach
                     @endif
                 @endforeach
-
+                
                 {{-- Next Page Link --}}
                 @if ($paginator->hasMorePages())
                     <a href="{{ $paginator->nextPageUrl() }}" rel="next"

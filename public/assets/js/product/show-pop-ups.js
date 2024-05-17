@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const archivePopup = document.querySelector('.cd-popup');
     if (archivePopup) {
         function archivePopUp() {
-        
             document.querySelectorAll('.cd-popup-trigger').forEach(function (trigger) {
                 trigger.addEventListener('click', function (event) {
                     event.preventDefault();
@@ -12,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     archivePopup.classList.remove('hidden');
                 });
             });
-        
+            
             // Close popup
             document.querySelector('.cd-popup').addEventListener('click', function (event) {
                 if (
@@ -40,13 +39,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 trigger.addEventListener('click', function (event) {
                     event.preventDefault();
                     
-    
+                    
                     discountPopup.classList.remove('fade-out');
                     discountPopup.classList.add('fade-in');
                     discountPopup.classList.remove('hidden');
                 });
             });
-        
+            
             // Close popup
             document.querySelector('.discount-popup').addEventListener('click', function (event) {
                 if (
@@ -66,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
-    
     const savePopupNotif = document.querySelector('.save-popup');
     if (savePopupNotif) {
         function savePopup() {
@@ -76,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     event.preventDefault();
                     const popup = this;
                     popup.style.animation = 'fadeOut 0.5s forwards'; 
-    
+                    
                     // After animation ends, hide the element
                     popup.addEventListener('animationend', function() {
                         popup.style.display = 'none';
@@ -85,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
-
+    
     const salesPopup = document.querySelector('.sales-popup');
     if (salesPopup) {
         function salesChannelsPopup() {
@@ -98,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     salesPopup.classList.remove('hidden');
                 });
             });
-        
+            
             // Close popup
             document.querySelector('.sales-popup').addEventListener('click', function (event) {
                 if (
@@ -117,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
-
+    
     const createPropPopup = document.querySelector('.create-prop-pop-up');
     if (createPropPopup) {
         function createPropPopUp() {
@@ -128,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 createPropPopup.classList.add('fade-in');
                 createPropPopup.classList.remove('hidden');
             });
-        
+            
             // Close popup
             document.querySelector('.create-prop-pop-up').addEventListener('click', function (event) {
                 if (
@@ -147,19 +145,19 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
-
+    
     const variationsAddPropPopup = document.querySelector('.variations-add-prop-pop-up');
     if (variationsAddPropPopup) {
         function variationsAddPropPopUp() {
             const variationsAddPropPopupTrigger = document.querySelector('.variations-add-prop-popup-trigger');
             variationsAddPropPopupTrigger.addEventListener('click', function (event) {
-
+                
                 event.preventDefault();
                 variationsAddPropPopup.classList.remove('fade-out');
                 variationsAddPropPopup.classList.add('fade-in');
                 variationsAddPropPopup.classList.remove('hidden');
             });
-        
+            
             // Close popup
             document.querySelector('.variations-add-prop-pop-up').addEventListener('click', function (event) {
                 if (
@@ -178,15 +176,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
-
+    
     if (archivePopup) {
         archivePopUp();
     }
-
+    
     if (discountPopup) {
         discountPopUp();
     }
-
+    
     if (salesPopup) {
         salesChannelsPopup();
     }

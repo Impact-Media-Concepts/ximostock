@@ -22,6 +22,4 @@
 <script type="text/javascript" src="{{ asset('./assets/js/product/collect-filters.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/manage-bulk-action-form.js') }}"></script>
 
-
-
 </html>

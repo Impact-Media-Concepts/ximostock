@@ -181,13 +181,12 @@
                                     <hr>
                                 </ul>
                             @endif
-
                         </li>
                     @endforeach
                 </ul>
             </li>
         </ul>
-
+    
         @if ($errors->any())
             <div>
                 <ul>
@@ -200,7 +199,6 @@
         <input type="submit" value="enter" />
     </form>
     <a href="/products">terug</a>
-
 </body>
 
 </html>

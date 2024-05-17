@@ -18,14 +18,14 @@
                     <x-product.create.categories.category-checkbox-list :categories="$categories"/>
                 </div>
             </div>
-
+            
             <div class="basic:h-[39rem] basic:w-[31rem] hd:h-[39rem] hd:w-[46rem] uhd:h-[39rem] uhd:w-[64rem]">
                 <div class="bg-[#3DABD5] rounded-t-lg h-[2.5rem] flex items-center justify-start">
                     <p class="pl-[1.56rem] text-[#fff]">
                         Categorie pad
                     </p>
                 </div>
-
+                
                 <div class="w-full flex flex-col items-center justify-start basic:max-h-[29.5rem] basic:h-[29.5rem] hd:max-h-[41.65rem] hd:h-[41.65rem] uhd:h-[48rem] uhd:max-h-[48rem] overflow-y-auto rounded-b-lg pb-[1.5rem]" style="border: 1px solid #F0F0F0">
                     <div id="categoryListContainer" class="flex flex-col items-center rounded-md"></div>
                 </div>

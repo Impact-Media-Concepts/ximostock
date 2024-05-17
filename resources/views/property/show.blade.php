@@ -16,7 +16,7 @@
         <h4>
             <input type="text" name="name"  value="{{$property->name}}"/>
         </h4>
-
+        
         @if ($property->type == 'multiselect' || $property->type == 'singleselect')
             <h2>options</h2>
             <ul>
@@ -29,14 +29,14 @@
         @endif
         <input type="submit" value="update">
         @if ($errors->any())
-        <div>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+            <div>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </form>
 </body>
 

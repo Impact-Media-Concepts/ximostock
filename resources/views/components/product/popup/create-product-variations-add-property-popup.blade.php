@@ -16,7 +16,7 @@
             width: 26rem;
         }
     }
-
+    
     @media only screen and (min-width: 1920px) {
         .back-order-btn {
             width: 32rem;
@@ -28,19 +28,19 @@
             width: 53rem;
         }
     }
-
+    
     .back-order-btn-options {
         margin-top: 3.3rem;
     }
-
+    
     .variation-prop-btn-width {
         width: 16.75rem;
     }
-
+    
     .variation-prop-btn-right {
         right: 13rem;
     }
-
+    
     .propBtnHeight {
         height: 11.3rem;
         max-height: 11.3rem;
@@ -55,26 +55,24 @@
         class="variations-add-prop-pop-up-container relative w-[65.06rem] h-[33.68rem] bg-white pb-0 rounded-md text-center p-8 mx-auto mt-20 transform -translate-y-40 transition-transform duration-300"
     >   
         <div class="w-full h-full flex flex-row-reverse">
-
             <div class="h-[2.68rem] flex items-center relative left-[1rem] hover:cursor-pointer z-[1000]">
                 <button type="button" id="variationAddPropBtn" class="flex justify-center gap-2 items-center create-propCancel w-[16.18rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
                     <p class="flex text-[#717171]">Eigenschap toevoegen</p>
                 </button>
             </div>
-        
+            
             <div class="relative bottom-8">
                 <div class="w-[43.93rem] h-[29.7rem] mt-[2rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
                     <div class="w-[43.93rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white">
                         <p>Eigenschappen</p>
                     </div>
-
+                    
                     <div id="variationPropContainer" class="max-h-[27rem] h-[27rem] overflow-y-auto pt-[1rem] pb-[1rem]">
                         <ul id="ul_item_container" class="flex items-center justify-start gap-[0.5rem] ml-[1rem]">
                             <div class="flex gap-[13rem] flex-col" id="variationAddPropBtnsContainer"></div>
                         </ul>
-
                     </div>
-
+                    
                     <div class="create-prop-buttons flex items-center gap-[0.7rem] absolute bottom-0 left-[44.8rem]">
                         <button type="button" class="variations-add-prop-close flex justify-center gap-2 items-center create-propCancel w-[7.87rem] h-[2.68rem] hover:bg-gray-100 rounded-md" style="border: 1px solid #717172;">
                             <img class="variations-add-prop-close select-none w-[0.8rem] h-[0.8rem] flex" src="{{$app_url}}/images/x-icon.png" alt="x icon">
@@ -113,22 +111,22 @@
     const hideCreateVariationPopup = document.querySelector('.variations-add-prop-pop-up');
     const variationAddPropBtnsContainer = document.getElementById('variationAddPropBtnsContainer');
     const cancelBtn = document.querySelector('.variations-add-prop-close');
-
+    
     let currentDropdownContainer = null; // Define currentDropdownContainer outside the event listener scope
     let selectedPropertyTextContent = null; // Track the initial text content of selectedPropertySpan
     let variationPropertyId = 0;
-
+    
     let selectedPropertyName;
     let selectedOptionName;
     let variationPropertiesDatass = [];
-
+    
     let variationPropertyData = {
         values: []
     };
     
     addNewDropdownButton.addEventListener('click', (event) => {
         variationPropertyId++;
-
+        
         const newDropdownContainer = document.createElement('div');
         newDropdownContainer.id = `option_container_${variationPropertyId}`
         newDropdownContainer.classList.add("variationsPropDropdownContainer", "flex", "gap-[1rem]");
@@ -145,7 +143,7 @@
                     <ul class="mt-0 propBtnHeight" id="propertyListContainer"></ul>
                 </div>
             </div>
-
+            
             <div>
                 <img class="w-[2rem] pt-[0.7rem]" src="{{$app_url}}/images/long-arrow-right-icon.png" alt="long arrow right icon">
             </div>
@@ -159,22 +157,22 @@
                 </button>
             `;
             newDropdownContainer.querySelector("#propertyListContainer").appendChild(propertyListItem);
-
+            
             propertyListItem.querySelector('button').addEventListener('click', (event) => {
                 const clickedButton = event.target;
-
+                
                 const selectedPropertySpan = clickedButton.closest('.variationsPropDropdown').querySelector('.selectedPropertySpan');
                 const propertyNameSpan = clickedButton.querySelector('span');
-
+                
                 selectedPropertyName = propertyNameSpan.innerText;
-
+                
                 if (!selectedPropertyTextContent) {
                     selectedPropertyTextContent = selectedPropertySpan.textContent.trim();
                 }
-
+                
                 selectedPropertySpan.textContent = selectedPropertyName;
                 selectedPropertySpan.title = selectedPropertyName;
-
+                
                 let optionsContainer = newDropdownContainer.querySelector('.propertyOptionsContainer'); // Reference the specific options container within this container
                 if (!optionsContainer) {
                     optionsContainer = document.createElement('div');
@@ -183,7 +181,7 @@
                 } else {
                     optionsContainer.innerHTML = '';
                 }
-
+                
                 variationAddPropsData.forEach(property => {
                     if (selectedPropertyName === property.name) {
                         optionsContainer.innerHTML = `
@@ -199,13 +197,13 @@
                                     <ul class="mt-0 propBtnHeight" id="optionsListContainer"></ul>
                                 </div>
                             </div>
-
+                            
                             <div class="removeVariationsDropdown" id="variationRemovePropBtn" style="background: gray">
                                 <img class="w-[2rem] pt-[0.3rem] hover:cursor-pointer" src="{{$app_url}}/images/delete-icon.png" alt="long arrow right icon">
                             </div>
                         </ul>
                         `;
-
+                        
                         property.options.forEach(option => {
                             const optionListItem = document.createElement('li');
                             optionListItem.innerHTML = `
@@ -215,11 +213,11 @@
                             `;
                             optionListItem.querySelector('button').addEventListener('click', (event) => {
                                 const clickedOptionButton = event.currentTarget;
-                        
+                                
                                 const selectedOptionSpan = clickedOptionButton.closest('.variationsPropOptionsDropdown').querySelector('.selectedOptionSpan');
                                 const optionSpan = clickedOptionButton.querySelector('span');
                                 selectedOptionName = optionSpan.innerText;
-
+                                
                                 selectedOptionSpan.textContent = selectedOptionName;
                                 selectedOptionSpan.title = selectedOptionName;
                                 variationPropertyData.values.push({
@@ -230,7 +228,7 @@
                             });
                             optionsContainer.querySelector("#optionsListContainer").appendChild(optionListItem);
                         });
-
+                        
                         const removeButtons = document.querySelectorAll(".removeVariationsDropdown");
                         removeButtons.forEach((removeButton, index) => {
                             removeButton.addEventListener('click', (event) => {
@@ -249,11 +247,10 @@
     });
     
     let variationPropObjectId = 0;
-
+    
     addVariationBtn.addEventListener('click', () => {
-        
         variationPropertiesDatass.push(variationPropertyData);
-
+        
         variationPropObjectId++
         if (variationPropertiesDatass.length !== 0 && variationPropertyData.values.length !== 0) {
             // Checks for duplicate names
@@ -266,7 +263,7 @@
                     nameOccurrences[item.name] = true;
                 }
             });
-
+            
             if (hasDuplicates) {
                 alert("Kan niet meerder eigenschapsnamen hebben die gelijk zijn.");
             } else {
@@ -280,16 +277,15 @@
                 hideCreateVariationPopup.classList.remove('fade-in');
                 
                 variationPropertiesDatass.id = variationPropObjectId;
-
+                
                 // send data to function
                 renderCreatedVariation(variationPropertyData);
-
+                
                 //clear fields
                 variationPropertiesDatass = [];
                 variationPropertyData = {
                     values: []
                 };
-
                 variationAddPropBtnsContainer.innerHTML = '';
             }
         } else if (variationPropertiesDatass.length === 0) {
@@ -299,7 +295,7 @@
             alert("Kies alstublieft een eigenschapsnaam of waarde.");
         }
     })
-
+    
     cancelBtn.addEventListener('click', () => {
         //clear fields
         variationPropertiesDatass = [];
@@ -308,7 +304,7 @@
         };
         variationAddPropBtnsContainer.innerHTML = '';
     });
-
+    
     function removeObjectById(id) {
         variationPropertyData.values = variationPropertyData.values.filter(obj => obj.id !== id);
     }

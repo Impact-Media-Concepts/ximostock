@@ -30,7 +30,7 @@
                 />
             </svg>
         </div>
-       
+        
         <div class="relative bottom-8">
             <div class="w-[40.87rem] h-[33rem] mt-[2rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
                 <div class="w-[40.87rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white">
@@ -58,12 +58,11 @@
                         </div>
                     </div>
                     
-                   
                     <input type="hidden" name='' id="propertyNameName" required>
                     <input type="hidden" name='' id="valueInput" required>
                     <input type="hidden" name='' id="optionsInputField" required>
                     <ul id="optionsList" class="overflow-y-auto max-h-[16rem] flex flex-col w-full justify-flex-start items-flex-start">
-
+                    
                     </ul>
                     <button id="addOptionButton" type="button" class="hidden flex justify-center items-center w-[16rem] absolute top-[25rem] left-[23.3rem] h-[2.5rem] bg-[#3DABD5] rounded-md hover:bg-[#3999BE] gap-[0.5rem]">
                         <img class="" src="{{$app_url}}/images/save-icon.png">
@@ -101,7 +100,7 @@
             },
         @endforeach
     ];
-
+    
     const propertyNameInput = document.getElementById('newPropertyName');
     
     const propertyTypeSelect = document.getElementById('newPropertyType');
@@ -113,13 +112,13 @@
     const addPropertyButton = document.getElementById('createNewPropertyBtn');
     const hideCreatePropPopup = document.querySelector('.create-prop-pop-up');
     const createPropContainer = document.getElementById('createProdPropertyList');
-
+    
     // Function to create an option item
     function createOptionItem() {
         const li = document.createElement('li');
         li.setAttribute('class', 'flex justify-end');
         li.style.backgroundColor = 'blueviolet';
-
+        
         li.style.paddingTop = "0.5rem";
         li.style.paddingBottom = "0.5rem";
         const optionInput = document.createElement('input');
@@ -130,7 +129,7 @@
         optionInput.name = 'options[]';
         optionInput.required = true;
         optionInput.value = '';
-
+        
         const removeOptionButton = document.createElement('img');
         removeOptionButton.src = '{{$app_url}}/images/delete-icon.png';
         removeOptionButton.alt = 'Delete Icon';
@@ -140,15 +139,13 @@
         
         return li;
     }
-
+    
     // Event listener for adding an option
     addOptionButton.addEventListener('click', function () {
         const optionItem = createOptionItem();
         optionsList.appendChild(optionItem);
     });
-
     
-
     // Event listener for removing an option
     optionsList.addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('removeOptionButton')) {
@@ -156,15 +153,15 @@
             optionsList.removeChild(listItem);
         }
     });
-
+    
     let selectedType;
-
+    
     propertyTypeSelect.addEventListener('change', function () {
         selectedType = propertyTypeSelect.value;
-
+        
         // Remove all existing option items
         optionsList.innerHTML = '';
-
+        
         if (selectedType === 'singleselect' || selectedType === 'multiselect') {
             // Add an initial option item
             const initialOptionItem = createOptionItem();
@@ -182,16 +179,16 @@
             addOptionButton.classList.add('hidden');
         }
     });
-
+    
     //creates newPropObject
     let newPropData = {};
-
+    
     //creates id
     let newPropId = 0;
-
+    
     document.querySelector('.create-property-create-btn').addEventListener('click', function (event) {
         const propertyInputs = document.querySelectorAll('.property-input');
-
+        
         //check if selected options if not undefined or empty
         if (selectedType !== undefined && selectedType !== '') {
             //checks every option from mutli and single is filled in
@@ -221,12 +218,12 @@
                     newPropData.name = propertyNameInput.value;
                     newPropData.type = selectedType;
                     newPropData.options = [];
-
+                    
                     propertyInputs.forEach(function(propertyInput) {
                         propertyInput.name = `newProperties[${newPropData.id}][options][]`;
                         newPropData.options.push(propertyInput.value);
                     });
-
+                    
                     //sets name & value for inputs
                     const propertyNameName = document.getElementById('propertyNameName');
                     propertyNameName.name = `newProperties[${newPropData.id}][name]`;
@@ -238,7 +235,7 @@
                     
                     //call the rendercreatedProperties and passes object with data & inputs
                     renderCreatedProperties(newPropData, propertyNameName, propertyTypeType, propertyInputs);
-
+                    
                     //resets all values after created
                     propertyTypeSelect.value = '';
                     selectedType = '';
@@ -246,15 +243,14 @@
                     propertyInputs.forEach(function(propertyInput) {
                         propertyInput.value = '';
                     });
-
+                    
                     optionsList.innerHTML = '';
                     addOptionButton.classList.add('hidden');
-
+                    
                     propertyNameInput.name = '';
                     propertyNameName.name = '';
                     valueInput.name = '';
                     optionsInputField.name = '';
-
                 } else if (propertyNameInput.value === '' && Array.from(propertyInputs).some(input => input.value !== '') || propertyNameInput.value === '' && selectedType !== 'singleselect' && selectedType !== 'multiselect') {
                     //checks if propertyName is left empty and propertyOptions are left empty
                     //or if propertyName is left empty and type is something else then single or multi
@@ -275,7 +271,7 @@
             alert("Kies alstublieft een eigenschapstype.");
         }
     });
-
+    
     document.querySelector('.create-prop-pop-up').addEventListener('click', function (event) {
         // if cancel or close button is clicked
         if (
@@ -290,33 +286,32 @@
             newPropData.name = propertyNameInput.value;
             newPropData.type = selectedType;
             newPropData.options = [];
-
+            
             propertyInputs.forEach(function(propertyInput) {
                 propertyInput.name = `newProperties[${newPropData.id}][options][]`;
-
                 newPropData.options.push(propertyInput.value);
             });
-
+            
             const propertyNameName = document.getElementById('propertyNameName');
             const propertyTypeType = document.getElementById('valueInput');
-
+            
             propertyNameName.name = `newProperties[${newPropData.id}][name]`;
             propertyTypeType.name = `newProperties[${newPropData.id}][type]`;
-
+            
             propertyNameName.value = propertyNameInput.value;
-
+            
             propertyTypeType.value = selectedType;
-
+            
             propertyTypeSelect.value = '';
             selectedType = '';
             propertyNameInput.value = '';
             propertyInputs.forEach(function(propertyInput) {
                 propertyInput.value = '';
             });
-
+            
             optionsList.innerHTML = '';
             addOptionButton.classList.add('hidden');
-
+            
             propertyNameInput.name = '';
             propertyNameName.name = '';
             valueInput.name = '';

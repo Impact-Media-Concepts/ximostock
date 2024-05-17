@@ -36,7 +36,7 @@
             <div class="flex justify-center">
                 <img class="select-none w-[5.56rem] h-[4.75]" src="../images/archive-warning-icon.png"> 
             </div>
-               <div class="flex-col">
+                <div class="flex-col">
                     <h2
                         class="flex py-4 text-[24px] md:text-2xl font-bold text-gray-500"
                         x-text="message"
@@ -55,11 +55,10 @@
                     <p class="text-[18px] text-gray-500 max-h-[8rem] mb-[1rem] line-clamp-4">
                     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet
                     </p>
-               </div>
+                </div>
             <ul
                 class="cd-buttons flex justify-center items-center gap-6"
             >
-                
                 <li class="py-1 flex md:mr-8 md:py-0">
                     <button
                     x-transition
