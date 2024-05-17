@@ -16,6 +16,6 @@ $category_ids = $checkedCategories ? $checkedCategories : [];
         
         <x-product.categories.product-categories-data :categories="$category->child_categories_recursive" :checkedCategories="$checkedCategories" />
         
-        ]
-    }
+        ],
+    },
 @endforeach
