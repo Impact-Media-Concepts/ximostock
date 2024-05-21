@@ -1,5 +1,6 @@
 {{-- Photos --}}
 <!-- Todo: scaling of splide js for screensizes -->
+<!-- sets url path for img -->
 <?php
     $app_url = env('VITE_APP_URL');
 ?>
@@ -86,6 +87,7 @@
                 >
                     Voeg foto toe
                     <div class="flex items-center justify-center">
+						<!-- TODO: add accepted file types -->
                         <input class="hidden" type="file" accept=".jpg, .jpeg, .png" id="uploadPhoto" class="hidden" multiple/>
                     </div>
                 </button>

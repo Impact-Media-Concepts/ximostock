@@ -1,8 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     function handleNotifPopups(popupClass) {
+		
+		//gets the class of the popup/popup container
         const popupNotif = document.querySelector(popupClass);
         if (popupNotif) {
             popupNotif.addEventListener('click', function(event) {
+				
+				//looks for the class-close, to close the popup
                 if (event.target.matches(`${popupClass}-close`)) {
                     event.preventDefault();
                     popupNotif.style.animation = 'fadeOut 0.3s forwards'; 
@@ -11,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     popupNotif.addEventListener('animationend', function() {
                         popupNotif.style.display = 'none';
                     }, { once: true });
+					//{ once: true } = event listener is removed automatically after it is triggered once
                 }
             });
         }
@@ -24,13 +29,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const popup = document.querySelector(popupSelector);
         const trigger = document.querySelector(triggerSelector);
         
+		//if both exist
         if (popup && trigger) {
+			//if trigger is clicked, show popup show animation
             trigger.addEventListener('click', function(event) {
                 event.preventDefault();
                 popup.classList.remove('fade-out', 'hidden');
                 popup.classList.add('fade-in');
             });
             
+			//if close element is clicked, show popup hide/close animation
             popup.addEventListener('click', function(event) {
                 if (closeSelectors.some(selector => event.target.matches(selector))) {
                     event.preventDefault();
@@ -46,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
+	//function to call with parameters
     handlePopup('.variations-add-prop-pop-up', '.variations-add-prop-popup-trigger', ['.variations-add-prop-close', '.variations-add-propCancel']);
     handlePopup('.create-prop-pop-up', '.create-prop-popup-trigger', ['.create-prop-close', '.create-prop-cancel']);
     handlePopup('.sales-popup', '.sales-channel-popup-trigger', ['.sales-popup-close', '.no']);

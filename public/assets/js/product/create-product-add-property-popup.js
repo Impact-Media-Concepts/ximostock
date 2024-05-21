@@ -20,6 +20,7 @@ let variationPropertyData = {
 addNewDropdownButton.addEventListener('click', (event) => {
     variationPropertyId++;
     
+	//render alpine js dropdown button via js
     const newDropdownContainer = document.createElement('div');
     newDropdownContainer.id = `option_container_${variationPropertyId}`
     newDropdownContainer.classList.add("variationsPropDropdownContainer", "flex", "gap-[1rem]");
@@ -42,6 +43,8 @@ addNewDropdownButton.addEventListener('click', (event) => {
         </div>
     `;
     
+	//render options for dropdown button via js
+	// variationAddPropsData is defined in component file
     variationAddPropsData.forEach(property => {
         const propertyListItem = document.createElement('li');
         propertyListItem.innerHTML = `
@@ -51,6 +54,7 @@ addNewDropdownButton.addEventListener('click', (event) => {
         `;
         newDropdownContainer.querySelector("#propertyListContainer").appendChild(propertyListItem);
         
+		//when a option in the list is clicked
         propertyListItem.querySelector('button').addEventListener('click', (event) => {
             const clickedButton = event.target;
             
@@ -63,6 +67,7 @@ addNewDropdownButton.addEventListener('click', (event) => {
                 selectedPropertyTextContent = selectedPropertySpan.textContent.trim();
             }
             
+			//set clicked option textcontent to button span text
             selectedPropertySpan.textContent = selectedPropertyName;
             selectedPropertySpan.title = selectedPropertyName;
             
@@ -75,6 +80,7 @@ addNewDropdownButton.addEventListener('click', (event) => {
                 optionsContainer.innerHTML = '';
             }
             
+			//render according options for properties
             variationAddPropsData.forEach(property => {
                 if (selectedPropertyName === property.name) {
                     optionsContainer.innerHTML = `
@@ -113,6 +119,8 @@ addNewDropdownButton.addEventListener('click', (event) => {
                             
                             selectedOptionSpan.textContent = selectedOptionName;
                             selectedOptionSpan.title = selectedOptionName;
+							
+							//sets the objects with data
                             variationPropertyData.values.push({
                                 name: selectedPropertyName,
                                 value: selectedOptionName,
@@ -198,6 +206,7 @@ cancelBtn.addEventListener('click', () => {
     variationAddPropBtnsContainer.innerHTML = '';
 });
 
+//function for removing values from objects
 function removeObjectById(id) {
     variationPropertyData.values = variationPropertyData.values.filter(obj => obj.id !== id);
 }

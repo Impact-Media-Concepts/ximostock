@@ -143,23 +143,28 @@ function renderCategories() {
     const categoriesList = document.getElementById('categoriesList');
     categoriesList.innerHTML = ''; // Clear existing list
     
+	
     const ul = document.createElement('ul');
     ul.classList.add('mt-[1rem]');
     categoriesData.forEach(category => {
+		//creates the item
         const li = document.createElement('li');
         li.id = `category_${category.id}`;
         li.classList.add('ml-5', 'mt-[0.4rem]', 'font-[600]');
         
+		//creates the checkbox
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = category.checked;
         checkbox.id = `checkbox_category_${category.id}`;
         checkbox.classList.add('cursor-pointer');
         
+		//listens for click on checkbox
         checkbox.addEventListener('click', () => {
             createProdCategoryhandleCheckboxClick(category);
         });
         
+		//category name
         const categoryNameSpan = document.createElement('span');
         categoryNameSpan.textContent = category.name;
         categoryNameSpan.classList.add('ml-[0.57rem]', 'relative', 'bottom-[0.125rem]', 'select-none');

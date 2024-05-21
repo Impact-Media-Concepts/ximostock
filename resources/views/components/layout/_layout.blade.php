@@ -15,6 +15,7 @@
         <div class="h-full">
             <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
         </div>
+		<!-- when component called, elements placed in component wil go here -->
         {{ $slot }}
     </div>
     

@@ -16,7 +16,7 @@
         <ul id="optionsList"></ul>
         <button type="button" id="addOptionButton" class="hidden">Add Option</button>
         <button type="submit">Submit</button>
-    </form>    
+    </form>
 </x-layout._layout>
 
 <script>

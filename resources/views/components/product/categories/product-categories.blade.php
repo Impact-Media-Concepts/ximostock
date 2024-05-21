@@ -21,7 +21,7 @@
 </div>
 
 <script>
-    // // Find parent function
+    //Gets the categories data from component
     let categoriesData = [<x-product.categories.product-categories-data :categories="$categories" :checkedCategories="$checkedCategories"/>];
 </script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/product-categories.js') }}"></script>

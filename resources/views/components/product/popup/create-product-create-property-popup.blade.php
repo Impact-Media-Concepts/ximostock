@@ -1,5 +1,6 @@
 @props(['properties'])
 
+<!-- sets url path for img -->
 <?php
     $app_url = env('VITE_APP_URL');
 ?>
