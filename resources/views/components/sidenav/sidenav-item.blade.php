@@ -4,7 +4,7 @@
     }
 </style>
 
-<!-- Checks for a cookie -->
+<!-- Checks for a cookie, based on that it gives a different width styling -->
 <a id="sideNavItemA_{{ $slug }}" class="<?php echo isset($_COOKIE['sideNavItemA_width']) && $_COOKIE['sideNavItemA_width'] === 'large' ? 'rectangle' : 'rectangle large'; ?> side-nav-active-item transition-700 sideItem" href="{{ $href }}"> 
     <button
         id="sidenav_item_button_{{ $slug }}"
