@@ -185,7 +185,11 @@
                     </ul>
                 </div>
             @endif
-            <input class="hover:cursor-pointer" type="submit" value="enter" />
+			<a class="z-[10]" href="/products">
+				<input class="hover:cursor-pointer" type="submit" value="enter" />
+			</a>
+			
+            
         </form>
         <a href="/products">terug</a>
     </div>

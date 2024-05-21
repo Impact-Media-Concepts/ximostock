@@ -6,6 +6,7 @@
 <div class="flex justify-start items-center">
     <div class="flex justify-center items-center">
         <p class="w-[20rem] text-[#717171] text-[20px] font-bold">
+			<!-- When component called, either Simple or Variable is set -->
             Product aanmaken | {{ $slot }}
         </p>
     </div>

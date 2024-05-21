@@ -1,8 +1,11 @@
 @props(['sidenavActive', 'activeWorkspace' => null])
 
+<!-- 1 sidenav button has a 2 different links -->
+<!-- 1 link is for users which are not admin -->
+<!-- 1 link is for users which are admin -->
 <?php
     $app_url = env('VITE_APP_URL');
-    
+	
     $sidenavButtons = [
         ['text' => 'Dashboard', 'icon' => $app_url . '/images/dashboard-icon.png', 'url' => '/dashboard', 'adminUrl' => $activeWorkspace ? '/dashboard?workspace=' . $activeWorkspace : '', 'id' => '1', 'slug' => 'dashboard'],
         ['text' => 'Producten', 'icon' => $app_url . '/images/product-icon.png', 'url' => '/products', 'adminUrl' => $activeWorkspace ? '/products?workspace=' . $activeWorkspace : '', 'id' => '2', 'slug' => 'products'],

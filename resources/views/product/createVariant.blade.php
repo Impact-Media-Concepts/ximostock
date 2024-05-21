@@ -1,12 +1,13 @@
+<!-- TODO: Discuss if its variable or variant -->
 <?php
-    $variant = 'Variant';
+    $variable = 'Variable';
     $app_url = env('VITE_APP_URL');
 ?>
 
 <x-layout._layout :sidenavActive="$sidenavActive" :activeWorkspace="$activeWorkspace" :workspaces="$workspaces">
     <div class="pt-[1.5rem] basic:w-[71rem] hd:w-[98rem] uhd:w-[138rem] basic:ml-[4rem] hd:ml-0 uhd:ml-0">
         <div>
-            <x-product.create.header>{{ $variant }}</x-product.create.header>
+            <x-product.create.header>{{ $variable }}</x-product.create.header>
             
             <form method="POST" action="/products/variant/" enctype="multipart/form-data">
                 @csrf

@@ -20,7 +20,7 @@
     </div>
     
     <x-layout._footer-dependencies />
-    <script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('./assets/js/product/side-nav.js') }}"></script>
     <script type="text/javascript" src="{{ asset('./assets/js/product/create-simple.js') }}"></script>
     <script type="text/javascript" src="{{ asset('./assets/js/product/show-pop-ups.js') }}"></script>
 </body>
