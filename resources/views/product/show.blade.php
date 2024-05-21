@@ -1,5 +1,5 @@
 <x-layout._layout :sidenavActive="$sidenavActive" :activeWorkspace="$activeWorkspace" :workspaces="$workspaces">
-    <div class="flex justify-center flex-col">
+    <div class="flex justify-center flex-col mt-[1.5rem]">
         <h1>
             {{ $product->title }}
         </h1>
@@ -185,7 +185,11 @@
                     </ul>
                 </div>
             @endif
-            <input type="submit" value="enter" />
+			<a class="z-[10]" href="/products">
+				<input class="hover:cursor-pointer" type="submit" value="enter" />
+			</a>
+			
+            
         </form>
         <a href="/products">terug</a>
     </div>

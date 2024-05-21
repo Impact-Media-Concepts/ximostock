@@ -32,7 +32,7 @@
 </x-layout._layout>
 
 <script type="text/javascript" src="{{ asset('./assets/js/product/header-button-data.js') }}"></script>
-<script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
+<script type="text/javascript" src="{{ asset('./assets/js/product/side-nav.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/show-pop-ups.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/container-bulk-actions.js') }}"></script>
 <script type="text/javascript" src="{{ asset('./assets/js/product/single-product-bulk-action.js') }}"></script>

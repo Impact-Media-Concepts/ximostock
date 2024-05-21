@@ -1,5 +1,6 @@
 @props(['products', 'perPage', 'discountError'])
 
+<!-- sets array with associative arrays with key-value pairs for the buttons  -->
 @php
     $buttons = [
         ['text' => 'Korting', 'width' => '5.688rem', 'actionId' => 'Discount'],

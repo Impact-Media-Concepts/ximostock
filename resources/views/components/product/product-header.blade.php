@@ -16,6 +16,7 @@
         style="font-family: 'Inter', sans-serif;">
         @foreach ($headerButtons as $button)
             <x-product.buttons.product-header-button class="w-[{{ $button['width'] }}]"  icon="{{ $button['icon'] }}">
+				<!-- Gets the button, from headerButtons and takes the text key -->
                 {{ $button['text'] }}
             </x-product.buttons.product-header-button>
         @endforeach

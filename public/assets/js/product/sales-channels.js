@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         const salesChannelList = document.getElementById('salesChannelList');
         
         salesChannelList.innerHTML = '';
-        
+        //salesChannelsData is defined in component
         salesChannelsData.forEach(salesChannel => {
             const label = document.createElement('label');
             const input = document.createElement('input');

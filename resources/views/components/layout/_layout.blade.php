@@ -15,11 +15,12 @@
         <div class="h-full">
             <x-sidenav.sidenav :activeWorkspace="$activeWorkspace" :sidenavActive="$sidenavActive"/>
         </div>
+		<!-- when component called, elements placed in component wil go here -->
         {{ $slot }}
     </div>
     
     <x-layout._footer-dependencies />
-    <script type="text/javascript" src="{{ asset('./assets/js/product/navbar.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('./assets/js/product/side-nav.js') }}"></script>
     <script type="text/javascript" src="{{ asset('./assets/js/product/create-simple.js') }}"></script>
     <script type="text/javascript" src="{{ asset('./assets/js/product/show-pop-ups.js') }}"></script>
 </body>

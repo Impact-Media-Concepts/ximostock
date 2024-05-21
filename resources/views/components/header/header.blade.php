@@ -1,5 +1,6 @@
 @props(['search' => null, 'workspaces', 'activeWorkspace' => null])
 
+<!-- sets url path for img -->
 <?php
     $app_url = env('VITE_APP_URL');
 ?>
@@ -63,6 +64,7 @@
                             <ul class="dropdown-content absolute hidden rounded-md right-[1rem] pr-[9.8rem] w-[18rem]">
                                 <div class="shadow-lg rounded-md ">
                                     <li class="rounded-md">
+										<!-- check if user is admin, if show -->
                                         @can('index-workspaces')
                                             <a class="text-[14px] shadow-sm flex items-center rounded-t-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-t-lg py-2 px-4 block whitespace-no-wrap"
                                                 href="/products/create?workspace={{ $activeWorkspace }}">
@@ -76,6 +78,8 @@
                                                 </p>
                                             </a>
                                         @endcan
+										
+										<!-- check if user is admin, else show with different href -->
                                         @cannot('index-workspaces')
                                         <a class="text-[14px] shadow-sm flex items-center rounded-t-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-t-lg py-2 px-4 block whitespace-no-wrap"
                                             href="/products/create">
@@ -91,6 +95,7 @@
                                         @endcannot
                                     </li>
                                     <li class="rounded-md">
+										<!-- check if user is admin, if show -->
                                         @can('index-workspaces')
                                             <a class="text-[14px] shadow-sm flex items-center rounded-b-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-b-lg py-2 px-4 block whitespace-no-wrap"
                                                 href="/products/variant/create?workspace={{ $activeWorkspace }}">
@@ -104,6 +109,7 @@
                                                 </p>
                                             </a>
                                         @endcan
+										<!-- check if user is admin, else show with different href -->
                                         @cannot('index-workspaces')
                                             <a class="text-[14px] shadow-sm flex items-center rounded-b-lg text-white text-left bg-[#3dabd5] hover:bg-[#3999BE] hover:rounded-b-lg py-2 px-4 block whitespace-no-wrap"
                                                 href="/products/variant/create">
@@ -248,6 +254,7 @@
                             </a>
                         </li>
                         <li>
+							<!-- TODO: discuss if instelling should be a page or not, if not remove, if is page keep -->
                             <a href="/settings">
                                 <button @click="selectedProperty = 'Instellingen'; open = false;"
                                     class="hover:bg-[#3999BE] duration-100 block w-[10.43rem] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none flex justify-center">
@@ -275,6 +282,7 @@
     </div>
 </div>
 
+<!-- get data if admin -->
 @can('index-workspaces')
     <x-workspaces-data :workspaces="$workspaces"/>
 @endcan
@@ -289,10 +297,13 @@
             
             workspacesData.forEach(workspace => {
                 const activeWorkspace = {{ $activeWorkspace ?? 'null' }};
+				
+				//creates the workspace item
                 const li = document.createElement('li');
                 li.classList.add('flex', 'items-center', 'justify-start');
                 li.id = `workspace_li_${workspace.id}`;
                 
+				//creates the a tag
                 const a = document.createElement('a');
                 a.href = `?workspace=${workspace.id}`;
                 
@@ -330,7 +341,7 @@
     }
     
     renderWorkspaces();
-    
+    //to search for workspaces
     function searchWorkspaces(workspaceSearchText) {
         workspacesData.forEach((workspace) => {
         const li = document.getElementById(`li_${workspace.id}`);
