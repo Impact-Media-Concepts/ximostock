@@ -1,8 +1,11 @@
 @props(['sidenavActive', 'activeWorkspace' => null])
 
+<!-- 1 sidenav button has a 2 different links -->
+<!-- 1 link is for users which are not admin -->
+<!-- 1 link is for users which are admin -->
 <?php
     $app_url = env('VITE_APP_URL');
-    
+	
     $sidenavButtons = [
         ['text' => 'Dashboard', 'icon' => $app_url . '/images/dashboard-icon.png', 'url' => '/dashboard', 'adminUrl' => $activeWorkspace ? '/dashboard?workspace=' . $activeWorkspace : '', 'id' => '1', 'slug' => 'dashboard'],
         ['text' => 'Producten', 'icon' => $app_url . '/images/product-icon.png', 'url' => '/products', 'adminUrl' => $activeWorkspace ? '/products?workspace=' . $activeWorkspace : '', 'id' => '2', 'slug' => 'products'],
@@ -62,11 +65,14 @@
     }
 </style>
 
+<!-- TODO: get overlay working correctly for smaller devices -->
 <div id="sideNavOverlay" class="hd:hidden uhd:hidden basic-bg basic:h-[61rem] w-full bg-black bg-opacity-75 basic:z-[997] absolute top-0">
 </div>
 
 <div id="sidenavContainer" class="<?php echo isset($_COOKIE['sidenavContainer_width']) && $_COOKIE['sidenavContainer_width'] === 'large' ? 'rectangle' : 'rectangle large'; ?> side-nav bg-white fixed top-0 basic:z-[997] z-[1001] basic:h-[56rem] hd:h-[68rem] uhd:h-[74.9rem]">
     <ul class="category-list flex grid items-center">
+		
+		<!-- checks if admin, show sidnav items with admin url -->
         @can('index-workspaces')
             @foreach ($sidenavButtons as $button)
                 <?php
@@ -81,6 +87,7 @@
             @endforeach
         @endcan
         
+		<!-- checks if not admin, show sidnav items with normal user url -->
         @cannot('index-workspaces')
             @foreach ($sidenavButtons as $button)
                 <?php

@@ -11,7 +11,7 @@ createInputFields.forEach(input => {
 const steps = document.querySelectorAll('.step');
 const createButtonContainer = document.getElementById("createButtonContainer");
 
-const hoi = document.getElementById('stepSeven');
+const stepSeven = document.getElementById('stepSeven');
 
 let currentStep = 0;
 
@@ -30,25 +30,30 @@ function showStep(stepIndex) {
         }
     });
     
+	//check if last step, hide next btn if not show next btn
     if (stepIndex === steps.length - 1) {
         nextBtnId.style.display = 'none';
     } else {
         nextBtnId.style.display = 'inline-block';
     }
-    
+	
+	//check if step is Stap 1, hide prev btn, if not show prev btn
     if (stepIndex === 0) {
         prevBtnId.style.display = 'none';
     } else {
         prevBtnId.style.display = 'inline-block';
     }
     
-    if (hoi) {
+	//check if step 7 exists
+    if (stepSeven) {
+		//check if stap 7 show saveBtn, else hide. (create variable product)
         if (stepIndex === 6) {
             document.getElementById('saveBtn').style.display = 'inline-block';
         } else {
             document.getElementById('saveBtn').style.display = 'none';
         }
     } else {
+		//check if stap 6 show save btn, else hide (create simple product)
         if (stepIndex === 5) {
             document.getElementById('saveBtn').style.display = 'inline-block';
         } else {

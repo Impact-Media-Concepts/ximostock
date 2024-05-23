@@ -33,6 +33,7 @@
         </div>
     </div>
     
+	<!-- sets the amount of pages shown left and right -->
     {{ $products->onEachSide(0)->links() }}
 </div>
 
