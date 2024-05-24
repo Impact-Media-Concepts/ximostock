@@ -47,15 +47,13 @@
                     {{ $product->stock }}
                 </p>
             </div>
-
+            
             <div class="flex hd:w-[7.5rem] uhd:w-[13.35rem] shd:w-[26.7rem] relative right-[0.1rem] top-[0.1rem] h-[1.06rem] ">
                 <p>
                     {{ $product->totalSales }}
                 </p>
-            
             </div>
             <div class="flex items-center hd:w-[8.2rem] uhd:w-[14.9rem] shd:w-[27.8rem] h-[1.06rem] mt-1">
-
                 @if ($product->product_sales_channels_exists)
                     <div class="mt-[0.15rem] w-1.5 h-1.5 bg-[#3DABD5] rounded-full"></div>
                     <p class="text-[#3DABD5] z-10 flex items-center relative left-1">

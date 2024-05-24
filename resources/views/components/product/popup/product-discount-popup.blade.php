@@ -1,5 +1,7 @@
 @props(['discountError'])
 
+<!-- TODO: show save notif component when discount succesfull -->
+
 <div
     class="discount-popup w-full h-full fixed top-0 bg-black bg-opacity-75 hidden pt-32 select-none left-0" style="z-index: 999;"
 >
@@ -34,7 +36,7 @@
                 />
             </svg>
         </div>
-       
+        
         <div class="relative bottom-8">
             <div class="w-[40.87rem] h-[15.81rem] mt-[2rem]" style="border: 1px solid #f0f0f0; border-radius: 10px;">
                 <div class="w-[40.87rem] h-[2.5rem] bg-[#3DABD5] rounded-t-lg flex justify-start items-center pl-4 text-white">
@@ -85,13 +87,13 @@
             });
         });
     });
-
+    
     function restrictNumberInput(event) {
         let input = event.target;
         let value = parseInt(input.value, 10);
         let min = 10;
         let max = 100;
-
+        
         if (isNaN(value)) {
             input.value = "";
             event.preventDefault();
@@ -101,17 +103,16 @@
             event.preventDefault();
         }
     }
-
+    
     let input = document.getElementById("discountRoundedInput");
     input.addEventListener("input", restrictNumberInput);
-
-
+    
     function decimalRestrictNumberInput(event) {
         let decimalInput = event.target;
         let decimalValue = parseInt(decimalInput.value, 10);
         let decimalMin = 10;
         let decimalMax = 99;
-
+        
         if (isNaN(decimalValue)) {
             decimalInput.value = "";
             event.preventDefault();
@@ -121,7 +122,7 @@
             event.preventDefault();
         }
     }
-
+    
     let decimalInput = document.getElementById("discountDecimalsInput");
     decimalInput.addEventListener("input", decimalRestrictNumberInput);
 </script>

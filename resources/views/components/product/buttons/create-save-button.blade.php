@@ -1,3 +1,4 @@
+<!-- sets url path for img -->
 <?php
     $app_url = env('VITE_APP_URL');
 ?>
@@ -14,4 +15,3 @@
         <span class="pl-[0.5rem] text-left text-[14px] text-white">Aanmaken</span>
     </div>
 </button>
-  

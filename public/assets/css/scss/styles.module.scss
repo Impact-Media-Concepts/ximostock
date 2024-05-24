@@ -7,9 +7,12 @@ $white: rgb(255, 255, 255);
 $dark-primary: darken($primary, 6%);
 $dark-secondary: darken($secondary, 2%);
 
+
+// TODO: overal elke kleur aanpassen zodat als thema word aangepast
+// de styling automatisch ook word aangepast
 .primary-btn-hover {
     background: $primary !important;
-
+    
     &:hover{
         background: $dark-primary !important;
     }
@@ -21,7 +24,7 @@ $dark-secondary: darken($secondary, 2%);
 
 .secondary-btn-hover {
     background: $white !important;
-
+    
     &:hover{
         background: $dark-secondary !important;
     }

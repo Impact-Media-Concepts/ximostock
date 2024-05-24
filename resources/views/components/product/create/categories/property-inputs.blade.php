@@ -1,4 +1,5 @@
 @props(['properties'])
+
 <ul>
     @foreach ($properties as $property)
         @switch($property->type)

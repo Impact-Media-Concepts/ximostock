@@ -261,13 +261,13 @@ input.slideon {
 /* create product step 1 ean */
 .create-prod-ean::-webkit-outer-spin-button,
 .create-prod-ean::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Firefox */
 .create-prod-ean[type=number] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }
 
 /* create product step 2 photos */

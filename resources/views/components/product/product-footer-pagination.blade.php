@@ -32,7 +32,8 @@
             </ul>
         </div>
     </div>
-
+    
+	<!-- sets the amount of pages shown left and right -->
     {{ $products->onEachSide(0)->links() }}
 </div>
 
@@ -44,7 +45,7 @@
             button.addEventListener('click', function() {
                 const pageSize = parseInt(this.getAttribute('data_pages'));
                 const totalProducts = {{ $products->total() }};
-
+                
                 if (pageSize < totalProducts) {
                     const url = new URL(window.location.href);
                     url.searchParams.set('perPage', pageSize);
@@ -59,7 +60,7 @@
             });
         });
     });
-
+    
     // set pagination amount datas
     window.pagination = [{
             data_pages: 10,
@@ -80,6 +81,6 @@
         {
             data_pages: 250,
             name: '250'
-        }
+        },
     ];
 </script>

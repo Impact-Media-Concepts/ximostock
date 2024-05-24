@@ -1,43 +1,44 @@
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
     scrollbar-width: thin;
 }
 
+/* if put on element hides element untill alpine js is fully loaded */
 [x-cloak] {
     display: none !important;
 }
 
 /* header multidropdown */
 .dropdown:hover > .dropdown-content {
-  display: block;
+    display: block;
 }
 
 /* popup fade in and out styling */
 @keyframes fadeOut {
-  from {
-      opacity: 1;
-  }
-  to {
-      opacity: 0;
-  }
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 @keyframes fadeIn {
-  from {
-      opacity: 0;
-  }
-  to {
-      opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .fade-in {
-  animation: fadeIn 0.2s forwards;
+    animation: fadeIn 0.2s forwards;
 }
 
 .fade-out {
-  animation: fadeOut 0.2s forwards;
+    animation: fadeOut 0.2s forwards;
 }

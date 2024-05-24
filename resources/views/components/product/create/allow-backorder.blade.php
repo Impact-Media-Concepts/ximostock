@@ -1,3 +1,4 @@
+<!-- sets url path for img -->
 <?php
     $app_url = env('VITE_APP_URL');
 ?>
@@ -8,7 +9,7 @@
             width: 26rem;
         }
     }
-
+    
     @media only screen and (min-width: 1920px) {
         .back-order-btn {
             width: 32rem;
@@ -20,7 +21,7 @@
             width: 53rem;
         }
     }
-
+    
     .back-order-btn-options {
         margin-top: 3.3rem;
     }
@@ -46,15 +47,14 @@
                 class="w-11 h-11 bg-gray-200 flex justify-center items-center absolute rounded-s-lg"
                 style="left: calc(100% - 44px); border-left: 2px solid #d1d5db"
             >
-                <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]"
-                    src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
+                <img class="select-none w-[0.8rem] h-[0.5rem] flex mt-[0.30rem]" src="{{$app_url}}/images/arrow-down-icon.png" alt="Arrow down">
             </div>
         </button>
-
+        
         <div
-        x-cloak
-        x-show="open"
-        class="absolute right-0 back-order-btn back-order-btn-options bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            x-cloak
+            x-show="open"
+            class="absolute right-0 back-order-btn back-order-btn-options bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
             <ul>
                 <template x-for="backOrder in allowBackorders" :key="backOrder.data">
