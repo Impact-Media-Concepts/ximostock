@@ -30,7 +30,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Spatie\Activitylog\Facades\LogBatch;
 
 class ProductController extends BaseProductController
 {
@@ -179,6 +179,12 @@ class ProductController extends BaseProductController
 
         Gate::authorize('destroy-product', $product);
 
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($product)
+            ->log('deleted');
+
         // Soft delete the product
         $product->delete();
 
@@ -195,10 +201,11 @@ class ProductController extends BaseProductController
         ]);
 
         // Delete selected products
+        LogBatch::startBatch();
         $woocommerce = new WooCommerceManager;
         $woocommerce->deleteProductsFromAll($validatedData['product_ids']);
         Product::whereIn('id', $validatedData['product_ids'])->delete();
-
+        LogBatch::endBatch();
         return redirect()->back();
     }
 
@@ -213,7 +220,7 @@ class ProductController extends BaseProductController
             'cents' => ['nullable', 'numeric', 'digits_between:0,2', 'Integer', 'min:0'],
             'round' => ['required', 'boolean']
         ]);
-
+        LogBatch::startBatch();
         // Apply the discount to each product
         if ($validatedData['discount'] != 0) {
             if ($validatedData['round']) {
@@ -254,6 +261,7 @@ class ProductController extends BaseProductController
                 $product->save();
             }
         }
+        LogBatch::endBatch();
         return redirect()->back();
     }
 
