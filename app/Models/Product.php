@@ -17,7 +17,8 @@ class Product extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll();
+        ->logAll()
+        ->logOnlyDirty();
     }
 
     // haal de varianten van een variabel product op
