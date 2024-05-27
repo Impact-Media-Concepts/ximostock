@@ -1,27 +1,26 @@
 /* scrollbar */
 .product-scrollbar::-webkit-scrollbar {
-  width: 0px;
-  scrollbar-width: none;
+    width: 0px;
+    scrollbar-width: none;
 }
 
 ::-webkit-scrollbar {
-  width: 20px;
-  scrollbar-width: none;
+    width: 20px;
+    scrollbar-width: none;
 }
 
 ::-webkit-scrollbar-track {
-  background: #fff;
-  border: 1px solid #dbdbdb;
-  border-radius: 15px;
-  z-index: -1 !important;
+    background: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 15px;
+    z-index: -1 !important;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #dbdbdb;
-  border: 6px solid transparent;
-  background-clip: content-box;
-  border-radius: 15px;
-
-  z-index: -1 !important;
+    background: #dbdbdb;
+    border: 6px solid transparent;
+    background-clip: content-box;
+    border-radius: 15px;
+    z-index: -1 !important;
 }

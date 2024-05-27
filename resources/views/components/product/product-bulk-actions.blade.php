@@ -1,11 +1,13 @@
-@props(['products', 'perPage'])
+@props(['products', 'perPage', 'discountError'])
 
+<!-- sets array with associative arrays with key-value pairs for the buttons  -->
 @php
     $buttons = [
-        ['text' => 'Korting', 'width' => '5.688rem'],
-        ['text' => 'Verkoopkanalen', 'width' => '9.31rem'],
-        ['text' => 'Voorraad activeren', 'width' => '10.5rem'],
-        ['text' => 'Archiveren', 'width' => '7.12rem']
+        ['text' => 'Korting', 'width' => '5.688rem', 'actionId' => 'Discount'],
+        ['text' => 'Verkoopkanalen', 'width' => '9.31rem', 'actionId' => 'SalesChannels'],
+        ['text' => 'Voorraad communiceren', 'width' => '12rem', 'actionId' => 'communicateStock'],
+        ['text' => 'Voorraad niet communiceren', 'width' => '13.5rem', 'actionId' => 'unCommunicateStock'],
+        ['text' => 'Archiveren', 'width' => '7.12rem', 'actionId' => 'Archive']
     ];
 @endphp
 
@@ -14,19 +16,22 @@
         <p>
             <span id="selectedCount">0</span> producten van de <span>{{ $perPage }}</span> geselecteerd.
         </p>
-        <p id="bulkActionsCheckboxSubheaderSelectAll" class="text-[#3DABD5] ml-1 cursor-pointer">
+        <p id="selectAll" class="text-[#3DABD5] ml-1 cursor-pointer">
             Selecteer alle <span>{{ $perPage }}</span> producten
         </p>
     </div>
     
     <div class="flex justify-center items-center pt-1 gap-[0.57rem]">
         @foreach ($buttons as $button)
-            <x-product.buttons.product-bulk-button class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }}  {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }}">
+            <x-product.buttons.product-bulk-button
+                bulkActionId="bulkAction{{$button['actionId']}}"
+                class="w-[{{ $button['width'] }}] {{ $button['text'] === 'Archiveren' ? 'cd-popup-trigger' : '' }} {{ $button['text'] === 'Korting' ? 'discount-popup-trigger' : '' }} {{ $button['text'] === 'Verkoopkanalen' ? 'sales-channel-popup-trigger' : '' }} {{ $button['text'] === 'Voorraad communiceren' ? 'communicate-stock' : '' }} {{ $button['text'] === 'Voorraad niet communiceren' ? 'uncommunicate-stock' : '' }}"
+            >
                 {{ $button['text'] }}
             </x-product.buttons.product-bulk-button>
         @endforeach
     </div>
     
-    <x-product.popup.product-discount-popup />
+    <x-product.popup.product-discount-popup :discountError="$discountError" />
     <x-product.popup.product-archive-popup />
 </div>

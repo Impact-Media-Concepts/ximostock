@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('work_space_id')->constrained('work_spaces')->cascadeOnDelete();
             $table->string('name');
             $table->json('values');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

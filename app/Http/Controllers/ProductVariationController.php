@@ -9,29 +9,62 @@ use App\Models\Property;
 use App\Models\Product;
 use App\Models\Inventory;
 use App\Models\ProductProperty;
+use App\Models\WorkSpace;
 use App\Rules\ValidLocationZoneKeys;
+use App\Rules\ValidWorkspaceKeys;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class ProductVariationController extends BaseProductController
 {
-    public function create()
+    public function create(Request $request)
     {
-        $properties = Property::all();
-
-        foreach ($properties as $prop) {
-            $prop->values = json_decode($prop->values);
+        $perPage = $request->input('perPage', 20);
+        if (Auth::user()->role === 'admin') {
+            $request->validate([
+                'workspace' => ['required', new ValidWorkspaceKeys]
+            ]);
+            $products = Product::where('work_space_id', $request['workspace']);
+            $categories = Category::where('work_space_id', $request['workspace']);
+            $properties = Property::where('work_space_id', $request['workspace']);
+            $salesChannels = SalesChannel::where('work_space_id', $request['workspace']);
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+        }else{
+            $products = Product::where('work_space_id', Auth::user()->work_space_id);
+            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
+            $properties = Property::where('work_space_id', Auth::user()->work_space_id);
+            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id);
+            $workspaces = null;
+            $activeWorkspace = null;
         }
+        
+        $properties = Property::all();
+        $salesChannels = $salesChannels->get();
+
         return view('product.createVariant', [
-            'categories' => Category::with(['child_categories'])->whereNull('parent_category_id')->get(),
+            'categories' => $categories->with(['child_categories'])->whereNull('parent_category_id')->get(),
             'properties' => $properties,
             'locations' => InventoryLocation::with(['location_zones'])->get(),
-            'salesChannels' => SalesChannel::all()
+            'salesChannels' => SalesChannel::all(),
+            'workspaces' => $workspaces,
+            'activeWorkspace' => $activeWorkspace,
+            'sidenavActive' => 'products',
+            'products' => $products,
+            'perPage' => $perPage,
+            'search' => $request['search'],
+            'selectedCategories' => $request['categories'],
+            'orderBy' => $request['orderByInput'],
+            'discountErrors' => $request->session()->get('discountErrors'),
+            'selectedProperties' => $request['properties']
         ]);
     }
 
     public function store()
     {
         $request = request();
+        dd($request);
         // Validate the incoming request data
         $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
         $forOnline = false;

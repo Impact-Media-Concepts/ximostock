@@ -1,112 +1,56 @@
-<x-layout._header-dependencies />
+<?php
+    $simple = 'Simple';
+?>
 
-<body class="flex bg-[#F3F4F8] text-[#717171] text-[14px]" style="font-family: 'Inter', sans-serif;">
-    <x-layout._sidenav-header />
-
-    <div class="">
-        <x-header.header />
-        <div class="">
+<x-layout._layout :sidenavActive="$sidenavActive" :activeWorkspace="$activeWorkspace" :workspaces="$workspaces">
+    <div class="pt-[1.5rem] basic:w-[71rem] hd:w-[98rem] uhd:w-[138rem] basic:ml-[4rem] hd:ml-0 uhd:ml-0">
+        <div>
+            <x-product.create.header>{{ $simple }}</x-product.create.header>
+            
             <form method="POST" action="/products" enctype="multipart/form-data">
                 @csrf
-                <x-product.create.product-title />
-
-                <label for="sku">Artikelnummer:</label>
-                <input type="text" name="sku" id="sku" value="{{ old('sku') }}">
-
-                <label for="ean">EAN: </label>
-                <input type="number" name="ean" id="ean" value="{{ old('ean') }}">
-
-                <label for="short_description"> korte beschrijving:</label>
-                <input type="text" name="short_description" id="short_description" value="{{ old('short_description') }}">
-
-                <label for="long_description"> lange beschrijving:</label>
-                <input type="text" name="long_description" id="long_description" value="{{ old('long_description') }}">
-
-                <label for="price">price: </label>
-                <input type="number" step="0.01" name="price" id="price" value="{{ old('price') }}">
-
-                <div>
-                    <h3>Select Categories:</h3>
-                    <x-category.categories-input :categories="$categories" />
-
-                    <label for='primaryCategory'>primaryCategory</label>
-                    <input type="number" id="primaryCategory" value="{{ old('primaryCategory') }}" name="primaryCategory" />
+                
+                <div id="stepOne" class="step">
+                    <x-product.create.simple.stepOne.index />
                 </div>
-
-                <ul>
-                    <li>
-                        <label for="backorders">backorders</label>
-                        <input type="number" id="backorders" value="0" name="backorders">
-                    </li>
-                    <li>
-                        <label for="communicate_stock">communicate stock</label>
-                        <input type="number" checked id="communicate_stock" value="1" name="communicate_stock">
-                    </li>
-                </ul>
-
-                {{-- Photos --}}
-                <div>
-                    <label for="primaryPhoto">primary Photo</label>
-                    <input type="file" id="primaryPhoto" name="primaryPhoto" />
+                
+                <div id="stepTwo" class="step" style="display: none;">
+                    <x-product.create.stepTwo.photos />
                 </div>
-
-                <ul>
-                    <li><input type="file" id="photos1" name="photos[]" /></li>
-                    <li><input type="file" id="photos2" name="photos[]" /></li>
-                </ul>
-
-                <div>
-                    <h3>set eigenschappen</h3>
-                    @foreach ($properties as $property)
-                        @if ($property->values->type == 'text')
-                            <div>
-                                <label for="property_{{ $property->id }}">{{ $property->name }}</label>
-                                <input type="text" id="property_{{ $property->id }}" name="properties[{{ $property->id }}]">
-                            </div>
-                        @endif
-                    @endforeach
+                
+                <div id="stepThree" class="step" style="display: none;">
+                    <x-product.create.stepThree.categories :categories="$categories" />
                 </div>
-
-                <div>
-                    <h3>voorraden</h3>
-                    <label for="{{ $locations[0]->location_zones[0]->id }}">
-                        {{ $locations[0]->location_zones[0]->name }}
-                    </label>
-                    <input type="number" name="location_zones[{{ $locations[0]->location_zones[0]->id }}]">
-                    <label for="{{ $locations[0]->location_zones[1]->id }}">
-                        {{ $locations[0]->location_zones[1]->name }}
-                    </label>
-                    <input type="number" name="location_zones[{{ $locations[0]->location_zones[1]->id }}]">
+                
+                <div id="stepFour" class="step" style="display: none;">
+                    <x-product.create.stepFour.properties :properties="$properties" />
                 </div>
-
-                <div>
-                    <h3>sales channels</h3>
-                    <ul>
-                        @foreach ($salesChannels as $channel)
-                            <li>
-                                <label for="salesChannel[{{ $channel->id }}]">{{ $channel->name }}</label>
-                                <input type="checkbox" name="salesChannels[]" value="{{ $channel->id }}"
-                                    id="salesChannel[{{ $channel->id }}]">
-                            </li>
-                        @endforeach
-                    </ul>
+                
+                <div id="stepFive" class="step" style="display: none;">
+                    <x-product.create.stock.stock :locations="$locations" />
                 </div>
-
-                @if ($errors->any())
-                    <div>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                
+                <div id="stepSix" class="step" style="display: none;">
+                    <x-product.create.salesChannels.sales-channels :salesChannels="$salesChannels" />
+                </div>
+                
+                <x-product.create.create-error-message :errors="$errors"/>
+                
+                <div id="create.simple.ButtonContainer" class="flex w-full items-center bg-white rounded-b-lg h-[6rem] create.simple.-button-container-border">
+                    <div id="prevBtn" class="relative right-[1rem]">
+                        <x-product.buttons.create-previous-button />
                     </div>
-                @endif
-
-                <input type="submit" value="Submit"></input>
+                    
+                    <div class="w-full flex justify-end relative right-[2rem]">
+                        <x-product.buttons.create-next-button />
+                    </div>
+                    
+                    <div class="relative right-[1.5rem]">
+                        <x-product.buttons.create-save-button />
+                    </div>
+                </div>
             </form>
+            <x-product.popup.create-product-create-property-popup :properties="$properties"/>
         </div>
     </div>
-
-</body>
-
-</html>
+</x-layout._layout>

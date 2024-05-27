@@ -3,8 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>Laravel</title>
+		<meta name="description" content="">
+		<meta name="author" content="IMC - Impact Media Concepts">
+        <title>PIM systeem - Ximostock - Impact Media Concepts</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

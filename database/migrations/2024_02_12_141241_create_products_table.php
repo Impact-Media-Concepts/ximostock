@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('work_space_id')->constrained();
-            $table->foreignId('parent_product_id')->nullable()->constrained('products');
+            $table->foreignId('parent_product_id')->nullable()->constrained('products')->cascadeOnDelete();
             $table->string('sku')->unique()->nullable();
             $table->bigInteger('ean')->unique()->nullable();
             $table->string('title')->nullable();
@@ -24,6 +24,9 @@ return new class extends Migration
             $table->decimal('discount')->nullable();
             $table->boolean('backorders')->default(false)->nullable();
             $table->boolean('communicate_stock')->default(true)->nullable();
+            $table->integer('orderByStock')->default(0);
+            $table->integer('orderBySold')->default(0);
+            $table->boolean('orderByOnline')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

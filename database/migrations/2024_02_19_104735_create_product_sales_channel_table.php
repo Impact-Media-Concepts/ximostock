@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('product_sales_channel', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained();
-            $table->foreignId('sales_channel_id')->constrained();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('sales_channel_id')->constrained()->cascadeOnDelete();
+            $table->bigInteger('external_id')->nullable();
             $table->decimal('price')->nullable();
             $table->decimal('discount')->nullable();
             $table->string('title')->nullable();

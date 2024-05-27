@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('location_zones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inventory_location_id')->constrained();
+            $table->foreignId('work_space_id')->constrained('work_spaces')->cascadeOnDelete();
+            $table->foreignId('inventory_location_id')->constrained()->cascadeOnDelete();
             $table->string('name');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -1,3 +1,9 @@
-<div>
-    <!-- Breathing in, I calm body and mind. Breathing out, I smile. - Thich Nhat Hanh -->
-</div>
+@if ($errors->any())
+    <div>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif

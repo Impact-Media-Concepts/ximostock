@@ -8,8 +8,11 @@ use App\Models\PhotoProduct;
 use App\Models\ProductProperty;
 use App\Rules\ValidPropertyKeys;
 use App\Models\ProductSalesChannel;
+use App\Rules\ValidPropertyOptions;
+use App\Rules\VallidCategoryKeys;
 use Illuminate\Validation\Rule;
 
+use function PHPSTORM_META\map;
 
 abstract class BaseProductController extends Controller
 {
@@ -17,7 +20,7 @@ abstract class BaseProductController extends Controller
     {
         $attributes = $request->validate([
             'salesChannels' => ['array', 'nullable'],
-            'salesChannels.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
+            'salesChannels.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')],
         ]);
         if ($request['salesChannels'] == null) {
             $attributes['salesChannels'] = [];
@@ -28,9 +31,9 @@ abstract class BaseProductController extends Controller
     protected function validateCategoryAttributes()
     {
         return [
-            'categories' => ['nullable', 'array'],
-            'categories.*' => ['required', 'numeric', Rule::exists('categories', 'id')],
-            'primaryCategory' => ['required', 'numeric', Rule::exists('categories', 'id')]
+            'categories' => ['nullable', 'array', new VallidCategoryKeys],
+            'categories.*' => ['required', 'array'],
+            'categories.*'=> ['required', 'numeric']
         ];
     }
 
@@ -54,49 +57,29 @@ abstract class BaseProductController extends Controller
     protected function validatePropertyAttributes()
     {
         return [
-            'properties' => ['nullable', 'array', new ValidPropertyKeys],
+            'properties' => ['nullable', 'array', new ValidPropertyKeys, new ValidPropertyOptions],
             'properties.*' => ['string', 'required']
         ];
     }
     
     protected function linkCategoriesToProduct($product, $attributes)
     {
-        // Link primary category
-        CategoryProduct::create([
-            'category_id' => $attributes['primaryCategory'],
-            'product_id' => $product->id,
-            'primary' => true
-        ]);
-    
         // Link all other categories and their parents
-        foreach ($attributes['categories'] as $categoryId) {
-            $this->linkCategoryAndParentsToProduct($categoryId, $product->id);
+        foreach ($attributes['categories'] as $categoryid => $primary) {
+            CategoryProduct::create([
+                'category_id' => $categoryid,
+                'product_id' => $product->id,
+                'primary' => $primary
+            ]);
         }
     }
     
-    protected function linkCategoryAndParentsToProduct($categoryId, $productId)
-    {
-        // Link the category itself
-        CategoryProduct::create([
-            'category_id' => $categoryId,
-            'product_id' => $productId,
-            'primary' => false
-        ]);
-    
-        // Fetch the category
-        $category = Category::find($categoryId);
-    
-        // If the category has a parent, recursively link the parent categories
-        if ($category->parent_category_id !== null) {
-            $this->linkCategoryAndParentsToProduct($category->parent_category_id, $productId);
-        }
-    }
 
     protected function uploadAndLinkPhotosToProduct($product, $request)
     {
         $path = $request->file('primaryPhoto')->store('public/photos');
         $primaryPhoto = Photo::create([
-            'url' => str_replace('public', 'http://localhost:8000/storage', $path)
+            'url' => str_replace('public', env('APP_URL','http://localhost:8000').'/storage', $path)
         ]);
 
         PhotoProduct::create([
@@ -108,7 +91,7 @@ abstract class BaseProductController extends Controller
         foreach ($request->file('photos') as $photoFile) {
             $photoPath = $photoFile->store('public/photos');
             $photo = Photo::create([
-                'url' => str_replace('public', 'http://localhost:8000/storage', $photoPath)
+                'url' => str_replace('public', env('APP_URL','http://localhost:8000').'/storage', $photoPath)
             ]);
 
             PhotoProduct::create([

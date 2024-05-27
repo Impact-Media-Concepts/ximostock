@@ -14,8 +14,10 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_category_id')->nullable()->constrained('categories');
+            $table->foreignId('parent_category_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('work_space_id')->constrained('work_spaces')->cascadeOnDelete();
             $table->string('name');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

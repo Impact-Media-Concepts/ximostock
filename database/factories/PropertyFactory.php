@@ -25,6 +25,7 @@ class PropertyFactory extends Factory
         $values = json_encode([ 'type' => $type, 'options' => $options]);
 
         return [
+            'work_space_id' => 1,
             'name' => fake()->unique()->word(),
             'values' => $values
         ];
