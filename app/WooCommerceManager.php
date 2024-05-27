@@ -12,11 +12,10 @@ use App\Models\ProductSalesChannelProperty;
 use App\Models\Property;
 use App\Models\PropertySalesChannel;
 use App\Models\SalesChannel;
-use App\View\Components\property as ComponentsProperty;
 use Automattic\WooCommerce\Client;
 
 use Exception;
-use PDO;
+
 
 class WooCommerceManager
 {
@@ -33,6 +32,8 @@ class WooCommerceManager
                 $salesChannel->api_key,
                 $salesChannel->secret,
                 [
+                    'wp_api' => true,
+                    'version' => 'wc/v3',
                     'timeout' => 30
                 ]
             );
@@ -237,6 +238,7 @@ class WooCommerceManager
                             'slug' => env('XS_PREFIX', 'xs_') . $category->name,
                             'parent' => $parent->external_id
                         ];
+                        
                         $response = $woocommerce->post('products/categories', $data);
                         CategorySalesChannel::create([
                             'category_id' => $category->id,
@@ -359,7 +361,7 @@ class WooCommerceManager
                 ]];
                 $result = $woocommerce->post('products/attributes/batch', $data);
                 $result = reset($result);
-                $result = reset($result);
+                $result = reset($result);//must do this twice for reasons
 
                 if (!isset($result->error)) {
                     if (isset($result->id)) {
@@ -424,6 +426,7 @@ class WooCommerceManager
             'sku' => isset($productSalesChannel->sku) ? $productSalesChannel->sku : $product->sku,
             'categories' => $categories,
             'attributes' => $properties,
+            'images' => $this->prepareImageData($product) != [] ? $this->prepareImageData($product) : null,
             'meta_data' => [
                 [
                     'key' => '_ean_code',
@@ -509,6 +512,15 @@ class WooCommerceManager
             }
             return $properties;
         }
+    }
+
+    protected function prepareImageData(Product $product){
+        $photoData = [];
+        foreach ($product->photos as $photos) {
+            $data = ['src' => $photos->url];
+            array_push($photoData, $data);
+        }
+        return $photoData;
     }
     #endregion
 }
