@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-
-<body>
+<x-layout._layout :sidenavActive="$sidenavActive" :activeWorkspace="$activeWorkspace" :workspaces="$workspaces">
     <form action="/users" method="POST">
         @csrf
         <ul>
@@ -29,7 +20,7 @@
                 <select required name="workspace" id="">
                     <option value=""></option>
                     @foreach ($workspaces as $workspace)
-                        <option value="{{$workspace->id}}">{{$workspace->name}}</option>
+                        <option value="{{ $workspace->id }}">{{ $workspace->name }}</option>
                     @endforeach
                 </select>
             </li>
@@ -39,14 +30,12 @@
         </ul>
     </form>
     @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-</body>
-</html>
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+</x-layout._layout>

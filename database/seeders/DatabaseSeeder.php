@@ -168,23 +168,23 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        //link location zones
-        $locations = InventoryLocation::factory(4)->create();
-        $zones = [];
-        foreach ($locations as $location) {
-            (array_push($zones, LocationZone::factory(3)->create([
-                'inventory_location_id' => $location->id
-            ])));
-        }
+        // //link location zones
+        // $locations = InventoryLocation::factory(4)->create();
+        // $zones = [];
+        // foreach ($locations as $location) {
+        //     (array_push($zones, LocationZone::factory(3)->create([
+        //         'inventory_location_id' => $location->id
+        //     ])));
+        // }
 
         //link stock and photos
         foreach ($products as $product) {
-            for ($x = 1; $x <= 8; $x++) {
-                Inventory::factory()->create([
-                    'product_id' => $product->id,
-                    'location_zone_id' => $x
-                ]);
-            }
+            // for ($x = 1; $x <= 8; $x++) {
+            //     Inventory::factory()->create([
+            //         'product_id' => $product->id,
+            //         'location_zone_id' => $x
+            //     ]);
+            // }
             PhotoProduct::create([
                 'photo_id' => Photo::factory()->create()->id,
                 'product_id' => $product->id,
