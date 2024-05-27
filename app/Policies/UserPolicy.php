@@ -8,9 +8,10 @@ use Illuminate\Auth\Access\Response;
 class UserPolicy
 {
 
-     //for all actions. if the user is an admin allow the action.
-     public function before(User $user, string $ability): Response|null{
-        if($user->role === 'admin'){
+    //for all actions. if the user is an admin allow the action.
+    public function before(User $user, string $ability): Response|null
+    {
+        if ($user->role === 'admin') {
             return Response::allow();
         }
         return null;

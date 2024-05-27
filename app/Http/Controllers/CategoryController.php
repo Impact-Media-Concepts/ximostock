@@ -84,16 +84,32 @@ class CategoryController extends Controller
 
         Gate::authorize('store', [Category::class, $parentCategoryId]);
 
-        //validate
-        $attributes = $request->validate([
-            'name' => ['required'],
-            'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
-        ]);
-        $attributes += ['work_space_id' => Auth::user()->work_space_id];
+        if (Auth::user()->role === 'admin') {
+            //validate
+            $attributes = $request->validate([
+                'name' => ['required'],
+                'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')],
+                'work_space_id' => ['required', 'numeric', Rule::exists('work_spaces', 'id')]
+            ]);
+            $workspaceId = $attributes['work_space_id'];
+        } else {
+            //validate
+            $attributes = $request->validate([
+                'name' => ['required'],
+                'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
+            ]);
+            $attributes += ['work_space_id' => Auth::user()->work_space_id];
+        }
 
         Category::create($attributes);
 
-        return redirect('/categories');
+        // Build the redirect URL
+        $redirectUrl = '/categories';
+        if (Auth::user()->role === 'admin') {
+            $redirectUrl .= '?workspace=' . $workspaceId;
+        }
+
+        return redirect($redirectUrl);
     }
 
     public function destroy(Category $category)
@@ -110,7 +126,6 @@ class CategoryController extends Controller
             'name' => ['required', 'string'],
             'parent_category_id' => ['nullable', 'numeric', Rule::exists('categories', 'id')]
         ]);
-
         $category->update([
             'name' => $attributes['name'],
             'parent_category_id' => $attributes['parent_category_id']
@@ -134,7 +149,8 @@ class CategoryController extends Controller
         return view('category.archive', $results);
     }
 
-    public function restore(Request $request){
+    public function restore(Request $request)
+    {
         $attributes = $request->validate([
             'categories' => ['array', 'required'],
             'categories.*' => ['numeric', 'required']

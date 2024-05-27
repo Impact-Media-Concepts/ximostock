@@ -205,11 +205,7 @@ class WooCommerceManager
             }
         }
     }
-
-    public function removeProperty(Property $property){
-        
-    }
-
+    
     protected function setExternalIds($results, $products, $salesChannel)
     {
         foreach ($results->create as $result) {

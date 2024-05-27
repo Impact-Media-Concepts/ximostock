@@ -11,20 +11,29 @@ use Illuminate\Validation\Rule;
 
 class SalesChannelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::user()->role === 'admin') {
-            $attributes = request()->validate([
+            $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
-            $workspace = $attributes['workspace'];
+            $workspaces = WorkSpace::all();
+            $activeWorkspace = $request['workspace'];
+            $workspace = $activeWorkspace;
         } else {
+            $workspaces = null;
+            $activeWorkspace = null;
             $workspace = Auth::user()->work_space_id;
         }
-
-        return view('salesChannel.index', [
+        
+        $results = [
+            'activeWorkspace' => $activeWorkspace,
+            'workspaces' => $workspaces,
+            'sidenavActive' => 'saleschannels',
             'salesChannels' => SalesChannel::where('work_space_id', $workspace)->get()
-        ]);
+        ];
+
+        return view('salesChannel.index', $results);
     }
 
     public function create(Request $request)
@@ -39,29 +48,57 @@ class SalesChannelController extends Controller
             $workspaces = null;
             $activeWorkspace = null;
         }
+        
+        $results = [
+            'activeWorkspace' => $activeWorkspace,
+            'workspaces' => $workspaces,
+            'sidenavActive' => 'saleschannels'
+        ];
 
-        return view('salesChannel.create');
+        return view('salesChannel.create', $results);
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        //authroize
-
-        //validate
-        $attributes = request()->validate([
-            'name' => ['required', 'string'],
-            'type' => ['required', Rule::in(['WooCommerce'])],
-            'url' => ['required'],
-            'flavicon_url' => ['nullable'],
-            'api_key' => ['required'],
-            'secret' => ['nullable']
-        ]);
-        $attributes += ['work_space_id' => Auth::user()->work_space_id]; // temperary
-        //store
+        if (Auth::user()->role === 'admin') {
+            // Validate for admin
+            $attributes = $request->validate([
+                'name' => ['required', 'string'],
+                'type' => ['required', Rule::in(['WooCommerce'])],
+                'url' => ['required'],
+                'flavicon_url' => ['nullable'],
+                'api_key' => ['required'],
+                'secret' => ['nullable'],
+                'work_space_id' => ['required', 'numeric', Rule::exists('work_spaces', 'id')]
+            ]);
+    
+            $workspaceId = $attributes['work_space_id'];
+        } else {
+            // Validate for normal users
+            $attributes = $request->validate([
+                'name' => ['required', 'string'],
+                'type' => ['required', Rule::in(['WooCommerce'])],
+                'url' => ['required'],
+                'flavicon_url' => ['nullable'],
+                'api_key' => ['required'],
+                'secret' => ['nullable']
+            ]);
+            $attributes += ['work_space_id' => Auth::user()->work_space_id];
+    
+            $workspaceId = Auth::user()->work_space_id;
+        }
+    
+        // Store the sales channel
         SalesChannel::create($attributes);
-
-        //return
-        return redirect('/saleschannels');
+    
+        // Build the redirect URL
+        $redirectUrl = '/saleschannels';
+        if (Auth::user()->role === 'admin') {
+            $redirectUrl .= '?workspace=' . $workspaceId;
+        }
+    
+        // Return the redirect
+        return redirect($redirectUrl);
     }
 
     public function show(SalesChannel $salesChannel)

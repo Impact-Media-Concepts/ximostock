@@ -79,7 +79,7 @@ abstract class BaseProductController extends Controller
     {
         $path = $request->file('primaryPhoto')->store('public/photos');
         $primaryPhoto = Photo::create([
-            'url' => str_replace('public', 'http://localhost:8000/storage', $path)
+            'url' => str_replace('public', env('APP_URL','http://localhost:8000').'/storage', $path)
         ]);
 
         PhotoProduct::create([
@@ -91,7 +91,7 @@ abstract class BaseProductController extends Controller
         foreach ($request->file('photos') as $photoFile) {
             $photoPath = $photoFile->store('public/photos');
             $photo = Photo::create([
-                'url' => str_replace('public', 'http://localhost:8000/storage', $photoPath)
+                'url' => str_replace('public', env('APP_URL','http://localhost:8000').'/storage', $photoPath)
             ]);
 
             PhotoProduct::create([

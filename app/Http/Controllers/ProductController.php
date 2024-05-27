@@ -25,13 +25,12 @@ use App\Rules\ValidSalesChannelKeys;
 use App\Rules\ValidWorkspaceKeys;
 use App\Rules\VallidCategoryKeys;
 use App\WooCommerceManager;
-use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
-use Spatie\Activitylog\Facades\LogBatch;
+
 
 class ProductController extends BaseProductController
 {
@@ -118,7 +117,7 @@ class ProductController extends BaseProductController
         return view('product.create', [
             'categories' => $categories,
             'properties' => $properties,
-            'locations' =>  $location_zones,
+            'locations' => $location_zones,
             'sidenavActive' => 'products',
             'salesChannels' => $salesChannels,
             'workspaces' => $workspaces,
@@ -157,7 +156,7 @@ class ProductController extends BaseProductController
             } else if (gettype($value) === 'boolean') {
                 $value = $value ? 'true' : 'false';
             }
-            $selectedProperties += [$property->id => (string)$value];
+            $selectedProperties += [$property->id => (string) $value];
         }
 
         return view('product.show', [
@@ -180,12 +179,6 @@ class ProductController extends BaseProductController
 
         Gate::authorize('destroy-product', $product);
 
-
-        activity()
-            ->causedBy(Auth::user())
-            ->performedOn($product)
-            ->log('deleted');
-
         // Soft delete the product
         $product->delete();
 
@@ -202,11 +195,10 @@ class ProductController extends BaseProductController
         ]);
 
         // Delete selected products
-        LogBatch::startBatch();
         $woocommerce = new WooCommerceManager;
         $woocommerce->deleteProductsFromAll($validatedData['product_ids']);
         Product::whereIn('id', $validatedData['product_ids'])->delete();
-        LogBatch::endBatch();
+
         return redirect()->back();
     }
 
@@ -221,7 +213,7 @@ class ProductController extends BaseProductController
             'cents' => ['nullable', 'numeric', 'digits_between:0,2', 'Integer', 'min:0'],
             'round' => ['required', 'boolean']
         ]);
-        LogBatch::startBatch();
+
         // Apply the discount to each product
         if ($validatedData['discount'] != 0) {
             if ($validatedData['round']) {
@@ -262,7 +254,6 @@ class ProductController extends BaseProductController
                 $product->save();
             }
         }
-        LogBatch::endBatch();
         return redirect()->back();
     }
 
@@ -288,8 +279,8 @@ class ProductController extends BaseProductController
     {
         $request = request();
 
-        $productIds = isset($request['product_ids'])  ? $request['product_ids'] : [];
-        $salesChannels = isset($request['sales_channel_ids'])  ? $request['sales_channel_ids'] : [];
+        $productIds = isset($request['product_ids']) ? $request['product_ids'] : [];
+        $salesChannels = isset($request['sales_channel_ids']) ? $request['sales_channel_ids'] : [];
 
         Gate::authorize('bulkSaleschannels', [Product::class, $productIds, $salesChannels]);
 
@@ -328,8 +319,8 @@ class ProductController extends BaseProductController
     {
         $request = request();
 
-        $productIds = isset($request['product_ids'])  ? $request['product_ids'] : [];
-        $salesChannels = isset($request['sales_channel_ids'])  ? $request['sales_channel_ids'] : [];
+        $productIds = isset($request['product_ids']) ? $request['product_ids'] : [];
+        $salesChannels = isset($request['sales_channel_ids']) ? $request['sales_channel_ids'] : [];
 
         Gate::authorize('bulkSaleschannels', [Product::class, $productIds, $salesChannels]);
 
@@ -425,7 +416,7 @@ class ProductController extends BaseProductController
     {
         $request = request();
         //authorize
-        $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
+        $salesChannels = isset($request['salesChannelIds']) ? $request['salesChannelIds'] : [];
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
         $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
         $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
@@ -440,7 +431,7 @@ class ProductController extends BaseProductController
         //validate
         $saleschannelAttributes = $this->validateSalesChannelAttributesUpdate($request);
         $forOnline = false;
-        if (Count($saleschannelAttributes['salesChannels'])  >  0) {
+        if (Count($saleschannelAttributes['salesChannels']) > 0) {
             $forOnline = true;
         }
 
@@ -486,7 +477,7 @@ class ProductController extends BaseProductController
     public function store(Request $request)
     {
         #region //authorize
-        $salesChannels = isset($request['salesChannelIds'])  ? $request['salesChannelIds'] : [];
+        $salesChannels = isset($request['salesChannelIds']) ? $request['salesChannelIds'] : [];
         $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
         $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
         $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
@@ -499,12 +490,12 @@ class ProductController extends BaseProductController
             $location_zones
         ]);
 
-        if(Auth::user()->role === 'admin'){
+        if (Auth::user()->role === 'admin') {
             $request->validate([
                 'workspace' => ['required', new ValidWorkspaceKeys]
             ]);
             $workspace = $request['workspace'];
-        }else{
+        } else {
             $workspace = Auth::user()->work_space_id;
         }
         #endregion
@@ -522,9 +513,9 @@ class ProductController extends BaseProductController
         $validationRules += $this->validatePropertyAttributes();
         $validationRules += $this->validateInventoryAttributes();
         $validationRules += $this->validateNewProperiesAttributes();
-        $attributes =  $request->validate($validationRules);
+        $attributes = $request->validate($validationRules);
         #endregion
-        
+
         //create product and links
         $product = $this->createProduct($attributes);
         $this->linkCategoriesToProduct($product, $attributes);
@@ -547,7 +538,7 @@ class ProductController extends BaseProductController
         return Excel::download(new ProductsExport, 'products.xlsx');
     }
 
-    protected function validateNewProperiesAttributes():array
+    protected function validateNewProperiesAttributes(): array
     {
         return [
             'newProperties' => ['nullable', 'array'],
@@ -830,7 +821,7 @@ class ProductController extends BaseProductController
                     'title' => $salesChannelData['salesChannels'][$salesChannelId]['title'],
                     'short_description' => $salesChannelData['salesChannels'][$salesChannelId]['short_description'],
                     'long_description' => $salesChannelData['salesChannels'][$salesChannelId]['long_description'],
-                    'price' =>  $salesChannelData['salesChannels'][$salesChannelId]['price']
+                    'price' => $salesChannelData['salesChannels'][$salesChannelId]['price']
                 ]);
                 //update categories
                 if (isset($salesChannelData['salesChannels'][$salesChannelId]['categories'])) {
@@ -963,22 +954,25 @@ class ProductController extends BaseProductController
         }
     }
 
-    protected function createAndLinkProperties($product, $attributes, $workspace){
-        foreach($attributes['newProperties'] as $property){
-            if (!isset($property['options'])) {
-                $property['options'] = [];
+    protected function createAndLinkProperties($product, $attributes, $workspace)
+    {
+        if (isset($attributes['newProperties'])) {
+            foreach ($attributes['newProperties'] as $property) {
+                if (!isset($property['options'])) {
+                    $property['options'] = [];
+                }
+                $values = json_encode(['type' => $property['type'], 'options' => $property['options']]);
+                $newProperty = Property::create([
+                    'name' => $property['name'],
+                    'work_space_id' => $workspace,
+                    'values' => $values
+                ]);
+                ProductProperty::create([
+                    'product_id' => $product->id,
+                    'property_id' => $newProperty->id,
+                    'property_value' => json_encode(['value' => $property['value']])
+                ]);
             }
-            $values = json_encode(['type' => $property['type'], 'options' => $property['options']]);
-            $newProperty = Property::create([
-                'name' => $property['name'],
-                'work_space_id' => $workspace,
-                'values' => $values
-            ]);
-            ProductProperty::create([
-                'product_id' => $product->id,
-                'property_id' => $newProperty->id,
-                'property_value' => json_encode(['value' => $property['value']])
-            ]);
         }
     }
 }

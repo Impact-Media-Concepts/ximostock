@@ -143,7 +143,7 @@ class ProductPolicy
         }
     }
 
-     /**
+    /**
      * Determine whether the user can bulk delete the model.
      */
     public function bulkDelete(User $user, array $product_ids): Response
@@ -153,7 +153,7 @@ class ProductPolicy
             //if some product ids are wrong return bad request
             return Response::denyWithStatus(400);
         }
-        
+
         if ($user->role === 'manager') {
             foreach ($products as $product) {
                 if ($product->work_space_id != $user->work_space_id) {
@@ -168,8 +168,8 @@ class ProductPolicy
             return Response::deny();
         }
     }
-    
-     /**
+
+    /**
      * Determine whether the user can bulk update the model.
      */
     public function bulkUpdate(User $user, array $product_ids): Response
@@ -179,7 +179,7 @@ class ProductPolicy
             //if some product ids are wrong return bad request
             return Response::denyWithStatus(400);
         }
-        
+
         if ($user->role === 'manager') {
             foreach ($products as $product) {
                 if ($product->work_space_id != $user->work_space_id) {
@@ -195,37 +195,37 @@ class ProductPolicy
         }
     }
 
-     /**
+    /**
      * Determine whether the user can bulk link or unlink saleschannels to the model
      */
     public function bulkSaleschannels(User $user, array $product_ids, array $sales_channel_ids): Response
     {
         $products = Product::whereIn('id', $product_ids)->get();
-            $salesChannels = SalesChannel::whereIn('id', $sales_channel_ids)->get();
+        $salesChannels = SalesChannel::whereIn('id', $sales_channel_ids)->get();
 
-            if (Count($product_ids) != Count($products) || Count($salesChannels) != Count($sales_channel_ids)) {
-                //if some product or sales channel ids are wrong return bad request
-                return Response::denyWithStatus(400);
-            }
-            if ($user->role === 'manager') {
-                foreach ($products as $product) {
-                    if ($product->work_space_id != $user->work_space_id) {
-                        //a product was not part of his workspace
-                        return Response::deny();
-                    }
+        if (Count($product_ids) != Count($products) || Count($salesChannels) != Count($sales_channel_ids)) {
+            //if some product or sales channel ids are wrong return bad request
+            return Response::denyWithStatus(400);
+        }
+        if ($user->role === 'manager') {
+            foreach ($products as $product) {
+                if ($product->work_space_id != $user->work_space_id) {
+                    //a product was not part of his workspace
+                    return Response::deny();
                 }
-                foreach ($salesChannels as $salesChannel) {
-                    if ($salesChannel->work_space_id != $user->work_space_id) {
-                        //a saleschannel was not part of his workspace
-                        return Response::deny();
-                    }
-                }
-                //return true if all manager and all products are part of his workspace
-                return Response::allow();
-            } else {
-                //deny if user is neither admin or manager
-                return Response::deny();
             }
+            foreach ($salesChannels as $salesChannel) {
+                if ($salesChannel->work_space_id != $user->work_space_id) {
+                    //a saleschannel was not part of his workspace
+                    return Response::deny();
+                }
+            }
+            //return true if all manager and all products are part of his workspace
+            return Response::allow();
+        } else {
+            //deny if user is neither admin or manager
+            return Response::deny();
+        }
     }
 
     /**
