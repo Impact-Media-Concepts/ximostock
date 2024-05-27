@@ -79,16 +79,16 @@ class DatabaseSeeder extends Seeder
         SalesChannel::factory()->create([
             'work_space_id' => 1,
             'name' => 'XimostockCommerce',
-            'url' => 'http://ximostockcommerce.test',
+            'url' => 'https://ximoshop.dev-imc.com',
             'api_key' => 'ck_cc7e1e85dbe0f56504134ee5caa3a114351e0012',
             'secret' => 'cs_9d52cf66d9fc3d26cf693b912f2d41c1db005020'
         ]);
         SalesChannel::factory()->create([
             'work_space_id' => 1,
-            'name' => 'TestCommerce',
-            'url' => 'http://testcommerce.test',
-            'api_key' => 'ck_d64b84dd557c58239d8e7381ae3a27a5e4cb6e30',
-            'secret' => 'cs_13cedf2d445dd7cec4630dfe2cbde724a0268a83'
+            'name' => 'ximoshop',
+            'url' => 'https://ximoshop.dev-imc.com',
+            'api_key' => 'ck_6307bb7387ba14f2b2440a3d6b4add2be3c28c69',
+            'secret' => 'cs_c6581c4eb86e71728eeee93224214b0d5594c137'
         ]);
         $saleschannels = SalesChannel::factory(4)->create([
             'work_space_id' => 1,
@@ -168,14 +168,14 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // //link location zones
-        // $locations = InventoryLocation::factory(4)->create();
-        // $zones = [];
-        // foreach ($locations as $location) {
-        //     (array_push($zones, LocationZone::factory(3)->create([
-        //         'inventory_location_id' => $location->id
-        //     ])));
-        // }
+        //link location zones
+        $locations = InventoryLocation::factory(4)->create();
+        $zones = [];
+        foreach ($locations as $location) {
+            (array_push($zones, LocationZone::factory(3)->create([
+                'inventory_location_id' => $location->id
+            ])));
+        }
 
         //link stock and photos
         foreach ($products as $product) {
@@ -199,7 +199,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        //link salesChannels
+        // // link salesChannels
         // $productSalesChannels = [];
         // for ($x = 1; $x <= 500; $x++) {
         //     for ($y = 1; $y <= 3; $y++)
@@ -209,13 +209,5 @@ class DatabaseSeeder extends Seeder
         //         ]));
         // }
 
-        // foreach ($productSalesChannels as $sale) {
-        //     Sale::create([
-        //         'product_id' => $sale->product_id,
-        //         'sales_channel_id' =>  $sale->sales_channel_id,
-        //         'price' => fake()->numberBetween(10, 30),
-        //         'stock' => fake()->numberBetween(1, 20)
-        //     ]);
-        // }
     }
 }
