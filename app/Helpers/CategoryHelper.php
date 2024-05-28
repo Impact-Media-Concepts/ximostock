@@ -31,7 +31,7 @@ class CategoryHelper
         $childCategoryIds = [];
 
         if ($category) {
-            foreach ($category->children as $child) {
+            foreach ($category->child_categories as $child) {
                 $childCategoryIds[] = $child->id;
                 $childCategoryIds = array_merge($childCategoryIds, self::getChildCategoryIds($child->id));
             }
