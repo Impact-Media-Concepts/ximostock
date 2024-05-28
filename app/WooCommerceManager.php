@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\CategoryHelper;
 use App\Models\Category;
 use App\Models\CategoryProductSalesChannel;
 use App\Models\CategorySalesChannel;
@@ -93,6 +94,26 @@ class WooCommerceManager
         foreach ($batches as $batch) {
             $data = ['delete' => $batch];
             $woocommerce->post('products/batch', $data);
+        }
+    }
+
+    public function deleteCategoriesFromSaleschannel(array $categoryIds, SalesChannel $salesChannel){
+        $woocommerce = $this->createSalesChannelsClient($salesChannel);
+        $categoryIds = CategoryHelper::getAllCategoryIdsWithChildren($categoryIds);
+        $externalIds = CategoryHelper::getExternalIdsForCategories($categoryIds, $salesChannel->id);
+        $data = ['delete' => $externalIds];
+
+        $woocommerce->post('products/categories/batch', $data);
+    }
+
+    public function deleteCategoriesFromSalesChannels(array $categoryIds){
+        $categoryIds = CategoryHelper::getAllCategoryIdsWithChildren($categoryIds);
+        $externalIdsPerSaleschannel = CategoryHelper::getExternalIdsGroupedBySalesChannel($categoryIds);
+        foreach ($externalIdsPerSaleschannel as $saleschannelId => $externalIds){
+            $data = ['delete'=> $externalIds];
+            $saleschannel = Saleschannel::findOrFail($saleschannelId);
+            $woocommerce = $this->createSalesChannelsClient($saleschannel);
+            $woocommerce->post('products/categories/batch', $data);
         }
     }
 
