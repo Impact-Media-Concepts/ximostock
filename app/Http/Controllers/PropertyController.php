@@ -70,7 +70,10 @@ class PropertyController extends Controller
             'options.*' => ['nullable', 'string'],
             'name' => ['required', 'string']
         ]);
+
+        LogBatch::startBatch();
         $options = [];
+
         if ($property->type === 'multiselect' || $property->type === 'singleselect') {
             foreach ($attributes['options'] as $option) {
                 array_push($options, $option);
@@ -127,7 +130,9 @@ class PropertyController extends Controller
             'name' => $attributes['name'],
             'values' => $values
         ]);
-
+        $wooCommerce = new WooCommerceManager;
+        $wooCommerce->updatePropertyToSaleschannels($property);
+        LogBatch::endBatch();
 
         return redirect()->back();
     }

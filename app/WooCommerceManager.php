@@ -17,7 +17,7 @@ use Automattic\WooCommerce\Client;
 use Illuminate\Support\Facades\Auth;
 
 use Exception;
-use PhpOffice\PhpSpreadsheet\Chart\Properties;
+
 
 
 class WooCommerceManager
@@ -113,7 +113,7 @@ class WooCommerceManager
     {
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
         $externalIds = PropertySalesChannel::whereIn('product_id', $propertyIds)->where('sales_channel_id', $salesChannel->id)->pluck('external_id')->toArray();
-        $data = ['delete'=> $externalIds];
+        $data = ['delete' => $externalIds];
         $woocommerce->post('products/attributes/batch', $data);
     }
 
@@ -124,10 +124,43 @@ class WooCommerceManager
         foreach ($saleschannels as $salesChannel) {
             $woocommerce = $this->createSalesChannelsClient($salesChannel);
             $externalIds = PropertySalesChannel::whereIn('property_id', $propertyIds)->where('sales_channel_id', $salesChannel->id)->get()->pluck('external_id')->toArray();
-            if(Count($externalIds)){
-                $data = ['delete'=> $externalIds];
+            if (Count($externalIds)) {
+                $data = ['delete' => $externalIds];
                 $woocommerce->post('products/attributes/batch', $data);
             }
+        }
+    }
+
+    public function updatePropertyToSaleschannels(Property $property)
+    {
+        $propertySaleschannels = PropertySalesChannel::where('property_id', $property->id)->get();
+        $salesChannels = SalesChannel::whereIn('id', $propertySaleschannels->pluck('sales_channel_id')->toArray())->get();
+        foreach ($propertySaleschannels as $propertySaleschannel) {
+            $salesChannel = $salesChannels->where('id', $propertySaleschannel->sales_channel_id)->first();
+            $woocommerce = $this->createSalesChannelsClient($salesChannel);
+            $externalId = $propertySaleschannel->external_id;
+            $data = 
+            [
+                'name' => $property->name
+            ];
+            $woocommerce->post('products/attributes/'.$externalId, $data);
+        }
+    }
+
+
+    public function updateCategoryToSaleschannels(Category $property)
+    {
+        $categorySaleschannels = CategorySalesChannel::where('category_id', $property->id)->get();
+        $salesChannels = SalesChannel::whereIn('id', $categorySaleschannels->pluck('sales_channel_id')->toArray())->get();
+        foreach ($categorySaleschannels as $categorySaleschannel) {
+            $salesChannel = $salesChannels->where('id', $categorySaleschannel->sales_channel_id)->first();
+            $woocommerce = $this->createSalesChannelsClient($salesChannel);
+            $externalId = $categorySaleschannel->external_id;
+            $data = 
+            [
+                'name' => $property->name
+            ];
+            $woocommerce->post('products/categories/'.$externalId, $data);
         }
     }
 

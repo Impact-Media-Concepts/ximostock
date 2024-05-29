@@ -7,10 +7,13 @@
                 <li>
                     <p>
                         <input name="saleschannels[]" type="checkbox" value="{{$salesChannel->id}}">
-                        {{ $salesChannel->id }}
-                        {{ $salesChannel->name }}
-                        {{ $salesChannel->channel_type }}
+                        <a href="/saleschannels/{{$salesChannel->id}}">
+                            {{ $salesChannel->id }}
+                            {{ $salesChannel->name }}
+                            {{ $salesChannel->channel_type }}
+                        </a>
                     </p>
+
                 </li>
             @endforeach
             <li>
