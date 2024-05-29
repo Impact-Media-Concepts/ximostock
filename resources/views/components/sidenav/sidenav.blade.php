@@ -19,14 +19,12 @@
         ['text' => 'Leveranciers', 'icon' => $app_url . '/images/suppliers-icon.png', 'url' => '/suppliers', 'adminUrl' => $activeWorkspace ? '/suppliers?workspace=' . $activeWorkspace : '', 'id' => '10', 'slug' => 'suppliers'],
         //['text' => 'Gebruikers', 'icon' => $app_url . '/images/users-icon.png', 'url' => '/users', 'adminUrl' => $activeWorkspace ? '/users?workspace=' . $activeWorkspace : '', 'id' => '11', 'slug' => 'users']
     ];
-    if(Auth::user()->role === 'admin') {
-        $sidenavButtons += [
-            ['text' => 'Logboek', 'icon' => $app_url . '/images/logbook-icon.png', 'url' => '/logbook', 'adminUrl' => $activeWorkspace ? '/logbook?workspace=' . $activeWorkspace : '', 'id' => '3', 'slug' => 'logbook'],
-            ['text' => 'Archief', 'icon' => $app_url . '/images/archive-icon.png', 'url' => '/archive', 'adminUrl' => $activeWorkspace ? '/archive?workspace=' . $activeWorkspace : '', 'id' => '6', 'slug' => 'archive'],
-            ['text' => 'Gebruikers', 'icon' => $app_url . '/images/users-icon.png', 'url' => '/users', 'adminUrl' => $activeWorkspace ? '/users?workspace=' . $activeWorkspace : '', 'id' => '11', 'slug' => 'users']
-        ];
+    if(Auth::user()->role === 'admin') { //add extra menu items for admins
+        
+        array_push($sidenavButtons, ['text' => 'Logboek', 'icon' => $app_url . '/images/logbook-icon.png', 'url' => '/activity-log', 'adminUrl' => $activeWorkspace ? '/activity-log?workspace=' . $activeWorkspace : '', 'id' => '3', 'slug' => 'activityLog']);
+        array_push($sidenavButtons, ['text' => 'Archief', 'icon' => $app_url . '/images/archive-icon.png', 'url' => '/archive', 'adminUrl' => $activeWorkspace ? '/archive?workspace=' . $activeWorkspace : '', 'id' => '6', 'slug' => 'archive']);
+        array_push($sidenavButtons, ['text' => 'Gebruikers', 'icon' => $app_url . '/images/users-icon.png', 'url' => '/users', 'adminUrl' => $activeWorkspace ? '/users?workspace=' . $activeWorkspace : '', 'id' => '11', 'slug' => 'users']);       
     }
-
 ?>
 
 <style>
