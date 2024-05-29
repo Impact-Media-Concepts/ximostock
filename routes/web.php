@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InventoryLocationController;
 use App\Http\Controllers\ProductController;
@@ -97,6 +98,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/{user}', [UserController::class, 'show'])->middleware('can:view,user');
     Route::post('/users', [UserController::class, 'store'])->middleware('can:create,App\Models\User');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user');
+    //admins only
+    Route::get('/activity-log', [ActivityLogController::class, 'index']);
 });
 
 //authentication
