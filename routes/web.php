@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
     //properties
     Route::get('/properties', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property');
     Route::get('/properties/create', [PropertyController::class, 'create'])->middleware('can:create,App\Models\Property');
-    Route::get('/properties/archive',[PropertyController::class, 'archive'])->middleware('can:restore,App\Models\Property')->middleware('can:foreceDelete,App\Models\Property');
+    Route::get('/properties/archive',[PropertyController::class, 'archive'])->middleware('can:restore,App\Models\Property')->middleware('can:forceDelete,App\Models\Property');
     Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('can:view,property');
     Route::post('/properties',[PropertyController::class, 'store'])->middleware('can:create,App\Models\Property');
     Route::patch('/properties/{property}', [PropertyController::class, 'update'])->middleware('can:update,property');
@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function () {
     //salesChannels
     Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel');
     Route::get('/saleschannels/create',[SalesChannelController::class, 'create'])->middleware('can:create,App\Models\SalesChannel');
-    Route::get('/saleschannels/archive',[SalesChannelController::class, 'archive'])->middleware('can:restore,App\Models\SalesChannel')->middleware('can:foreceDelete,App\Models\SalesChannel');
+    Route::get('/saleschannels/archive',[SalesChannelController::class, 'archive'])->middleware('can:restore,App\Models\SalesChannel')->middleware('can:forceDelete,App\Models\SalesChannel');
     Route::get('/saleschannels/{salesChannel}', [SalesChannelController::class, 'show'])->middleware('can:view,salesChannel');
     Route::post('/saleschannels', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel');
     Route::patch('/saleschannels/{salesChannel}', [SalesChannelController::class, 'update'])->middleware('can:update,salesChannel');

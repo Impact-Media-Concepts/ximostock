@@ -7,10 +7,12 @@ use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
+use App\WooCommerceManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Facades\LogBatch;
 
 
 class PropertyController extends Controller
@@ -68,7 +70,10 @@ class PropertyController extends Controller
             'options.*' => ['nullable', 'string'],
             'name' => ['required', 'string']
         ]);
+
+        LogBatch::startBatch();
         $options = [];
+
         if ($property->type === 'multiselect' || $property->type === 'singleselect') {
             foreach ($attributes['options'] as $option) {
                 array_push($options, $option);
@@ -125,7 +130,9 @@ class PropertyController extends Controller
             'name' => $attributes['name'],
             'values' => $values
         ]);
-
+        $wooCommerce = new WooCommerceManager;
+        $wooCommerce->updatePropertyToSaleschannels($property);
+        LogBatch::endBatch();
 
         return redirect()->back();
     }
@@ -133,12 +140,15 @@ class PropertyController extends Controller
     public function bulkDelete(Request $request)
     {
         Gate::authorize('bulkDelete', [Property::class, $request['properties']]);
-
+        LogBatch::startBatch();
         $attributes = $request->validate([
             'properties' => ['required', 'array'],
             'properties.*' => ['required', 'numeric', Rule::exists('properties', 'id')]
         ]);
-        SalesChannel::whereIn('id', $attributes['properties'])->delete();
+        $woocommerce = new WooCommerceManager;
+        $woocommerce->deleteProperties($attributes['properties']);
+        Property::whereIn('id', $attributes['properties'])->delete();
+        LogBatch::endBatch();
         return redirect('/properties');
     }
 

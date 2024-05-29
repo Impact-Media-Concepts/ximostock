@@ -137,6 +137,8 @@ class CategoryController extends Controller
             'name' => $attributes['name'],
             'parent_category_id' => $attributes['parent_category_id']
         ]);
+        $wooCommerce = new WooCommerceManager;
+        $wooCommerce->updateCategoryToSaleschannels($category);
         return redirect()->back();
     }
 

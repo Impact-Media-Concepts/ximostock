@@ -103,7 +103,7 @@ class PropertyPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Property $property): Response
+    public function restore(User $user): Response
     {
         return Response::deny();
     }
@@ -111,7 +111,7 @@ class PropertyPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Property $property): Response
+    public function forceDelete(User $user): Response
     {
         return Response::deny();
     }
