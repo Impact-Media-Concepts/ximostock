@@ -32,8 +32,7 @@ abstract class BaseProductController extends Controller
     {
         return [
             'categories' => ['nullable', 'array', new VallidCategoryKeys],
-            'categories.*' => ['required', 'array'],
-            'categories.*'=> ['required', 'numeric']
+            'categories.*' => ['required', 'array','numeric']
         ];
     }
 
