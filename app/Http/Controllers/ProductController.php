@@ -254,6 +254,10 @@ class ProductController extends BaseProductController
                 $product->save();
             }
         }
+        $products = Product::whereIn('id', $validatedData['product_ids'])->get();
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels($products->pluck('id')->toArray());
+
         return redirect()->back();
     }
 

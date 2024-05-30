@@ -21,7 +21,6 @@ class Product extends Model
         ->logOnlyDirty();
     }
 
-
     // haal de varianten van een variabel product op
     public function childProducts()
     {
@@ -120,10 +119,15 @@ class Product extends Model
         return $stock;
     }
 
+    // public function salesChannels()
+    // {
+    //     return $this->belongsToMany(SalesChannel::class, 'product_sales_channel')
+    //         ->using(ProductSalesChannel::class);
+    // }
+
     public function salesChannels()
     {
-        return $this->belongsToMany(SalesChannel::class, 'product_sales_channel')
-            ->using(ProductSalesChannel::class);
+        return $this->belongsToMany(SalesChannel::class, 'product_sales_channel');
     }
 
     //is for online

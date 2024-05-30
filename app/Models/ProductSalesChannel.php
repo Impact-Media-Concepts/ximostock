@@ -32,7 +32,7 @@ class ProductSalesChannel extends  Model
 
     public function properties()
     {
-        return $this->belongsToMany(property::class)
+        return $this->belongsToMany(Property::class)
             ->using(ProductSalesChannelProperty::class);
     }
 }

@@ -139,14 +139,13 @@ class WooCommerceManager
             $salesChannel = $salesChannels->where('id', $propertySaleschannel->sales_channel_id)->first();
             $woocommerce = $this->createSalesChannelsClient($salesChannel);
             $externalId = $propertySaleschannel->external_id;
-            $data = 
-            [
-                'name' => $property->name
-            ];
-            $woocommerce->post('products/attributes/'.$externalId, $data);
+            $data =
+                [
+                    'name' => $property->name
+                ];
+            $woocommerce->post('products/attributes/' . $externalId, $data);
         }
     }
-
 
     public function updateCategoryToSaleschannels(Category $property)
     {
@@ -156,11 +155,11 @@ class WooCommerceManager
             $salesChannel = $salesChannels->where('id', $categorySaleschannel->sales_channel_id)->first();
             $woocommerce = $this->createSalesChannelsClient($salesChannel);
             $externalId = $categorySaleschannel->external_id;
-            $data = 
-            [
-                'name' => $property->name
-            ];
-            $woocommerce->post('products/categories/'.$externalId, $data);
+            $data =
+                [
+                    'name' => $property->name
+                ];
+            $woocommerce->post('products/categories/' . $externalId, $data);
         }
     }
 
@@ -176,6 +175,23 @@ class WooCommerceManager
         }
     }
 
+    public function uploadOrUpdateProductsSalesChannels(array $productIds)
+    {
+        $products = Product::with('salesChannels')->whereIn('id', $productIds)->get();
+        $salesChannelsProducts = [];
+
+        foreach ($products as $product) {
+            foreach ($product->salesChannels as $salesChannel) {
+                $salesChannelsProducts[$salesChannel->id][] = $product->id;
+            }
+        }
+
+        foreach($salesChannelsProducts as $salesChannelId => $productIds) {
+            $salesChannel = SalesChannel::findOrFail($salesChannelId);
+            $products = Product::whereIn('id', $productIds)->get();
+            $this->uploadOrUpdateProductsSalesChannel($products,$salesChannel);
+        }
+    }
 
     public function uploadOrUpdateProductsSalesChannel($products, SalesChannel $salesChannel) //big upload fucntion
     {
@@ -265,7 +281,7 @@ class WooCommerceManager
                     if (count($failedToUpdate)) {
                         //remove the id from the products so i can create them instead of updating
                         $failedToUpdate = array_map(function ($product) {
-                            unset ($product['id']);
+                            unset($product['id']);
                             return $product;
                         }, $failedToUpdate);
                         //cut the data into chunks for the api to handle (limit 100)
