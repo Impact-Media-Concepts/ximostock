@@ -29,6 +29,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -36,6 +37,8 @@ class ProductController extends BaseProductController
 {
     public function index(Request $request)
     {
+        Log::debug($request);
+
         $perPage = $request->input('perPage', 20);
         if (Auth::user()->role === 'admin') {
             $request->validate([
@@ -368,6 +371,9 @@ class ProductController extends BaseProductController
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => true]);
 
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
+
         return redirect()->back();
     }
 
@@ -382,6 +388,8 @@ class ProductController extends BaseProductController
         ]);
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => false]);
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -397,6 +405,8 @@ class ProductController extends BaseProductController
         ]);
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => true]);
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -412,6 +422,8 @@ class ProductController extends BaseProductController
         ]);
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => false]);
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
     }
