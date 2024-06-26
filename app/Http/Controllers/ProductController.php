@@ -732,7 +732,7 @@ class ProductController extends BaseProductController
             'salesChannels.*.properties' => ['nullable', 'array', new ValidPropertyKeys, new ValidPropertyOptions],
             'salesChannels.*.properties.*' => ['required'],
             'salesChannelIds' => ['array', 'nullable'],
-            'salesChannelIds' => ['nullable', Rule::exists('sales_channels', 'id')]
+            'salesChannelIds.*' => ['required', Rule::exists('sales_channels', 'id')]
         ]);
         if ($request['salesChannels'] == null) {
             $attributes['salesChannels'] = [];

@@ -79,7 +79,7 @@ class DatabaseSeeder extends Seeder
         SalesChannel::factory()->create([
             'work_space_id' => 1,
             'name' => 'XimostockCommerce',
-            'url' => 'https://ximoshop.dev-imc.com',
+            'url' => 'https://test.com',
             'api_key' => 'ck_cc7e1e85dbe0f56504134ee5caa3a114351e0012',
             'secret' => 'cs_9d52cf66d9fc3d26cf693b912f2d41c1db005020'
         ]);
