@@ -1,15 +1,24 @@
-<script setup>
+<script setup lang="jsx">
 import { ref } from 'vue'
+import '../../scss/IncrementCounterMinus.scss'
 
 const counter = ref(0)
-</script>
- 
-<template>
+const incrementCounterMinus = () => {
+  counter.value--
+}
+
+const render = () => (
   <button
     type="button"
-    @click="counter--"
-    class="IncrementCounter"
+    onClick={incrementCounterMinus}
+    class="increment-counter-minus"
   >
-    Counter is: {{ counter }}
+    Counter is: {counter.value}
   </button>
+)
+
+</script>
+
+<template>
+  <render />
 </template>
