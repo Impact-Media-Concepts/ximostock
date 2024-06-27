@@ -525,6 +525,9 @@ class WooCommerceManager
             'sku' => isset($productSalesChannel->sku) ? $productSalesChannel->sku : $product->sku,
             'categories' => $categories,
             'attributes' => $properties,
+            'manage_stock' => $product->communicate_stock,
+            'stock_quantity' => $product->stock,
+            'backorders' => $product->backorders ? 'yes' : 'no',
             'images' => $this->prepareImageData($product) != [] ? $this->prepareImageData($product) : null,
             'meta_data' => [
                 [
@@ -623,4 +626,16 @@ class WooCommerceManager
         return $photoData;
     }
     #endregion
+
+    public function updateProductStock(Product $product){
+        $saleschannels = $product->salesChannels;
+        foreach($saleschannels as $saleschannel){
+            $woocommerce = $this->createSalesChannelsClient($saleschannel);
+            $externalId = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $saleschannel->id)->get()->first()->external_id;
+            $data = [
+                'stock_quantity' => $product->stock
+            ];
+            $woocommerce->put('products/'. $externalId , $data);
+        }
+    }
 }

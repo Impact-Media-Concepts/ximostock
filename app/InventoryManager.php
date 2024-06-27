@@ -59,6 +59,8 @@ class InventoryManager
                 $sale->status = 'error';
                 $sale->update();
             }
+            $woocommerce = new WooCommerceManager;
+            $woocommerce->updateProductStock($product);
         }
         //update stock on the saleschannels(todo)
     }

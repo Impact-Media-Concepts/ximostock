@@ -145,15 +145,9 @@ class Product extends Model
     //calulate the total sales of this product
     public function getTotalSalesAttribute(): int
     {
-        $totalSales = 0;
-
-        // Loop through each sale related to the product
-        foreach ($this->sales as $sale) {
-            // Add the stock of each sale to the total sales count
-            $totalSales += $sale->stock;
-        }
-
-        return $totalSales;
+        return $this->sales()
+                    ->whereNotIn('status', ['error', 'in_progress'])
+                    ->sum('quantity');
     }
 
 

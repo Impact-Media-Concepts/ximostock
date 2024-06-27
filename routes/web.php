@@ -10,8 +10,11 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WooCommerceWebhookController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +118,8 @@ Route::middleware('auth')->group(function () {
     });
     
     Route::get('/activity-log', [ActivityLogController::class, 'index']);
+
+    Route::get('/notification', [NotificationController::class, 'index']);
 });
 
 //authentication
