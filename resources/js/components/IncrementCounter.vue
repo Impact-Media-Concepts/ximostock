@@ -1,38 +1,39 @@
-<script setup lang="jsx">
+<script setup>
 import { ref } from 'vue'
 import { defineProps } from 'vue'
 import '../../scss/IncrementCounter.scss'
 
 // Accept the prop
 const props = defineProps({
-  content: Array
+  content: {
+    type: Array,
+    required: true
+  }
 })
-console.log("lorem");
-console.log(props);
 
 const counter = ref(0)
 const incrementCounterAdd = () => {
   counter.value++
 }
-
-const render = () => (
-  <div>
-    <button
-      type="button"
-      onClick={incrementCounterAdd}
-      class="increment-counter"
-    >
-      Counter is: {counter.value}
-    </button>
-    <ul>
-      {props.content.map((item, index) => (
-        <li key={index}>{item}</li>
-      ))}
-    </ul>
-  </div>
-)
 </script>
 
 <template>
-  <render />
+  <div>
+    <button
+      type="button"
+      @click="incrementCounterAdd"
+      class="increment-counter"
+    >
+      Counter is: {{ counter }}
+    </button>
+    <ul>
+      <li v-for="(value, key) in props.content" :key="key">{{ key }}: {{ value }}</li>
+    </ul>
+  </div>
 </template>
+
+<style scoped>
+.increment-counter {
+  /* Your styles here */
+}
+</style>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <increment-counter :content="$lorem"></increment-counter>
+    <increment-counter :content="{{ json_encode($lorem) }}"></increment-counter>
 @endsection
