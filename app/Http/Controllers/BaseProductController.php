@@ -32,8 +32,7 @@ abstract class BaseProductController extends Controller
     {
         return [
             'categories' => ['nullable', 'array', new VallidCategoryKeys],
-            'categories.*' => ['required', 'array'],
-            'categories.*'=> ['required', 'numeric']
+            'categories.*' => ['required', 'numeric']
         ];
     }
 
@@ -61,45 +60,51 @@ abstract class BaseProductController extends Controller
             'properties.*' => ['string', 'required']
         ];
     }
-    
+
     protected function linkCategoriesToProduct($product, $attributes)
     {
-        // Link all other categories and their parents
-        foreach ($attributes['categories'] as $categoryid => $primary) {
-            CategoryProduct::create([
-                'category_id' => $categoryid,
-                'product_id' => $product->id,
-                'primary' => $primary
-            ]);
+        if (isset($attributes['categories'])) {
+            foreach ($attributes['categories'] as $categoryid => $primary) {
+                CategoryProduct::create([
+                    'category_id' => $categoryid,
+                    'product_id' => $product->id,
+                    'primary' => $primary
+                ]);
+            }
         }
     }
-    
+
 
     protected function uploadAndLinkPhotosToProduct($product, $request)
     {
-        $path = $request->file('primaryPhoto')->store('public/photos');
-        $primaryPhoto = Photo::create([
-            'url' => str_replace('public', env('APP_URL','http://localhost:8000').'/storage', $path)
-        ]);
-
-        PhotoProduct::create([
-            'photo_id' => $primaryPhoto->id,
-            'product_id' => $product->id,
-            'primary' => true
-        ]);
-
-        foreach ($request->file('photos') as $photoFile) {
-            $photoPath = $photoFile->store('public/photos');
-            $photo = Photo::create([
-                'url' => str_replace('public', env('APP_URL','http://localhost:8000').'/storage', $photoPath)
+        if($request->file('primaryPhoto')){
+            $path = $request->file('primaryPhoto')->store('public/photos');
+            $primaryPhoto = Photo::create([
+                'url' => str_replace('public', env('APP_URL', 'http://localhost:8000') . '/storage', $path)
             ]);
-
+    
             PhotoProduct::create([
-                'photo_id' => $photo->id,
+                'photo_id' => $primaryPhoto->id,
                 'product_id' => $product->id,
-                'primary' => false
+                'primary' => true
             ]);
         }
+        
+        if($request->file('photos')){
+            foreach ($request->file('photos') as $photoFile) {
+                $photoPath = $photoFile->store('public/photos');
+                $photo = Photo::create([
+                    'url' => str_replace('public', env('APP_URL', 'http://localhost:8000') . '/storage', $photoPath)
+                ]);
+    
+                PhotoProduct::create([
+                    'photo_id' => $photo->id,
+                    'product_id' => $product->id,
+                    'primary' => false
+                ]);
+            }
+        }
+        
     }
 
     protected function linkPropertiesToProduct($product, $request)
@@ -112,7 +117,7 @@ abstract class BaseProductController extends Controller
             ]);
         }
     }
-    
+
     protected function linkSalesChannelsToProduct($product, $attributes)
     {
         foreach ($attributes['salesChannels'] as $salesChannel) {

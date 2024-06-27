@@ -29,6 +29,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -36,6 +37,8 @@ class ProductController extends BaseProductController
 {
     public function index(Request $request)
     {
+        Log::debug($request);
+
         $perPage = $request->input('perPage', 20);
         if (Auth::user()->role === 'admin') {
             $request->validate([
@@ -254,6 +257,10 @@ class ProductController extends BaseProductController
                 $product->save();
             }
         }
+        $products = Product::whereIn('id', $validatedData['product_ids'])->get();
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels($products->pluck('id')->toArray());
+
         return redirect()->back();
     }
 
@@ -364,6 +371,9 @@ class ProductController extends BaseProductController
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => true]);
 
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
+
         return redirect()->back();
     }
 
@@ -378,6 +388,8 @@ class ProductController extends BaseProductController
         ]);
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => false]);
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -393,6 +405,8 @@ class ProductController extends BaseProductController
         ]);
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => true]);
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -408,6 +422,8 @@ class ProductController extends BaseProductController
         ]);
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => false]);
+        $woocommerce = new WooCommerceManager();
+        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -434,7 +450,6 @@ class ProductController extends BaseProductController
         if (Count($saleschannelAttributes['salesChannels']) > 0) {
             $forOnline = true;
         }
-
         $validationRules = $this->validateProductAttributesUpdate($forOnline, $product->id);
         $validationRules += $this->validatePropertyAttributes();
         $validationRules += $this->validateCategoryUpdate();
@@ -515,7 +530,6 @@ class ProductController extends BaseProductController
         $validationRules += $this->validateNewProperiesAttributes();
         $attributes = $request->validate($validationRules);
         #endregion
-
         //create product and links
         $product = $this->createProduct($attributes);
         $this->linkCategoriesToProduct($product, $attributes);
@@ -605,25 +619,27 @@ class ProductController extends BaseProductController
     {
         return Product::create([
             'work_space_id' => Auth::user()->work_space_id,
-            'sku' => $attributes['sku'],
-            'ean' => $attributes['ean'],
-            'title' => $attributes['title'],
-            'price' => $attributes['price'],
-            'long_description' => $attributes['long_description'],
-            'short_description' => $attributes['short_description'],
-            'backorders' => $attributes['backorders'],
-            'communicate_stock' => $attributes['communicate_stock']
+            'sku' => isset($attributes['sku']) ? $attributes['sku'] : null ,
+            'ean' => isset($attributes['ean']) ? $attributes['ean'] : null,
+            'title' => isset($attributes['title']) ? $attributes['title'] : null,
+            'price' => isset($attributes['price']) ? $attributes['price'] : null,
+            'long_description' => isset($attributes['long_description']) ? $attributes['long_description'] : null,
+            'short_description' =>isset($attributes['short_description']) ? $attributes['short_description'] : null,
+            'backorders' => isset($attributes['backorders']) ? $attributes['backorders'] : null,
+            'communicate_stock' => isset($attributes['communicate_stock']) ? $attributes['communicate_stock'] : null
         ]);
     }
 
     protected function createInventories($product, $request)
     {
-        foreach ($request->input('location_zones') as $location_zone_id => $stock) {
-            Inventory::create([
-                'product_id' => $product->id,
-                'location_zone_id' => $location_zone_id,
-                'stock' => $stock
-            ]);
+        if($request->input('location_zones')){
+            foreach ($request->input('location_zones') as $location_zone_id => $stock) {
+                Inventory::create([
+                    'product_id' => $product->id,
+                    'location_zone_id' => $location_zone_id,
+                    'stock' => $stock
+                ]);
+            }
         }
     }
 
@@ -716,7 +732,7 @@ class ProductController extends BaseProductController
             'salesChannels.*.properties' => ['nullable', 'array', new ValidPropertyKeys, new ValidPropertyOptions],
             'salesChannels.*.properties.*' => ['required'],
             'salesChannelIds' => ['array', 'nullable'],
-            'salesChannelIds' => ['nullable', Rule::exists('sales_channels', 'id')]
+            'salesChannelIds.*' => ['required', Rule::exists('sales_channels', 'id')]
         ]);
         if ($request['salesChannels'] == null) {
             $attributes['salesChannels'] = [];
@@ -945,12 +961,14 @@ class ProductController extends BaseProductController
 
     protected function linkPropertiesToProduct($product, $attributes)
     {
-        foreach ($attributes['properties'] as $propertyId => $propertyValue) {
-            ProductProperty::create([
-                'product_id' => $product->id,
-                'property_id' => $propertyId,
-                'property_value' => json_encode(['value' => $propertyValue])
-            ]);
+        if(isset($attributes['properties'])){  
+            foreach ($attributes['properties'] as $propertyId => $propertyValue) {
+                ProductProperty::create([
+                    'product_id' => $product->id,
+                    'property_id' => $propertyId,
+                    'property_value' => json_encode(['value' => $propertyValue])
+                ]);
+            }
         }
     }
 
