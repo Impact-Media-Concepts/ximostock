@@ -1,0 +1,73 @@
+@import "./globals/__mixins";
+@import "./globals/__variables";
+
+#navbar {
+    position: relative;
+    display: flex;
+    width: 100%;
+    padding: 12.5px 15px;
+    background-color: $light;
+    z-index: 1;
+
+    @include box-shadow;
+
+    .wrapper {
+        justify-content: space-between;
+
+        .logo-container {
+            width: 100%;
+            max-width: 228px;
+
+            .logo-link {
+                display: flex;
+
+                .logo {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+        }
+
+        .options {
+            display: flex;
+            gap: 13px;
+
+            .button-primary {
+                @include button-primary;
+            }
+
+            .button {
+                @include button;
+            }
+
+            >div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                &:not(:last-child) {
+                    padding-right: 13px;
+                    border-right: 1px solid #DBDBDB;
+                }
+            }
+
+            .user-options {
+                gap: 14px;
+
+                .profile-picture {
+                    width: 55px;
+                    height: 55px;
+                    border-radius: 100%;
+                    padding: 10px;
+                    object-fit: cover;
+                    object-position: center;
+                    border: 1px solid $primary;
+                }
+
+                select {
+                    @include select;
+                }
+            }
+        }
+    }
+}

@@ -76,10 +76,7 @@ class ProductController extends BaseProductController
         $properties = $properties->get();
 
         $results = [
-            'lorem' => [
-                'ipsum' => 'dolor',
-                'sit' => 'amet'
-            ],
+            'lorem' => "Ipsum",
             'products' => $products,
             'categories' => $categories,
             'properties' => $properties,

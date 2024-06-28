@@ -1,12 +1,23 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-l0sNRNKZ.js",
-    "name": "app",
+    "file": "assets/app-BW9iuhWh.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/font/Inter-Bold.ttf": {
+    "file": "assets/Inter-Bold-zdiomvYZ.ttf",
+    "src": "resources/font/Inter-Bold.ttf"
+  },
+  "resources/font/Inter-Regular.ttf": {
+    "file": "assets/Inter-Regular-DYjygwQm.ttf",
+    "src": "resources/font/Inter-Regular.ttf"
+  },
+  "resources/font/Inter-Thin.ttf": {
+    "file": "assets/Inter-Thin-BinVesNM.ttf",
+    "src": "resources/font/Inter-Thin.ttf"
+  },
   "resources/js/app.js": {
-    "file": "assets/app-BY-knj6Q.js",
+    "file": "assets/app-DzMVuXer.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
