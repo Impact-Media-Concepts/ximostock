@@ -7,9 +7,23 @@
         ],
         'buttons' => [
             'add' => [
-                'image' => asset('/images/grid-icon.svg'),
+                'image' => asset('/images/plus-solid.svg'),
                 'text' => "Nieuwe toevoegen",
                 'href' => secure_url('/products/create'),
+                'options' => [
+                    'products' => [
+                        'text' => "Product",
+                        'href' => secure_url('/products/create'),
+                    ],
+                    'category' => [
+                        'text' => "Categorie",
+                        'href' => secure_url('/category/create'),
+                    ],
+                    'properties' => [
+                        'text' => "Eigenschappen",
+                        'href' => secure_url('/property/create'),
+                    ],
+                ]
             ],
             'workspace' => [
                 'image' => asset('/images/grid-icon.svg'),
@@ -18,11 +32,24 @@
             ]
         ],
         'select' => [
-            'image' => asset('/images/default-profile-picture.svg'),
+            'image' => asset('/images/user.svg'),
+            'arrow' => asset('/images/chevron-down-dark.svg'),
             'options' => [
-                'option1' => "Mathijs",
-                'option2' => "Luuk",
-                'option3' => "Suus",
+                'option1' => [
+                    'naam' => 'Acount',
+                    'icon' => asset('/images/user-grey.svg'),
+                    'href' => secure_url('/acount'),
+                ],
+                'option2' => [
+                    'naam' => 'Instellingen',
+                    'icon' => asset('/images/settings-grey.svg'),
+                    'href' => secure_url('/settings'),
+                ],
+                'option3' => [
+                    'naam' => 'Uitloggen',
+                    'icon' => asset('/images/exit-grey.svg'),
+                    'href' => secure_url('/uitloggen'),
+                ],
             ],
         ]
     ];

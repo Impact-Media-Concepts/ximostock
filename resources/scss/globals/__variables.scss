@@ -5,7 +5,13 @@ $light: #FFFFFF;
 $alert: #FD9827;
 $danger: #CA0713;
 
-$border: #717171;
+$border-primary: #3DABD5;
+$border-dark: #717171;
+$border-light: #FFFFFF;
 
 $text: #717171;
-$text-light: #FFFFFF
+$text-light: #FFFFFF;
+
+// hover colors
+$hover-primary: rgb(57, 153, 190);
+$hover-light: rgb(240, 240, 240);
