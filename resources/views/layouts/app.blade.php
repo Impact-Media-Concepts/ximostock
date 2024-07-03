@@ -14,6 +14,16 @@
                     'products' => [
                         'text' => "Product",
                         'href' => secure_url('/products/create'),
+                        'sub-options' => [
+                            'simple' => [
+                                'text' => "Eenvoudig",
+                                'href' => secure_url('/products/create'),
+                            ],
+                            'variable' => [
+                                'text' => "Variabel",
+                                'href' => secure_url('/products/create'),
+                            ],
+                        ],
                     ],
                     'category' => [
                         'text' => "Categorie",
@@ -139,7 +149,10 @@
         
         <div id="content">
             <Sidebar :items='@json($sidebarItems)'></Sidebar>
-            @yield('content')
+            <main>
+                {{-- Content Section --}}
+                @yield('content')
+            </main>
         </div>
     </div>
     @vite('resources/js/app.js')

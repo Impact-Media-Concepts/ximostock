@@ -56,7 +56,11 @@
                 }
                 .select-options {
                     @include select-options($primary, $text-light, $hover-primary);
-
+                                            
+                    .option-container:hover .sub-options {
+                        display: block;
+                    }
+                    
                     img.icon {
                         width: 20px;
                         height: 20px;
@@ -115,7 +119,7 @@
 
                     .select-options {
                         @include select-options($light, $text, $hover-light);
-                        
+
                         img.icon {
                             width: 20px;
                             height: 20px;
@@ -131,7 +135,7 @@
             }
 
             .active {
-                display: flex !important;
+                display: block !important;
             }
         }
         

@@ -14,6 +14,12 @@ const handleClick = (classname) => (event) => {
   event.stopPropagation();
   const selectOptions = document.querySelector(classname);
   selectOptions.classList.toggle('active');
+  
+  if (selectOptions.classList.contains('active')) {
+    window.addEventListener('click', () => {
+      selectOptions.classList.remove('active');
+    });
+  }
 };
 
 // Render function using JSX to create the component's template
@@ -38,13 +44,25 @@ const render = () => {
               {props.items.buttons.add.text}
             </div>
             <div class="add select-options">
-              {Object.values(props.items.buttons.add.options).map((option, index) => (
-                <a href={option.href} key={index} class={`option${index + 1}`} >
-                  <img class="icon" src={props.items.buttons.add.image} alt="Plus icon" />
-                  <span>{option.text}</span>
-                </a>
-              ))}
-            </div>
+                {Object.values(props.items.buttons.add.options).map((option, index) => (
+                  <div class="option-container" key={index}>
+                    <a href={option.href} class={`option${index + 1}`} >
+                      <img class="icon" src={props.items.buttons.add.image} alt="Plus icon" />
+                      <span>{option.text}</span>
+                    </a>
+                    {option['sub-options'] && (
+                      <div class="sub-options">
+                        {Object.values(option['sub-options']).map((subOption, subIndex) => (
+                          <a href={subOption.href} key={subIndex} class={`sub-option${subIndex + 1}`}>
+                            <img class="icon" src={props.items.buttons.add.image} alt="Plus icon" />
+                            <span>{subOption.text}</span>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
           </div>
           <div class="workspaces">
             <a href={props.items.buttons.workspace.href} class="button">

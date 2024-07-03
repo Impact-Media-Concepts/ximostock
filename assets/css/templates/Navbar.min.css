@@ -65,25 +65,40 @@
 #navbar .wrapper .options .add .select-options {
   display: none;
   position: absolute;
-  flex-direction: column;
   top: 115%;
   right: 0;
   border-radius: 10px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1019607843);
   border: 1px solid #F0F0F0;
   background-color: #3DABD5;
-  overflow: hidden;
   z-index: 1;
 }
-#navbar .wrapper .options .add .select-options > a {
+#navbar .wrapper .options .add .select-options a {
   display: flex;
   gap: 10px;
   padding: 12px 40px 12px 20px;
   color: #FFFFFF;
   text-decoration: none;
 }
-#navbar .wrapper .options .add .select-options > a:hover {
+#navbar .wrapper .options .add .select-options a:hover {
   background-color: rgb(57, 153, 190);
+}
+#navbar .wrapper .options .add .select-options .sub-options {
+  display: none;
+  position: absolute;
+  color: #FFFFFF;
+  background-color: #3DABD5;
+  border-radius: 10px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1019607843);
+  border: 1px solid #F0F0F0;
+  top: 0;
+  right: 100%;
+}
+.option-container:hover #navbar .wrapper .options .add .select-options {
+  display: block;
+}
+#navbar .wrapper .options .add .select-options .option-container:hover .sub-options {
+  display: block;
 }
 #navbar .wrapper .options .add .select-options img.icon {
   width: 20px;
@@ -161,25 +176,37 @@
 #navbar .wrapper .options .user-options .custom-selectbox .select-options {
   display: none;
   position: absolute;
-  flex-direction: column;
   top: 115%;
   right: 0;
   border-radius: 10px;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1019607843);
   border: 1px solid #F0F0F0;
   background-color: #FFFFFF;
-  overflow: hidden;
   z-index: 1;
 }
-#navbar .wrapper .options .user-options .custom-selectbox .select-options > a {
+#navbar .wrapper .options .user-options .custom-selectbox .select-options a {
   display: flex;
   gap: 10px;
   padding: 12px 40px 12px 20px;
   color: #717171;
   text-decoration: none;
 }
-#navbar .wrapper .options .user-options .custom-selectbox .select-options > a:hover {
+#navbar .wrapper .options .user-options .custom-selectbox .select-options a:hover {
   background-color: rgb(240, 240, 240);
+}
+#navbar .wrapper .options .user-options .custom-selectbox .select-options .sub-options {
+  display: none;
+  position: absolute;
+  color: #717171;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1019607843);
+  border: 1px solid #F0F0F0;
+  top: 0;
+  right: 100%;
+}
+.option-container:hover #navbar .wrapper .options .user-options .custom-selectbox .select-options {
+  display: block;
 }
 #navbar .wrapper .options .user-options .custom-selectbox .select-options img.icon {
   width: 20px;
@@ -189,5 +216,5 @@
   outline: green solid 3px;
 }
 #navbar .wrapper .options .active {
-  display: flex !important;
+  display: block !important;
 }/*# sourceMappingURL=Navbar.min.css.map */

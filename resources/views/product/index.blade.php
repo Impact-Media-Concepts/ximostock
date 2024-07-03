@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <increment-counter :content="{{ json_encode($lorem) }}"></increment-counter>
+    <Products :items=''> </Products>
+    {{-- <div class="product contiainer">
+        <h1>products</h1>
+        <p>Welkom op de producten pagina.</p>
+    </div> --}}
 @endsection
