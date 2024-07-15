@@ -1,6 +1,7 @@
 @import "./globals/__mixins";
 @import "./globals/__variables";
 
+
 @font-face {
     font-family: 'Inter';
     src: url('../font/Inter-Bold.ttf') format('truetype');
@@ -32,7 +33,7 @@ body {
     max-height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: $secondary;
+    background-color: $primary-darken;
     font-size: 16px;
     line-height: 20px;
     color: $text;
@@ -42,6 +43,8 @@ body {
 body {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
 }
 
@@ -50,7 +53,7 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding: 15px 44px;
+    padding: 0 44px;
     width: 100%;
 
     >.wrapper {
@@ -58,6 +61,7 @@ body {
         flex-wrap: wrap;
         align-items: center;
         width: 100%;
+        max-width: 618px;
     }
 }
 

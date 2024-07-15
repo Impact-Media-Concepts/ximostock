@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <increment-counter-minus></increment-counter-minus>
+    <main-product-info :product='@json($product)'></main-product-info>
 @endsection

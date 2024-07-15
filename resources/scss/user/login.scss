@@ -1,0 +1,108 @@
+@import "../globals/_mixins";
+@import "../globals/__variables";
+
+#login-form .login-form-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 55px 60px 27px 60px;
+    border-radius: 15px;
+    background-color: $light;
+
+    .logo {
+        width: 100%;
+        max-width: 275px;
+        height: auto;
+    }
+
+    .title {
+        margin-top: 40px;
+        font-size: 36px;
+        line-height: 50px;
+        color: $text;
+        margin-block-start: 40px;
+        margin-block-end: 0;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 28px;
+        color: $text;
+        margin-block-start: 12px;
+        margin-block-end: 0;
+    }
+
+    .email,
+    .password {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+
+        &:not(.email) {
+            margin-top: 11px;
+        }
+
+        &:not(.password) {
+            margin-top: 21px;
+        }
+
+        label {
+            font-size: 14px;
+            line-height: 17px;
+            color: $text;
+            font-weight: 700;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 19px 20px;
+            border: 1px solid #D3D3D3;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 17px;
+            color: $text;
+        }
+    }
+
+    .submit {
+        display: block;
+        width: 100%;
+        margin-top: 21px;
+        padding: 16px;
+        border: $primary-darken;
+        background-color: $primary-darken;
+        color: $light;
+        border-radius: 5px;
+        font-size: 18px;
+        line-height: 26px;
+        font-weight: 700;
+    }
+
+    .forgot-password {
+        display: block;
+        width: 100%;
+        margin-top: 32px;
+        text-align: center;
+        font-size: 16px;
+        line-height: 26px;
+        color: $text;
+        text-decoration: underline;
+    }
+
+}
+
+@media screen and (max-width: 767px) {
+
+    #login-form .login-form-content {
+        padding: 27px 30px 27px 30px;
+
+        .title {
+            margin-block-start: 20px;
+        }
+    }
+
+}

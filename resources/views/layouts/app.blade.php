@@ -112,7 +112,9 @@
         
         <div id="content">
             <Sidebar :items='@json($sidebarItems)'></Sidebar>
-            @yield('content')
+            <div id="main-content">
+                @yield('content')
+            </div>
         </div>
     </div>
     @vite('resources/js/app.js')
