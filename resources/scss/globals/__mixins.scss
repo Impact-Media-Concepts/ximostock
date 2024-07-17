@@ -25,7 +25,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 143px;
     padding: 13px 20px 11px 20px;
     border: 1px solid $border-dark;
     border-radius: 5px;
@@ -38,6 +37,8 @@
     -moz-appearance: none;
     appearance: none;
     cursor: pointer;
+    white-space: nowrap;
+    gap: 10px;
 }
 
 @mixin select-options($background-color, $text-color, $hover-color) {

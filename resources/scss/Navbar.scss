@@ -62,8 +62,13 @@
                     }
                     
                     img.icon {
-                        width: 20px;
-                        height: 20px;
+                        width: 21px;
+                        height: 21px;
+                    }
+                    span {
+                        font-size: 14px;
+                        line-height: 17px;
+                        color: $text;
                     }
                 }
                 
@@ -113,18 +118,30 @@
 
                         span#username {
                             overflow: hidden;
-                            max-width: 105px;
+                        }
+                        .arrow {
+                            width: 13px;
+                            height: auto
                         }
                     }
 
                     .select-options {
                         @include select-options($light, $text, $hover-light);
+                        
+                        font-size: 14px;
+                        line-height: 17px;
+                        color: $text;
+                        
 
                         img.icon {
-                            width: 20px;
-                            height: 20px;
+                            width: 21px;
+                            height: 21px;
                         }
-
+                        span {
+                            font-size: 14px;
+                            line-height: 17px;
+                            color: $text;
+                        }
                         &:focus {
                             outline: green solid 3px;
                         }

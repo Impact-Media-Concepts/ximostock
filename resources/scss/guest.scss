@@ -27,6 +27,11 @@
     box-sizing: border-box;
 }
 
+::selection {
+    background-color: $primary;
+    color: $text-light;
+}
+
 html,
 body {
     min-height: 100vh;
@@ -62,6 +67,16 @@ body {
         align-items: center;
         width: 100%;
         max-width: 618px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 55px 60px 27px 60px;
+        border-radius: 15px;
+        background-color: $light;
     }
 }
 

@@ -26,6 +26,11 @@
     box-sizing: border-box;
 }
 
+::selection {
+    background-color: $primary;
+    color: $text-light;
+}
+
 html,
 body {
     min-height: 100vh;

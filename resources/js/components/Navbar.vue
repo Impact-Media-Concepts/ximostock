@@ -7,6 +7,10 @@ const props = defineProps({
   items: {
     type: [Array, Object],
     default: () => []
+  },
+  user: {
+    type: Object,
+    default: () => {}
   }
 });
 
@@ -24,7 +28,7 @@ const handleClick = (classname) => (event) => {
 
 // Render function using JSX to create the component's template
 const render = () => {
-  // const NavbarContent = Array.isArray(props.items) ? props.items : Object.entries(props.items);
+  const NavbarContent = Array.isArray(props.items) ? props.items : Object.entries(props.items);
 
   return (
     <div id="navbar" class="container">
@@ -43,26 +47,26 @@ const render = () => {
               <img src={props.items.buttons.add.image} alt="Plus-icon" class="icon"/>
               {props.items.buttons.add.text}
             </div>
-            <div class="add select-options">
-                {Object.values(props.items.buttons.add.options).map((option, index) => (
-                  <div class="option-container" key={index}>
-                    <a href={option.href} class={`option${index + 1}`} >
-                      <img class="icon" src={props.items.buttons.add.image} alt="Plus icon" />
-                      <span>{option.text}</span>
-                    </a>
-                    {option['sub-options'] && (
-                      <div class="sub-options">
-                        {Object.values(option['sub-options']).map((subOption, subIndex) => (
-                          <a href={subOption.href} key={subIndex} class={`sub-option${subIndex + 1}`}>
-                            <img class="icon" src={props.items.buttons.add.image} alt="Plus icon" />
-                            <span>{subOption.text}</span>
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+            <div className="add select-options">
+              {Object.values(props.items.buttons).map((option, index) => (
+                <div className="option-container" key={index}>
+                  <a href={option.href} className={`option${index + 1}`}>
+                    <img className="icon" src={option.image} alt="Plus icon" />
+                    <span>{option.text}</span>
+                  </a>
+                  {option['sub-options'] && (
+                    <div className="sub-options">
+                      {Object.values(option['sub-options']).map((subOption, subIndex) => (
+                        <a href={subOption.href} key={subIndex} className={`sub-option${subIndex + 1}`}>
+                          <img className="icon" src={subOption.image} alt="Plus icon" />
+                          <span>{subOption.text}</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           <div class="workspaces">
             <a href={props.items.buttons.workspace.href} class="button">
@@ -77,14 +81,14 @@ const render = () => {
             </div>
             <div class="custom-selectbox">
               <div onClick={handleClick('.user.select-options')} id="select-trigger">
-                <span id="username">Susan</span>
+                <span id="username">{props.user.name}</span>
                 <img class="arrow" src={props.items.select.arrow} alt="arrow"/>
               </div>
               <div class="user select-options">
                 {Object.values(props.items.select.options).map((option, index) => (
                   <a href={option.href} key={index} class={`option${index + 1}`} >
                     <img class="icon" src={option.icon} alt="icon" />
-                    <span>{option.naam}</span>
+                    <span>{option.title}</span>
                   </a>
                 ))}
               </div>

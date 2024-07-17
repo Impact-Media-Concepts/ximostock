@@ -1,4 +1,7 @@
 @php
+    use Illuminate\Support\Facades\Auth;
+    $user = Auth::user();
+
     $navbaritems = [
         'logo' => [
             'src' => asset('/images/ximostock-logo.png'),
@@ -19,10 +22,18 @@
         ],
         'select' => [
             'image' => asset('/images/default-profile-picture.svg'),
+            'arrow' => asset('/images/chevron-down-dark.svg'),
             'options' => [
-                'option1' => "Mathijs",
-                'option2' => "Luuk",
-                'option3' => "Suus",
+                'Settings' => [
+                    'title' => "Instellingen",
+                    'href' => route('profile.edit'),
+                    'icon' => asset('/images/settings-grey.svg'),
+                ],
+                'Logout' => [
+                    'title' => "Uitloggen",
+                    'href' => route('logout'),
+                    'icon' => asset('/images/exit-grey.svg'),
+                ],
             ],
         ]
     ];
@@ -108,7 +119,7 @@
 </head>
 <body>
     <div id="app">
-        <Navbar :items='@json($navbaritems)'></Navbar>
+        <Navbar :items='@json($navbaritems)' :user='@json($user)' ></Navbar>
         
         <div id="content">
             <Sidebar :items='@json($sidebarItems)'></Sidebar>

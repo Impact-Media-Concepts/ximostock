@@ -3,15 +3,17 @@
 @php
     $content = [
         'title' => "Inloggen",
-        'description' => "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et",
+        'description' => "Welkom bij Ximo Stock – Beheer eenvoudig en efficiënt jouw voorraad met ons gebruiksvriendelijke systeem. Log in om je inventaris up-to-date te houden en altijd inzicht te hebben in je producten.",
         'button' => "Inloggen",
         'logo' => asset('/images/ximostock-logo.png'),
+        'resetPassword' => route('reset-password'),
+        'status' => session('status'),
     ];
 @endphp
 
 @section('content')
 
-<div class="container" id="login-form">
+<div class="container" id="form">
     <div class="wrapper">
         <form method="POST" action="{{ route('login') }}">
             @csrf

@@ -9,8 +9,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkSpaceController;
 use App\Http\Controllers\WooCommerceWebhookController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\auth\PasswordController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
@@ -116,7 +118,16 @@ Route::middleware('auth')->group(function () {
         Route::post('', [UserController::class, 'store'])->middleware('can:create,App\Models\User');
         Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user');
     });
-    
+
+    Route::prefix('/workspaces')->middleware('auth')->group(function() {
+        Route::get('/', [WorkSpaceController::class, 'index'])->name('workspaces');
+        Route::get('/create', [WorkSpaceController::class, 'create'])->name('workspaces.create');
+        Route::post('/', [WorkSpaceController::class, 'store'])->name('workspaces.store');
+        Route::get('/{workspace}', [WorkSpaceController::class, 'show'])->name('workspaces.show');
+        Route::get('/{workspace}/edit', [WorkSpaceController::class, 'edit'])->name('workspaces.edit');
+        Route::patch('/{workspace}', [WorkSpaceController::class, 'update'])->name('workspaces.update');
+        Route::delete('/{workspace}', [WorkSpaceController::class, 'destroy'])->name('workspaces.destroy');
+    });
     Route::get('/activity-log', [ActivityLogController::class, 'index']);
 
     Route::get('/notification', [NotificationController::class, 'index']);
@@ -126,6 +137,9 @@ Route::middleware('auth')->group(function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/reset-password', [PasswordController::class, 'view'])->middleware(['auth', 'verified'])->name('reset-password');
+Route::post('/update-password', [PasswordController::class, 'update'])->middleware(['auth', 'verified'])->name('update-password');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

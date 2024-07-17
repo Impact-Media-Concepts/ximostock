@@ -1,6 +1,6 @@
 <script setup lang="jsx">
 import { defineProps } from 'vue';
-import '../../../scss/user/Login.scss';
+import '../../../scss/user/ResetPassword.scss';
 
 // Define and accept the prop 'content' which can be an array or an object
 const props = defineProps({
@@ -15,7 +15,7 @@ const render = () => {
   const content = props.content;
 
   return (
-    <div class="login-form-content">
+    <div class="reset-password-form-content">
 
       <img src={content.logo} alt="ximostock-logo" className="logo" />
 
@@ -32,15 +32,25 @@ const render = () => {
         <label htmlFor="email">Email:</label>
         <input type="email" name="email" placeholder="Vul je email hier in" />
       </div>
+
+      <div className="form-item current-password">
+        <label htmlFor="current_password">Huidige wachtwoord:</label>
+        <input type="password" name="current_password" placeholder="Vul je huidige wachtwoord in" />
+      </div>
       
       <div className="form-item password">
-        <label htmlFor="password">Wachtwoord:</label>
-        <input type="password" name="password" placeholder="Vul je wachtwoord hier in" />
+        <label htmlFor="password">Nieuwe wachtwoord:</label>
+        <input type="password" name="password" placeholder="Vul je nieuwe wachtwoord in" />
+      </div>
+
+      <div className="form-item confirm-password">
+        <label htmlFor="password_confirmation">Bevestig nieuwe wachtwoord:</label>
+        <input type="password" name="password_confirmation" placeholder="Bevestig hier je nieuwe wachtwoord" />
       </div>
 
       <button className="submit primary">{content.button}</button>
 
-      <a href={ content.resetPassword } className="forgot-password">Wachtwoord vergeten</a>
+      <a href={ content.logout } className="logout">Uitloggen</a>
 
     </div>
   );
