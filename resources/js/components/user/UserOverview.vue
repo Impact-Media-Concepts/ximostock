@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, computed, inject } from 'vue';
+import axios from 'axios';
 import '../../../scss/user/UserOverview.scss';
 
 const route = inject('route');
@@ -15,6 +16,15 @@ const props = defineProps({
 // Ensure users is always treated as an array
 const users = computed(() => Array.isArray(props.users) ? props.users : [props.users]);
 
+// Method to handle user deletion
+const deleteUser = async (userId) => {
+  try {
+    axios.delete(route('users.destroy', userId));
+    users.value = users.value.filter(user => user.id !== userId);
+  } catch {
+
+  }
+};
 </script>
 
 <template>
@@ -25,6 +35,8 @@ const users = computed(() => Array.isArray(props.users) ? props.users : [props.u
       <li v-for="user in users" :key="user.id">
         <span>{{ user.name }}</span>
         <span>{{ user.email }}</span>
+        <a :href="route('users.edit', user.id)" class="edit">Edit</a>
+        <button @click="deleteUser(user.id)" class="delete">Delete</button>
       </li>
     </ul>
     <p v-else>Geen gebruikers gevonden</p>

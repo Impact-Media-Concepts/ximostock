@@ -110,10 +110,12 @@ Route::middleware('auth')->group(function () {
     
     Route::prefix('/users')->middleware('auth')->group(function() {
         Route::get('/', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User')->name('users.index');
-        Route::get('/create', [UserController::class, 'create'])->middleware('can:create,App\Models\User')->name('users.create');
-        Route::get('/{user}', [UserController::class, 'show'])->middleware('can:view,user')->name('users.show');
-        Route::post('', [UserController::class, 'store'])->middleware('can:create,App\Models\User')->name('users.store');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user')->name('users.destroy');
+        Route::get('/create', [UserController::class, 'create'])->middleware('can:viewAny,App\Models\User')->name('users.create');
+        Route::get('/{user}', [UserController::class, 'show'])->middleware('can:viewAny,App\Models\User')->name('users.show');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->middleware('can:viewAny,App\Models\User')->name('users.edit');
+        Route::post('', [UserController::class, 'store'])->middleware('can:viewAny,App\Models\User')->name('users.store');
+        Route::patch('/{user}', [UserController::class, 'update'])->middleware('can:viewAny,App\Models\User')->name('users.update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:viewAny,App\Models\User')->name('users.destroy');
     });
 
     Route::prefix('/workspaces')->middleware('auth')->group(function() {
@@ -125,7 +127,6 @@ Route::middleware('auth')->group(function () {
         Route::patch('/{workspace}', [WorkSpaceController::class, 'update'])->name('workspaces.update');
         Route::delete('/{workspace}', [WorkSpaceController::class, 'destroy'])->name('workspaces.destroy');
         Route::post('/switch', [WorkSpaceController::class, 'switch'])->name('workspaces.switch');
-        
     });
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');

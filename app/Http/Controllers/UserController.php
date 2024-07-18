@@ -39,13 +39,22 @@ class UserController extends Controller
         return view('user.show', $attributes);
     }
 
-    public function destroy(Request $request, User $user){
-        //mail user to nptify acautn deleted
-        $user->delete();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/users');
+    public function destroy(Request $request, int $userId)
+    {
+        try {
+            $user = User::find($userId);
+            if (!$user) {
+                return redirect('/users')->withErrors(['error' => 'User not found']);
+            }
+            Log::info('User deleted: ', ['user_id' => $userId]);
+            $user->delete();
+            return redirect('/users')->with('success', 'User deleted successfully');
+        } catch (\Exception $e) {
+            Log::error('Error deleting user: ', ['error' => $e->getMessage()]);
+            return redirect('/users')->withErrors(['error' => 'An error occurred while deleting the user']);
+        }
     }
+    
 
     public function create(Request $request){
         $roles = ['admin', 'manager', 'supplier'];
@@ -91,5 +100,37 @@ class UserController extends Controller
 
             return redirect()->back()->withInput()->withErrors(['error' => 'An error occurred while creating the user.']);
         }
+    }
+
+    public function edit(User $user)
+    {
+        $roles = ['admin', 'manager', 'supplier'];
+        return view('user.edit', compact('user', 'roles'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validator = Validator::make($request->all(), [
+            'work_space_id' => 'nullable|integer',
+            'name' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email_verified_at' => 'nullable|date',
+            'password' => 'nullable|string|min:8|confirmed',
+            'remember_token' => 'nullable|string|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $data = $request->only(['work_space_id', 'name', 'role', 'email', 'email_verified_at', 'remember_token']);
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('users.show', $user->id)->with('success', 'User updated successfully.');
     }
 }
