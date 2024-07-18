@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory()->create([
             'role' => 'manager',
-            'work_space_id' => 1,
+            'work_space_id' => 2,
             'email' => 'manager@1.com'
         ]);
         User::factory()->create([
@@ -61,11 +61,11 @@ class DatabaseSeeder extends Seeder
         ]);
         $categories = Category::factory(5)->create();
 
-        $products = Product::factory(1000)->create([
-            'work_space_id' => 1,
+        $products = Product::factory(100)->create([
+            'work_space_id' => 2,
         ]);
 
-        $primeProducts = Product::factory(500)->create([
+        $primeProducts = Product::factory(50)->create([
             'work_space_id' => 2,
             'sku' => null,
             'ean' => null
@@ -77,24 +77,24 @@ class DatabaseSeeder extends Seeder
         $properties = Property::factory(5)->create();
 
         SalesChannel::factory()->create([
-            'work_space_id' => 1,
+            'work_space_id' => 2,
             'name' => 'XimostockCommerce',
             'url' => 'https://test.com',
             'api_key' => 'ck_cc7e1e85dbe0f56504134ee5caa3a114351e0012',
             'secret' => 'cs_9d52cf66d9fc3d26cf693b912f2d41c1db005020'
         ]);
         SalesChannel::factory()->create([
-            'work_space_id' => 1,
+            'work_space_id' => 2,
             'name' => 'ximoshop',
             'url' => 'https://ximoshop.dev-imc.com',
             'api_key' => 'ck_6307bb7387ba14f2b2440a3d6b4add2be3c28c69',
             'secret' => 'cs_c6581c4eb86e71728eeee93224214b0d5594c137'
         ]);
         $saleschannels = SalesChannel::factory(4)->create([
-            'work_space_id' => 1,
+            'work_space_id' => 2,
         ]);
         SalesChannel::factory(3)->create([
-            'work_space_id' => 2,
+            'work_space_id' => 3,
         ]);
 
         //link properties

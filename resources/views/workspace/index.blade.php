@@ -12,7 +12,17 @@
                     @method('DELETE')
                     <button type="submit">Delete</button>
                 </form>
+
+                <form action="{{ route('workspaces.switch') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="workspace_id" value="{{ $workspace->id }}">
+                    <button type="submit">view</button>
+                </form>
+                
+
+                
             </li>
         @endforeach
     </ul>
+    
 @endsection

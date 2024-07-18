@@ -6,11 +6,11 @@ import '../../scss/Navbar.scss';
 const props = defineProps({
   items: {
     type: [Array, Object],
-    default: () => []
+    default: () => ({})
   },
   user: {
     type: Object,
-    default: () => {}
+    default: () => ({})
   }
 });
 
@@ -35,57 +35,49 @@ const render = () => {
       <div class="wrapper">
 
         <div class="logo-container">
-          <a href={props.items.logo.href} class="logo-link">
-            <img src={props.items.logo.src} alt={props.items.logo.alt} class="logo"/>
-          </a>
+          {props.items.logo && (
+            <a href={props.items.logo.href} class="logo-link">
+              <img src={props.items.logo.src} alt={props.items.logo.alt} class="logo"/>
+            </a>
+          )}
           <div class="streep"></div>
         </div>
 
         <div class="options">
-          <div class="add">
-            <div onClick={handleClick('.add.select-options')} class="select-trigger button">
-              <img src={props.items.buttons.add.image} alt="Plus-icon" class="icon"/>
-              {props.items.buttons.add.text}
+
+          {props.items.add && (
+            <div class="add">
+              <div onClick={handleClick('.add.select-options')} class="select-trigger button">
+                <img src={props.items.add.image} alt="Plus-icon" class="icon"/>
+                {props.items.add.text}
+              </div>
             </div>
-            <div className="add select-options">
-              {Object.values(props.items.buttons).map((option, index) => (
-                <div className="option-container" key={index}>
-                  <a href={option.href} className={`option${index + 1}`}>
-                    <img className="icon" src={option.image} alt="Plus icon" />
-                    <span>{option.text}</span>
-                  </a>
-                  {option['sub-options'] && (
-                    <div className="sub-options">
-                      {Object.values(option['sub-options']).map((subOption, subIndex) => (
-                        <a href={subOption.href} key={subIndex} className={`sub-option${subIndex + 1}`}>
-                          <img className="icon" src={subOption.image} alt="Plus icon" />
-                          <span>{subOption.text}</span>
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+          )}
+
+          {props.items.workspace && props.items.workspace && (
+            <div class="workspaces">
+              <a href={props.items.workspace.href} class="button">
+                <img src={props.items.workspace.image} alt="grid-icon" class="icon"/>
+                {props.items.workspace.text}
+              </a>
             </div>
-          </div>
-          <div class="workspaces">
-            <a href={props.items.buttons.workspace.href} class="button">
-              <img src={props.items.buttons.workspace.image} alt="grid-icon" class="icon"/>
-                {props.items.buttons.workspace.text}
-            </a>
-          </div>
+          )}
 
           <div class="user-options">
             <div class="icon-container">
+              {props.items.select && (
                 <img src={props.items.select.image} alt="Profile Picture" class="profile-picture"/>
+              )}
             </div>
             <div class="custom-selectbox">
               <div onClick={handleClick('.user.select-options')} id="select-trigger">
                 <span id="username">{props.user.name}</span>
-                <img class="arrow" src={props.items.select.arrow} alt="arrow"/>
+                {props.items.select && (
+                  <img class="arrow" src={props.items.select.arrow} alt="arrow"/>
+                )}
               </div>
               <div class="user select-options">
-                {Object.values(props.items.select.options).map((option, index) => (
+                {props.items.select && props.items.select.options && Object.values(props.items.select.options).map((option, index) => (
                   <a href={option.href} key={index} class={`option${index + 1}`} >
                     <img class="icon" src={option.icon} alt="icon" />
                     <span>{option.title}</span>
@@ -94,7 +86,7 @@ const render = () => {
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>

@@ -10,23 +10,17 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index(Request $request){
-        $request->validate([
-            'workspace' => ['required', new ValidWorkspaceKeys]
-        ]);
-        $workspaces = WorkSpace::all();
-        $activeWorkspace = $request['workspace'];
+    public function index(Request $request)
+    {
 
-        $attributes = [
-            'sidenavActive' => 'users',
-            'users' => User::with('workspace')->get(),
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
-        ];
-        return view('user.index', $attributes);
+        $users = User::all();
+
+        return view('user.index', compact('users'));
     }
 
     public function show(Request $request, User $user){
@@ -54,37 +48,48 @@ class UserController extends Controller
     }
 
     public function create(Request $request){
-        $request->validate([
-            'workspace' => ['required', Rule::exists('work_spaces', 'id')]
-        ]);
-        $workspaces = WorkSpace::all();
-        $activeWorkspace = $request['workspace'];
-
-        $attributes = [
-            'sidenavActive' => 'users',
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
-        ];
-        return view('user.create', $attributes);
+        $roles = ['admin', 'manager', 'supplier'];
+        return view('user.create', compact('roles'));
     }
 
-    public function store(Request $request){
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'role' => ['required', Rule::in(['manager', 'admin', 'supplier'])],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'workspace'=> ['required', Rule::exists('work_spaces','id')]
+    public function store(Request $request)
+    {
+        // Log the incoming request data
+        Log::info('Store method called with request data: ', $request->all());
+
+        // Validate the request data
+        $validatedData = $request->validate([
+            'work_space_id' => 'nullable|exists:work_spaces,id',
+            'name' => 'required|string|max:255',
+            'role' => 'required|in:admin,manager,supplier',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
         ]);
-        $password = Str::random(10);
-        //create a user generate a password and send an email for them to varify and create a new password.
-        $user = User::create([
-            'name' => $request['name'],
-            'role' => $request['role'],
-            'email' => $request['email'],
-            'work_space_id' => $request['workspace'],
-            'password' => Hash::make($password)
-        ]);
-        Mail::to($request['email'])->send(new SetupAccount($password, $request['email'], $request['name'], $request['role']));
-        return redirect('/products');
+
+        try {
+            // Log the validated data
+            Log::info('Validated data: ', $validatedData);
+
+            // Create a new user
+            $user = new User();
+            $user->work_space_id = $request->work_space_id;
+            $user->name = $request->name;
+            $user->role = $request->role;
+            $user->email = $request->email;
+            $user->email_verified_at = $request->email_verified_at;
+            $user->password = bcrypt($request->password);
+            $user->remember_token = $request->remember_token;
+            $user->save();
+
+            // Log the created user
+            Log::info('User created successfully: ', $user->toArray());
+
+            return redirect()->route('users.index')->with('success', 'User created successfully.');
+        } catch (\Exception $e) {
+            // Log the exception
+            Log::error('Error creating user: ', ['error' => $e->getMessage()]);
+
+            return redirect()->back()->withInput()->withErrors(['error' => 'An error occurred while creating the user.']);
+        }
     }
 }

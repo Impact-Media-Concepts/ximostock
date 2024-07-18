@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-Cadoznfq.css",
+    "file": "assets/app-vb6lUGWM.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
@@ -17,12 +17,12 @@
     "src": "resources/font/Inter-Thin.ttf"
   },
   "resources/js/app.js": {
-    "file": "assets/app-Cy3hccVP.js",
+    "file": "assets/app-CxusvVFm.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-nrG1IsA6.css"
+      "assets/app-bANAMfA-.css"
     ]
   }
 }
