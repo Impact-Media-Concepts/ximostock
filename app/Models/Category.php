@@ -54,4 +54,15 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_category_id')->with('child_categories_recursive');
     }
+
+    public function deleteWithChildren()
+    {
+        // Recursively delete all children
+        foreach ($this->child_categories as $child) {
+            $child->deleteWithChildren();
+        }
+
+        // Delete the category itself
+        $this->delete();
+    }
 }

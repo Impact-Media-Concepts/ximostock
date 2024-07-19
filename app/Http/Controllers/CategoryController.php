@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CategoryHelper;
 use App\Models\Category;
 use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
+use App\WooCommerceManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class CategoryController extends Controller
 {
@@ -114,7 +117,11 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        $category->delete();
+        LogBatch::startBatch();
+        $woocommerce = new WooCommerceManager;
+        $woocommerce->deleteCategoriesFromSalesChannels([$category->id]);
+        $category->deleteWithChildren();
+        LogBatch::endBatch();
         return redirect('/categories');
     }
 
@@ -130,6 +137,8 @@ class CategoryController extends Controller
             'name' => $attributes['name'],
             'parent_category_id' => $attributes['parent_category_id']
         ]);
+        $wooCommerce = new WooCommerceManager;
+        $wooCommerce->updateCategoryToSaleschannels($category);
         return redirect()->back();
     }
 
