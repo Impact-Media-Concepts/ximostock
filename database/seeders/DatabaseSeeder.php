@@ -59,13 +59,16 @@ class DatabaseSeeder extends Seeder
             'work_space_id' => null,
             'email' => 'supplier@stage.com'
         ]);
-        $categories = Category::factory(5)->create();
+        $categories = Category::factory(3)->create();
 
         $products = Product::factory(100)->create([
+            'work_space_id' => 1,
+        ]);
+        $products_second = Product::factory(100)->create([
             'work_space_id' => 2,
         ]);
 
-        $primeProducts = Product::factory(50)->create([
+        $primeProducts = Product::factory(25)->create([
             'work_space_id' => 2,
             'sku' => null,
             'ean' => null
@@ -139,19 +142,19 @@ class DatabaseSeeder extends Seeder
 
         //create subcategories
         foreach ($categories as $category) {
-            $subcategories = Category::factory(5)->create([
+            $subcategories = Category::factory(2)->create([
                 'parent_category_id' => $category
             ]);
             foreach($subcategories as $category){
-                $subcategories = Category::factory(5)->create([
+                $subcategories = Category::factory(2)->create([
                     'parent_category_id' => $category
                 ]);
                 foreach($subcategories as $category){
-                    $subcategories = Category::factory(5)->create([
+                    $subcategories = Category::factory(2)->create([
                         'parent_category_id' => $category
                     ]);
                     foreach($subcategories as $category){
-                        $subcategories = Category::factory(5)->create([
+                        $subcategories = Category::factory(2)->create([
                             'parent_category_id' => $category
                         ]);
                     }
@@ -159,13 +162,30 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        //link categories
+        // Link products and categories randomly
         foreach ($products as $product) {
-            CategoryProduct::create([
-                'product_id' => $product->id,
-                'category_id' => $categories[0]->id,
-                'primary' => 1
-            ]);
+            $categories = Category::all();
+            $randomCategories = $categories->random(2); // Adjust the number of random categories as needed
+            foreach ($randomCategories as $category) {
+                CategoryProduct::create([
+                    'product_id' => $product->id,
+                    'category_id' => $category->id,
+                    'primary' => 1
+                ]);
+            }
+        }
+
+        // Link products and categories randomly
+        foreach ($products_second as $product) {
+            $categories = Category::all();
+            $randomCategories = $categories->random(1); // Adjust the number of random categories as needed
+            foreach ($randomCategories as $category) {
+                CategoryProduct::create([
+                    'product_id' => $product->id,
+                    'category_id' => $category->id,
+                    'primary' => 1
+                ]);
+            }
         }
 
         //link location zones

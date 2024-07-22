@@ -24,8 +24,7 @@ class Category extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)
-            ->using(CategoryProduct::class);
+        return $this->belongsToMany(Product::class);
     }
 
     public function salesChannels()

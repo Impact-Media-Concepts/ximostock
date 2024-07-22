@@ -35,63 +35,42 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends BaseProductController
 {
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->currentUser = Auth::user();
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
         Log::debug($request);
 
-        $perPage = $request->input('perPage', 20);
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $products = Product::where('work_space_id', $request['workspace']);
-            $categories = Category::where('work_space_id', $request['workspace']);
-            $properties = Property::where('work_space_id', $request['workspace']);
-            $salesChannels = SalesChannel::where('work_space_id', $request['workspace']);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-        } else {
-            $products = Product::where('work_space_id', Auth::user()->work_space_id);
-            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
-            $properties = Property::where('work_space_id', Auth::user()->work_space_id);
-            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id);
-            $workspaces = null;
-            $activeWorkspace = null;
-        }
+        $current_workspace = (int) session('active_workspace_id');
+        $products = Product::where('work_space_id', $current_workspace)
+                            ->with(['categories', 'photos' => function ($query) {
+                                $query->where('primary', 1);
+                            }])
+                            ->limit(25)
+                            ->get();    
+        $products->load('categories');
+        $relatedCategories = $products->pluck('categories')->flatten()->unique('id');
 
-        $products = $products
-            ->with('photos', 'locationZones', 'productSalesChannels', 'childProducts', 'categories')
-            ->withExists(['productSalesChannels'])
-            ->whereNull('parent_product_id')
-            ->filter(request(['search', 'categories', 'orderByInput', 'properties']))
-            ->paginate($perPage)
-            ->withQueryString();
+        $hierarchicalCategories = $relatedCategories->map(function($category) {
+            return Category::with('child_categories_recursive')->find($category->id);
+        });
 
-        $categories = $categories
-            ->with('child_categories_recursive')
-            ->whereNull('parent_category_id')
-            ->get();
+        $hierarchicalCategories = $hierarchicalCategories->unique('id')->toArray();
 
-        $salesChannels = $salesChannels->get();
-        $properties = $properties->get();
-
-        $results = [
-            'lorem' => "Ipsum",
+        $data = [
             'products' => $products,
-            'categories' => $categories,
-            'properties' => $properties,
-            'perPage' => $perPage,
-            'search' => $request['search'],
-            'selectedCategories' => $request['categories'],
-            'orderBy' => $request['orderByInput'],
-            'sidenavActive' => 'products',
-            'discountErrors' => $request->session()->get('discountErrors'),
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace,
-            'salesChannels' => $salesChannels,
-            'selectedProperties' => $request['properties']
+            'categories' => $hierarchicalCategories,
         ];
-        return view('product.index', $results);
+        // dump($data);
+
+        return view('product.index', $data);
     }
 
     public function create(Request $request)

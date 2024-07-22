@@ -7,6 +7,8 @@ import MainProductInfo from './components/product/MainProductInfo.vue';
 import GeneralNotification from './components/GeneralNotification.vue';
 import UserOverview from './components/user/UserOverview.vue';
 import AddUser from './components/user/AddUser.vue';
+import ProductOverview from './components/product/ProductOverview.vue';
+
 
 // Create the Vue application
 const app = createApp({});
@@ -18,6 +20,7 @@ app.component('MainProductInfo', MainProductInfo);
 app.component('GeneralNotification', GeneralNotification);
 app.component('UserOverview', UserOverview);
 app.component('AddUser', AddUser);
+app.component('ProductOverview', ProductOverview);
 
 // Provide the route function globally
 app.provide('route', route);

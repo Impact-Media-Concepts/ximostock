@@ -1,9 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <Products :items=''> </Products>
-    {{-- <div class="product contiainer">
-        <h1>products</h1>
-        <p>Welkom op de producten pagina.</p>
-    </div> --}}
+<div id="app">
+    <product-overview
+        :initial-products="{{ json_encode($products) }}"
+        :initial-categories="{{ json_encode($categories) }}">
+    </product-overview>
+</div>
 @endsection

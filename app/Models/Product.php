@@ -35,9 +35,7 @@ class Product extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class)
-            ->using(CategoryProduct::class)
-            ->withPivot('primary');
+        return $this->belongsToMany(Category::class);
     }
 
     public function getPrimaryCategoryAttribute()
@@ -50,9 +48,7 @@ class Product extends Model
 
     public function photos()
     {
-        return $this->belongsToMany(Photo::class)
-            ->using(PhotoProduct::class)
-            ->withPivot('primary');
+        return $this->belongsToMany(Photo::class);
     }
 
     public function getPrimaryPhotoAttribute()

@@ -1,0 +1,66 @@
+@import "../../globals/_mixins";
+@import "../../globals/__variables";
+
+.product-table {
+    display: flex;
+    flex-direction: column;
+    .product {
+        display: flex;
+        gap: 21px;
+        justify-content: space-between;
+        > div {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            line-height: 24px;
+            font-weight: 400;
+            color: $text;
+        }
+        .checkbox {
+            input {
+                width: 14px;
+                height: 14px;
+            }
+        }
+        .image {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            object-position: center;
+            border: 1px solid $border-dark;
+        }
+        .title {
+            width: 100%;
+            max-width: 350px;
+        }
+        .price {
+            span {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                line-height: 17px;
+                .crossed {
+                    font-weight: 400;
+                    text-decoration: line-through;
+                    text-align: center;
+                }
+                .price {
+                    font-weight: 700;
+                    text-align: center;
+                }
+            }
+        }
+        .stock {
+
+        }
+        .sold {
+
+        }
+        .status {
+
+        }
+        .last-updated {
+
+        }
+    }
+}

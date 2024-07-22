@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class PhotoProduct extends Pivot
 {
     use HasFactory;
+
+    protected $table = 'photo_product';
+
 }
