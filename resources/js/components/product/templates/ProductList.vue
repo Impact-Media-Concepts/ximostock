@@ -1,10 +1,32 @@
 <template>
     <div class="product-container">
-        <h1>Products</h1>
-        <a :href="route('products.create')" class="button">Add product</a>
+        <div class="product-table-header">
+            <h1 class="title">Alle producten</h1>
+            <div class="actions">
+                <a class="button import">
+                    <img src="/images/import.svg" alt="" class="icon">
+                    Importeren
+                </a>
+                <a class="button export" :href="route('products.export')">
+                    <img src="/images/export.svg" alt="" class="icon">
+                    Exporteren
+                </a>
+
+            </div>
+        </div>
+        <div v-if="selectedProducts.length > 0" class="bulk-actions">
+            {{ selectedProducts.length }} product(en) geselecteerd van de {{ filteredProducts.length }} producten.
+            <span @click="SelectAllProducts()"class="select-all">Selecteer alle {{ filteredProducts.length }} variatie(s)</span>
+            <div class="actions">
+                <button @click="switchStatus()" class="button Status">Status veranderen</button>
+                <button @click="updateArchived()" class="button Archived">Archiveren</button>
+                <button @click="deleteProducts()" class="button Delete">Verwijderen</button>
+            </div>
+        </div>
 
         <div v-if="filteredProducts.length > 0" class="product-table">
-            <div class="product" v-for="product in filteredProducts" :key="product.id">
+
+            <a :href="route('products.show', product.id)" class="product" v-for="product in filteredProducts" :key="product.id">
                 <div class="checkbox">
                     <input 
                         type="checkbox"
@@ -16,9 +38,13 @@
                     {{ product.id }}
                 </div>
                 <div class="image">
-                    <img v-for="photo in product.photos" :key="photo.id" :src="photo.url" alt="Product Photo" style="height: 40px;">
+                    <img v-for="photo in product.photos" :key="photo.id" :src="photo.url" alt="Product Photo">
                 </div>
-                <div class="title">{{ product.title }}</div>
+
+                
+                <div class="ean">{{ product.sku}}</div>
+
+                <div class="title">{{ product.title}}</div>
                 <div class="price">
                     <span v-if="product.discount != null">
                         <span class="crossed">{{ product.price }}</span>
@@ -29,31 +55,30 @@
                     </span>
                 </div>
                 <div class="stock">
-                    <span v-if="product.communicate_stock == 1">Op voorraad</span>
+                    <span v-if="product.stock_quantity > 0">{{ product.stock_quantity }} Stuks</span>
                     <span v-else>Uitverkocht</span>
                 </div>
-                <div class="sold">
-                    {{ product.orderByStock }}
-                    <span v-if="product.orderByStock == 1">Verkocht</span>
-                    <span v-else>Te koop</span>
-                </div>
                 <div class="status">
-                    {{ product.orderByOnline }}
-                    <span v-if="product.orderByOnline == 1">Online</span>
-                    <span v-else>Offline</span>
+                    <ul>
+                        <li v-if="product.status == 1" class="on">Online</li>
+                        <li v-else class="off">Offline</li>
+                    </ul>
                 </div>
                 <div class="last-updated">
                     {{ formatDate(product.updated_at) }}
                 </div>
-
-            </div>
+            </a>
         </div>
         <p v-else> Geen producten gevonden</p>
+
+        <div class="product-table-footer">
+            asd
+        </div>
     </div>
 </template>
 
 <script>
-import { defineComponent, inject } from 'vue';
+import { defineComponent, inject, watch } from 'vue';
 import { format } from 'date-fns';
 import '../../../../scss/product/templates/ProductList.scss';
 
@@ -74,18 +99,102 @@ export default defineComponent({
             return this.selectedProducts.includes(productId);
         },
         toggleBulkSelection(productId) {
-            let updatedSelections = [...this.selectedProducts];
-            if (updatedSelections.includes(productId)) {
-                updatedSelections = updatedSelections.filter(id => id !== productId);
+            if (this.isSelected(productId)) {
+                this.selectedProducts = this.selectedProducts.filter(id => id !== productId);
             } else {
-                updatedSelections.push(productId);
+                this.selectedProducts.push(productId);
             }
-            this.selectedProducts = updatedSelections;
             // Emit the updated selections to parent if needed
-            this.$emit('update:selectedProducts', updatedSelections);
+            this.$emit('update:selectedProducts', this.selectedProducts);
+        },
+        SelectAllProducts() {
+            this.selectedProducts = this.filteredProducts.map(product => product.id);
+            this.$emit('update:selectedProducts', this.selectedProducts);
         },
         formatDate(date) {
             return format(new Date(date), 'yyyy-MM-dd HH:mm:ss');
+        },
+        sendRequest(routeName, method, data, successMessage, errorMessage) {
+            fetch(this.route(routeName), {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    this.showUserMessage(successMessage, 'success');
+                    window.location.reload();
+                } else {
+                    this.showUserMessage(errorMessage, 'error');
+                }
+            })
+            .catch(error => {
+                this.showUserMessage('Network error', 'error');
+            });
+        },
+        
+        switchStatus() {
+            const data = {
+                selectedProducts: this.selectedProducts
+            };
+
+            if (this.selectedProducts.length === 0) {
+                this.showUserMessage('No products selected', 'warning');
+                return;
+            }
+
+            this.sendRequest(
+                'products.switchStatus', 
+                'POST', 
+                data, 
+                'Status updated successfully', 
+                'Failed to change status'
+            );
+        },
+        
+        updateArchived() {
+            const data = {
+                selectedProducts: this.selectedProducts
+            };
+
+            if (this.selectedProducts.length === 0) {
+                this.showUserMessage('No products selected', 'warning');
+                return;
+            }
+
+            this.sendRequest(
+                'products.archiveProducts', 
+                'POST', 
+                data, 
+                'Products archived successfully', 
+                'Failed to archive products'
+            );
+        },
+        
+        deleteProducts() {
+            const data = {
+                selectedProducts: this.selectedProducts
+            };
+
+            if (this.selectedProducts.length === 0) {
+                this.showUserMessage('No products selected', 'warning');
+                return;
+            }
+
+            this.sendRequest(
+                'products.deleteProducts', 
+                'DELETE', 
+                data, 
+                'Products deleted successfully', 
+                'Failed to delete products'
+            );
+        },
+
+        showUserMessage(message, type) {
+            // You can use a library like toastr for better UI feedback
+            // console.info(`[${type.toUpperCase()}] ${message}`);
         }
     },
     setup() {
@@ -94,5 +203,13 @@ export default defineComponent({
             route,
         };
     },
+    watch: {
+        filteredProducts(newFilteredProducts) {
+            this.selectedProducts = this.selectedProducts.filter(productId =>
+                newFilteredProducts.some(product => product.id === productId)
+            );
+            this.$emit('update:selectedProducts', this.selectedProducts);
+        }
+    }
 });
 </script>

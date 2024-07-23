@@ -46,32 +46,35 @@ class ProductController extends BaseProductController
 
     public function index(Request $request)
     {
-        Log::debug($request);
-
         $current_workspace = (int) session('active_workspace_id');
         $products = Product::where('work_space_id', $current_workspace)
-                            ->with(['categories', 'photos' => function ($query) {
-                                $query->where('primary', 1);
-                            }])
-                            ->limit(25)
-                            ->get();    
-        $products->load('categories');
-        $relatedCategories = $products->pluck('categories')->flatten()->unique('id');
+                    ->where('archived', false)
+                    ->with(['categories', 'photos' => function ($query) {
+                        $query->where('primary', 1);
+                    }])
+                    ->paginate(11); // Use paginate instead of limit
 
+        // Eager loading categories for products
+        $products->load('categories');
+    
+        // Collecting related categories
+        $relatedCategories = $products->pluck('categories')->flatten()->unique('id');
+    
+        // Loading hierarchical categories
         $hierarchicalCategories = $relatedCategories->map(function($category) {
             return Category::with('child_categories_recursive')->find($category->id);
         });
-
+    
         $hierarchicalCategories = $hierarchicalCategories->unique('id')->toArray();
-
+    
         $data = [
             'products' => $products,
             'categories' => $hierarchicalCategories,
         ];
-        // dump($data);
-
+    
         return view('product.index', $data);
     }
+    
 
     public function create(Request $request)
     {
@@ -110,49 +113,7 @@ class ProductController extends BaseProductController
 
     public function show(Request $request, Product $product)
     {
-        //if the product is a variant product return 404
-        if ($product->parent_product_id != null) {
-            return abort(404);
-        }
-
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', Rule::exists('work_spaces', 'id')]
-            ]);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-        } else {
-            $workspaces = null;
-            $activeWorkspace = null;
-        }
-
-        foreach ($product->properties as $prop) {
-            $prop->pivot->property_value = json_decode($prop->pivot->property_value);
-        }
-        $selectedProperties = [];
-        foreach ($product->properties as $property) {
-            $value = ProductProperty::where('product_id', $product->id)->where('property_id', $property->id)->get()->first();
-            $value = json_decode($value->property_value);
-            $value = $value->value;
-            if (gettype($value) === 'array') {
-                $value = implode(',', $value);
-            } else if (gettype($value) === 'boolean') {
-                $value = $value ? 'true' : 'false';
-            }
-            $selectedProperties += [$property->id => (string) $value];
-        }
-
-        return view('product.show', [
-            'product' => $product,
-            'categories' => Category::with('child_categories_recursive')->whereNull('parent_category_id')->get(),
-            'sidenavActive' => 'products',
-            'salesChannels' => SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get(),
-            'selectedSalesChannels' => ProductSalesChannel::where('product_id', $product->id)->get(),
-            'properties' => Property::where('work_space_id', Auth::user()->work_space_id)->get(),
-            'selectedProperties' => $selectedProperties,
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
-        ]);
+        return view('product.show', compact('product'));
     }
 
     public function destroy($id)
@@ -529,7 +490,7 @@ class ProductController extends BaseProductController
 
     public function export()
     {
-        return Excel::download(new ProductsExport, 'products.xlsx');
+        return Excel::download(new ProductsExport, 'products.csv');
     }
 
     protected function validateNewProperiesAttributes(): array
@@ -973,4 +934,70 @@ class ProductController extends BaseProductController
             }
         }
     }
+
+    public function archiveProducts(Request $request)
+    {
+        $selectedProducts = $request->input('selectedProducts');
+
+        if (!$selectedProducts || !is_array($selectedProducts)) {
+            return response()->json(['error' => 'Invalid request body'], 400);
+        }
+
+        // Archive the selected products
+        foreach ($selectedProducts as $productId) {
+            $product = Product::find($productId);
+            if ($product) {
+                if ($product->archived) {
+                    continue;
+                }
+                $product->archived = true;
+                $product->save();
+            }
+        }
+
+        return response()->json(['message' => 'Product were archived succesfully'], 200);
+    }
+
+    public function switchStatus(Request $request)
+    {
+        $selectedProducts = $request->input('selectedProducts');
+        
+        if (!$selectedProducts || !is_array($selectedProducts)) {
+            return response()->json(['error' => 'Invalid request body'], 400);
+        }
+    
+        // Switch the status of the selected products
+        foreach ($selectedProducts as $productId) {
+            $product = Product::find($productId);
+            if ($product) {
+                // Toggle the status
+                $product->status = !$product->status;
+                $product->save();
+            }
+        }
+    
+        return response()->json(['message' => 'Product status were switched successfully'], 200);
+    }
+    
+
+    public function deleteProducts(Request $request)
+    {
+        $selectedProducts = $request->input('selectedProducts');
+        
+
+        if (!$selectedProducts || !is_array($selectedProducts)) {
+            return response()->json(['error' => 'Invalid request body'], 400);
+        }
+    
+        // Delete the selected products
+        foreach ($selectedProducts as $productId) {
+            $product = Product::find($productId);
+            if ($product) {
+                $product->delete();
+            }
+        }
+    
+        return response()->json(['message' => 'Product were deleted successfully'], 200);
+    }
+    
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="product-overview">
         <ProductList 
-            :filteredProducts="filteredProducts"
+            :filteredProducts="filteredProducts.data"
             @update:selectedProducts="updateSelectedProducts"
         />
         <CategoryFilters 
@@ -25,7 +25,7 @@ export default defineComponent({
     },
     props: {
         initialProducts: {
-            type: Array,
+            type: Object, // Now it's an object because it contains pagination info
             required: true,
         },
         initialCategories: {
@@ -35,11 +35,11 @@ export default defineComponent({
     },
     data() {
         return {
-            products: this.initialProducts,
+            products: this.initialProducts.data, // Extracting product list from paginated data
             categories: this.initialCategories,
             selectedCategories: [],
             selectedProducts: [],
-            filteredProducts: this.initialProducts,
+            filteredProducts: this.initialProducts, // Full paginated data object
         };
     },
     methods: {
@@ -49,13 +49,12 @@ export default defineComponent({
         },
         updateSelectedProducts(newSelectedProducts) {
             this.selectedProducts = [...newSelectedProducts];
-            console.log(this.selectedProducts);
         },
         filterProducts() {
             if (this.selectedCategories.length === 0) {
-                this.filteredProducts = this.products;
+                this.filteredProducts.data = this.products;
             } else {
-                this.filteredProducts = this.products.filter(product => 
+                this.filteredProducts.data = this.products.filter(product => 
                     product.categories.some(category => 
                         this.selectedCategories.includes(category.id)
                     )

@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <main-product-info :product='@json($product)'></main-product-info>
+    <single-product :product='@json($product)'></single-product>
 @endsection

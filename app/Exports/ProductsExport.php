@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -16,25 +17,23 @@ class ProductsExport implements FromQuery, WithHeadings, WithColumnFormatting, W
 {
     use Exportable;
 
+    protected $columns;
+
+    public function __construct()
+    {
+        // Retrieve the table columns dynamically
+        $this->columns = Schema::getColumnListing('products');
+    }
+
     public function headings(): array
     {
-        return [
-            'sku', 
-            'ean',
-            'title', 
-            'short_description', 
-            'long_description', 
-            'price', 
-            'discount', 
-            'backorders', 
-            'communicate_stock', 
-            'created_at', 
-            'updated_at'
-        ];
+        // Use the dynamically retrieved columns as headings
+        return $this->columns;
     }
 
     public function columnFormats(): array
     {
+        // Manually specify the formats for specific columns as needed
         return [
             'B' => NumberFormat::FORMAT_NUMBER,
             'F' => NumberFormat::FORMAT_ACCOUNTING_EUR,
@@ -46,28 +45,26 @@ class ProductsExport implements FromQuery, WithHeadings, WithColumnFormatting, W
 
     public function map($product): array
     {
-        return [
-            $product->sku,
-            $product->ean,
-            $product->title,
-            $product->short_description,
-            $product->long_description,
-            $product->price,
-            $product->discount,
-            $product->backorders ? 'true' : 'false',
-            $product->communicate_stock  ? 'true' : 'false',
-            Date::dateTimeToExcel($product->created_at),
-            Date::dateTimeToExcel($product->created_at)            
-        ];
+        // Map the product attributes dynamically
+        $mappedProduct = [];
+        foreach ($this->columns as $column) {
+            if ($column === 'created_at' || $column === 'updated_at') {
+                $mappedProduct[] = Date::dateTimeToExcel($product->$column);
+            } elseif ($column === 'backorders' || $column === 'communicate_stock') {
+                $mappedProduct[] = $product->$column ? 'true' : 'false';
+            } else {
+                $mappedProduct[] = $product->$column;
+            }
+        }
+        return $mappedProduct;
     }
 
     /**
-    * @return \Illuminate\Support\Collection
+    * @return \Illuminate\Database\Eloquent\Builder
     */
     public function query()
     {
-        return Product::query()->select('sku', 'ean','title', 'short_description', 'long_description', 'price', 'discount', 'backorders', 'communicate_stock', 'created_at', 'created_at');
+        // Use the dynamically retrieved columns in the query
+        return Product::query()->select($this->columns);
     }
-
-    
 }

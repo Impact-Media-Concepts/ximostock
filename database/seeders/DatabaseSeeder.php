@@ -63,9 +63,13 @@ class DatabaseSeeder extends Seeder
 
         $products = Product::factory(100)->create([
             'work_space_id' => 1,
+            'price' => fake()->numberBetween(1, 1000),
+            'discount' => fake()->numberBetween(0, 50),
         ]);
         $products_second = Product::factory(100)->create([
             'work_space_id' => 2,
+            'price' => fake()->numberBetween(1, 1000),
+            'discount' => fake()->numberBetween(0, 50),
         ]);
 
         $primeProducts = Product::factory(25)->create([

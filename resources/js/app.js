@@ -3,7 +3,7 @@ import { route } from '../../vendor/tightenco/ziggy/dist/index'; // Import the r
 
 import Navbar from './components/Navbar.vue';
 import Sidebar from './components/Sidebar.vue';
-import MainProductInfo from './components/product/MainProductInfo.vue';
+import SingleProduct from './components/product/SingleProduct.vue';
 import GeneralNotification from './components/GeneralNotification.vue';
 import UserOverview from './components/user/UserOverview.vue';
 import AddUser from './components/user/AddUser.vue';
@@ -16,7 +16,7 @@ const app = createApp({});
 // Register the components
 app.component('Navbar', Navbar);
 app.component('Sidebar', Sidebar);
-app.component('MainProductInfo', MainProductInfo);
+app.component('SingleProduct', SingleProduct);
 app.component('GeneralNotification', GeneralNotification);
 app.component('UserOverview', UserOverview);
 app.component('AddUser', AddUser);

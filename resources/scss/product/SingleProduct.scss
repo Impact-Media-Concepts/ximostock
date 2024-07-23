@@ -1,0 +1,7 @@
+@import "../globals/_mixins";
+@import "../globals/__variables";
+
+.product-view {
+    display: flex;
+    flex-direction: column;
+}

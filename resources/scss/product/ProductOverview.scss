@@ -4,15 +4,21 @@
 .product-overview {
     display: flex;
     gap: 31px;
-    .product-container {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
+    .product-container,
     .filter-container {
         display: flex;
         flex-direction: column;
+        background-color: $light;
+        border-radius: 10px;
+        border: 1px solid $border-light;
+        
+    }
+    .product-container {
+        flex-grow: 1;
+    }
+    .filter-container {
         width: 100%;
         max-width: 265px;
+        padding: 20px;
     }
 }

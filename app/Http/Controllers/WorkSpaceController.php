@@ -25,7 +25,6 @@ class WorkSpaceController extends Controller
      */
     public function index()
     {
-        var_dump(session('active_workspace_id'));
         $workspaces = $this->currentUser->role === 'admin' 
             ? WorkSpace::all() 
             : WorkSpace::where('id', $this->currentUser->work_space_id)->get();

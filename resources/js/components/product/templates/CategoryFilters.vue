@@ -23,11 +23,11 @@ import '../../../../scss/product/templates/CategoryFilters.scss';
 export default defineComponent({
     props: {
         categories: {
-            type: Array,
+            type: [Array, Object],
             required: true,
         },
         selectedCategories: {
-            type: Array,
+            type: [Array, Object],
             required: true,
         },
     },

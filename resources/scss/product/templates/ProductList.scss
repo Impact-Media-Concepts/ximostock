@@ -1,66 +1,183 @@
 @import "../../globals/_mixins";
 @import "../../globals/__variables";
 
-.product-table {
-    display: flex;
-    flex-direction: column;
-    .product {
+.product-container {
+
+    .product-table-header {
         display: flex;
-        gap: 21px;
         justify-content: space-between;
-        > div {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            line-height: 24px;
-            font-weight: 400;
-            color: $text;
-        }
-        .checkbox {
-            input {
-                width: 14px;
-                height: 14px;
-            }
-        }
-        .image {
-            width: 44px;
-            height: 44px;
-            object-fit: cover;
-            object-position: center;
-            border: 1px solid $border-dark;
-        }
+        align-items: center;
+        gap: 21px;
+        background-color: $primary;
+        padding: 17.5px 30px 17.5px 25px;
+        border-radius: 10px 10px 0 0;
+
         .title {
-            width: 100%;
-            max-width: 350px;
+            font-size: 18px;
+            line-height: 21px;
+            color: $light;
         }
-        .price {
-            span {
+
+        .actions {
+            display: flex;
+            gap: 11px;
+            .button {
                 display: flex;
-                flex-direction: column;
                 justify-content: center;
+                align-items: center;
+                gap: 9px;
+                padding: 13px 12px 11px 12px;
+                border: 1px solid $border-light;
+                border-radius: 5px;
+                background-color: $primary;
+                color: $text-light;
+                font-size: 14px;
                 line-height: 17px;
-                .crossed {
-                    font-weight: 400;
-                    text-decoration: line-through;
-                    text-align: center;
-                }
-                .price {
-                    font-weight: 700;
-                    text-align: center;
+                cursor: pointer;
+                text-decoration: none;
+                &:hover {
+                    background-color: darken($primary, 10%);
                 }
             }
         }
-        .stock {
+        
+    }
 
+    .bulk-actions { 
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        padding: 12px;
+        background-color: $secondary;
+        color: $text;
+        font-size: 14px;
+        line-height: 17px;
+        .select-all {
+            cursor: pointer;
+            color: $primary;
         }
-        .sold {
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            .button {
+                padding: 9px 15px 7px 15px;
+                font-size: 14px;
+                line-height: 17px;
+                font-weight: 400;
+                color: $text;
+                border: 1px solid $text;
+                border-radius: 5px;
+            }
+        }
+    }
 
-        }
-        .status {
+    .product-table {
+        display: flex;
+        flex-direction: column;
+        padding: 0 25px;
+        overflow: auto;
 
-        }
-        .last-updated {
+        .product {
+            display: flex;
+            gap: 21px;
+            justify-content: space-between;
+            padding: 15px 0;
+            text-decoration: none;
+            &:hover * {
+                text-decoration: none;
+            }
 
+            >div {
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                line-height: 24px;
+                font-weight: 400;
+                color: $text;
+                min-width: 100px;
+            }
+
+            .checkbox {
+                min-width: unset;
+                input {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+
+            .image {
+                width: 44px;
+                height: 44px;
+                min-width: 44px;
+                border: 1px solid $border-dark;
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                }
+            }
+
+            .ean {
+                max-width: 100px
+            }
+
+            .title {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .price {
+                span {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    line-height: 17px;
+
+                    .crossed {
+                        font-weight: 400;
+                        text-decoration: line-through;
+                        text-align: center;
+                    }
+
+                    .price {
+                        font-weight: 700;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .status {
+                ul {
+                    margin-block-start: 0;
+                    margin-block-end: 0;
+                    padding-inline-start: 0;
+                    text-indent: -6px !important;
+                    li.on,
+                    li.on::marker {
+                        color: $primary
+                    }
+                }
+            }
+
+            .sold {}
+
+            .status {}
+
+            .last-updated {}
         }
+    }
+    .product-table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 21px;
+        background-color: $primary;
+        padding: 17px 25px;
+        border-radius: 0 0 ;
+        
     }
 }

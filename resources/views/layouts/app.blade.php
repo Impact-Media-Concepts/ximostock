@@ -4,23 +4,23 @@
 
     $navbaritems = [
         'logo' => [
-            'src' => asset('/images/ximostock-logo.png'),
+            'src' => '/images/ximostock-logo.png',
             'alt' => "Ximostock",
             'href' => secure_url('/products'),
         ],
         'select' => [
-            'image' => asset('/images/default-profile-picture.svg'),
-            'arrow' => asset('/images/chevron-down-dark.svg'),
+            'image' => '/images/default-profile-picture.svg',
+            'arrow' => '/images/chevron-down-dark.svg',
             'options' => [
                 'Settings' => [
                     'title' => "Instellingen",
                     'href' => route('profile.edit'),
-                    'icon' => asset('/images/settings-grey.svg'),
+                    'icon' => '/images/settings-grey.svg',
                 ],
                 'Logout' => [
                     'title' => "Uitloggen",
                     'href' => route('logout'),
-                    'icon' => asset('/images/exit-grey.svg'),
+                    'icon' => '/images/exit-grey.svg',
                 ],
             ],
         ]
@@ -28,12 +28,12 @@
 
     if ($user->role == 'admin') {
         $navbaritems['add'] = [
-            'image' => asset('/images/grid-icon.svg'),
+            'image' => '/images/grid-icon.svg',
             'text' => "Nieuwe toevoegen",
             'href' => secure_url('/products/create'),
         ];
         $navbaritems['workspace'] = [
-            'image' => asset('/images/grid-icon.svg'),
+            'image' => '/images/grid-icon.svg',
             'text' => "Workspaces",
             'href' => secure_url('/workspaces'),
         ];
@@ -43,67 +43,67 @@
         [
             'url' => route('dashboard'),
             'title' => 'Dashboard',
-            'image_url' => asset('/images/sidebar/dashboard.svg'),
+            'image_url' => '/images/sidebar/dashboard.svg',
         ],
         [
             'url' => route('products.index'),
             'title' => 'producten',
-            'image_url' => asset('/images/sidebar/producten.svg'),
+            'image_url' => '/images/sidebar/producten.svg',
         ],
         [
             'url' => route('activity-log.index'),
             'title' => 'Logboek',
-            'image_url' => asset('/images/sidebar/logboek.svg'),
+            'image_url' => '/images/sidebar/logboek.svg',
         ],
         [
             'url' => route('dashboard'),
             'title' => 'Instellingen',
-            'image_url' => asset('/images/sidebar/instellingen.svg'),
+            'image_url' => '/images/sidebar/instellingen.svg',
         ],
         [
             'url' => route('saleschannels.index'),
             'title' => 'Verkoopkanalen',
-            'image_url' => asset('/images/sidebar/verkoopkanalen.svg'),
+            'image_url' => '/images/sidebar/verkoopkanalen.svg',
         ],
         [
             'url' => route('categories.index'),
             'title' => 'Categorieën',
-            'image_url' => asset('/images/sidebar/categorieen.svg'),
+            'image_url' => '/images/sidebar/categorieen.svg',
         ],
         // [
         //     'url' => secure_url('/archive'),
         //     'title' => 'Archief ()',
-        //     'image_url' => asset('/images/sidebar/archief.svg'),
+        //     'image_url' => '/images/sidebar/archief.svg',
         // ],
         // [
         //     'url' => secure_url('/filter'),
         //     'title' => 'Filter ()',
-        //     'image_url' => asset('/images/sidebar/filters.svg'),
+        //     'image_url' => '/images/sidebar/filters.svg',
         // ],
         // [
         //     'url' => secure_url('/filtersets'),
         //     'title' => 'Filtersets ()',
-        //     'image_url' => asset('/images/sidebar/filtersets.svg'),
+        //     'image_url' => '/images/sidebar/filtersets.svg',
         // ],
         [
             'url' => route('locations.index'),
             'title' => 'Opslaglocaties',
-            'image_url' => asset('/images/sidebar/opslaglocaties.svg'),
+            'image_url' => '/images/sidebar/opslaglocaties.svg',
         ],
         // [
         //     'url' => secure_url('/dashboard'),
         //     'title' => 'Thema ()',
-        //     'image_url' => asset('/images/sidebar/thema.svg'),
+        //     'image_url' => '/images/sidebar/thema.svg',
         // ],
         // [
         //     'url' => secure_url('/dashboard'),
         //     'title' => 'Leveranciers ()',
-        //     'image_url' => asset('/images/sidebar/leveranciers.svg'),
+        //     'image_url' => '/images/sidebar/leveranciers.svg',
         // ],
         [
             'url' => route('users.index'),
             'title' => 'Gebruikers',
-            'image_url' => asset('/images/sidebar/gebruikers.svg'),
+            'image_url' => '/images/sidebar/gebruikers.svg',
         ],
     ];
 
