@@ -40,10 +40,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product')->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product')->name('products.create');
         Route::get('/export', [ProductController::class, 'export'])->name('products.export');
-        Route::get('/archive', [ProductController::class, 'archive'])->middleware('can:forceDelete,App\Models\Product')->middleware('can:restore,App\Models\Product')->name('products.archive');
+        // Route::get('/archive', [ProductController::class, 'archive'])->middleware('can:forceDelete,App\Models\Product')->middleware('can:restore,App\Models\Product')->name('products.archive');
         Route::get('/{product}', [ProductController::class, 'show'])->middleware('can:view,product')->name('products.show');
         Route::post('/', [ProductController::class, 'store'])->name('products.store');
-        Route::patch('/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');
         Route::post('/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
         Route::post('/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');

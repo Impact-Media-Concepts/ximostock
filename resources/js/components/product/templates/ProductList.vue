@@ -85,7 +85,7 @@ import '../../../../scss/product/templates/ProductList.scss';
 export default defineComponent({
     props: {
         filteredProducts: {
-            type: Array,
+            type: [Array, Object],
             required: true,
         },
     },

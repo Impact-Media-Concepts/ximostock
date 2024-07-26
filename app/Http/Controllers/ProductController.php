@@ -31,6 +31,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 
 class ProductController extends BaseProductController
@@ -52,6 +54,7 @@ class ProductController extends BaseProductController
                     ->with(['categories', 'photos' => function ($query) {
                         $query->where('primary', 1);
                     }])
+                    ->orderBy('created_at', 'desc') // Order by creation date
                     ->paginate(11); // Use paginate instead of limit
 
         // Eager loading categories for products
@@ -113,7 +116,36 @@ class ProductController extends BaseProductController
 
     public function show(Request $request, Product $product)
     {
-        return view('product.show', compact('product'));
+        // Eager load all necessary relationships
+    $product->load([
+        'childProducts',
+        'parentProduct',
+        'categories',
+        'photos',
+        'properties',
+        'locationZones',
+        'salesChannels',
+        'productSalesChannels',
+        'sales',
+    ]);
+
+    // Get the active workspace id from the session
+    $activeWorkspaceId = session('active_workspace_id');
+    dump($activeWorkspaceId);
+
+    // Get all categories related to the active workspace
+    $workspaceCategories = \App\Models\Category::where('work_space_id', $activeWorkspaceId)->get();
+
+    // Get the categories that are already related to the product
+    $productCategoryIds = $product->categories->pluck('id')->toArray();
+
+    // Filter out the categories that are already related to the product
+    $unrelatedCategories = $workspaceCategories->whereNotIn('id', $productCategoryIds);
+
+    return view('product.show', [
+        'product' => $product,
+        'unrelatedCategories' => $unrelatedCategories,
+    ]);
     }
 
     public function destroy($id)
@@ -369,65 +401,33 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-    public function update(Product $product)
+    public function update(Request $request, int $productId)
     {
-        $request = request();
-        //authorize
-        $salesChannels = isset($request['salesChannelIds']) ? $request['salesChannelIds'] : [];
-        $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
-        $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
-        $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
-        Gate::authorize('update', [
-            $product,
-            $salesChannels,
-            $categories,
-            $properties,
-            $location_zones
+        
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'parent_product_id' => 'nullable|exists:products,id',
+            'sku' => 'nullable|unique:products,sku,' . $product->id,
+            'ean' => 'nullable|unique:products,ean,' . $product->id,
+            'title' => 'nullable|string|max:255',
+            'short_description' => 'nullable|string',
+            'long_description' => 'nullable|string',
+            'price' => 'nullable|numeric',
+            'discount' => 'nullable|numeric',
+            'backorders' => 'nullable|boolean',
+            'stock_quantity' => 'required|integer',
+            'status' => 'required|boolean',
+            'archived' => 'nullable|boolean',
         ]);
 
-        //validate
-        $saleschannelAttributes = $this->validateSalesChannelAttributesUpdate($request);
-        $forOnline = false;
-        if (Count($saleschannelAttributes['salesChannels']) > 0) {
-            $forOnline = true;
-        }
-        $validationRules = $this->validateProductAttributesUpdate($forOnline, $product->id);
-        $validationRules += $this->validatePropertyAttributes();
-        $validationRules += $this->validateCategoryUpdate();
+        $product->update($validated);
 
-
-        $attributes = $request->validate($validationRules);
-
-        if (!isset($attributes['backorders'])) {
-            $attributes['backorders'] = false;
-        }
-        if (!isset($attributes['communicate_stock'])) {
-
-            $attributes['communicate_stock'] = false;
-        }
-
-        //update product
-        $product->update([
-            'sku' => $attributes['sku'],
-            'ean' => $attributes['ean'],
-            'title' => $attributes['title'],
-            'price' => $attributes['price'],
-            'long_description' => $attributes['long_description'],
-            'short_description' => $attributes['short_description'],
-            'backorders' => $attributes['backorders'],
-            'communicate_stock' => $attributes['communicate_stock'],
-            'discount' => $attributes['discount'],
-            'orderByOnline' => $forOnline
-        ]);
-
-        if (!isset($attributes['categories'])) {
-            $attributes['categories'] = [];
-        }
-        $this->updateCategories($product->id, $attributes['categories']);
-        $this->updateProperties($product->id, $attributes['properties']);
-        $this->updateSalesChannels($product->id, $saleschannelAttributes);
-
-        return redirect()->back();
+        return response()->json($product);
     }
 
     public function store(Request $request)
@@ -490,7 +490,7 @@ class ProductController extends BaseProductController
 
     public function export()
     {
-        return Excel::download(new ProductsExport, 'products.csv');
+        return Excel::download(new ProductsExport(null), 'products.csv');
     }
 
     protected function validateNewProperiesAttributes(): array
@@ -979,6 +979,16 @@ class ProductController extends BaseProductController
         return response()->json(['message' => 'Product status were switched successfully'], 200);
     }
     
+    public function deleteById($productId)
+    {
+        $product = Product::find($productId);
+        if ($product) {
+            $product->delete();
+            return response()->json(['message' => 'Product deleted successfully'], 200);
+        } else {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+    }
 
     public function deleteProducts(Request $request)
     {
@@ -999,5 +1009,74 @@ class ProductController extends BaseProductController
     
         return response()->json(['message' => 'Product were deleted successfully'], 200);
     }
+
+    public function duplicate($id) {
+        // Find the product by its ID
+        $product = Product::find($id);
+    
+        // Check if the product exists
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+    
+        // Duplicate the product
+        $newProduct = $product->replicate();
+    
+
+        $newProduct->sku = null;
+        $newProduct->ean = null;
+
+        // Ensure unique title by appending a unique suffix
+        $newTitle = $product->title . ' (copy)';
+        while (Product::where('title', $newTitle)->exists()) {
+            $newTitle = $product->title . ' (copy)' . '-' . Str::random(5);
+        }
+        $newProduct->title = $newTitle;
+    
+        // Save the new product
+        $newProduct->save();
+    
+        // Return the new product as a JSON response
+        return response()->json($newProduct, 201);
+    }
+
+
+    public function archiveById($id) {
+        // Find the product by its ID
+        $product = Product::find($id);
+    
+        // Check if the product exists
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+    
+        $product->archived = true;
+        $product->save();
+    
+        // Return the new product as a JSON response
+        return response()->json($product, 201);
+    }
+
+    public function exportById($id) {
+        // Find the product by its ID
+        $product = Product::find($id);
+    
+        // Check if the product exists
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+        
+        $filename = 'products-' . Str::random(20) . '.csv';
+        while (Storage::disk('public')->exists($filename)) {
+            $filename = 'products-' . Str::random(20) . '.csv';
+        }
+
+        if(Excel::store(new ProductsExport($id), $filename, 'public')) {
+            return response()->json(['message' => 'Product exported successfully', 'filename' => $filename], 200);
+        } else {
+            return response()->json(['error' => 'Failed to export product'], 500);
+        }
+    }
+    
     
 }

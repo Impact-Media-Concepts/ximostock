@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Photo::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Product::class)->constrained()->cascadeOnDelete();
-            $table->boolean('primary');
+            $table->boolean('primary')->default(false);
             $table->timestamps();
         });
     }

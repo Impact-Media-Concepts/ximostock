@@ -25,11 +25,11 @@ export default defineComponent({
     },
     props: {
         initialProducts: {
-            type: Object, // Now it's an object because it contains pagination info
+            type: [Array, Object], // Now it's an object because it contains pagination info
             required: true,
         },
         initialCategories: {
-            type: Array,
+            type: [Array, Object],
             required: true,
         },
     },

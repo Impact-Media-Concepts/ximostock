@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Exports\ProductsExport;
 use App\Models\Product;
 use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -12,18 +13,31 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProductsExport implements FromQuery, WithHeadings, WithColumnFormatting, WithMapping, ShouldAutoSize
 {
     use Exportable;
 
+    protected $currentUser;
+    protected $productId;
     protected $columns;
 
-    public function __construct()
+    public function __construct(?int $id)
     {
-        // Retrieve the table columns dynamically
+        // Get the current user
+        $this->currentUser = Auth::user();
+
+        // Retrieve the table columns dynamically from the 'products' table
         $this->columns = Schema::getColumnListing('products');
+
+        // Example of additional setup based on the ID
+        if ($id !== null) {
+            $this->productId = $id;
+        }
     }
+    
 
     public function headings(): array
     {
@@ -64,7 +78,17 @@ class ProductsExport implements FromQuery, WithHeadings, WithColumnFormatting, W
     */
     public function query()
     {
-        // Use the dynamically retrieved columns in the query
-        return Product::query()->select($this->columns);
+
+        if($this->productId !== null) {
+            return Product::query()->where('id', $this->productId)->select($this->columns);
+        } else {
+            if(isset($this->currentUser->role) && $this->currentUser->role === 'admin') {
+                return Product::query()->select($this->columns);
+            } else {
+                return Product::query()->where('work_space_id', $this->currentUser->work_space_id)->select($this->columns);
+            }
+        }
+
+        
     }
 }
