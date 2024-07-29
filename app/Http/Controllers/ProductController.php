@@ -142,6 +142,9 @@ class ProductController extends BaseProductController
     // Filter out the categories that are already related to the product
     $unrelatedCategories = $workspaceCategories->whereNotIn('id', $productCategoryIds);
 
+    dump($product->categories);
+    dump($unrelatedCategories);
+
     return view('product.show', [
         'product' => $product,
         'unrelatedCategories' => $unrelatedCategories,
@@ -401,34 +404,40 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-    public function update(Request $request, int $productId)
+    
+    public function update(Request $request, $id)
     {
-        
-        $product = Product::find($productId);
-
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-
-        $validated = $request->validate([
-            'parent_product_id' => 'nullable|exists:products,id',
-            'sku' => 'nullable|unique:products,sku,' . $product->id,
-            'ean' => 'nullable|unique:products,ean,' . $product->id,
-            'title' => 'nullable|string|max:255',
+        // Validate the request data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'discount' => 'nullable|numeric',
+            'sku' => 'required|string|max:255',
+            'ean' => 'nullable|numeric',
             'short_description' => 'nullable|string',
             'long_description' => 'nullable|string',
-            'price' => 'nullable|numeric',
-            'discount' => 'nullable|numeric',
-            'backorders' => 'nullable|boolean',
-            'stock_quantity' => 'required|integer',
-            'status' => 'required|boolean',
-            'archived' => 'nullable|boolean',
+            'categories' => 'array',
+            'categories.*' => 'integer|exists:categories,id',
         ]);
-
-        $product->update($validated);
-
-        return response()->json($product);
+    
+        // Find the product by ID
+        $product = Product::findOrFail($id);
+    
+        // Update the product with the request data
+        $product->update($request->only([
+            'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description'
+        ]));
+    
+        // Sync the categories
+        if ($request->has('categories')) {
+            $product->categories()->sync($request->categories);
+        }
+    
+        // Return a response (you can customize this as needed)
+        return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }
+    
+    
 
     public function store(Request $request)
     {

@@ -119,7 +119,7 @@
               <span>Geselecteerde categorieën</span>
               <div class="form-group">
                 <ul>
-                  <li v-for="category in selectedCategories" :key="category.id">
+                  <li v-for="category in product.categories" :key="category.id">
                     <input type="checkbox" :value="category.id" @change="moveCategory(category, 'selected')" checked>
                     {{ category.name }}
                   </li>
@@ -204,8 +204,7 @@ export default defineComponent({
   },
   data() {
     return {
-      availableCategories: this.categories,
-      selectedCategories: [],
+      availableCategories: Object.values(this.categories),
       productData: this.product,
       activeTab: 2,
       tabs: ['Informatie', 'Foto\'s', 'Categorieën', 'Eigenschappen', 'Verkoopkanalen', 'Variaties', 'Voorraad'],
@@ -214,10 +213,13 @@ export default defineComponent({
   methods: {
     
     save() {
+
+      console.log(this.productData);
       axios.put(this.route('products.update', this.productData.id), this.productData)
         .then(response => {
           console.log('Product saved');
         });
+        console.log(this.productData);
     },
     duplicate() {
       axios.post(this.route('products.duplicate', this.productData.id))
@@ -267,11 +269,15 @@ export default defineComponent({
         });
     },
     moveCategory(category, from) {
+
+      console.log(this.availableCategories);
+      console.log(this.product.categories);
+
       if (from === 'available') {
         this.availableCategories = this.availableCategories.filter(c => c.id !== category.id);
-        this.selectedCategories.push(category);
+        this.product.categories.push(category);
       } else {
-        this.selectedCategories = this.selectedCategories.filter(c => c.id !== category.id);
+        this.product.categories = this.product.categories.filter(c => c.id !== category.id);
         this.availableCategories.push(category);
       }
     },
