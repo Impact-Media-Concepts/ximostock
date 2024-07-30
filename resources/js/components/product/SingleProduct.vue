@@ -105,7 +105,7 @@
               <section>
                 <span>Beschikbare categorieën</span>
                 <div class="form-group">
-                  <input type="text" placeholder="Typ hier waarop u de lijst wil filteren">
+                  <input @input="FilterAvailableCategories()" v-model="filterInputText" type="text" placeholder="Typ hier waarop u de lijst wil filteren">
                   <ul>
                     <li v-for="category in availableCategories" :key="category.id">
                       <input type="checkbox" :value="category.id" @change="moveCategory(category, 'available')">
@@ -133,7 +133,33 @@
             <div class="title">
               <h4>Eigenschappen</h4>
             </div>
-            <div class="content eigenschappen"></div>
+            <div class="content eigenschappen">
+              <section>
+                <span>Acties</span>
+                <div class="form-group">
+                  <button @click="addNewProperty">Nieuwe toevoegen</button>
+                  <button @click="addExistingProperty">Bestaande toevoegen</button>
+                </div>
+              </section>
+              <section>
+                <span>Eigenschappen</span>
+              </section>
+              <section v-for="property in this.productData.properties" :key="property.id">
+                <span>
+                  <strong> {{ property.name }} </strong>
+                  <small>type: {{ property.values.type }}</small>
+                </span>
+                <div class="form-group">
+                  <label for="title">Waarden:</label>
+                  {{ property.pivot.property_value.value }}
+                  <input 
+                    type="text"
+                    v-model="property.pivot.property_value"
+                    @input="updatePropertyValue(property)"
+                  />
+                </div>
+              </section>
+            </div>
           </div>
           <div class="content-container" v-if="activeTab === 4">
             <div class="title">
@@ -163,6 +189,9 @@
         <button @click="deleteProduct" class="delete">Verwijderen</button>
       </div>
     </div>
+
+    <general-notification v-if="errors" :errors="errors"></general-notification>
+
   </div>
 </template>
 
@@ -170,7 +199,6 @@
 import { defineComponent, inject } from 'vue';
 import axios from 'axios';
 import '../../../scss/product/SingleProduct.scss';
-import { ca } from 'date-fns/locale';
 
 export default defineComponent({
   props: {
@@ -198,7 +226,7 @@ export default defineComponent({
       required: true,
     },
     categories: {
-      type: Array,
+      type: Object,
       default: () => [],
     },
   },
@@ -206,20 +234,38 @@ export default defineComponent({
     return {
       availableCategories: Object.values(this.categories),
       productData: this.product,
-      activeTab: 2,
+      activeTab: 3,
       tabs: ['Informatie', 'Foto\'s', 'Categorieën', 'Eigenschappen', 'Verkoopkanalen', 'Variaties', 'Voorraad'],
+      filterInputText: '',
+      errors: 0 // Add this line to handle errors
     };
   },
   methods: {
-    
     save() {
+      // Create a copy of productData to modify
+      let productDataToSend = { ...this.productData };
+      productDataToSend.categories = this.productData.categories.map(category => category.id);
 
-      console.log(this.productData);
-      axios.put(this.route('products.update', this.productData.id), this.productData)
+      // Stringify property values and ensure work_space_id is included
+      productDataToSend.properties = this.productData.properties.map(property => ({
+        id: property.id,
+        pivot: {
+          property_value: JSON.stringify({ value: property.pivot.property_value }),
+        }
+      }));
+
+      console.log('Product data to send', productDataToSend);
+
+      axios.put(this.route('products.update', this.productData.id), productDataToSend)
         .then(response => {
           console.log('Product saved');
+          this.errors = 0; // Reset errors
+        })
+        .catch(error => {
+          if (error.response) {
+            this.errors = error.response.data.errors;
+          }
         });
-        console.log(this.productData);
     },
     duplicate() {
       axios.post(this.route('products.duplicate', this.productData.id))
@@ -248,6 +294,11 @@ export default defineComponent({
     },
     handleFileUpload(event) {
       var file = event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
       var formData = new FormData();
       formData.append('file', file);
       formData.append('product_id', this.productData.id); // Make sure this.productId is set to the correct product ID
@@ -269,10 +320,6 @@ export default defineComponent({
         });
     },
     moveCategory(category, from) {
-
-      console.log(this.availableCategories);
-      console.log(this.product.categories);
-
       if (from === 'available') {
         this.availableCategories = this.availableCategories.filter(c => c.id !== category.id);
         this.product.categories.push(category);
@@ -281,12 +328,32 @@ export default defineComponent({
         this.availableCategories.push(category);
       }
     },
+    FilterAvailableCategories() {
+      console.log('Filtering categories', this.filterInputText);
+      this.availableCategories = Object.values(this.categories).filter(category => category.name.toLowerCase().includes(this.filterInputText.toLowerCase()));
+    },
+    updatePropertyValue(property) {
+      console.log('Updating property value', property);
+    },
+    parsePropertyValue(value) {
+      try {
+        return JSON.parse(value).value;
+      } catch (e) {
+        return value;
+      }
+    }
   },
   setup() {
     const route = inject('route'); // Injecting route helper
     return {
       route,
     };
+  },
+  mounted() {
+    this.productData.properties.forEach(property => {
+      property.values = JSON.parse(property.values);
+      property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
+    });
   },
 });
 </script>

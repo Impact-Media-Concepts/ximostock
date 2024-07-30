@@ -116,40 +116,101 @@ class ProductController extends BaseProductController
 
     public function show(Request $request, Product $product)
     {
-        // Eager load all necessary relationships
-    $product->load([
-        'childProducts',
-        'parentProduct',
-        'categories',
-        'photos',
-        'properties',
-        'locationZones',
-        'salesChannels',
-        'productSalesChannels',
-        'sales',
-    ]);
+            // Eager load all necessary relationships
+        $product->load([
+            'childProducts',
+            'parentProduct',
+            'categories',
+            'photos',
+            'properties',
+            'locationZones',
+            'salesChannels',
+            'productSalesChannels',
+            'sales',
+        ]);
 
-    // Get the active workspace id from the session
-    $activeWorkspaceId = session('active_workspace_id');
-    dump($activeWorkspaceId);
+        // Get the active workspace id from the session
+        $activeWorkspaceId = session('active_workspace_id');
 
-    // Get all categories related to the active workspace
-    $workspaceCategories = \App\Models\Category::where('work_space_id', $activeWorkspaceId)->get();
+        // Get all categories related to the active workspace
+        $workspaceCategories = \App\Models\Category::where('work_space_id', $activeWorkspaceId)->get();
 
-    // Get the categories that are already related to the product
-    $productCategoryIds = $product->categories->pluck('id')->toArray();
+        // Get the categories that are already related to the product
+        $productCategoryIds = $product->categories->pluck('id')->toArray();
 
-    // Filter out the categories that are already related to the product
-    $unrelatedCategories = $workspaceCategories->whereNotIn('id', $productCategoryIds);
+        // Filter out the categories that are already related to the product
+        $unrelatedCategories = $workspaceCategories->whereNotIn('id', $productCategoryIds);
 
-    dump($product->categories);
-    dump($unrelatedCategories);
+        Log::info( "product-propties:");
+        // Log::info( $product->properties[0]);
 
-    return view('product.show', [
-        'product' => $product,
-        'unrelatedCategories' => $unrelatedCategories,
-    ]);
+        return view('product.show', [
+            'product' => $product,
+            'unrelatedCategories' => $unrelatedCategories,
+        ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        // Validate the request data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'discount' => 'nullable|numeric',
+            'sku' => 'required|string|max:255',
+            'ean' => 'nullable|numeric',
+            'short_description' => 'nullable|string',
+            'long_description' => 'nullable|string',
+            'categories' => 'array',
+            'categories.*' => 'integer|exists:categories,id',
+            'properties' => 'array',
+            'properties.*.id' => 'integer|exists:properties,id',
+            'properties.*.pivot.property_value' => 'string', // Adjust validation as necessary
+        ]);
+    
+        // Find the product by ID
+        $product = Product::findOrFail($id);
+    
+        Log::info("product: " . $product);
+    
+        // Update the product with the request data
+        $product->update($request->only([
+            'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description'
+        ]));
+    
+        Log::info("product after update: " . $product);
+    
+        // Sync the categories
+        if ($request->has('categories')) {
+            $product->categories()->sync($request->categories);
+        }
+    
+        Log::info("product after sync: " . $product);
+    
+        // Update properties
+        if ($request->has('properties')) {
+            foreach ($request->properties as $propertyData) {
+                if (isset($propertyData['id']) && isset($propertyData['pivot']['property_value'])) {
+                    // Update the pivot table with additional data
+                    Log::info("Updating property with data: ", $propertyData['pivot']);
+                    $product->properties()->updateExistingPivot(
+                        $propertyData['id'],
+                        [
+                            'property_value' => $propertyData['pivot']['property_value'],
+                        ]
+                    );
+                } else {
+                    Log::error("Invalid property data: ", $propertyData);
+                }
+            }
+        }
+    
+        Log::info("product after updating properties: " . $product);
+    
+        // Return a response
+        return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
+    }
+    
 
     public function destroy($id)
     {
@@ -402,42 +463,7 @@ class ProductController extends BaseProductController
         $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
-    }
-
-    
-    public function update(Request $request, $id)
-    {
-        // Validate the request data
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'discount' => 'nullable|numeric',
-            'sku' => 'required|string|max:255',
-            'ean' => 'nullable|numeric',
-            'short_description' => 'nullable|string',
-            'long_description' => 'nullable|string',
-            'categories' => 'array',
-            'categories.*' => 'integer|exists:categories,id',
-        ]);
-    
-        // Find the product by ID
-        $product = Product::findOrFail($id);
-    
-        // Update the product with the request data
-        $product->update($request->only([
-            'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description'
-        ]));
-    
-        // Sync the categories
-        if ($request->has('categories')) {
-            $product->categories()->sync($request->categories);
-        }
-    
-        // Return a response (you can customize this as needed)
-        return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
-    }
-    
-    
+    }    
 
     public function store(Request $request)
     {

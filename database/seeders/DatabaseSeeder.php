@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $workSpaces = WorkSpace::factory(5)->create();
+        $workSpaces = WorkSpace::factory(3)->create();
 
 
         User::factory()->create([
@@ -61,12 +61,12 @@ class DatabaseSeeder extends Seeder
         ]);
         $categories = Category::factory(3)->create();
 
-        $products = Product::factory(100)->create([
+        $products = Product::factory(50)->create([
             'work_space_id' => 1,
             'price' => fake()->numberBetween(1, 1000),
             'discount' => fake()->numberBetween(0, 50),
         ]);
-        $products_second = Product::factory(100)->create([
+        $products_second = Product::factory(50)->create([
             'work_space_id' => 2,
             'price' => fake()->numberBetween(1, 1000),
             'discount' => fake()->numberBetween(0, 50),
@@ -147,19 +147,23 @@ class DatabaseSeeder extends Seeder
         //create subcategories
         foreach ($categories as $category) {
             $subcategories = Category::factory(2)->create([
-                'parent_category_id' => $category
+                'parent_category_id' => $category,
+                'work_space_id' => 2
             ]);
             foreach($subcategories as $category){
                 $subcategories = Category::factory(2)->create([
-                    'parent_category_id' => $category
+                    'parent_category_id' => $category,
+                    'work_space_id' => 2
                 ]);
                 foreach($subcategories as $category){
                     $subcategories = Category::factory(2)->create([
-                        'parent_category_id' => $category
+                        'parent_category_id' => $category,
+                        'work_space_id' => 2
                     ]);
                     foreach($subcategories as $category){
                         $subcategories = Category::factory(2)->create([
-                            'parent_category_id' => $category
+                            'parent_category_id' => $category,
+                            'work_space_id' => 2
                         ]);
                     }
                 }

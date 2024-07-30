@@ -131,11 +131,10 @@
             </div>
         </div>
 
-        @if(session('errors'))
+        {{-- @if(session('errors'))
             <general-notification :errors='@json(session('errors'))'></general-notification>
-        @endif
-        
-
+        @endif --}}
+    
     </div>
 
     @vite('resources/js/app.js')

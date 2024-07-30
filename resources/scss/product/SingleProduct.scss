@@ -111,6 +111,10 @@
                                 line-height: 20px;
                                 color: $light;
                                 border-radius: 10px 10px 0 0;
+                                small {
+                                    display: block;
+                                    margin-top: -5px;
+                                }
                             }
                             .form-group {
                                 display: flex;

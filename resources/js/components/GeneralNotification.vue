@@ -2,9 +2,6 @@
 import { defineProps } from 'vue';
 import '../../scss/GeneralNotification.scss';
 
-console.log("Log");
-
-// Define and accept the prop 'content' which is an optional array with a default value of an empty array
 const props = defineProps({
   errors: {
     type: [Array, Object, String],
@@ -12,21 +9,30 @@ const props = defineProps({
   }
 });
 
-// Render function using JSX to create the component's template
-const render = () => {
-  let errorElements;
-
-  if (typeof props.errors === 'string') {
-    errorElements = <div>{props.errors}</div>;
-  } else if (Array.isArray(props.errors)) {
-    errorElements = props.errors.map((error, index) => (
+const renderErrorElements = (errors) => {
+  if (typeof errors === 'string') {
+    return <div>{errors}</div>;
+  } else if (Array.isArray(errors)) {
+    return errors.map((error, index) => (
       <div key={index}>{error}</div>
     ));
+  } else if (typeof errors === 'object') {
+    return Object.keys(errors).map((key) => (
+      <div key={key}>
+        <strong>{key}:</strong>
+        {Array.isArray(errors[key]) 
+          ? errors[key].map((msg, i) => <div key={i}>{msg}</div>)
+          : <div>{errors[key]}</div>}
+      </div>
+    ));
   }
+  return null;
+};
 
+const render = () => {
   return (
     <div class="general-notification">
-      {errorElements}
+      {renderErrorElements(props.errors)}
     </div>
   );
 };
