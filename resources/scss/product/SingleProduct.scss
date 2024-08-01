@@ -105,6 +105,7 @@
                             border: 1px solid $border;
                             border-radius: 10px;
                             > span {
+                                position: relative;
                                 background-color: $primary;
                                 padding: 10px 22px;
                                 font-size: 14px;
@@ -114,6 +115,13 @@
                                 small {
                                     display: block;
                                     margin-top: -5px;
+                                }
+                                img.remove {
+                                    position: absolute;
+                                    right: 10px;
+                                    top: 50%;
+                                    transform: translateY(-50%);
+                                    cursor: pointer;
                                 }
                             }
                             .form-group {

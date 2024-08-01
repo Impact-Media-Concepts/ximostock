@@ -107,7 +107,7 @@
                 <div class="form-group">
                   <input @input="FilterAvailableCategories()" v-model="filterInputText" type="text" placeholder="Typ hier waarop u de lijst wil filteren">
                   <ul>
-                    <li v-for="category in availableCategories" :key="category.id">
+                    <li v-for="category in filteredCategories" :key="category.id">
                       <input type="checkbox" :value="category.id" @change="moveCategory(category, 'available')">
                       {{ category.name }}
                     </li>
@@ -119,7 +119,7 @@
               <span>Geselecteerde categorieën</span>
               <div class="form-group">
                 <ul>
-                  <li v-for="category in product.categories" :key="category.id">
+                  <li v-for="category in productData.categories" :key="category.id">
                     <input type="checkbox" :value="category.id" @change="moveCategory(category, 'selected')" checked>
                     {{ category.name }}
                   </li>
@@ -138,7 +138,7 @@
                 <span>Acties</span>
                 <div class="form-group">
                   <button @click="addNewProperty">Nieuwe toevoegen</button>
-                  <button @click="addExistingProperty">Bestaande toevoegen</button>
+                  <!-- <button @click="addExistingProperty">Bestaande toevoegen</button> -->
                 </div>
               </section>
               <section>
@@ -148,6 +148,7 @@
                 <span>
                   <strong> {{ property.name }} </strong>
                   <small>type: {{ property.values.type }}</small>
+                  <img @click="removeProperty(property)" src="/images/cross-white.svg" alt="" class="remove">
                 </span>
                 <div class="form-group">
                   <label for="title">Waarden:</label>
@@ -175,9 +176,19 @@
           </div>
           <div class="content-container" v-if="activeTab === 6">
             <div class="title">
-              <h4>Voorraad</h4>
+              <h4>Voorraad beheren</h4>
             </div>
-            <div class="content voorraad"></div>
+            <div class="content voorraad">
+              <section>
+                <span>Huidige status</span>
+                <div class="form-group">
+                  <label for="stock_quantity">Stock Quantity:</label>
+                  <input type="number" v-model="productData.stock_quantity" id="stock_quantity">
+                  <label for="backorders">Backorders:</label>
+                  <input type="checkbox" v-model="productData.backorders" id="backorders" :checked="productData.backorders">
+                </div>
+              </section>
+            </div>
           </div>
         </div>
       </div>
@@ -233,11 +244,12 @@ export default defineComponent({
   data() {
     return {
       availableCategories: Object.values(this.categories),
+      filteredCategories: Object.values(this.categories),
       productData: this.product,
-      activeTab: 3,
+      activeTab: 6,
       tabs: ['Informatie', 'Foto\'s', 'Categorieën', 'Eigenschappen', 'Verkoopkanalen', 'Variaties', 'Voorraad'],
       filterInputText: '',
-      errors: 0 // Add this line to handle errors
+      errors: 0
     };
   },
   methods: {
@@ -246,9 +258,10 @@ export default defineComponent({
       let productDataToSend = { ...this.productData };
       productDataToSend.categories = this.productData.categories.map(category => category.id);
 
-      // Stringify property values and ensure work_space_id is included
+      // Stringify property values
       productDataToSend.properties = this.productData.properties.map(property => ({
         id: property.id,
+        name: property.name,
         pivot: {
           property_value: JSON.stringify({ value: property.pivot.property_value }),
         }
@@ -256,6 +269,7 @@ export default defineComponent({
 
       console.log('Product data to send', productDataToSend);
 
+      console.log(productDataToSend);
       axios.put(this.route('products.update', this.productData.id), productDataToSend)
         .then(response => {
           console.log('Product saved');
@@ -321,19 +335,41 @@ export default defineComponent({
     },
     moveCategory(category, from) {
       if (from === 'available') {
+        // Remove category from available
         this.availableCategories = this.availableCategories.filter(c => c.id !== category.id);
-        this.product.categories.push(category);
+        this.filteredCategories = this.filteredCategories.filter(c => c.id !== category.id);
+        // Add category to selected
+        this.productData.categories.push(category);
+        console.log('Moving category to selected', category);
       } else {
-        this.product.categories = this.product.categories.filter(c => c.id !== category.id);
+        this.productData.categories = this.productData.categories.filter(c => c.id !== category.id);
+        this.filteredCategories.push(category);
         this.availableCategories.push(category);
+        console.log('Moving category to available', category);
       }
     },
     FilterAvailableCategories() {
       console.log('Filtering categories', this.filterInputText);
-      this.availableCategories = Object.values(this.categories).filter(category => category.name.toLowerCase().includes(this.filterInputText.toLowerCase()));
+      // Filter results into the new array
+      this.filteredCategories = this.availableCategories.filter(category =>
+        category.name.toLowerCase().includes(this.filterInputText.toLowerCase())
+      );
     },
     updatePropertyValue(property) {
       console.log('Updating property value', property);
+    },
+    // addExistingProperty() {
+    //   console.log('Adding existing property');
+    // },
+    removeProperty(property) {
+      this.productData.properties = this.productData.properties.filter(p => p !== property);
+    },
+    addNewProperty() {
+      var currentPropertyLength = this.productData.properties.length - 1;
+      var newProperty = JSON.parse(JSON.stringify(this.productData.properties[currentPropertyLength]));
+      newProperty.name = newProperty.name + ' (copy)';
+      newProperty.id = null;
+      this.productData.properties.push(newProperty);
     },
     parsePropertyValue(value) {
       try {
@@ -354,10 +390,7 @@ export default defineComponent({
       property.values = JSON.parse(property.values);
       property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
     });
+    this.productData.backorders = this.productData.backorders === 1 ? true : false;
   },
 });
 </script>
-
-<style scoped>
-/* Add your scoped styles here */
-</style>
