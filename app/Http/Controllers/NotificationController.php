@@ -31,17 +31,18 @@ class NotificationController extends Controller
                 $query->where('work_space_id', $workspaceId);
             })
             ->get();
-        $errorSales = $toProcessSales = Sale::where('status', 'error')
+        $errorSales = Sale::where('status', 'error')
         ->whereHas('product', function ($query) use ($workspaceId) {
             $query->where('work_space_id', $workspaceId);
         })
         ->get();
-        
-        return view('category.index', [
+
+        return view('notification.index', [
             'sidenavActive' => 'notifications',
             'workspaces' => $workspaces,
             'activeWorkspace' => $activeWorkspace,
-            'toProcessSales' => $toProcessSales
+            'toProcessSales' => $toProcessSales,
+            'errorSales' => $errorSales
         ]);
     }
 }

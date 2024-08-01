@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\LocationZone;
 use App\Models\Order;
 use App\Models\Sale;
 use App\Models\Inventory;
@@ -63,5 +64,16 @@ class InventoryManager
             $woocommerce->updateProductStock($product);
         }
         //update stock on the saleschannels(todo)
+    }
+
+    public static function setSaleLocation(Sale $sale, LocationZone $zone ){
+        $inventory = Inventory::where('product_id', $sale->product->id)->where('location_zone_id', $zone->id);
+        if($inventory->stock - $sale->quantity >= 0 || $sale->product->backorder){
+            $inventory->stock =- $sale->quantity;
+            $inventory->update();
+            return 'succes';
+        }else{
+            return 'error';
+        }
     }
 }

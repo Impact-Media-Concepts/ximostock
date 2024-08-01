@@ -119,7 +119,7 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/activity-log', [ActivityLogController::class, 'index']);
 
-    Route::get('/notification', [NotificationController::class, 'index']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
 });
 
 //authentication
