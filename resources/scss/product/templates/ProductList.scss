@@ -180,4 +180,203 @@
         border-radius: 0 0 ;
         
     }
+
+    .saleschannel-link-popup{
+        position:fixed;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        text-align: center;
+        top: 0;
+        left: 0;
+        display: none;
+        &.visable{
+            display: flex;
+        }
+        .popup-content{
+           background-color: #ffffff;
+           display: flex;
+           flex-direction: column;
+           border-color: $border;
+           border-style:solid;
+           border-width: 1px;
+           justify-content: center;
+           align-items: center;
+           border-radius: 10px;
+           padding: 20px;
+           max-width: 500px;
+           width: 80%;
+           gap: 10px;
+           .saleschannels{
+               border-color: $border;
+               border-style:solid;
+               border-radius: 10px;
+               border-width: 1px;
+               width: 100%;
+               display: flex;
+               flex-direction: column;
+               overflow: hidden;
+               .saleschannels-header{
+                    background-color: $primary;
+                    color: $text-light;
+                    font-size: 14px;
+                    line-height: 17px;
+                    text-align: left;
+                    padding: 12px 22px;
+                }
+                .saleschannels-content{
+                    padding: 10px;
+                    text-align: left;
+                    .saleschannel{
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        padding: 4px;
+                        color: $text;
+                    }
+                }
+            }
+            .action-buttons{
+                display: flex;
+                flex-direction: row-reverse;
+                width: 100%;
+                gap: 8px;
+                .submit{
+                    width: 80px;
+                    height: 30px;
+                    background-color: $primary;
+                    border-radius: 5px;
+                    border-style: none;
+                    color: $text-light;
+                    &:hover {
+                        background-color: darken($primary,10%);
+                    }
+                }
+                .cancel{
+                    width: 80px;
+                    height: 30px;
+                    background-color: $secondary;
+                    border-radius: 5px;
+                    border-style: solid;
+                    border-color: $border-dark;
+                    border-width: 1px;
+                    color: $border-dark;
+                    &:hover {
+                        background-color: darken($secondary,10%);
+                    }
+                }
+            }
+        }
+    }
+
+    .discount-popup{
+        position:fixed;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        text-align: center;
+        top: 0;
+        left: 0;
+        display: none;
+        &.visable{
+            display: flex;
+        }
+        .popup-content{
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            border-color: $border;
+            border-style:solid;
+            border-width: 1px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 704px;
+            width: 80%;
+            gap: 10px;
+            .discountform{
+                border-color: $border;
+                border-style:solid;
+                border-radius: 10px;
+                border-width: 1px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                .discount-header{
+                    background-color: $primary;
+                    color: $text-light;
+                    font-size: 14px;
+                    line-height: 17px;
+                    text-align: left;
+                    padding: 12px 22px;
+                }
+                .discount-content{
+                    display: flex;
+                    flex-direction: column;
+                    padding: 21px;
+                    gap: 36px;
+                    .inputs{
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 7px 19px;
+                        .textform{
+                            height: 40px;
+                            border-radius: 5px;
+                            border-color: $border;
+                            border-style: solid;
+                            border-width: 1px;
+                            &::placeholder{
+                                text-align: center;
+                                color: $border;
+                            }
+                        }
+                        .checkbox{
+                            display: flex;
+                            align-items: center;
+                            flex-direction: row;
+                            .label{
+                                font-size: 14px;
+                                line-height: 20px;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                    .action-buttons{
+                        display: flex;
+                        flex-direction: row-reverse;
+                        width: 100%;
+                        gap: 8px;
+                        .submit{
+                            width: 126px;
+                            height: 43px;
+                            background-color: $primary;
+                            border-radius: 5px;
+                            border-style: none;
+                            color: $text-light;
+                            &:hover {
+                                background-color: darken($primary,10%);
+                            }
+                        }
+                        .cancel{
+                            width: 126px;
+                            height: 43px;
+                            background-color: $secondary;
+                            border-radius: 5px;
+                            border-style: solid;
+                            border-color: $border-dark;
+                            border-width: 1px;
+                            color: $border-dark;
+                            &:hover {
+                                background-color: darken($secondary,10%);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

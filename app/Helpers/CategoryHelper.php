@@ -36,7 +36,6 @@ class CategoryHelper
                 $childCategoryIds = array_merge($childCategoryIds, self::getChildCategoryIds($child->id));
             }
         }
-
         return $childCategoryIds;
     }
 
