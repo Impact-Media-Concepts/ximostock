@@ -17,26 +17,28 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-            $categories = Category::where('work_space_id', $request['workspace']);
-        } else {
-            $workspaces = null;
-            $activeWorkspace = null;
-            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
-        }
-        $categories = $categories->with('child_categories_recursive', 'products')->whereNull('parent_category_id')->get();
+        $categories = Category::where('work_space_id', session('active_workspace_id'))->get();
 
-        return view('category.index', [
-            'sidenavActive' => 'categories',
-            'categories' => $categories,
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
-        ]);
+        $categoriesTree = $this->buildCategoryTree($categories);
+
+        return view('category.index', ['categoriesTree' => $categoriesTree]);
+    }
+
+    private function buildCategoryTree($categories, $parentId = null)
+    {
+        $branch = [];
+
+        foreach ($categories as $category) {
+            if ($category->parent_category_id == $parentId) {
+                $children = $this->buildCategoryTree($categories, $category->id);
+                if ($children) {
+                    $category->children = $children;
+                }
+                $branch[] = $category;
+            }
+        }
+
+        return $branch;
     }
 
     public function show(Request $request, Category $category)

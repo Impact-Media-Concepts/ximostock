@@ -147,7 +147,7 @@
               <section v-for="property in this.productData.properties" :key="property.id">
                 <span>
                   <strong> {{ property.name }} </strong>
-                  <small>type: {{ property.values.type }}</small>
+                  <small>type: {{ property.options.type }}</small>
                   <img @click="removeProperty(property)" src="/images/cross-white.svg" alt="" class="remove">
                 </span>
                 <div class="form-group">
@@ -386,10 +386,11 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.productData.properties.forEach(property => {
-      property.values = JSON.parse(property.values);
-      property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
-    });
+    console.log(this.productData.properties);
+    // this.productData.properties.forEach(property => {
+    //   property.values = JSON.parse(property.values);
+    //   property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
+    // });
     this.productData.backorders = this.productData.backorders === 1 ? true : false;
   },
 });

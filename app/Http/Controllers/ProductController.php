@@ -144,7 +144,8 @@ class ProductController extends BaseProductController
         Log::info( "product-propties:");
         // Log::info( $product->properties[0]);
 
-        return view('product.show', [
+        dump($product->properties);
+        return view('product.show', [   
             'product' => $product,
             'unrelatedCategories' => $unrelatedCategories,
         ]);
@@ -174,83 +175,69 @@ class ProductController extends BaseProductController
             return response()->json(['message' => 'Product not found'], 404);
         }
     
-        Log::info("product: " . $product);
-        Log::info("STOCK: " . $product->stock_quantity);
-    
         // Update the product with the request data
         $product->update($request->only([
             'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description', 'stock_quantity', 'backorders'
         ]));
     
-        Log::info("product after update: ");
-        Log::info($product);
     
         // Sync the categories
         if ($request->has('categories')) {
             $product->categories()->sync($request->categories);
         }
-    
-        Log::info("product after sync: " . $product);
-    
-// Update properties
-if ($request->has('properties')) {
-    $requestPropertyIds = [];
+        
+        // Update properties
+        if ($request->has('properties')) {
+            $requestPropertyIds = [];
 
-    foreach ($request->properties as $propertyData) {
-        Log::info("propertyData: ", $propertyData);
-        if (isset($propertyData['pivot']['property_value'])) {
-            if (isset($propertyData['id'])) {
-                // Update the existing property
-                Log::info("Updating property with data: ", $propertyData['pivot']);
-                $product->properties()->updateExistingPivot(
-                    $propertyData['id'],
-                    [
-                        'property_value' => $propertyData['pivot']['property_value'],
-                    ]
-                );
-                $requestPropertyIds[] = $propertyData['id'];
-            } else {
-                // If ID is null, add a new property to the database and also create a new pivot
-                Log::info("Adding new property to the database and creating new pivot with data: ", $propertyData['pivot']);
+            foreach ($request->properties as $propertyData) {
+                if (isset($propertyData['pivot']['property_value'])) {
+                    if (isset($propertyData['id'])) {
+                        // Update the existing property
+                        $product->properties()->updateExistingPivot(
+                            $propertyData['id'],
+                            [
+                                'property_value' => $propertyData['pivot']['property_value'],
+                            ]
+                        );
+                        $requestPropertyIds[] = $propertyData['id'];
+                    } else {
+                        // If ID is null, add a new property to the database and also create a new pivot
+                        Log::info("Creating new property: ", $propertyData);
+                        // Create the new property
+                        $newProperty = Property::create([
+                            'name' => $propertyData['name'],
+                            'work_space_id' => $product->work_space_id,
+                            'values' => $propertyData['pivot']['property_value'],
+                        ]);
                 
-                // Create the new property
-                $newProperty = Property::create([
-                    'name' => $propertyData['name'],
-                    'work_space_id' => $product->work_space_id,
-                    'values' => $propertyData['pivot']['property_value'],
-                ]);
-        
-                // Attach the new property to the product with the pivot data
-                $product->properties()->attach(
-                    $newProperty->id,
-                    [
-                        'property_value' => $propertyData['pivot']['property_value'],
-                    ]
-                );
-        
-                Log::info("New property added with ID: " . $newProperty->id);
-                Log::info("New property added with value: " . $propertyData['pivot']['property_value']);
-                $requestPropertyIds[] = $newProperty->id;
+                        // Attach the new property to the product with the pivot data
+                        $product->properties()->attach(
+                            $newProperty->id,
+                            [
+                                'property_value' => $propertyData['pivot']['property_value'],
+                            ]
+                        );
+                
+                        $requestPropertyIds[] = $newProperty->id;
+                    }
+                } else {
+                    Log::error("Invalid property data: ", $propertyData);
+                }
             }
-        } else {
-            Log::error("Invalid property data: ", $propertyData);
+
+            // Get currently attached property IDs
+            $currentPropertyIds = $product->properties->pluck('id')->toArray();
+
+            // Find property IDs that need to be detached
+            $propertyIdsToDetach = array_diff($currentPropertyIds, $requestPropertyIds);
+
+            if (!empty($propertyIdsToDetach)) {
+                $product->properties()->detach($propertyIdsToDetach);
+            }
         }
-    }
-
-    // Get currently attached property IDs
-    $currentPropertyIds = $product->properties->pluck('id')->toArray();
-
-    // Find property IDs that need to be detached
-    $propertyIdsToDetach = array_diff($currentPropertyIds, $requestPropertyIds);
-
-    if (!empty($propertyIdsToDetach)) {
-        $product->properties()->detach($propertyIdsToDetach);
-        Log::info("Detached properties with IDs: " . implode(', ', $propertyIdsToDetach));
-    }
-}
 
     
-        Log::info("product after updating properties: " . $product);
     
         // Return a response
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);

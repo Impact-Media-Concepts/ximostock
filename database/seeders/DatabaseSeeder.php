@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\Inventory;
@@ -20,6 +18,8 @@ use App\Models\SalesChannel;
 use App\Models\User;
 use App\Models\WorkSpace;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,8 +28,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $workSpaces = WorkSpace::factory(3)->create();
+        $faker = Faker::create();
 
+        $workSpaces = WorkSpace::factory(3)->create();
 
         User::factory()->create([
             'role' => 'admin',
@@ -63,13 +64,13 @@ class DatabaseSeeder extends Seeder
 
         $products = Product::factory(50)->create([
             'work_space_id' => 1,
-            'price' => fake()->numberBetween(1, 1000),
-            'discount' => fake()->numberBetween(0, 50),
+            'price' => $faker->numberBetween(1, 1000),
+            'discount' => $faker->numberBetween(0, 50),
         ]);
         $products_second = Product::factory(50)->create([
             'work_space_id' => 2,
-            'price' => fake()->numberBetween(1, 1000),
-            'discount' => fake()->numberBetween(0, 50),
+            'price' => $faker->numberBetween(1, 1000),
+            'discount' => $faker->numberBetween(0, 50),
         ]);
 
         $primeProducts = Product::factory(25)->create([
@@ -79,7 +80,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $products = $products->concat($primeProducts);
-
 
         $properties = Property::factory(5)->create();
 
@@ -104,26 +104,31 @@ class DatabaseSeeder extends Seeder
             'work_space_id' => 3,
         ]);
 
-        //link properties
+        // Link properties
         foreach ($properties as $prop) {
-            $propvalue = json_decode($prop->values);
+            Log::info('Property');
+            Log::info($prop);
+            $propvalue = $prop->options;
             foreach ($products as $product) {
                 $value = '';
-                switch ($propvalue->type) {
+                switch ($prop->type) {
                     case 'multiselect':
-                        $value = [fake()->randomElement($propvalue->options), fake()->randomElement($propvalue->options)];
+                        $value = [
+                            $faker->randomElement($propvalue), 
+                            $faker->randomElement($propvalue)
+                        ];
                         break;
                     case 'singleselect':
-                        $value = fake()->randomElement($propvalue->options);
+                        $value = $faker->randomElement($propvalue);
                         break;
                     case 'number':
-                        $value = fake()->numberBetween(0, 16);
+                        $value = $faker->numberBetween(0, 16);
                         break;
                     case 'text':
-                        $value = fake()->word();
+                        $value = $faker->word();
                         break;
                     case 'bool':
-                        $value = fake()->boolean();
+                        $value = $faker->boolean();
                         break;
                 }
                 ProductProperty::create([
@@ -144,36 +149,29 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        //create subcategories
+        // Create subcategories
         foreach ($categories as $category) {
             $subcategories = Category::factory(2)->create([
                 'parent_category_id' => $category,
                 'work_space_id' => 2
             ]);
-            foreach($subcategories as $category){
-                $subcategories = Category::factory(2)->create([
-                    'parent_category_id' => $category,
+            foreach ($subcategories as $subcategory) {
+                $subsubcategories = Category::factory(2)->create([
+                    'parent_category_id' => $subcategory,
                     'work_space_id' => 2
                 ]);
-                foreach($subcategories as $category){
-                    $subcategories = Category::factory(2)->create([
-                        'parent_category_id' => $category,
+                foreach ($subsubcategories as $subsubcategory) {
+                    Category::factory(2)->create([
+                        'parent_category_id' => $subsubcategory,
                         'work_space_id' => 2
                     ]);
-                    foreach($subcategories as $category){
-                        $subcategories = Category::factory(2)->create([
-                            'parent_category_id' => $category,
-                            'work_space_id' => 2
-                        ]);
-                    }
                 }
             }
         }
 
         // Link products and categories randomly
         foreach ($products as $product) {
-            $categories = Category::all();
-            $randomCategories = $categories->random(2); // Adjust the number of random categories as needed
+            $randomCategories = Category::all()->random(2); // Adjust the number of random categories as needed
             foreach ($randomCategories as $category) {
                 CategoryProduct::create([
                     'product_id' => $product->id,
@@ -183,10 +181,9 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Link products and categories randomly
+        // Link products and categories randomly for products_second
         foreach ($products_second as $product) {
-            $categories = Category::all();
-            $randomCategories = $categories->random(1); // Adjust the number of random categories as needed
+            $randomCategories = Category::all()->random(1); // Adjust the number of random categories as needed
             foreach ($randomCategories as $category) {
                 CategoryProduct::create([
                     'product_id' => $product->id,
@@ -196,23 +193,17 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        //link location zones
+        // Link location zones
         $locations = InventoryLocation::factory(4)->create();
         $zones = [];
         foreach ($locations as $location) {
-            (array_push($zones, LocationZone::factory(3)->create([
+            array_push($zones, LocationZone::factory(3)->create([
                 'inventory_location_id' => $location->id
-            ])));
+            ]));
         }
 
-        //link stock and photos
+        // Link stock and photos
         foreach ($products as $product) {
-            // for ($x = 1; $x <= 8; $x++) {
-            //     Inventory::factory()->create([
-            //         'product_id' => $product->id,
-            //         'location_zone_id' => $x
-            //     ]);
-            // }
             PhotoProduct::create([
                 'photo_id' => Photo::factory()->create()->id,
                 'product_id' => $product->id,
@@ -226,16 +217,5 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-
-        // // link salesChannels
-        // $productSalesChannels = [];
-        // for ($x = 1; $x <= 500; $x++) {
-        //     for ($y = 1; $y <= 3; $y++)
-        //         array_push($productSalesChannels, ProductSalesChannel::create([
-        //             'product_id' => $x,
-        //             'sales_channel_id' => $y
-        //         ]));
-        // }
-
     }
 }
