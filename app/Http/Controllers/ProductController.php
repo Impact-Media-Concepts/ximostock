@@ -290,9 +290,11 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-    public function bulkDiscount()
+    public function bulkDiscount(Request $request)
     {
+        Log::debug($request->all());
         Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
+        
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],

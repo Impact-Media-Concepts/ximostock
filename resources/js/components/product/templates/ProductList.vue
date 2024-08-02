@@ -23,7 +23,7 @@
                 <button @click="deleteProducts()" class="button Delete">Verwijderen</button>
                 <button @click="toggleSaleschannelsLinkPopup()" class="button Link">Koppel</button>
                 <button @click="toggleSaleschannelsUnlinkPopup()" class="button">Ontkoppel</button>
-                <button class="button">Korting</button>
+                <button @click="toggleDiscountPopup()" class="button">Korting</button>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
                         koppel
                     </button>
                     <button @click="toggleSaleschannelsLinkPopup()" class="cancel">
-                        cancel
+                        Anuleren
                     </button>
                 </div>
             </div>
@@ -115,13 +115,13 @@
                         ontkoppel
                     </button>
                     <button @click="toggleSaleschannelsUnlinkPopup()" class="cancel">
-                        cancel
+                        Anuleren
                     </button>
                 </div>
             </div>
             
         </div>
-        <div class="discount-popup visable">
+        <div :class="['discount-popup', {visable: isDiscountPopupVisible}]">
             <div class="popup-content">
                 <div class="discountform">
                     <div class="discount-header">
@@ -129,16 +129,16 @@
                     </div>
                     <div class="discount-content">
                         <div class="inputs">
-                            <input class="textform" type="text" placeholder="Kortingspercentage" >
-                            <span class="checkbox"><input type="checkbox" id="decimalRound"><label class="label" for="decimalRound">Afronden op decimalen?</label></span>
-                            <input class="textform" type="text" placeholder="Decimalen" >
+                            <input class="textform" min="0" max="100" v-model.number="discountPercentage" type="number" placeholder="Kortingspercentage" >
+                            <span class="checkbox"><input type="checkbox" v-model="decimalRound" id="decimalRound" value="1"><label class="label" for="decimalRound">Afronden op decimalen?</label></span>
+                            <input class="textform" min="0" max="99" v-model.number="discountDecemals" type="number" placeholder="Decimalen" >
                         </div>
                         <div class="action-buttons">
-                            <button class="submit">
-                                toepassen
+                            <button @click="discountProducts()" class="submit">
+                                Save
                             </button>
-                            <button class="cancel">
-                                cancel
+                            <button @click="toggleDiscountPopup()" class="cancel">
+                                Anuleren
                             </button>
                         </div>
                     </div>
@@ -171,7 +171,9 @@ export default defineComponent({
             selectedProducts: [],
             isLinkSaleschannelPopupVisible:false,
             isUnlinkSaleschannelPopupVisible:false,
+            isDiscountPopupVisible:false,
             selectedSaleschannels: [],
+            
         };
     },
     methods: {
@@ -258,6 +260,9 @@ export default defineComponent({
         toggleSaleschannelsUnlinkPopup(){
             this.isUnlinkSaleschannelPopupVisible= !this.isUnlinkSaleschannelPopupVisible;   
         },
+        toggleDiscountPopup(){
+            this.isDiscountPopupVisible= !this.isDiscountPopupVisible;   
+        },
         deleteProducts() {
             const data = {
                 selectedProducts: this.selectedProducts
@@ -298,8 +303,26 @@ export default defineComponent({
             .then(response => {
             window.location.href = this.route('products.index');
             });
+        },
+        discountProducts(){
+            const data = {
+                product_ids: this.selectedProducts,
+                discount: this.discountPercentage,
+                cents: this.decimalRound ? this.discountDecemals : null,
+                round: this.decimalRound ? true : false,
+            };
 
-            
+            if (this.selectedProducts.length === 0) {
+                this.showUserMessage('No products selected', 'warning');
+                return;
+            }
+            console.log(data);
+
+            axios.post(this.route('products.bulkDiscount', data))
+            .then(response => {
+            window.location.href = this.route('products.index');
+            });
+
         },
 
         showUserMessage(message, type) {

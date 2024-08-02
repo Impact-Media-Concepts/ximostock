@@ -329,10 +329,25 @@
                             border-color: $border;
                             border-style: solid;
                             border-width: 1px;
+                            text-align: center;
                             &::placeholder{
                                 text-align: center;
                                 color: $border;
                             }
+                            /* Verberg de spinner-pijltjes in WebKit-gebaseerde browsers (Chrome, Safari) */
+                            &::-webkit-inner-spin-button,
+                            &::-webkit-outer-spin-button {
+                                -webkit-appearance: none;
+                                margin: 0;
+                            }
+
+                            /* Verberg de spinner-pijltjes in Firefox */
+                            -moz-appearance: textfield;
+
+                            /* Verberg de clear-knop in Microsoft Edge */
+                            &::-ms-clear {
+                                display: none;
+  }
                         }
                         .checkbox{
                             display: flex;
