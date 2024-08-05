@@ -7,6 +7,7 @@ use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class SalesChannelController extends Controller
@@ -27,9 +28,9 @@ class SalesChannelController extends Controller
         $results = [
             'activeWorkspace' => $activeWorkspace,
             'sidenavActive' => 'saleschannels',
-            'salesChannels' => SalesChannel::where('work_space_id', $workspace)->get()
+            'saleschannels' => SalesChannel::where('work_space_id', $current_workspace)->paginate(10)
         ];
-
+        //Log::debug($results['salesChannels']);
         return view('salesChannel.index', $results);
     }
 

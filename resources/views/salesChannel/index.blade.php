@@ -2,8 +2,8 @@
 
 @section('content')
 <div id="app">
-    <saleschannel-overview>
-        
+    <saleschannel-overview
+        :saleschannels='@json($saleschannels)'>
     </saleschannel-overview>
 </div>
 @endsection
