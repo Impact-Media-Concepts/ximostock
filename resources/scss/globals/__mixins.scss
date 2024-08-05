@@ -110,3 +110,53 @@
         outline: none;
     }
 }
+
+@mixin content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 25px;
+    section {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid $border;
+        border-radius: 10px;
+        > span {
+            position: relative;
+            background-color: $primary;
+            padding: 10px 22px;
+            font-size: 14px;
+            line-height: 20px;
+            color: $light;
+            border-radius: 10px 10px 0 0;
+            small {
+                display: block;
+                margin-top: -5px;
+            }
+            img.remove {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+            }
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            label {
+                @include default-label;
+            }
+            input:not(.categorieen input),
+            textarea {
+                @include default-input;
+                &:not(:last-child) {
+                    margin-bottom: 15px;
+                }
+            }
+        }
+
+        
+    }
+}

@@ -8,6 +8,7 @@ import GeneralNotification from './components/GeneralNotification.vue';
 import UserOverview from './components/user/UserOverview.vue';
 import AddUser from './components/user/AddUser.vue';
 import ProductOverview from './components/product/ProductOverview.vue';
+import CategoryOverview from './components/category/CategoryOverview.vue';
 
 
 // Create the Vue application
@@ -21,6 +22,7 @@ app.component('GeneralNotification', GeneralNotification);
 app.component('UserOverview', UserOverview);
 app.component('AddUser', AddUser);
 app.component('ProductOverview', ProductOverview);
+app.component('CategoryOverview', CategoryOverview);
 
 // Provide the route function globally
 app.provide('route', route);

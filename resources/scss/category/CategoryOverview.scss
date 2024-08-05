@@ -1,0 +1,8 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.category-overview {
+  .content {
+    @include content-container 
+  }
+}
