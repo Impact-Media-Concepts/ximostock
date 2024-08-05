@@ -13,10 +13,8 @@ class SalesChannelController extends Controller
 {
     public function index(Request $request)
     {
+        $current_workspace = (int) session('active_workspace_id');
         if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
             $workspace = $activeWorkspace;
@@ -28,7 +26,6 @@ class SalesChannelController extends Controller
         
         $results = [
             'activeWorkspace' => $activeWorkspace,
-            'workspaces' => $workspaces,
             'sidenavActive' => 'saleschannels',
             'salesChannels' => SalesChannel::where('work_space_id', $workspace)->get()
         ];

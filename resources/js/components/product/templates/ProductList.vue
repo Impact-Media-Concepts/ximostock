@@ -71,8 +71,9 @@
         <div class="product-table-footer">
             asd
         </div>
-        <div :class="['saleschannel-link-popup', {visable: isLinkSaleschannelPopupVisible}]">
-            <div class="popup-content">
+        <div :class="['popup-container', {visable: isLinkSaleschannelPopupVisible}]">
+            <div class="popup">
+                <img @click="toggleSaleschannelsLinkPopup()" class="popup-close" src="/images/close-icon.svg" alt="close-discount">
                 <div class="saleschannels">
                     <div class="saleschannels-header">
                         Selecteer verkoopkanalen om te koppelen.
@@ -96,8 +97,9 @@
             </div>
             
         </div>
-        <div :class="['saleschannel-link-popup', {visable: isUnlinkSaleschannelPopupVisible}]">
-            <div class="popup-content">
+        <div :class="['popup-container', {visable: isUnlinkSaleschannelPopupVisible}]">
+            <div class="popup">
+                <img @click="toggleSaleschannelsUnlinkPopup()" class="popup-close" src="/images/close-icon.svg" alt="close-discount">
                 <div class="saleschannels">
                     <div class="saleschannels-header">
                         Selecteer verkoopkanalen om te ontkoppelen.
@@ -121,8 +123,9 @@
             </div>
             
         </div>
-        <div :class="['discount-popup', {visable: isDiscountPopupVisible}]">
-            <div class="popup-content">
+        <div :class="['popup-container', {visable: isDiscountPopupVisible}]">
+            <div class="popup">
+                <img @click="toggleDiscountPopup()" class="popup-close" src="/images/close-icon.svg" alt="close-discount">
                 <div class="discountform">
                     <div class="discount-header">
                         Korting
@@ -235,7 +238,6 @@ export default defineComponent({
                 'Failed to change status'
             );
         },
-
         updateArchived() {
             const data = {
                 selectedProducts: this.selectedProducts
@@ -283,13 +285,8 @@ export default defineComponent({
         },
         uploadProducts() {
             const data = {
-                selectedProducts: this.selectedProducts,
-                array: {
-                    1: 'een',
-                    array: {
-                        twee: 'asd'
-                    }
-                }
+                product_ids: this.selectedProducts,
+                
             };
 
             if (this.selectedProducts.length === 0) {

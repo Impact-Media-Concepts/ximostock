@@ -292,7 +292,6 @@ class ProductController extends BaseProductController
 
     public function bulkDiscount(Request $request)
     {
-        Log::debug($request->all());
         Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
         
         //validate request
@@ -372,6 +371,7 @@ class ProductController extends BaseProductController
     public function bulkLinkSalesChannel(Request $request)
     {
         Log::info($request);
+        //die();
         $productIds = isset($request['product_ids']) ? $request['product_ids'] : [];
         $salesChannels = isset($request['sales_channel_ids']) ? $request['sales_channel_ids'] : [];
 
@@ -404,7 +404,6 @@ class ProductController extends BaseProductController
         foreach ($salesChannels as $salesChannel) {
             $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
         }
-
         return redirect('/products');
     }
 
