@@ -11,7 +11,7 @@
                     <span class="orderby">Type <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
                 </div>
                 <div class="orderby-date">
-                    <span class="orderby">Datem <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                    <span class="orderby">Datum <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
                 </div>
                 <div class="create-button-wraper">
                     <button class="button-create">
@@ -20,27 +20,48 @@
                 </div>
             </div>
             <div class="saleschannels-content">
-                <div v-for="saleschannel in saleschannels['data']" class="saleschannel-item">
+                <div v-for="saleschannel in saleschannels['data']" :key="saleschannel.id" :class="{'saleschannel-item': true, 'active': isActive(saleschannel.id)}">
                     <div class="saleschannel-info">
                         <div class="select-name">
-                            <input class="select-all" type="checkbox">
-                            <span class="orderby orderby-name">{{saleschannel.name}}</span>
+                            <input class="select-all" :value="saleschannel.id" type="checkbox">
+                            <span @click="toggleActive(saleschannel.id)" class="name">{{ saleschannel.name }}</span>
                         </div>
                         <div class="type">
-                            <span>{{saleschannel.channel_type}}</span>
+                            <span>{{ saleschannel.channel_type }}</span>
                         </div>
                         <div class="date">
-                            <span>{{formatDate(saleschannel.created_at) }}</span>
+                            <span>{{ formatDate(saleschannel.created_at) }}</span>
                         </div>
                         <div class="delete-open">
-                            <img class="open" src="/images/chevron-down-dark.svg" alt="chavron-down">
-                            <button class="delete-button">Verwijderen</button>
+                            <div @click="toggleActive(saleschannel.id)" class="dropdown-wrapper">
+                                <img class="open" src="/images/chevron-down-dark.svg" alt="chevron-down">
+                            </div>
+                            <button @click="deleteSaleschannel(saleschannel.id)" class="delete-button">Verwijderen</button>
                         </div>
                     </div>
                     <div class="saleschannel-form">
                         <div class="form">
-                            <span>URL:</span>
-                            <span>API Key:</span>
+                            <div class="form-input">
+                                <span class="test">API Key:</span>
+                                <input v-model="saleschannel.api_key" type="text">
+                            </div>
+                            <div class="form-input">
+                                <span class="test">URL:</span>
+                                <input v-model="saleschannel.url" type="text">
+                            </div>
+                            <div class="form-input">
+                                <span class="test">Secret:</span>
+                                <input v-model="saleschannel.secret" type="text">
+                            </div>
+                            <div class="form-input">
+                                <span class="test">Kanaalnaam:</span>
+                                <input v-model="saleschannel.name" type="text">
+                            </div>
+                        </div>
+                        <div class="save-button-wrapper">
+                            <button @click="updateSaleschannel(saleschannel.id)" class="save">
+                                <img src="/images/save-icon.svg" alt="save-icon"> Save
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -50,21 +71,59 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, inject } from 'vue';
 import '../../../scss/saleschannel/SaleschannelOverview.scss';
 import { format } from 'date-fns';
+import axios from 'axios';
 
 export default defineComponent({
     props: {
-        saleschannels:{
+        saleschannels: {
             type: [Array, Object],
             required: true,
         }
+    },
+    data() {
+        return {
+            activeItemId: null,
+            selectedSaleschannels : [],
+        };
     },
     methods: {
         formatDate(date) {
             return format(new Date(date), 'yyyy-MM-dd HH:mm:ss');
         },
-    }
+        toggleActive(id) {
+            this.activeItemId = this.activeItemId === id ? null : id;
+        },
+        isActive(id) {
+            return this.activeItemId === id;
+        },
+        deleteSaleschannel(saleschannelId) {
+            axios.delete(this.route('saleschannels.deleteBuId', saleschannelId))
+            .then(response => {
+                window.location.href = this.route('saleschannels.index');
+            });
+        },
+        updateSaleschannel(saleschannelId) {
+            const saleschannel = this.saleschannels.data.find(sc => sc.id === saleschannelId);
+            const data = {
+                name: saleschannel.name,
+                url: saleschannel.url,
+                api_key: saleschannel.api_key,
+                secret: saleschannel.secret,
+            };
+            axios.put(this.route('saleschannels.updateById', saleschannelId), data)
+            .then(response => {
+                window.location.href = this.route('saleschannels.index');
+            });
+        }
+    },
+    setup() {
+        const route = inject('route');
+        return {
+            route,
+        };
+    },
 })
 </script>

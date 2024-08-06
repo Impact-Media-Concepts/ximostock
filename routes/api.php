@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\SalesChannelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,5 +35,9 @@ Route::prefix('/api/v1')->group(function() {
         Route::post('/photos/store', [PhotoController::class, 'store'])->name('photos.store');
         Route::delete('/photos/{photo}', [PhotoController::class, 'delete'])->name('photos.delete');
     });
-    
+
+    Route::prefix('/saleschannels')->group(function() {
+        Route::delete('/delete/{saleschannel}', [SalesChannelController::class, 'deleteById'])->name('saleschannels.deleteBuId');
+        Route::put('/update/{saleschannel}', [SalesChannelController::class, 'updateById'])->name('saleschannels.updateById');
+    });
 });

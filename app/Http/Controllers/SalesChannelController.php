@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
+
 
 class SalesChannelController extends Controller
 {
@@ -106,11 +108,11 @@ class SalesChannelController extends Controller
         ]);
     }
 
-    public function update(SalesChannel $salesChannel)
+    public function update(Request $request, SalesChannel $salesChannel)
     {
 
         //validate
-        $attributes = request()->validate([
+        $attributes = $request->validate([
             'name' => ['required', 'string'],
             'type' => ['required', Rule::in(['WooCommerce'])],
             'url' => ['required'],
@@ -128,13 +130,15 @@ class SalesChannelController extends Controller
 
     public function bulkDelete(Request $request)
     {
-        //authorze
-
+       
         //validate
         $attributes = $request->validate([
             'saleschannels' => ['required', 'array'],
             'saleschannels.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
+
+        //authorze
+
         SalesChannel::whereIn('id', $attributes['saleschannels'])->delete();
 
         return redirect()->back();
@@ -174,5 +178,37 @@ class SalesChannelController extends Controller
         ]);
         SalesChannel::withTrashed()->whereIn('id', $attributes['saleschannels'])->forceDelete();
         return redirect()->back();
+    }
+
+    public function deleteById(Request $request, $salesChannel){
+        $salesChannel = Saleschannel::findOrFail($salesChannel);
+
+        if($salesChannel){
+            $salesChannel->delete();
+            return response()->json(['message' => 'Saleschannel deleted successfully'], 200);
+        }else{
+            return response()->json(['error' => 'Saleschannel not found'], 404);
+        }
+    }
+
+    public function updateById(Request $request, $salesChannelId)
+    {
+
+        //validate
+        $attributes = $request->validate([
+            'name' => ['required', 'string'],
+            'url' => ['required'],
+            'api_key' => ['required'],
+            'secret' => ['nullable']
+        ]);
+        $salesChannel = Saleschannel::findOrFail($salesChannelId);
+
+        //update
+        if($salesChannel){
+            $salesChannel->update($attributes);
+            return response()->json(['message' => 'Saleschannel updated successfully'], 200);
+        }else{
+            return response()->json(['error' => 'Saleschannel not found'], 404);
+        }
     }
 }
