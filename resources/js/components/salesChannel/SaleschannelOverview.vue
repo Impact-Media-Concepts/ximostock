@@ -4,7 +4,7 @@
         <div class="saleschannel-table">
             <div class="saleschannel-table-header">
                 <div class="select-name">
-                    <input class="select-all" type="checkbox">
+                    <input @click="toggleAllSaleschannels($event.target.checked)" :checked="isAllChecked()" class="select-all" type="checkbox">
                     <span class="orderby orderby-name">Naam <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
                 </div>
                 <div class="orderby-type">
@@ -23,7 +23,7 @@
                 <div v-for="saleschannel in saleschannels['data']" :key="saleschannel.id" :class="{'saleschannel-item': true, 'active': isActive(saleschannel.id)}">
                     <div class="saleschannel-info">
                         <div class="select-name">
-                            <input class="select-all" :value="saleschannel.id" type="checkbox">
+                            <input @click="toggleSaleschannelById($event.target.checked,saleschannel.id)" :checked="saleschannelIsChecked(saleschannel.id)" class="select" :value="saleschannel.id" type="checkbox">
                             <span @click="toggleActive(saleschannel.id)" class="name">{{ saleschannel.name }}</span>
                         </div>
                         <div class="type">
@@ -117,7 +117,23 @@ export default defineComponent({
             .then(response => {
                 window.location.href = this.route('saleschannels.index');
             });
-        }
+        },
+        saleschannelIsChecked(id){
+            const check = this.selectedSaleschannels.includes(id)
+
+            return check;
+        },
+        toggleAllSaleschannels(checked){
+            checked ? this.selectedSaleschannels = this.saleschannels.data.map(sc => sc.id) : this.selectedSaleschannels = [];
+        },
+        toggleSaleschannelById(checked, value){
+            checked ? this.selectedSaleschannels.push(value) : this.selectedSaleschannels = this.selectedSaleschannels.filter(id => id !== value);
+
+        },
+        isAllChecked(){
+            return this.saleschannels.data.every(sc => this.selectedSaleschannels.includes(sc.id));
+        },
+        
     },
     setup() {
         const route = inject('route');
