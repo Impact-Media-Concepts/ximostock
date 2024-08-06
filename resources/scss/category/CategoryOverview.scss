@@ -3,6 +3,69 @@
 
 .category-overview {
   .content {
-    @include content-container 
+    @include content-container;
+
+    label {
+      @include default-label;
+    }
+
+    input,
+    textarea {
+      @include default-input;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      background-color: var(--light);
+      &:first-of-type {
+        padding-bottom: 0;
+      }
+
+      .category-item {
+
+        input[type="checkbox"] {
+          margin-right: 6px;
+          width: unset;
+        }
+
+        img.chevron {
+          width: 13px;
+          height: auto;
+          cursor: pointer;
+        }
+
+        input[type="text"] {
+          width: unset;
+          @include remove-default-input;
+          padding: 8px 6px;
+          font-size: 14px;
+          line-height: 22px;
+          border: 1px solid transparent;
+          display: inline-block;
+
+          &:focus {
+            background-color: var(--light);
+            width: unset;
+            margin-left: 6px;
+            @include default-input;
+            width: unset;
+          }
+          &.parent {
+            font-weight: 700;
+          }
+        }
+      }
+
+      .category-item-container {
+        padding-left: 40px;
+        overflow: hidden;
+        height: 0;
+        &.expanded {
+          height: auto;
+        }
+      }
+    }
   }
 }

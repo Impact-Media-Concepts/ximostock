@@ -8,10 +8,9 @@
     .filter-container {
         display: flex;
         flex-direction: column;
-        background-color: $light;
+        background-color: var(--light);
         border-radius: 10px;
-        border: 1px solid $border-light;
-        
+        border: 1px solid var(--border-light);
     }
     .product-container {
         flex-grow: 1;

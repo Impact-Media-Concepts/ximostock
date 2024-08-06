@@ -50,7 +50,6 @@ class ProductController extends BaseProductController
     {
         $current_workspace = (int) session('active_workspace_id');
         $products = Product::where('work_space_id', $current_workspace)
-                    ->where('archived', false)
                     ->with(['categories', 'photos' => function ($query) {
                         $query->where('primary', 1);
                     }])

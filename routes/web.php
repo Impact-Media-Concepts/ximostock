@@ -109,6 +109,7 @@ Route::middleware('auth')->group(function () {
     
     Route::prefix('/users')->middleware('auth')->group(function() {
         Route::get('/', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User')->name('users.index');
+        Route::get('/theme', [UserController::class, 'theme'])->middleware('can:viewAny,App\Models\User')->name('users.theme');
         Route::get('/create', [UserController::class, 'create'])->middleware('can:viewAny,App\Models\User')->name('users.create');
         Route::get('/{user}', [UserController::class, 'show'])->middleware('can:viewAny,App\Models\User')->name('users.show');
         Route::get('/{user}/edit', [UserController::class, 'edit'])->middleware('can:viewAny,App\Models\User')->name('users.edit');

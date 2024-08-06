@@ -25,7 +25,6 @@ return new class extends Migration
             $table->boolean('backorders')->default(false);
             $table->bigInteger('stock_quantity')->default(0)->required();
             $table->boolean('status')->default(false)->required();
-            $table->boolean('archived')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

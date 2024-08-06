@@ -13,16 +13,16 @@
         flex-direction: row;
         gap: 20px;
         padding: 20px 25px;
-        border: 1px solid $border;
+        border: 1px solid var(--border);
         border-radius: 10px;
-        background-color: $light;
+        background-color: var(--light);
 
         .image-container {
             width: 204px;
             height: 100%;
             min-height: 204px;
             padding: 20px;
-            border: 1px solid $border;
+            border: 1px solid var(--border);
 
             img {
                 width: 100%;
@@ -67,8 +67,8 @@
             display: flex;
             flex-grow: 1;
             flex-direction: column;
-            background-color: $light;
-            border: 1px solid $border;
+            background-color: var(--light);
+            border: 1px solid var(--border);
             border-radius: 10px;
         }
 
@@ -84,8 +84,8 @@
                     align-items: center;
                     flex-grow: 1;
                     padding: 12px;
-                    background-color: $light;
-                    border-right: 1px solid $border;
+                    background-color: var(--light);
+                    border-right: 1px solid var(--border);
 
                     &.active {
                         background-color: #F3F4F8;
@@ -106,11 +106,21 @@
                 .content-container {
                     .title {
                         padding: 15px 25px;
-                        border-bottom: 1px solid $border;
+                        border-bottom: 1px solid var(--border);
                     }
 
                     .content {
                         @include content-container;
+
+                        label {
+                            @include default-label;
+                        }
+
+                        input:not([type=checkbox], [type=radio]),
+                        textarea {
+                            @include default-input;
+                        }
+
                         .foto-grid {
                             display: grid;
                             grid-template-columns: repeat(3, 1fr);
@@ -119,7 +129,7 @@
                             .foto {
                                 position: relative;
                                 width: 100%;
-                                border: 1px solid $border;
+                                border: 1px solid var(--border);
                                 border-radius: 10px;
 
                                 img {
@@ -138,13 +148,13 @@
                                     right: 0;
                                     top: 0;
                                     transform: translate(40%, -40%);
-                                    background-color: $light;
+                                    background-color: var(--light);
                                     width: 25px;
                                     height: 25px;
                                     padding: 5px;
                                     font-size: 15px;
                                     border-radius: 100%;
-                                    border: 1px solid $border;
+                                    border: 1px solid var(--border);
                                     cursor: pointer;
                                 }
                             }
@@ -158,6 +168,11 @@
                             }
                         }
 
+                        &.voorraad {
+                            .form-group {
+                                gap: 20px;
+                            }
+                        }
                     }
 
                 }

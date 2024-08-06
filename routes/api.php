@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,8 +32,16 @@ Route::prefix('/api/v1')->group(function() {
         Route::delete('/delete/{id}', [ProductController::class, 'deleteById'])->name('products.delete');
         Route::put('/archive/{id}', [ProductController::class, 'archiveById'])->name('products.archive');
         Route::get('/export/{id}', [ProductController::class, 'exportById'])->name('products.exportByid');
+        
+    });
+
+    Route::prefix('/products')->group(function() {
         Route::post('/photos/store', [PhotoController::class, 'store'])->name('photos.store');
         Route::delete('/photos/{photo}', [PhotoController::class, 'delete'])->name('photos.delete');
     });
-    
+
+    Route::prefix('/user')->group(function() {
+        Route::patch('/theme/update/{id}', [UserController::class, 'updateThemeById'])->name('user.updateThemeById');
+    });
+
 });

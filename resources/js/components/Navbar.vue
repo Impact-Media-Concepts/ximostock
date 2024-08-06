@@ -48,7 +48,7 @@ const render = () => {
           {props.items.add && (
             <div class="add">
               <div onClick={handleClick('.add.select-options')} class="select-trigger button">
-                <img src={props.items.add.image} alt="Plus-icon" class="icon"/>
+                <span className="icon" v-html={props.items.add.image}></span>
                 {props.items.add.text}
               </div>
             </div>
@@ -57,7 +57,7 @@ const render = () => {
           {props.items.workspace && props.items.workspace && (
             <div class="workspaces">
               <a href={props.items.workspace.href} class="button">
-                <img src={props.items.workspace.image} alt="grid-icon" class="icon"/>
+                <span className="icon" v-html={props.items.workspace.image}></span>
                 {props.items.workspace.text}
               </a>
             </div>
@@ -66,20 +66,20 @@ const render = () => {
           <div class="user-options">
             <div class="icon-container">
               {props.items.select && (
-                <img src={props.items.select.image} alt="Profile Picture" class="profile-picture"/>
+                <span className="profile-picture" v-html={props.items.select.image}></span>
               )}
             </div>
             <div class="custom-selectbox">
               <div onClick={handleClick('.user.select-options')} id="select-trigger">
                 <span id="username">{props.user.name}</span>
                 {props.items.select && (
-                  <img class="arrow" src={props.items.select.arrow} alt="arrow"/>
+                  <span className="arrow" v-html={props.items.select.arrow}></span>
                 )}
               </div>
               <div class="user select-options">
                 {props.items.select && props.items.select.options && Object.values(props.items.select.options).map((option, index) => (
                   <a href={option.href} key={index} class={`option${index + 1}`} >
-                    <img class="icon" src={option.icon} alt="icon" />
+                    <span className="icon" v-html={option.icon}></span>
                     <span>{option.title}</span>
                   </a>
                 ))}

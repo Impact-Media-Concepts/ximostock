@@ -1,1 +1,1 @@
-{"version":3,"sources":["../scss/Products.scss"],"names":[],"mappings":"AAGA,UACI,YAAA","file":"Products.css"}
+{"version":3,"sources":["../scss/globals/__variables.scss","../scss/Products.scss"],"names":[],"mappings":"AAmBA,MACE,kBAAA,CACA,yBAAA,CACA,oBAAA,CACA,gBAAA,CACA,gBAAA,CACA,iBAAA,CACA,yBAAA,CACA,sBAAA,CACA,iBAAA,CACA,uBAAA,CACA,eAAA,CACA,qBAAA,CACA,kCAAA,CACA,iCAAA,CAdF,MACE,kBAAA,CACA,yBAAA,CACA,oBAAA,CACA,gBAAA,CACA,gBAAA,CACA,iBAAA,CACA,yBAAA,CACA,sBAAA,CACA,iBAAA,CACA,uBAAA,CACA,eAAA,CACA,qBAAA,CACA,kCAAA,CACA,iCAAA,CC9BF,UACI,YAAA","file":"Products.css"}

@@ -153,17 +153,17 @@ class DatabaseSeeder extends Seeder
         foreach ($categories as $category) {
             $subcategories = Category::factory(2)->create([
                 'parent_category_id' => $category,
-                'work_space_id' => 2
+                'work_space_id' => 1
             ]);
             foreach ($subcategories as $subcategory) {
                 $subsubcategories = Category::factory(2)->create([
                     'parent_category_id' => $subcategory,
-                    'work_space_id' => 2
+                    'work_space_id' => 1
                 ]);
                 foreach ($subsubcategories as $subsubcategory) {
                     Category::factory(2)->create([
                         'parent_category_id' => $subsubcategory,
-                        'work_space_id' => 2
+                        'work_space_id' => 1
                     ]);
                 }
             }

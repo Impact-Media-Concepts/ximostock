@@ -11,8 +11,8 @@
     z-index: 9999;
     width: 265px;
     padding: 10px;
-    background-color: $danger;
-    color: $text-light;
+    background-color: var(--danger);
+    color: var(--text-light);
     font-size: 16px;
     font-weight: 700;
     border-radius: 5px;
@@ -32,6 +32,3 @@
         display: none;
     }
 }
-
-
-

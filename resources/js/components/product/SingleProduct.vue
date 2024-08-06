@@ -182,10 +182,14 @@
               <section>
                 <span>Huidige status</span>
                 <div class="form-group">
-                  <label for="stock_quantity">Stock Quantity:</label>
-                  <input type="number" v-model="productData.stock_quantity" id="stock_quantity">
-                  <label for="backorders">Backorders:</label>
-                  <input type="checkbox" v-model="productData.backorders" id="backorders" :checked="productData.backorders">
+                  <div>
+                    <label for="stock_quantity">Stock Quantity:</label>
+                    <input type="number" v-model="productData.stock_quantity" id="stock_quantity">
+                  </div>
+                  <div>
+                    <label for="backorders">Backorders:</label>
+                    <input type="checkbox" v-model="productData.backorders" id="backorders" :checked="productData.backorders">
+                  </div>
                 </div>
               </section>
             </div>

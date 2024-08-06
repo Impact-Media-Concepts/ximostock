@@ -25,7 +25,7 @@ const render = () => {
     <div id="sidebar">
       {props.items.map((link) => (
         <a href={link.url} class="sidebar-item" key={link.url}>
-          <img src={link.image_url} alt="" class="icon" />
+          <span class="icon" v-html={link.image_url}></span>
           <span class="text">{link.title}</span>
         </a>
       ))}
