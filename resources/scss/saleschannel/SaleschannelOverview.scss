@@ -89,6 +89,41 @@
                 }
             }
         }
+        .saleschannel-bulkAction-bar{
+            height: 0px;
+            background-color: $secondary;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-size: 14px;
+            line-height: 17px;
+            gap: 9px;
+            transition: height 0.3s ease; 
+            overflow: hidden;
+            &.open{
+                height: 60px;
+            }
+            .bulkaction-text{
+                margin-left: 36px;
+                .select-all-text{
+                    color: $primary;
+                    cursor: pointer;
+                }
+            }
+            .bulkaction-button{
+                background-color: $secondary;
+                height: 36px;
+                width: 114px;
+                border-radius: 5px;
+                border-style: solid;
+                border-width: 1px;
+                border-color: $border-dark;
+                color: $text;
+                &:hover{
+                    background-color: darken($color: $secondary, $amount: 10);
+                }
+            }
+        }
         .saleschannels-content{
             display: flex;
             flex-direction: column;
@@ -222,4 +257,5 @@
             }
         }
     }
+    
 }

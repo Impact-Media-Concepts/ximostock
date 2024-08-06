@@ -141,7 +141,9 @@ class SalesChannelController extends Controller
 
         SalesChannel::whereIn('id', $attributes['saleschannels'])->delete();
 
-        return redirect()->back();
+
+        return response()->json(['message' => 'Saleschannels deleted successfully'], 200);
+
     }
 
     public function archive(Request $request)

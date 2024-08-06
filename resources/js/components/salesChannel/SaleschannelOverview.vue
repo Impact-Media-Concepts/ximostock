@@ -19,6 +19,11 @@
                     </button>
                 </div>
             </div>
+            <div :class="{'saleschannel-bulkAction-bar': true, 'open':this.selectedSaleschannels.length}">
+                <span class="bulkaction-text"> {{this.selectedSaleschannels.length}} verkoopkanalen van de {{this.saleschannels.data.length}} geselecteerd. <span @click="selectAll()" class="select-all-text">Selecteer alle verkoopkanalen</span></span>
+                <button class="bulkaction-button" @click="bulkdeleteSelectedSaleschannels()">Archiveren</button>
+                <!-- <button class="bulkaction-button">Verwijderen</button> -->
+            </div>
             <div class="saleschannels-content">
                 <div v-for="saleschannel in saleschannels['data']" :key="saleschannel.id" :class="{'saleschannel-item': true, 'active': isActive(saleschannel.id)}">
                     <div class="saleschannel-info">
@@ -67,6 +72,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- popups -->
+         
     </div>
 </template>
 
@@ -133,7 +141,20 @@ export default defineComponent({
         isAllChecked(){
             return this.saleschannels.data.every(sc => this.selectedSaleschannels.includes(sc.id));
         },
-        
+        selectAll(){
+            this.selectedSaleschannels = this.saleschannels.data.map(sc => sc.id);
+        },
+        numberOfSelectedSaleschannels(){
+            return this.selectedSaleschannels.count();
+        },
+        bulkdeleteSelectedSaleschannels(){
+            const data = {saleschannels: this.selectedSaleschannels};
+            console.log(data);
+            axios.put(this.route('saleschannels.bulkDelete'), data)
+            .then(response => {
+                window.location.href = this.route('saleschannels.index');
+            });
+        },
     },
     setup() {
         const route = inject('route');
