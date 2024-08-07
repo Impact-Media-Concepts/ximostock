@@ -10,7 +10,7 @@ import AddUser from './components/user/AddUser.vue';
 import ProductOverview from './components/product/ProductOverview.vue';
 import CategoryOverview from './components/category/CategoryOverview.vue';
 import ThemeConfigurator from './components/user/ThemeConfigurator.vue';
-
+import StepForm from './components/components/StepForm.vue';
 
 // Create the Vue application
 const app = createApp({});
@@ -25,6 +25,7 @@ app.component('AddUser', AddUser);
 app.component('ProductOverview', ProductOverview);
 app.component('CategoryOverview', CategoryOverview);
 app.component('ThemeConfigurator', ThemeConfigurator);
+app.component('StepForm', StepForm);
 
 // Provide the route function globally
 app.provide('route', route);

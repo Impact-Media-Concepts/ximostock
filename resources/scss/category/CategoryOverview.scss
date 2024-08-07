@@ -5,7 +5,7 @@
   .content {
     @include content-container;
 
-    label {
+    label:not(.bulk label) {
       @include default-label;
     }
 
@@ -19,9 +19,7 @@
       flex-direction: column;
       gap: 11px;
       background-color: var(--light);
-      &:first-of-type {
-        padding-bottom: 0;
-      }
+      padding: 15px !important;
 
       .category-item {
 
@@ -37,8 +35,8 @@
         }
 
         input[type="text"] {
-          width: unset;
           @include remove-default-input;
+          width: unset;
           padding: 8px 6px;
           font-size: 14px;
           line-height: 22px;
@@ -47,10 +45,9 @@
 
           &:focus {
             background-color: var(--light);
-            width: unset;
             margin-left: 6px;
-            @include default-input;
             width: unset;
+            @include default-input;
           }
           &.parent {
             font-weight: 700;
@@ -64,6 +61,45 @@
         height: 0;
         &.expanded {
           height: auto;
+        }
+      }
+
+      &.bulk {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--secondary);
+        padding-top: 12px;
+        padding-bottom: 12px;
+        .input-container {
+          label {
+            margin-bottom: 0;
+            padding-left: 10px;
+            font-size: 14px;
+            line-height: 17px;
+            color: var(--text);
+          }
+          input {}
+        }
+        .actions {
+          display: flex;
+          gap: 10px;
+          .button {
+            padding-top: 7px;
+            padding-bottom: 7px;
+            &.close-all {
+              @include button(var(--border-dark), var(--secondary), var(--text), var(--light));
+            }
+            &.open-all {
+              @include button(var(--border-dark), var(--secondary), var(--text), var(--light));
+            }
+            &.delete {
+              @include button(var(--border-dark), var(--secondary), var(--text), var(--light));
+            }
+            &.save {
+              @include button(var(--primary), var(--primary), var(--text-light), var(--primary));
+            }
+          }
         }
       }
     }

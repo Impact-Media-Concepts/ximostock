@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,12 @@ Route::prefix('/api/v1')->group(function() {
 
     Route::prefix('/user')->group(function() {
         Route::patch('/theme/update/{id}', [UserController::class, 'updateThemeById'])->name('user.updateThemeById');
+    });
+
+    Route::prefix('/categories')->group(function() {
+        Route::delete('/deleteCategories', [CategoryController::class, 'deleteCategories'])->name('categories.deleteCategories');
+        Route::patch('/updateCategories', [CategoryController::class, 'updateCategories'])->name('categories.updateCategories');
+
     });
 
 });

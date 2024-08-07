@@ -90,6 +90,10 @@
     line-height: 22px;
     font-weight: 400;
     color: var(--text);
+    margin-bottom: 5px;
+    &:not(:first-child) {
+        margin-top: 10px;
+    }
 }
 
 @mixin default-input {
@@ -97,7 +101,6 @@
     line-height: 22px;
     font-weight: 400;
     color: var(--text);
-    width: 100%;
     border: 1px solid var(--border);
     border-radius: 5px;
     padding: 8px 18px;

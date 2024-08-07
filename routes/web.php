@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product')->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product')->name('products.create');
         Route::get('/export', [ProductController::class, 'export'])->name('products.export');
-        // Route::get('/archive', [ProductController::class, 'archive'])->middleware('can:forceDelete,App\Models\Product')->middleware('can:restore,App\Models\Product')->name('products.archive');
+        Route::get('/{id}/variation/add', [ProductController::class, 'addVariation'])->name('products.addVariation');
         Route::get('/{product}', [ProductController::class, 'show'])->middleware('can:view,product')->name('products.show');
         Route::post('/', [ProductController::class, 'store'])->name('products.store');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');

@@ -40,6 +40,7 @@
                     @include default-label;
                 }
                 input {
+                    width: 100%;
                     @include default-input;
                 }
             }

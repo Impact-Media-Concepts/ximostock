@@ -12,6 +12,23 @@
                         placeholder="Type hier om te zoeken naar categorie" 
                     />
                 </div>
+                <div class="form-group bulk">
+                    <div class="input-container">
+                        <input 
+                            type="checkbox" 
+                            @input="toggleSelection" 
+                            name="check-all" 
+                            v-model="selectAllChecked" 
+                        />
+                        <label for="check-all">Selecteer alles</label>
+                    </div>
+                    <div class="actions">
+                        <span @click="collapseAll" class="button close-all">Alles dichtklappen</span>
+                        <span @click="expandAll" class="button open-all">Alles openklappen</span>
+                        <span @click="deleteSelected" class="button delete">Geselecteerde verwijderen</span>
+                        <span @click="saveAll" class="button save">Alles opslaan</span>
+                    </div>
+                </div>
                 <div class="form-group" :key="renderKey">
                     <category-item
                         v-for="category in visibleCategories"
@@ -29,6 +46,7 @@
 
 <script>
 import { defineComponent, inject, reactive, watch } from 'vue';
+import axios from 'axios';
 import '../../../scss/category/CategoryOverview.scss';
 import CategoryItem from './partials/CategoryItem.vue';
 
@@ -49,6 +67,7 @@ export default defineComponent({
             FilterInputText: '',
             visibleCategories: [],
             renderKey: 0,
+            selectAllChecked: false,
         };
     },
     methods: {
@@ -58,37 +77,28 @@ export default defineComponent({
                     this.checkedCategories.push(checkedCategory.id);
                 }
             } else {
-                if (this.checkedCategories.includes(checkedCategory.id)) {
-                    this.checkedCategories = this.checkedCategories.filter(id => id !== checkedCategory.id);
-                }
+                this.checkedCategories = this.checkedCategories.filter(id => id !== checkedCategory.id);
             }
-            console.log(this.checkedCategories);
         },
         filterCategories() {
             if (this.FilterInputText.trim() === '') {
-                // If the filter text is empty, restore the original categories
                 this.visibleCategories = JSON.parse(JSON.stringify(this.categories));
             } else {
-                // Otherwise, filter the categories based on the filter text
                 this.visibleCategories = JSON.parse(JSON.stringify(this.categories));
-                this.visibleCategories = JSON.parse(JSON.stringify(this.filterRecursiveArray(this.visibleCategories, this.FilterInputText.toLowerCase())));
+                this.visibleCategories = this.filterRecursiveArray(this.visibleCategories, this.FilterInputText.toLowerCase());
             }
-            
             this.renderKey++;
         },
         filterRecursiveArray(arr, filterText) {
             return arr
                 .map(category => {
-                    // If the category has children, recursively filter the children
                     if (category.children) {
                         category.children = this.filterRecursiveArray(category.children, filterText);
                     }
-                    // Apply the filter condition to the current category
                     const matches = category.name.toLowerCase().includes(filterText);
-                    // Return the category if it matches or if any of its children match
                     return matches || (category.children && category.children.length) ? category : null;
                 })
-                .filter(category => category !== null); // Remove null values
+                .filter(category => category !== null);
         },
         updateCategory(updatedCategory) {
             const updateRecursive = (categories, updatedCategory) => {
@@ -104,6 +114,45 @@ export default defineComponent({
             };
             updateRecursive(this.categories, updatedCategory);
         },
+        toggleSelection() {
+            this.selectAllChecked = !this.selectAllChecked;
+            this.checkedCategories = this.selectAllChecked ? this.categories.map(category => category.id) : [];
+
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.selectAllChecked;
+            });
+        },
+        collapseAll() {
+            var categoryTab = document.querySelectorAll('.category-item-container');
+            categoryTab.forEach(tab => {
+                tab.classList.remove('expanded');
+            });
+        },
+        expandAll() {
+            var categoryTab = document.querySelectorAll('.category-item-container');
+            categoryTab.forEach(tab => {
+                tab.classList.add('expanded');
+            });
+        },
+        deleteSelected() {
+
+            axios.delete(route('categories.deleteCategories'), {
+                data: { ids: this.checkedCategories }
+            })
+            .then((response) => {
+                console.log(response);
+            })
+        },
+        saveAll() {
+            console.log(this.categories);
+            axios.patch(route('categories.updateCategories'), {
+                categories: this.categories
+            })
+            .then((response) => {
+                console.log(response);
+            })
+        },
     },
     setup(props) {
         const state = reactive({
@@ -115,7 +164,7 @@ export default defineComponent({
             state.categories = newCategories;
         });
 
-        const route = inject('route'); // Injecting route helper
+        const route = inject('route');
 
         return {
             ...state,

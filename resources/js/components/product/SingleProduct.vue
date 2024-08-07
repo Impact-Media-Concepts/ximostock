@@ -31,13 +31,8 @@
     <div class="product-content">
       <div class="product-tabs">
         <div class="tab-heading">
-          <span
-            class="heading"
-            v-for="(tab, index) in tabs"
-            :key="index"
-            @click="activeTab = index"
-            :class="{ active: activeTab === index }"
-          >
+          <span class="heading" v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
+            :class="{ active: activeTab === index }">
             {{ tab }}
           </span>
         </div>
@@ -83,14 +78,14 @@
 
                   <label for="file-upload">Upload Photo:</label>
                   <input type="file" name="file-upload" @change="handleFileUpload">
-                  
+
                   <div class="foto-grid">
                     <div v-for="photo in productData.photos" :key="photo.id" class="foto">
                       <img :src="photo.url" alt="Product Image">
                       <span @click="deletePhoto(photo.id)" class="delete">X</span>
                     </div>
                   </div>
-                  
+
 
                 </div>
               </section>
@@ -100,12 +95,13 @@
             <div class="title">
               <h4>Categorieën</h4>
             </div>
-            <div class="content categorieen"> 
+            <div class="content categorieen">
 
               <section>
                 <span>Beschikbare categorieën</span>
                 <div class="form-group">
-                  <input @input="FilterAvailableCategories()" v-model="filterInputText" type="text" placeholder="Typ hier waarop u de lijst wil filteren">
+                  <input @input="FilterAvailableCategories()" v-model="filterInputText" type="text"
+                    placeholder="Typ hier waarop u de lijst wil filteren">
                   <ul>
                     <li v-for="category in filteredCategories" :key="category.id">
                       <input type="checkbox" :value="category.id" @change="moveCategory(category, 'available')">
@@ -113,19 +109,19 @@
                     </li>
                   </ul>
                 </div>
-            </section>
+              </section>
 
-            <section>
-              <span>Geselecteerde categorieën</span>
-              <div class="form-group">
-                <ul>
-                  <li v-for="category in productData.categories" :key="category.id">
-                    <input type="checkbox" :value="category.id" @change="moveCategory(category, 'selected')" checked>
-                    {{ category.name }}
-                  </li>
-                </ul>
-              </div>
-            </section>
+              <section>
+                <span>Geselecteerde categorieën</span>
+                <div class="form-group">
+                  <ul>
+                    <li v-for="category in productData.categories" :key="category.id">
+                      <input type="checkbox" :value="category.id" @change="moveCategory(category, 'selected')" checked>
+                      {{ category.name }}
+                    </li>
+                  </ul>
+                </div>
+              </section>
 
             </div>
           </div>
@@ -153,11 +149,7 @@
                 <div class="form-group">
                   <label for="title">Waarden:</label>
                   {{ property.pivot.property_value.value }}
-                  <input 
-                    type="text"
-                    v-model="property.pivot.property_value"
-                    @input="updatePropertyValue(property)"
-                  />
+                  <input type="text" v-model="property.pivot.property_value" @input="updatePropertyValue(property)" />
                 </div>
               </section>
             </div>
@@ -172,7 +164,9 @@
             <div class="title">
               <h4>Variaties</h4>
             </div>
-            <div class="content variaties"></div>
+            <div class="content variaties">
+              <a :href="route('products.addVariation', productData.id)" class="button"> Show variable</a>
+            </div>
           </div>
           <div class="content-container" v-if="activeTab === 6">
             <div class="title">
@@ -188,7 +182,8 @@
                   </div>
                   <div>
                     <label for="backorders">Backorders:</label>
-                    <input type="checkbox" v-model="productData.backorders" id="backorders" :checked="productData.backorders">
+                    <input type="checkbox" v-model="productData.backorders" id="backorders"
+                      :checked="productData.backorders">
                   </div>
                 </div>
               </section>
@@ -326,10 +321,10 @@ export default defineComponent({
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then(response => {
-        this.productData.photos.push(response.data);
-      });
-  
+        .then(response => {
+          this.productData.photos.push(response.data);
+        });
+
     },
     deletePhoto(photoId) {
       axios.delete(this.route('photos.delete', photoId))

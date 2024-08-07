@@ -35,7 +35,7 @@
         .form-container {
             display: grid;
             grid-template-columns: 2;
-            gap: 8px 21px;
+            gap: 0px 21px;
             width: 457px;
 
             .form-group {
@@ -49,6 +49,7 @@
 
                 input {
                     @include default-input;
+                    width: 100%;
                 }
 
                 &.row {
@@ -119,6 +120,7 @@
                         input:not([type=checkbox], [type=radio]),
                         textarea {
                             @include default-input;
+                            width: 100%;
                         }
 
                         .foto-grid {

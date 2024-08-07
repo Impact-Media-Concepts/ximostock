@@ -113,6 +113,11 @@ class ProductController extends BaseProductController
         ]);
     }
 
+    public function addVariation()
+    {
+        return view('product.variation');
+    }
+
     public function show(Request $request, Product $product)
     {
             // Eager load all necessary relationships
@@ -143,7 +148,6 @@ class ProductController extends BaseProductController
         Log::info( "product-propties:");
         // Log::info( $product->properties[0]);
 
-        dump($product->properties);
         return view('product.show', [   
             'product' => $product,
             'unrelatedCategories' => $unrelatedCategories,

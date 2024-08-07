@@ -29,6 +29,10 @@
                 .logo {
                     width: 100%;
                     height: 21px;
+                    path,
+                    rect {
+                        fill: var(--primary);
+                    }
                 }
             }
 

@@ -3,8 +3,9 @@
     $user = Auth::user();
 
     $navbaritems = [
+        // file_get_contents('images/ximostock-logo.svg')
         'logo' => [
-            'src' => '/images/ximostock-logo.png',
+            'src' => file_get_contents('images/default-profile-picture.svg'),
             'alt' => "Ximostock",
             'href' => secure_url('/products'),
         ],
@@ -116,7 +117,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Your code here
-            console.log('Page loaded');
             var root = document.documentElement;
 
             root.style.setProperty('--primary', '{{ $user->primary_color }}');
