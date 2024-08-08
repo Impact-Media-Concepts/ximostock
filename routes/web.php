@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkSpaceController;
 use App\Http\Controllers\WooCommerceWebhookController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\auth\PasswordController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -127,6 +128,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
     Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
+    Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
 });
 
 //authentication

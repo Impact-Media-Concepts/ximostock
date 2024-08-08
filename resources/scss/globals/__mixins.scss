@@ -149,3 +149,92 @@
         }
     }
 }
+
+@mixin table-wrapper{
+    border-radius: 10px;
+    background-color: $light;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    .table-header{
+        height: 60px;
+        background-color: $primary;
+        display: flex;
+        .orderby{
+            font-size: 14px;
+            line-height: 17px;
+            color: $text-light;
+            align-items: center;
+            display: flex;
+            gap: 6px;
+            flex-direction: row;
+            align-items: center;
+            .chevron{
+                fill: $text-light;
+                width: 10px;
+                height: 6px;
+            }
+        }
+    }
+    .table-bulkAction-bar{
+        height: 0px;
+        background-color: $secondary;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 14px;
+        line-height: 17px;
+        gap: 9px;
+        transition: height 0.3s ease; 
+        overflow: hidden;
+        &.open{
+            height: 60px;
+        }
+        .bulkaction-text{
+            margin-left: 36px;
+            .select-all-text{
+                color: $primary;
+                cursor: pointer;
+            }
+        }
+        .bulkaction-button{
+            background-color: $secondary;
+            height: 36px;
+            width: 114px;
+            border-radius: 5px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: $border-dark;
+            color: $text;
+            &:hover{
+                background-color: darken($color: $secondary, $amount: 10);
+            }
+        }
+    }
+    .table-content{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px 25px;
+        .table-item{
+            height: 60px;
+            display: block;
+            overflow: hidden;
+            background-color: $secondary;
+            border-radius: 10px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: $border-secondary;
+            .table-info{
+                height: 60px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding-left: 13px;
+            }
+            
+
+        }
+    }
+
+}

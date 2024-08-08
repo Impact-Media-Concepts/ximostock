@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div class="saleschannel-footer">
-
+                
             </div>
         </div>
 

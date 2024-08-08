@@ -9,6 +9,7 @@ import UserOverview from './components/user/UserOverview.vue';
 import AddUser from './components/user/AddUser.vue';
 import ProductOverview from './components/product/ProductOverview.vue';
 import SaleschannelOverview from './components/salesChannel/SaleschannelOverview.vue';
+import ArchiveOverview from './components/archive/ArchiveOverview.vue';
 
 
 // Create the Vue application
@@ -23,6 +24,7 @@ app.component('UserOverview', UserOverview);
 app.component('AddUser', AddUser);
 app.component('ProductOverview', ProductOverview);
 app.component('SaleschannelOverview', SaleschannelOverview);
+app.component('ArchiveOverview', ArchiveOverview);
 
 // Provide the route function globally
 app.provide('route', route);
