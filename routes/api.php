@@ -38,7 +38,9 @@ Route::prefix('/api/v1')->group(function() {
 
     Route::prefix('/saleschannels')->group(function() {
         Route::delete('/delete/{saleschannel}', [SalesChannelController::class, 'deleteById'])->name('saleschannels.deleteBuId');
+        Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
         Route::put('/update/{saleschannel}', [SalesChannelController::class, 'updateById'])->name('saleschannels.updateById');
-        Route::put('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
+        Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
+
     });
 });

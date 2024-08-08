@@ -60,45 +60,25 @@ class SalesChannelController extends Controller
 
     public function store(Request $request)
     {
-        if (Auth::user()->role === 'admin') {
-            // Validate for admin
-            $attributes = $request->validate([
-                'name' => ['required', 'string'],
-                'type' => ['required', Rule::in(['WooCommerce'])],
-                'url' => ['required'],
-                'flavicon_url' => ['nullable'],
-                'api_key' => ['required'],
-                'secret' => ['nullable'],
-                'work_space_id' => ['required', 'numeric', Rule::exists('work_spaces', 'id')]
-            ]);
-    
-            $workspaceId = $attributes['work_space_id'];
-        } else {
-            // Validate for normal users
-            $attributes = $request->validate([
-                'name' => ['required', 'string'],
-                'type' => ['required', Rule::in(['WooCommerce'])],
-                'url' => ['required'],
-                'flavicon_url' => ['nullable'],
-                'api_key' => ['required'],
-                'secret' => ['nullable']
-            ]);
-            $attributes += ['work_space_id' => Auth::user()->work_space_id];
-    
-            $workspaceId = Auth::user()->work_space_id;
-        }
-    
+        $current_workspace = (int) session('active_workspace_id');
+        $attributes = $request->validate([
+            'name' => ['required', 'string'],
+            'type' => ['required', Rule::in(['WooCommerce'])],
+            'url' => ['required'],
+            'flavicon_url' => ['nullable'],
+            'api_key' => ['required'],
+            'secret' => ['nullable']
+        ]);
+        $attributes = $attributes + ['work_space_id' => $current_workspace];
+
         // Store the sales channel
-        SalesChannel::create($attributes);
-    
-        // Build the redirect URL
-        $redirectUrl = '/saleschannels';
-        if (Auth::user()->role === 'admin') {
-            $redirectUrl .= '?workspace=' . $workspaceId;
+        $salesChannel = SalesChannel::create($attributes);
+        //return responce
+        if($salesChannel){
+            return response()->json(['message' => 'Saleschannel created successfully'], 200);
+        }else{
+            return response()->json(['error' => 'data niet goed ingevult'], 404);
         }
-    
-        // Return the redirect
-        return redirect($redirectUrl);
     }
 
     public function show(SalesChannel $salesChannel)
@@ -130,7 +110,6 @@ class SalesChannelController extends Controller
 
     public function bulkDelete(Request $request)
     {
-       
         //validate
         $attributes = $request->validate([
             'saleschannels' => ['required', 'array'],

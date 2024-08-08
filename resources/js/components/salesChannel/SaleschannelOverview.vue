@@ -14,7 +14,7 @@
                     <span class="orderby">Datum <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
                 </div>
                 <div class="create-button-wraper">
-                    <button class="button-create">
+                    <button @click="toggleCreatePopup()" class="button-create">
                         <img class="saleschannel-icon" src="/images/saleschannel-icon-light.svg" alt="saleschannel-icon-light"> Verkoopkanaal aanmaken
                     </button>
                 </div>
@@ -77,48 +77,53 @@
         </div>
 
         <!-- popups -->
-         <div class="create-popup visable">
+         <div :class="{'create-popup': true, 'visable': this.isOpenCreatePopup}">
             <div class="popup">
-                <img class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img @click="toggleCreatePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <div class="popup-content">
                     <div class="popup-header">
                         Verkoopkanaal aanmaken
                     </div>
                     <div class="saleschannel-create-form">
                         <div class="create-form-inputs">
+                            
                             <div class="create-input">
                                 <span>Naam:</span>
-                                <input type="text">
+                                <input v-model="this.createSaleschannel.name" type="text">
+                            </div>
+                            <div class="create-input">
+                                <span>Type:</span>
+                                <select v-model="this.createSaleschannel.type" id="">
+                                    <option value=""></option>
+                                    <option value="WooCommerce">WooCommerce</option>
+                                </select>
                             </div>
                             <div class="create-input">
                                 <span>URL:</span>
-                                <input type="text">
+                                <input v-model="this.createSaleschannel.url" type="text">
                             </div>
                             <div class="create-input">
                                 <span>API Key:</span>
-                                <input type="text">
+                                <input v-model="this.createSaleschannel.api_key" type="text">
                             </div>
                             <div class="create-input">
                                 <span>Secret:</span>
-                                <input type="text">
+                                <input v-model="this.createSaleschannel.secret" type="text">
                             </div>
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="save-button">
+                        <button  @click="createNewSaleschannel()" class="save-button">
                             <img class="button-icon" src="/images/save-icon.svg" alt="cross">
                             save
                         </button>
-                        <button class="cancel-button">
-                            <img class="button-icon" src="/images/close-icon.svg" alt="cross">
+                        <button @click="toggleCreatePopup()" class="cancel-button">
+                            <img  class="button-icon" src="/images/close-icon.svg" alt="cross">
                             Annuleren
                         </button>
                     </div>
                 </div>
             </div>
-         </div>
-         <div class="warning-popup">
-
          </div>
     </div>
 </template>
@@ -140,6 +145,14 @@ export default defineComponent({
         return {
             activeItemId: null,
             selectedSaleschannels : [],
+            isOpenCreatePopup: false,
+            createSaleschannel:{
+                name:'',
+                type: '',
+                url: '',
+                api_key: '',
+                secret: ''
+            }
         };
     },
     methods: {
@@ -195,11 +208,29 @@ export default defineComponent({
         bulkdeleteSelectedSaleschannels(){
             const data = {saleschannels: this.selectedSaleschannels};
             console.log(data);
-            axios.put(this.route('saleschannels.bulkDelete'), data)
+            axios.post(this.route('saleschannels.bulkDelete'), data)
             .then(response => {
                 window.location.href = this.route('saleschannels.index');
             });
         },
+        toggleCreatePopup(){
+            this.isOpenCreatePopup = !this.isOpenCreatePopup;
+        },
+        createNewSaleschannel(){
+            const saleschannel = this.createSaleschannel;
+            const data = {
+                name: saleschannel.name,
+                type: saleschannel.type,
+                url: saleschannel.url,
+                api_key: saleschannel.api_key,
+                secret: saleschannel.secret,
+            };
+            console.log(data);
+            axios.post(this.route('saleschannels.store'), data)
+            .then(response => {
+                window.location.href = this.route('saleschannels.index');
+            });
+        }
     },
     setup() {
         const route = inject('route');

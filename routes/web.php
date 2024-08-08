@@ -89,8 +89,6 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('/saleschannels')->middleware('auth')->group(function() {
         Route::get('', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
-        Route::get('/create', [SalesChannelController::class, 'create'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.create');
-        Route::get('/archive', [SalesChannelController::class, 'archive'])->middleware('can:restore,App\Models\SalesChannel')->middleware('can:forceDelete,App\Models\SalesChannel')->name('saleschannels.archive');
         Route::get('/{salesChannel}', [SalesChannelController::class, 'show'])->middleware('can:view,salesChannel')->name('saleschannels.show');
         Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
         Route::patch('/{salesChannel}', [SalesChannelController::class, 'update'])->middleware('can:update,salesChannel')->name('saleschannels.update');
