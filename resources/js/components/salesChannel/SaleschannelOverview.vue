@@ -71,10 +71,55 @@
                     </div>
                 </div>
             </div>
+            <div class="saleschannel-footer">
+
+            </div>
         </div>
 
         <!-- popups -->
-         
+         <div class="create-popup visable">
+            <div class="popup">
+                <img class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <div class="popup-content">
+                    <div class="popup-header">
+                        Verkoopkanaal aanmaken
+                    </div>
+                    <div class="saleschannel-create-form">
+                        <div class="create-form-inputs">
+                            <div class="create-input">
+                                <span>Naam:</span>
+                                <input type="text">
+                            </div>
+                            <div class="create-input">
+                                <span>URL:</span>
+                                <input type="text">
+                            </div>
+                            <div class="create-input">
+                                <span>API Key:</span>
+                                <input type="text">
+                            </div>
+                            <div class="create-input">
+                                <span>Secret:</span>
+                                <input type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="save-button">
+                            <img class="button-icon" src="/images/save-icon.svg" alt="cross">
+                            save
+                        </button>
+                        <button class="cancel-button">
+                            <img class="button-icon" src="/images/close-icon.svg" alt="cross">
+                            Annuleren
+                        </button>
+                    </div>
+                </div>
+            </div>
+         </div>
+         <div class="warning-popup">
+
+         </div>
     </div>
 </template>
 
