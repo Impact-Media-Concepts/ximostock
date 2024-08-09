@@ -1,4 +1,4 @@
-<script setup lang="jsx">
+<script setup lang="ts">
 import { defineProps } from 'vue';
 import '../../scss/Sidebar.scss';
 
@@ -11,32 +11,24 @@ const props = defineProps({
 
 const toggleCollapse = () => {
   const sidebar = document.getElementById('sidebar');
-  const textElements = sidebar.querySelectorAll('.text');
-  textElements.forEach((element) => {
+  const textElements = sidebar?.querySelectorAll('.text');
+  textElements?.forEach((element) => {
     element.classList.toggle('collapsed');
   });
 
-  const toggleButton = sidebar.querySelector('.close-button');
-  toggleButton.classList.toggle('rotate');
-};
-
-const render = () => {
-  return (
-    <div id="sidebar">
-      {props.items.map((link) => (
-        <a href={link.url} class="sidebar-item" key={link.url}>
-          <img src={link.image_url} alt="" class="icon" />
-          <span class="text">{link.title}</span>
-        </a>
-      ))}
-      <div class="close" onClick={toggleCollapse}>
-        <img src="/images/sidebar/close-button.svg" alt="close-button" class="close-button" />
-      </div>
-    </div>
-  );
+  const toggleButton = sidebar?.querySelector('.close-button');
+  toggleButton?.classList.toggle('rotate');
 };
 </script>
 
 <template>
-  <component :is="render" />
+  <div id="sidebar">
+    <a v-for="link in props.items" :href="link.url" class="sidebar-item" :key="link.url">
+      <span class="icon" v-html="link.image_url"></span>
+      <span class="text">{{ link.title }}</span>
+    </a>
+    <div class="close" @click="toggleCollapse">
+      <img src="/images/sidebar/close-button.svg" alt="close-button" class="close-button" />
+    </div>
+  </div>
 </template>

@@ -27,8 +27,8 @@
 }
 
 ::selection {
-    background-color: $primary;
-    color: $text-light;
+    background-color: var(--primary);
+    color: var(--text-light);
 }
 
 html,
@@ -37,18 +37,17 @@ body {
     max-height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: $secondary;
+    background-color: var(--secondary);
     font-size: 16px;
     line-height: 20px;
-    color: $text;
+    color: var(--text);
     font-family: Inter;
-    overflow: HIDDEN;
+    overflow: hidden;
 }
 
 body {
     display: flex;
     flex-direction: column;
-
 }
 
 .container {
@@ -59,7 +58,7 @@ body {
     padding: 15px 44px;
     width: 100%;
 
-    >.wrapper {
+    > .wrapper {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -97,4 +96,3 @@ h6 {
         overflow-y: auto;
     }
 }
-

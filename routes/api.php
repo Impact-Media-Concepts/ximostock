@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SalesChannelController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,10 @@ Route::prefix('/api/v1')->group(function() {
         Route::delete('/delete/{id}', [ProductController::class, 'deleteById'])->name('products.delete');
         Route::put('/archive/{id}', [ProductController::class, 'archiveById'])->name('products.archive');
         Route::get('/export/{id}', [ProductController::class, 'exportById'])->name('products.exportByid');
+        
+    });
+
+    Route::prefix('/products')->group(function() {
         Route::post('/photos/store', [PhotoController::class, 'store'])->name('photos.store');
         Route::delete('/photos/{photo}', [PhotoController::class, 'delete'])->name('photos.delete');
     });
@@ -43,4 +49,14 @@ Route::prefix('/api/v1')->group(function() {
         Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
 
     });
+    Route::prefix('/user')->group(function() {
+        Route::patch('/theme/update/{id}', [UserController::class, 'updateThemeById'])->name('user.updateThemeById');
+    });
+
+    Route::prefix('/categories')->group(function() {
+        Route::delete('/deleteCategories', [CategoryController::class, 'deleteCategories'])->name('categories.deleteCategories');
+        Route::patch('/updateCategories', [CategoryController::class, 'updateCategories'])->name('categories.updateCategories');
+
+    });
+
 });

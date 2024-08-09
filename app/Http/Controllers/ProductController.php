@@ -50,7 +50,6 @@ class ProductController extends BaseProductController
     {
         $current_workspace = (int) session('active_workspace_id');
         $products = Product::where('work_space_id', $current_workspace)
-                    ->where('archived', false)
                     ->with(['categories', 'photos' => function ($query) {
                         $query->where('primary', 1);
                     }])
@@ -117,6 +116,11 @@ class ProductController extends BaseProductController
         ]);
     }
 
+    public function addVariation()
+    {
+        return view('product.variation');
+    }
+
     public function show(Request $request, Product $product)
     {
             // Eager load all necessary relationships
@@ -147,7 +151,7 @@ class ProductController extends BaseProductController
         Log::info( "product-propties:");
         // Log::info( $product->properties[0]);
 
-        return view('product.show', [
+        return view('product.show', [   
             'product' => $product,
             'unrelatedCategories' => $unrelatedCategories,
         ]);
@@ -177,16 +181,11 @@ class ProductController extends BaseProductController
             return response()->json(['message' => 'Product not found'], 404);
         }
     
-        Log::info("product: " . $product);
-        Log::info("STOCK: " . $product->stock_quantity);
-    
         // Update the product with the request data
         $product->update($request->only([
             'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description', 'stock_quantity', 'backorders'
         ]));
     
-        Log::info("product after update: ");
-        Log::info($product);
     
         // Sync the categories
         if ($request->has('categories')) {
@@ -253,7 +252,6 @@ class ProductController extends BaseProductController
         }
 
     
-        Log::info("product after updating properties: " . $product);
     
         // Return a response
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);

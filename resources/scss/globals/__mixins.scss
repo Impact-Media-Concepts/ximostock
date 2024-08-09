@@ -1,7 +1,6 @@
-@import "./_variables";
+@import "./__variables";
 
-
-@mixin button($border, $background, $text) {
+@mixin button($border, $background, $text, $hover-background) {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,20 +15,19 @@
     text-decoration: none;
     cursor: pointer;
     &:hover {
-        background-color: darken($background, 10%);
+        background-color: $hover-background;
     }
 }
-
 
 @mixin select {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 13px 20px 11px 20px;
-    border: 1px solid $border-dark;
+    border: 1px solid var(--primary);
     border-radius: 5px;
-    background-color: $light;
-    color: $text;
+    background-color: var(--light);
+    color: var(--text);
     font-size: 14px;
     line-height: 17px;
     text-decoration: none;
@@ -50,7 +48,6 @@
     box-shadow: 0px 3px 6px #0000001A;
     border: 1px solid #F0F0F0;
     background-color: $background-color;
-    // overflow: hidden;
     z-index: 1;
 
     a {
@@ -63,7 +60,6 @@
         &:hover {
             background-color: $hover-color;
         }
-
     }
 
     .sub-options {
@@ -93,20 +89,23 @@
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
-    color: $text;
+    color: var(--text);
+    margin-bottom: 5px;
+    &:not(:first-child) {
+        margin-top: 10px;
+    }
 }
 
 @mixin default-input {
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
-    color: $text;
-    width: 100%;
-    border: 1px solid $border;
+    color: var(--text);
+    border: 1px solid var(--border);
     border-radius: 5px;
     padding: 8px 18px;
     &:focus {
-        border-color: $primary;
+        border-color: var(--primary);
         outline: none;
     }
 }
@@ -237,4 +236,67 @@
         }
     }
 
+}
+@mixin content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 25px;
+    background-color: var(--light);
+    border-radius: 10px;
+    section {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        > span {
+            position: relative;
+            background-color: var(--primary);
+            padding: 10px 22px;
+            font-size: 14px;
+            line-height: 20px;
+            color: var(--light);
+            border-radius: 10px 10px 0 0;
+            small {
+                display: block;
+                margin-top: -5px;
+            }
+            img.remove {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+            }
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            label {
+            }
+            input:not(.categorieen input),
+            textarea {
+                &:not(:last-child) {
+                    // margin-bottom: 15px;
+                }
+            }
+        }
+    }
+}
+
+@mixin remove-default-input {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    font: inherit;
+    box-shadow: none;
+    color: inherit;
+    line-height: normal;
+    letter-spacing: normal;
 }

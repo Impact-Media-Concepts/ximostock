@@ -1,21 +1,37 @@
+// Define SCSS variables
 $primary: #3DABD5;
 $primary-darken: darken($primary, 10%);
-
 $secondary: #F8F8F8;
 $light: #FFFFFF;
-
 $alert: #FD9827;
 $danger: #CA0713;
-
 $border-primary: #3DABD5;
 $border-dark: #717171;
-$border:#D3D3D3;
+$border: #D3D3D3;
 $border-light: #FFFFFF;
 $border-secondary: #F0F0F0;
 
 $text: #717171;
 $text-light: #FFFFFF;
 
-// hover colors
+// Hover colors
 $hover-primary: rgb(57, 153, 190);
 $hover-light: rgb(240, 240, 240);
+
+// Set CSS variables using SCSS variables
+:root {
+  --primary: #{$primary};
+  --primary-darken: #{$primary-darken};
+  --secondary: #{$secondary};
+  --light: #{$light};
+  --alert: #{$alert};
+  --danger: #{$danger};
+  --border-primary: #{$border-primary};
+  --border-dark: #{$border-dark};
+  --border: #{$border};
+  --border-light: #{$border-light};
+  --text: #{$text};
+  --text-light: #{$text-light};
+  --hover-primary: #{$hover-primary};
+  --hover-light: #{$hover-light};
+}

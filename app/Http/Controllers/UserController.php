@@ -133,4 +133,38 @@ class UserController extends Controller
 
         return redirect()->route('users.show', $user->id)->with('success', 'User updated successfully.');
     }
+
+    public function theme(Request $request) {
+        $user = $request->user();
+        return view('user.theme', compact('user'));
+    }
+
+    public function updateThemeById(Request $request, int $id) {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'primary_color' => 'required|string|max:255',
+            'secondary_color' => 'required|string|max:255',
+            'background_color' => 'required|string|max:255',
+            'text_color' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $user->primary_color = $request->primary_color;
+        $user->secondary_color = $request->secondary_color;
+        $user->background_color = $request->background_color;
+        $user->text_color = $request->text_color;
+
+        $user->save();
+
+        return response()->json(['message' => 'Theme updated successfully'], 200);
+    }
+
+
 }

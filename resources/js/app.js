@@ -11,6 +11,9 @@ import ProductOverview from './components/product/ProductOverview.vue';
 import SaleschannelOverview from './components/salesChannel/SaleschannelOverview.vue';
 import ArchiveOverview from './components/archive/ArchiveOverview.vue';
 
+import CategoryOverview from './components/category/CategoryOverview.vue';
+import ThemeConfigurator from './components/user/ThemeConfigurator.vue';
+import StepForm from './components/components/StepForm.vue';
 
 // Create the Vue application
 const app = createApp({});
@@ -25,6 +28,9 @@ app.component('AddUser', AddUser);
 app.component('ProductOverview', ProductOverview);
 app.component('SaleschannelOverview', SaleschannelOverview);
 app.component('ArchiveOverview', ArchiveOverview);
+app.component('CategoryOverview', CategoryOverview);
+app.component('ThemeConfigurator', ThemeConfigurator);
+app.component('StepForm', StepForm);
 
 // Provide the route function globally
 app.provide('route', route);
