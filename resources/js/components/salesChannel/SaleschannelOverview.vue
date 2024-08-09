@@ -21,7 +21,7 @@
             </div>
             <div :class="{'saleschannel-bulkAction-bar': true, 'open':this.selectedSaleschannels.length}">
                 <span class="bulkaction-text"> {{this.selectedSaleschannels.length}} verkoopkanalen van de {{this.saleschannels.data.length}} geselecteerd. <span @click="selectAll()" class="select-all-text">Selecteer alle verkoopkanalen</span></span>
-                <button class="bulkaction-button" @click="bulkdeleteSelectedSaleschannels()">Archiveren</button>
+                <button class="bulkaction-button" @click="toggleDeleteMultiPopup()">Archiveren</button>
                 <!-- <button class="bulkaction-button">Verwijderen</button> -->
             </div>
             <div class="saleschannels-content">
@@ -41,7 +41,7 @@
                             <div @click="toggleActive(saleschannel.id)" class="dropdown-wrapper">
                                 <img class="open" src="/images/chevron-down-dark.svg" alt="chevron-down">
                             </div>
-                            <button @click="deleteSaleschannel(saleschannel.id)" class="delete-button">Verwijderen</button>
+                            <button @click="openDeleteSinglePopup(saleschannel.id)" class="delete-button">Verwijderen</button>
                         </div>
                     </div>
                     <div class="saleschannel-form">
@@ -125,6 +125,32 @@
                 </div>
             </div>
          </div>
+         <div :class="{'warning-delete-one-popup': true, 'visable': this.isOpenDeleteSinglePopup}">
+            <div class="popup">
+                <img @click="closeDeleteSinglePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img src="/images/warning-icon.svg" alt="warning">
+                
+                <span class="title">verwijderen?</span>
+                <p>Weet u zeker dat u dit Verkoopkanaal wilt verwijderen?</p>
+                <div class="warning-buttons">
+                    <button @click="closeDeleteSinglePopup()" class="cancel-button">Annuleren</button>
+                    <button @click="deleteSaleschannel()" class="confirm-button">Verwijderen</button>
+                </div>
+            </div>
+         </div>
+         <div :class="{'warning-delete-one-popup': true, 'visable': this.isOpenDeleteMultiPopup}">
+            <div class="popup">
+                <img @click="toggleDeleteMultiPopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img src="/images/warning-icon.svg" alt="warning">
+                
+                <span class="title">verwijderen?</span>
+                <p>Weet u zeker dat u de geselecteerde  wilt verwijderen?</p>
+                <div class="warning-buttons">
+                    <button @click="toggleDeleteMultiPopup()" class="cancel-button">Annuleren</button>
+                    <button @click="bulkdeleteSelectedSaleschannels()" class="confirm-button">Verwijderen</button>
+                </div>
+            </div>
+         </div>
     </div>
 </template>
 
@@ -146,13 +172,16 @@ export default defineComponent({
             activeItemId: null,
             selectedSaleschannels : [],
             isOpenCreatePopup: false,
+            isOpenDeleteSinglePopup:false,
+            isOpenDeleteMultiPopup:false,
             createSaleschannel:{
                 name:'',
                 type: '',
                 url: '',
                 api_key: '',
                 secret: ''
-            }
+            },
+            toDeleteId: null,
         };
     },
     methods: {
@@ -165,8 +194,8 @@ export default defineComponent({
         isActive(id) {
             return this.activeItemId === id;
         },
-        deleteSaleschannel(saleschannelId) {
-            axios.delete(this.route('saleschannels.deleteBuId', saleschannelId))
+        deleteSaleschannel() {
+            axios.delete(this.route('saleschannels.deleteBuId', this.toDeleteId))
             .then(response => {
                 window.location.href = this.route('saleschannels.index');
             });
@@ -230,6 +259,17 @@ export default defineComponent({
             .then(response => {
                 window.location.href = this.route('saleschannels.index');
             });
+        },
+        closeDeleteSinglePopup(){
+            this.isOpenDeleteSinglePopup = false;
+            this.toDeleteId = null;
+        },
+        openDeleteSinglePopup(id){
+            this.isOpenDeleteSinglePopup = true;
+            this.toDeleteId = id;
+        },
+        toggleDeleteMultiPopup(){
+            this.isOpenDeleteMultiPopup = !this.isOpenDeleteMultiPopup;
         }
     },
     setup() {
