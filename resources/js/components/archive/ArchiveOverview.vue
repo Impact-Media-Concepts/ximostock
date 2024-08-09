@@ -18,18 +18,18 @@
                     </div>
                 </div>
                 <div class="table-content">
-                    <div  :class="{'table-item': true, 'active': isActive(1)}">
-                        <div class="table-info"  @click="toggleActive(1)">
+                    <div v-for="item in items['data']" :class="{'table-item': true, 'active': isActive(item.type + item.id)}">
+                        <div class="table-info"  @click="toggleActive(item.type + item.id)">
                             <div class="select-name">
                                 <input type="checkbox">
-                                groen
+                                {{ item.name }}
                             </div>
                             <div class="type">
-                                Product
+                                {{ item.type }}
                             </div>
                             <div class="date">
-                                2024-08-08 08:19:54
-                                <img :class="{'chevron-down': true, 'active': isActive(1)}" src="/images/chevron-down-dark.svg" alt="chevron-down" >
+                                {{ formatDate(item.deleted_at) }}
+                                <img :class="{'chevron-down': true, 'active': isActive(item.type + item.id)}" src="/images/chevron-down-dark.svg" alt="chevron-down" >
                             </div>
                         </div>
                         <div class="action-buttons">
@@ -53,7 +53,10 @@ import { format } from 'date-fns';
 
 export default defineComponent({
     props: {
-
+        items: {
+            type: [Array, Object],
+            required: true,
+        }
     },
     data() {
         return {

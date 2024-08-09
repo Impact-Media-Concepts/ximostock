@@ -80,7 +80,7 @@
                     gap: 10px;
                     padding: 12px;
                     &:hover{
-                        background-color: darken($color: $primary, $amount: 10);
+                        background-color: var(--hover-primary);
                     }
                     .saleschannel-icon{
                         height: 20px;
@@ -120,7 +120,7 @@
                 border-color: var(--border-dark);
                 color: var(--text);
                 &:hover{
-                    background-color: darken($color: $secondary, $amount: 10);
+                    background-color:var(--hover-secondary);
                 }
             }
         }
@@ -200,7 +200,7 @@
                             border-style: solid;
                             border-width: 1px;
                             &:hover{
-                                background-color: darken($color: $secondary, $amount: 10);
+                                background-color: var(--hover-secondary);
                             }
                         }
                     }
@@ -249,7 +249,7 @@
                             color: var(--text-light);
                             margin: 19px 17px;
                             &:hover{
-                                background-color: darken($color: $primary, $amount: 10);
+                                background-color: var(--hover-primary);
                             }
                         }
                     }
@@ -348,7 +348,7 @@
                     font-size: 14px;
                     line-height: 17px;
                     &:hover{
-                        background-color: darken($color: $primary, $amount: 10);
+                        background-color: var(--hover-primary);
                     }
                 }
                 .cancel-button{
@@ -365,7 +365,7 @@
                     border-style: solid;
                     border-color: var(--border-dark);
                     &:hover{
-                        background-color: darken($color: $light, $amount: 10);
+                        background-color: var(-hover-light);
                     }
                     
                 }
@@ -398,7 +398,7 @@
                 width: 215px;
                 height: 43px;
                 &:hover{
-                    background-color: darken($color: $alert, $amount: 10);
+                    background-color: var(--hover-alert);
                 }
             }
             .cancel-button{
@@ -410,7 +410,7 @@
                 width: 215px;
                 height: 43px;
                 &:hover{
-                    background-color: darken($color: $light, $amount: 10);
+                    background-color: var(--hover-light);
                 }
             }
         }

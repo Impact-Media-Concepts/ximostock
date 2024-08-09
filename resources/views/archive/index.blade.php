@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <archive-overview>
-        
+    <archive-overview
+        :items='@json($items)'>
     </archive-overview>
 @endsection

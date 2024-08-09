@@ -119,11 +119,23 @@
             // Your code here
             var root = document.documentElement;
 
+
             root.style.setProperty('--primary', '{{ $user->primary_color }}');
             root.style.setProperty('--secondary', '{{ $user->secondary_color }}');
             root.style.setProperty('--background', '{{ $user->background_color }}');
             root.style.setProperty('--light', '{{ $user->background_color }}');
             root.style.setProperty('--text', '{{ $user->text_color }}');
+
+            //set hoover colours
+            function darkenColor(hex, percentage) {
+                return `#${hex.slice(1).match(/.{2}/g).map(c => 
+                Math.max(0, Math.floor(parseInt(c, 16) * (1 - percentage / 100))).toString(16).padStart(2, '0')).join('')}`;
+            }
+
+            root.style.setProperty('--hover-primary', darkenColor('{{$user->primary_color}}',10));
+            root.style.setProperty('--hover-light', darkenColor('{{$user->background_color}}',10));
+            root.style.setProperty('--hover-secondary', darkenColor('{{$user->secondary_color}}',10));
+
         });
     </script>
 </body>

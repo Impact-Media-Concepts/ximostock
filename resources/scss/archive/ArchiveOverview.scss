@@ -86,15 +86,15 @@
                         padding: 21px 18px;
                         gap: 10px;
                         button{
-                            background-color: $primary;
+                            background-color: var(--primary);
                             height: 43px;
                             width: 126px;
-                            color: $text-light;
+                            color: var(--text-light);
                             border-radius: 5px;
                             border-style: none;
                             cursor: pointer;
                             &:hover{
-                                background-color: darken($color: $primary, $amount: 10);
+                                background-color: var(--hover-primary);
                             }
                         }
                     }
