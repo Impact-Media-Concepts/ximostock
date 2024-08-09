@@ -17,12 +17,12 @@
     "src": "resources/font/Inter-Thin.ttf"
   },
   "resources/js/app.js": {
-    "file": "assets/app-qcoa3U2K.js",
+    "file": "assets/app-BPlhkLrL.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-Detw37kA.css"
+      "assets/app-CL4h3lMs.css"
     ]
   }
 }
