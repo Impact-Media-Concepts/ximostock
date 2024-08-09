@@ -28,9 +28,9 @@ import { markRaw } from 'vue';
 import ProductInfo from './ProductInfo.vue';
 import ProductCategories from './ProductCategories.vue';
 import ProductImages from './ProductImages.vue';
-import ProductSaleschannels from './ProductSaleschannels.vue';
+// import ProductSaleschannels from './ProductSaleschannels.vue';
 import ProductStock from './ProductStock.vue';
-import ProductProperties from './ProductProperties.vue';
+// import ProductProperties from './ProductProperties.vue';
 
 // Import styles
 import '../../../scss/components/StepForm.scss';
@@ -40,9 +40,9 @@ export default {
         ProductInfo,
         ProductImages,
         ProductCategories,
-        ProductSaleschannels,
+        // ProductSaleschannels,
         ProductStock,
-        ProductProperties
+        // ProductProperties
     },
     data() {
         return {
