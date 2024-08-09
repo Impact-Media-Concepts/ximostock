@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\Property;
 use App\Models\SalesChannel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 
 class ArchiveController extends Controller
@@ -36,5 +38,43 @@ class ArchiveController extends Controller
         ];
         //Log::debug($results['salesChannels']);
         return view('archive.index', $results);
+    }
+
+    public function restore(Request $request){
+        $values = $request->validate([
+            'id' => ['required', 'numeric'],
+            'type' => ['required', Rule::in(['Property', 'Product', 'Category'])]
+        ]);
+
+        Log::debug($values);
+        
+        switch ($values['type']) {
+            case 'Property':
+                $property = Property::onlyTrashed()->findOrFail($values['id']);
+                if($property){
+                    $property->restore();
+                    return response()->json(['message' => 'Property restored successfully'], 200);
+                }
+                break;
+            case 'Product':
+                $product = Product::onlyTrashed()->findOrFail($values['id']);
+                if($product){
+                    $product->restore();
+                    return response()->json(['message' => 'Product restored successfully'], 200);
+                }
+                break;
+            case 'Category':
+                $category = Category::onlyTrashed()->findOrFail($values['id']);
+                if($category){
+                    $category->restore();
+                    return response()->json(['message' => 'Category restored successfully'], 200);
+                }
+                break;
+            default:
+                return response()->json(['message' => 'bad request'], 400);
+            break;
+        }
+        
+
     }
 }

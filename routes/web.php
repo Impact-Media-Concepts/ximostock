@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/properties')->middleware('auth')->group(function() {
         Route::get('', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
         Route::get('/create', [PropertyController::class, 'create'])->middleware('can:\Property')->name('properties.create');
-        Route::get('/archive', [PropertyController::class, 'archive'])->middleware('cancreate,App\Models:restore,App\Models\Property')->middleware('can:forceDelete,App\Models\Property')->name('properties.archive');
+        Route::get('/archive', [PropertyController::class, 'archive'])->middleware('can:create,App\Models:restore,App\Models\Property')->middleware('can:forceDelete,App\Models\Property')->name('properties.archive');
         Route::get('/{property}', [PropertyController::class, 'show'])->middleware('can:view,property')->name('properties.show');
         Route::post('', [PropertyController::class, 'store'])->middleware('can:create,App\Models\Property')->name('properties.store');
         Route::patch('/{property}', [PropertyController::class, 'update'])->middleware('can:update,property')->name('properties.update');

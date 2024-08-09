@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="action-buttons">
-                            <button>Herstellen</button>
+                            <button @click="restoreItem(item.id, item.type)">Herstellen</button>
                             <button>Verwijderen</button>
                         </div>
                     </div>
@@ -50,6 +50,7 @@
 import { defineComponent, inject } from 'vue';
 import '../../../scss/archive/ArchiveOverview.scss';
 import { format } from 'date-fns';
+import axios from 'axios';
 
 export default defineComponent({
     props: {
@@ -61,6 +62,7 @@ export default defineComponent({
     data() {
         return {
             activeItemId: null,
+            selectedItems:[],
         };
     },
     methods: {
@@ -72,6 +74,17 @@ export default defineComponent({
         },
         isActive(id) {
             return this.activeItemId === id;
+        },
+        restoreItem(itemId, itemType) {
+            const data = {
+                id: itemId,
+                type: itemType
+            }
+            console.log(data);
+            axios.post(this.route('archive.restore'), data)
+            .then(response => {
+                window.location.href = this.route('archive.index');
+            });
         },
     },
     setup() {

@@ -8,6 +8,8 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ArchiveController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +36,6 @@ Route::prefix('/api/v1')->group(function() {
         Route::delete('/delete/{id}', [ProductController::class, 'deleteById'])->name('products.delete');
         Route::put('/archive/{id}', [ProductController::class, 'archiveById'])->name('products.archive');
         Route::get('/export/{id}', [ProductController::class, 'exportById'])->name('products.exportByid');
-        
     });
 
     Route::prefix('/products')->group(function() {
@@ -47,7 +48,6 @@ Route::prefix('/api/v1')->group(function() {
         Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
         Route::put('/update/{saleschannel}', [SalesChannelController::class, 'updateById'])->name('saleschannels.updateById');
         Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
-
     });
     Route::prefix('/user')->group(function() {
         Route::patch('/theme/update/{id}', [UserController::class, 'updateThemeById'])->name('user.updateThemeById');
@@ -56,7 +56,10 @@ Route::prefix('/api/v1')->group(function() {
     Route::prefix('/categories')->group(function() {
         Route::delete('/deleteCategories', [CategoryController::class, 'deleteCategories'])->name('categories.deleteCategories');
         Route::patch('/updateCategories', [CategoryController::class, 'updateCategories'])->name('categories.updateCategories');
-
     });
 
+    Route::prefix('/archive')->group(function(){
+        Route::post('/restore', [ArchiveController::class, 'restore'])->name('archive.restore');
+
+    });
 });
