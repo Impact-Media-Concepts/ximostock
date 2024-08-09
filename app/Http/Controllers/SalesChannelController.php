@@ -7,16 +7,17 @@ use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
+
 
 class SalesChannelController extends Controller
 {
     public function index(Request $request)
     {
+        $current_workspace = (int) session('active_workspace_id');
         if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
             $workspaces = WorkSpace::all();
             $activeWorkspace = $request['workspace'];
             $workspace = $activeWorkspace;
@@ -28,11 +29,10 @@ class SalesChannelController extends Controller
         
         $results = [
             'activeWorkspace' => $activeWorkspace,
-            'workspaces' => $workspaces,
             'sidenavActive' => 'saleschannels',
-            'salesChannels' => SalesChannel::where('work_space_id', $workspace)->get()
+            'saleschannels' => SalesChannel::where('work_space_id', $current_workspace)->paginate(10)
         ];
-
+        //Log::debug($results['salesChannels']);
         return view('salesChannel.index', $results);
     }
 
@@ -60,45 +60,25 @@ class SalesChannelController extends Controller
 
     public function store(Request $request)
     {
-        if (Auth::user()->role === 'admin') {
-            // Validate for admin
-            $attributes = $request->validate([
-                'name' => ['required', 'string'],
-                'type' => ['required', Rule::in(['WooCommerce'])],
-                'url' => ['required'],
-                'flavicon_url' => ['nullable'],
-                'api_key' => ['required'],
-                'secret' => ['nullable'],
-                'work_space_id' => ['required', 'numeric', Rule::exists('work_spaces', 'id')]
-            ]);
-    
-            $workspaceId = $attributes['work_space_id'];
-        } else {
-            // Validate for normal users
-            $attributes = $request->validate([
-                'name' => ['required', 'string'],
-                'type' => ['required', Rule::in(['WooCommerce'])],
-                'url' => ['required'],
-                'flavicon_url' => ['nullable'],
-                'api_key' => ['required'],
-                'secret' => ['nullable']
-            ]);
-            $attributes += ['work_space_id' => Auth::user()->work_space_id];
-    
-            $workspaceId = Auth::user()->work_space_id;
-        }
-    
+        $current_workspace = (int) session('active_workspace_id');
+        $attributes = $request->validate([
+            'name' => ['required', 'string'],
+            'type' => ['required', Rule::in(['WooCommerce'])],
+            'url' => ['required'],
+            'flavicon_url' => ['nullable'],
+            'api_key' => ['required'],
+            'secret' => ['nullable']
+        ]);
+        $attributes = $attributes + ['work_space_id' => $current_workspace];
+
         // Store the sales channel
-        SalesChannel::create($attributes);
-    
-        // Build the redirect URL
-        $redirectUrl = '/saleschannels';
-        if (Auth::user()->role === 'admin') {
-            $redirectUrl .= '?workspace=' . $workspaceId;
+        $salesChannel = SalesChannel::create($attributes);
+        //return responce
+        if($salesChannel){
+            return response()->json(['message' => 'Saleschannel created successfully'], 200);
+        }else{
+            return response()->json(['error' => 'data niet goed ingevult'], 404);
         }
-    
-        // Return the redirect
-        return redirect($redirectUrl);
     }
 
     public function show(SalesChannel $salesChannel)
@@ -108,11 +88,11 @@ class SalesChannelController extends Controller
         ]);
     }
 
-    public function update(SalesChannel $salesChannel)
+    public function update(Request $request, SalesChannel $salesChannel)
     {
 
         //validate
-        $attributes = request()->validate([
+        $attributes = $request->validate([
             'name' => ['required', 'string'],
             'type' => ['required', Rule::in(['WooCommerce'])],
             'url' => ['required'],
@@ -130,16 +110,19 @@ class SalesChannelController extends Controller
 
     public function bulkDelete(Request $request)
     {
-        //authorze
-
         //validate
         $attributes = $request->validate([
             'saleschannels' => ['required', 'array'],
             'saleschannels.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
+
+        //authorze
+
         SalesChannel::whereIn('id', $attributes['saleschannels'])->delete();
 
-        return redirect()->back();
+
+        return response()->json(['message' => 'Saleschannels deleted successfully'], 200);
+
     }
 
     public function archive(Request $request)
@@ -176,5 +159,37 @@ class SalesChannelController extends Controller
         ]);
         SalesChannel::withTrashed()->whereIn('id', $attributes['saleschannels'])->forceDelete();
         return redirect()->back();
+    }
+
+    public function deleteById(Request $request, $salesChannel){
+        $salesChannel = Saleschannel::findOrFail($salesChannel);
+
+        if($salesChannel){
+            $salesChannel->delete();
+            return response()->json(['message' => 'Saleschannel deleted successfully'], 200);
+        }else{
+            return response()->json(['error' => 'Saleschannel not found'], 404);
+        }
+    }
+
+    public function updateById(Request $request, $salesChannelId)
+    {
+
+        //validate
+        $attributes = $request->validate([
+            'name' => ['required', 'string'],
+            'url' => ['required'],
+            'api_key' => ['required'],
+            'secret' => ['nullable']
+        ]);
+        $salesChannel = Saleschannel::findOrFail($salesChannelId);
+
+        //update
+        if($salesChannel){
+            $salesChannel->update($attributes);
+            return response()->json(['message' => 'Saleschannel updated successfully'], 200);
+        }else{
+            return response()->json(['error' => 'Saleschannel not found'], 404);
+        }
     }
 }

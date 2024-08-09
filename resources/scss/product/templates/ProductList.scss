@@ -70,6 +70,9 @@
                 color: var(--text);
                 border: 1px solid var(--text);
                 border-radius: 5px;
+                &:hover{
+                    background-color: darken($color: $secondary, $amount: 10);
+                }
             }
         }
     }
@@ -177,6 +180,169 @@
         gap: 21px;
         background-color: var(--primary);
         padding: 17px 25px;
-        border-radius: 0 0;
+        border-radius: 0 0 ;
     }
+
+    .saleschannel-link-popup{
+        @include popup-container;
+    }
+
+    .popup-container{
+        @include popup-container;
+        .action-buttons{
+            display: flex;
+            flex-direction: row-reverse;
+            width: 100%;
+            gap: 8px;
+            .submit{
+                width: 126px;
+                height: 43px;
+                background-color: $primary;
+                border-radius: 5px;
+                border-style: none;
+                color: $text-light;
+                &:hover {
+                    background-color: darken($primary,10%);
+                }
+            }
+            .cancel{
+                width: 126px;
+                height: 43px;
+                background-color: $secondary;
+                border-radius: 5px;
+                border-style: solid;
+                border-color: $border-dark;
+                border-width: 1px;
+                color: $border-dark;
+                &:hover {
+                    background-color: darken($secondary,10%);
+                }
+            }
+        }
+            .saleschannels{
+                border-color: $border;
+                border-style:solid;
+                border-radius: 10px;
+                border-width: 1px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                .saleschannels-header{
+                    background-color: $primary;
+                    color: $text-light;
+                    font-size: 14px;
+                    line-height: 17px;
+                    text-align: left;
+                    padding: 12px 22px;
+                }
+                .saleschannels-content{
+                    padding: 10px;
+                    text-align: left;
+                    .saleschannel{
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        padding: 4px;
+                        color: $text;
+                    }
+                }
+            }
+            .discountform{
+                border-color: $border;
+                border-style:solid;
+                border-radius: 10px;
+                border-width: 1px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                .discount-header{
+                    background-color: $primary;
+                    color: $text-light;
+                    font-size: 14px;
+                    line-height: 17px;
+                    text-align: left;
+                    padding: 12px 22px;
+                }
+                .discount-content{
+                    display: flex;
+                    flex-direction: column;
+                    padding: 21px;
+                    gap: 36px;
+                    .inputs{
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 7px 19px;
+                        .textform{
+                            height: 40px;
+                            border-radius: 5px;
+                            border-color: $border;
+                            border-style: solid;
+                            border-width: 1px;
+                            text-align: center;
+                            &::placeholder{
+                                text-align: center;
+                                color: $border;
+                            }
+                            /* Verberg de spinner-pijltjes in WebKit-gebaseerde browsers (Chrome, Safari) */
+                            &::-webkit-inner-spin-button,
+                            &::-webkit-outer-spin-button {
+                                -webkit-appearance: none;
+                                margin: 0;
+                            }
+
+                            /* Verberg de spinner-pijltjes in Firefox */
+                            -moz-appearance: textfield;
+
+                            /* Verberg de clear-knop in Microsoft Edge */
+                            &::-ms-clear {
+                                display: none;
+                            }
+                        }
+                        .checkbox{
+                            display: flex;
+                            align-items: center;
+                            flex-direction: row;
+                            .label{
+                                font-size: 14px;
+                                line-height: 20px;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                    .action-buttons{
+                        display: flex;
+                        flex-direction: row-reverse;
+                        width: 100%;
+                        gap: 8px;
+                        .submit{
+                            width: 126px;
+                            height: 43px;
+                            background-color: $primary;
+                            border-radius: 5px;
+                            border-style: none;
+                            color: $text-light;
+                            &:hover {
+                                background-color: darken($primary,10%);
+                            }
+                        }
+                        .cancel{
+                            width: 126px;
+                            height: 43px;
+                            background-color: $secondary;
+                            border-radius: 5px;
+                            border-style: solid;
+                            border-color: $border-dark;
+                            border-width: 1px;
+                            color: $border-dark;
+                            &:hover {
+                                background-color: darken($secondary,10%);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
 }

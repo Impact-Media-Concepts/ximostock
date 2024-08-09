@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\SalesChannel;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Log;
 
 class SalesChannelPolicy
 {
@@ -89,7 +90,21 @@ class SalesChannelPolicy
      */
     public function forceDelete(User $user, SalesChannel $salesChannel): Response
     {
+        return Response::deny();
+    }
 
+    public function bulkDelete(User $user, array $salesChannelIds): Response
+    {
+        Log::debug($salesChannelIds);
+        if($user->role === 'manager'){
+            $salesChannels = Saleschannel::whereIn('id', $salesChannelIds)->where('work_space_id', $user->work_space_id)->get();
+            if (Count($salesChannelIds) != Count($salesChannels)) {
+                //if some product ids are wrong return bad request
+                return Response::denyWithStatus(400);
+            }else{
+                return Response::allow();
+            }
+        }
         return Response::deny();
     }
 }

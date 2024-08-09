@@ -2,6 +2,7 @@
     <div class="product-overview">
         <ProductList 
             :filteredProducts="filteredProducts.data"
+            :saleschannels="initialSaleschannels"
             @update:selectedProducts="updateSelectedProducts"
         />
         <CategoryFilters 
@@ -32,6 +33,10 @@ export default defineComponent({
             type: [Array, Object],
             required: true,
         },
+        initialSaleschannels:{
+            type: [Array, Object],
+            required: true,
+        }
     },
     data() {
         return {

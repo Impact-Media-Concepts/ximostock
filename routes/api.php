@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 
@@ -41,6 +42,13 @@ Route::prefix('/api/v1')->group(function() {
         Route::delete('/photos/{photo}', [PhotoController::class, 'delete'])->name('photos.delete');
     });
 
+    Route::prefix('/saleschannels')->group(function() {
+        Route::delete('/delete/{saleschannel}', [SalesChannelController::class, 'deleteById'])->name('saleschannels.deleteBuId');
+        Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
+        Route::put('/update/{saleschannel}', [SalesChannelController::class, 'updateById'])->name('saleschannels.updateById');
+        Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
+
+    });
     Route::prefix('/user')->group(function() {
         Route::patch('/theme/update/{id}', [UserController::class, 'updateThemeById'])->name('user.updateThemeById');
     });

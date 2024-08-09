@@ -66,18 +66,21 @@ class ProductController extends BaseProductController
         $hierarchicalCategories = $relatedCategories->map(function($category) {
             return Category::with('child_categories_recursive')->find($category->id);
         });
-    
+
         $hierarchicalCategories = $hierarchicalCategories->unique('id')->toArray();
-    
+        
+        //loading saleschannels for the user
+        $saleschannels = SalesChannel::where('work_space_id', $current_workspace)->orderBy('name', 'desc')->get();
+
         $data = [
             'products' => $products,
             'categories' => $hierarchicalCategories,
+            'saleschannels' => $saleschannels
         ];
     
         return view('product.index', $data);
     }
     
-
     public function create(Request $request)
     {
         if (Auth::user()->role === 'admin') {
@@ -188,15 +191,19 @@ class ProductController extends BaseProductController
         if ($request->has('categories')) {
             $product->categories()->sync($request->categories);
         }
-        
+    
+        Log::info("product after sync: " . $product);
+    
         // Update properties
         if ($request->has('properties')) {
             $requestPropertyIds = [];
 
             foreach ($request->properties as $propertyData) {
+                Log::info("propertyData: ", $propertyData);
                 if (isset($propertyData['pivot']['property_value'])) {
                     if (isset($propertyData['id'])) {
                         // Update the existing property
+                        Log::info("Updating property with data: ", $propertyData['pivot']);
                         $product->properties()->updateExistingPivot(
                             $propertyData['id'],
                             [
@@ -206,7 +213,8 @@ class ProductController extends BaseProductController
                         $requestPropertyIds[] = $propertyData['id'];
                     } else {
                         // If ID is null, add a new property to the database and also create a new pivot
-                        Log::info("Creating new property: ", $propertyData);
+                        Log::info("Adding new property to the database and creating new pivot with data: ", $propertyData['pivot']);
+                        
                         // Create the new property
                         $newProperty = Property::create([
                             'name' => $propertyData['name'],
@@ -222,6 +230,8 @@ class ProductController extends BaseProductController
                             ]
                         );
                 
+                        Log::info("New property added with ID: " . $newProperty->id);
+                        Log::info("New property added with value: " . $propertyData['pivot']['property_value']);
                         $requestPropertyIds[] = $newProperty->id;
                     }
                 } else {
@@ -237,6 +247,7 @@ class ProductController extends BaseProductController
 
             if (!empty($propertyIdsToDetach)) {
                 $product->properties()->detach($propertyIdsToDetach);
+                Log::info("Detached properties with IDs: " . implode(', ', $propertyIdsToDetach));
             }
         }
 
@@ -277,9 +288,10 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-    public function bulkDiscount()
+    public function bulkDiscount(Request $request)
     {
         Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
+        
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -354,10 +366,10 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
-    public function bulkLinkSalesChannel()
+    public function bulkLinkSalesChannel(Request $request)
     {
-        $request = request();
-
+        Log::info($request);
+        //die();
         $productIds = isset($request['product_ids']) ? $request['product_ids'] : [];
         $salesChannels = isset($request['sales_channel_ids']) ? $request['sales_channel_ids'] : [];
 
@@ -390,7 +402,6 @@ class ProductController extends BaseProductController
         foreach ($salesChannels as $salesChannel) {
             $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
         }
-
         return redirect('/products');
     }
 
@@ -1147,6 +1158,5 @@ class ProductController extends BaseProductController
             return response()->json(['error' => 'Failed to export product'], 500);
         }
     }
-    
-    
+
 }

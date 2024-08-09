@@ -110,6 +110,133 @@
     }
 }
 
+@mixin popup-container {
+    position:fixed;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    text-align: center;
+    top: 0;
+    left: 0;
+    display: none;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, .25);
+    z-index: 1000;
+    &.visable{
+        display: flex;
+    }
+    .popup{
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        border-color: $border;
+        border-style:solid;
+        border-width: 1px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 704px;
+        width: 80%;
+        gap: 20px;
+        .popup-close{
+            height: 21px;
+            width: 21px;
+            align-self:flex-end;
+        }
+    }
+}
+
+@mixin table-wrapper{
+    border-radius: 10px;
+    background-color: $light;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    .table-header{
+        height: 60px;
+        background-color: $primary;
+        display: flex;
+        .orderby{
+            font-size: 14px;
+            line-height: 17px;
+            color: $text-light;
+            align-items: center;
+            display: flex;
+            gap: 6px;
+            flex-direction: row;
+            align-items: center;
+            .chevron{
+                fill: $text-light;
+                width: 10px;
+                height: 6px;
+            }
+        }
+    }
+    .table-bulkAction-bar{
+        height: 0px;
+        background-color: $secondary;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 14px;
+        line-height: 17px;
+        gap: 9px;
+        transition: height 0.3s ease; 
+        overflow: hidden;
+        &.open{
+            height: 60px;
+        }
+        .bulkaction-text{
+            margin-left: 36px;
+            .select-all-text{
+                color: $primary;
+                cursor: pointer;
+            }
+        }
+        .bulkaction-button{
+            background-color: $secondary;
+            height: 36px;
+            width: 114px;
+            border-radius: 5px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: $border-dark;
+            color: $text;
+            &:hover{
+                background-color: darken($color: $secondary, $amount: 10);
+            }
+        }
+    }
+    .table-content{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px 25px;
+        .table-item{
+            height: 60px;
+            display: block;
+            overflow: hidden;
+            background-color: $secondary;
+            border-radius: 10px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: $border-secondary;
+            .table-info{
+                height: 60px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding-left: 13px;
+            }
+            
+
+        }
+    }
+
+}
 @mixin content-container {
     display: flex;
     flex-direction: column;

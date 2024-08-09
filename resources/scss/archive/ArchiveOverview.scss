@@ -1,0 +1,110 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.archive{
+    padding: 20px;
+    .title{
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 24px;
+        display: block;
+        margin-bottom: 35px;
+    }
+    .archive-wrapper{
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
+        .archive-table{
+            flex: 1; 
+            background: $light;
+            overflow: hidden;
+            border-radius: 10px;
+            @include table-wrapper;
+            .table-header{
+                padding-left: 38px;
+                .select-name{
+                    display: flex;
+                    align-items: center;
+                    gap: 13px;
+                    width: 19%;
+                    min-width: 200px;
+                    .select-all{
+                        height: 14px;
+                        width: 14px;
+                    }
+                }
+                .type{
+                    flex: 1;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    min-width: 120px;
+                }
+                .date{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    width: 244px;
+                }
+            }
+            .table-content{
+                .table-item{
+                    transition: height 0.3s ease; 
+
+                    &.active{
+                        height: 144px;
+                    }
+                    .select-name{
+                        display: flex;
+                        flex-direction: row;
+                        gap: 16px;
+                        width: 19.3%;
+                        min-width: 200px;
+                        input{
+                            width: 14px;
+                            height: 14px;
+                        }
+
+                    }
+                    .type{
+                        flex: 1;
+                    }
+                    .date{
+                        .chevron-down{
+                            width: 17px;
+                            margin: 0px 15px;
+                            transition: transform 0.3s ease; 
+
+                            &.active{
+                                transform: rotate(180deg);
+                            }
+                        }
+                    }
+                    .action-buttons{
+                        display: flex;
+                        flex-direction: row-reverse;
+                        padding: 21px 18px;
+                        gap: 10px;
+                        button{
+                            background-color: $primary;
+                            height: 43px;
+                            width: 126px;
+                            color: $text-light;
+                            border-radius: 5px;
+                            border-style: none;
+                            cursor: pointer;
+                            &:hover{
+                                background-color: darken($color: $primary, $amount: 10);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .archive-filter{
+            width: 265px;
+            background: $light;
+            border-radius: 10px;
+        }
+    }
+}

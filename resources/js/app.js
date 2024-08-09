@@ -8,6 +8,9 @@ import GeneralNotification from './components/GeneralNotification.vue';
 import UserOverview from './components/user/UserOverview.vue';
 import AddUser from './components/user/AddUser.vue';
 import ProductOverview from './components/product/ProductOverview.vue';
+import SaleschannelOverview from './components/salesChannel/SaleschannelOverview.vue';
+import ArchiveOverview from './components/archive/ArchiveOverview.vue';
+
 import CategoryOverview from './components/category/CategoryOverview.vue';
 import ThemeConfigurator from './components/user/ThemeConfigurator.vue';
 import StepForm from './components/components/StepForm.vue';
@@ -23,6 +26,8 @@ app.component('GeneralNotification', GeneralNotification);
 app.component('UserOverview', UserOverview);
 app.component('AddUser', AddUser);
 app.component('ProductOverview', ProductOverview);
+app.component('SaleschannelOverview', SaleschannelOverview);
+app.component('ArchiveOverview', ArchiveOverview);
 app.component('CategoryOverview', CategoryOverview);
 app.component('ThemeConfigurator', ThemeConfigurator);
 app.component('StepForm', StepForm);

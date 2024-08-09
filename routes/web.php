@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkSpaceController;
 use App\Http\Controllers\WooCommerceWebhookController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\auth\PasswordController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -77,8 +78,8 @@ Route::middleware('auth')->group(function () {
     // Properties prefixed and grouped
     Route::prefix('/properties')->middleware('auth')->group(function() {
         Route::get('', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
-        Route::get('/create', [PropertyController::class, 'create'])->middleware('can:create,App\Models\Property')->name('properties.create');
-        Route::get('/archive', [PropertyController::class, 'archive'])->middleware('can:restore,App\Models\Property')->middleware('can:forceDelete,App\Models\Property')->name('properties.archive');
+        Route::get('/create', [PropertyController::class, 'create'])->middleware('can:\Property')->name('properties.create');
+        Route::get('/archive', [PropertyController::class, 'archive'])->middleware('cancreate,App\Models:restore,App\Models\Property')->middleware('can:forceDelete,App\Models\Property')->name('properties.archive');
         Route::get('/{property}', [PropertyController::class, 'show'])->middleware('can:view,property')->name('properties.show');
         Route::post('', [PropertyController::class, 'store'])->middleware('can:create,App\Models\Property')->name('properties.store');
         Route::patch('/{property}', [PropertyController::class, 'update'])->middleware('can:update,property')->name('properties.update');
@@ -89,12 +90,9 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('/saleschannels')->middleware('auth')->group(function() {
         Route::get('', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
-        Route::get('/create', [SalesChannelController::class, 'create'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.create');
-        Route::get('/archive', [SalesChannelController::class, 'archive'])->middleware('can:restore,App\Models\SalesChannel')->middleware('can:forceDelete,App\Models\SalesChannel')->name('saleschannels.archive');
         Route::get('/{salesChannel}', [SalesChannelController::class, 'show'])->middleware('can:view,salesChannel')->name('saleschannels.show');
         Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
         Route::patch('/{salesChannel}', [SalesChannelController::class, 'update'])->middleware('can:update,salesChannel')->name('saleschannels.update');
-        Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
         Route::post('/restore', [SalesChannelController::class, 'restore'])->middleware('can:restore,App\Models\SalesChannel')->name('saleschannels.restore');
         Route::post('/forcedelete', [SalesChannelController::class, 'forceDelete'])->middleware('can:foreceDelete,App\Models\SalesChannel')->name('saleschannels.forceDelete');
     });
@@ -131,6 +129,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
     Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
+    Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
 });
 
 //authentication
