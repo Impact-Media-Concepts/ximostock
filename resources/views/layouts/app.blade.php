@@ -87,6 +87,11 @@
             'title' => 'Gebruikers',
             'image_url' => file_get_contents('images/sidebar/gebruikers.svg'),
         ],
+        [
+            'url' => route('archive.index'),
+            'title' => 'archief' ,
+            'image_url' => file_get_contents('images/sidebar/archive-icon.svg'),
+        ],
     ];
 @endphp
 <!DOCTYPE html>
