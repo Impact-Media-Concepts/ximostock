@@ -48,7 +48,7 @@
                 }
             }
             .table-bulkAction-bar{
-                
+
             }
             .table-content{
                 .table-item{
@@ -110,4 +110,13 @@
             border-radius: 10px;
         }
     }
+    .force-delete-popup{
+        @include popup-container;
+        
+    }
+    .bulk-force-delete-popup{
+        @include popup-container;
+        
+    }
+
 }

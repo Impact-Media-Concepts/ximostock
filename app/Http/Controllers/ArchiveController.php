@@ -136,13 +136,74 @@ class ArchiveController extends Controller
     }
 
     public function bulkRestore(Request $request){
+        Log::debug( $request);
+
         $values = $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'numeric'],
             'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
         ]);
 
-        Log::debug($values);
+        // Groepeer de items per type
+        $groupedItems = collect($values['items'])->groupBy('type');
+
+        // Herstel items per type in één query
+        foreach ($groupedItems as $type => $items) {
+            $ids = collect($items)->pluck('id')->toArray();
+
+            switch ($type) {
+                case 'Product':
+                    Product::onlyTrashed()->whereIn('id', $ids)->restore();
+                    break;
+                case 'Category':
+                    Category::onlyTrashed()->whereIn('id', $ids)->restore();
+                    break;
+                case 'Property':
+                    Property::onlyTrashed()->whereIn('id', $ids)->restore();
+                    break;
+                case 'Saleschannel':
+                    Saleschannel::onlyTrashed()->whereIn('id', $ids)->restore();
+                    break;
+            }
+        }
+
+
+        return response()->json(['message' => 'succesfull restore'], 200);
     }
-    
+
+    public function bulkForceDelete(Request $request)
+    {
+        $values = $request->validate([
+            'items' => ['required', 'array'],
+            'items.*.id' => ['required', 'numeric'],
+            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
+        ]);
+
+        // Groepeer de items per type
+        $groupedItems = collect($values['items'])->groupBy('type');
+
+        // Force delete items per type in één query
+        foreach ($groupedItems as $type => $items) {
+            $ids = collect($items)->pluck('id')->toArray();
+
+            switch ($type) {
+                case 'Product':
+                    Product::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+                    break;
+                case 'Category':
+                    Category::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+                    break;
+                case 'Property':
+                    Property::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+                    break;
+                case 'Saleschannel':
+                    Saleschannel::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+                    break;
+            }
+        }
+
+        return response()->json(['message' => 'Items successfully deleted permanently'], 200);
+    }
+
+
 }

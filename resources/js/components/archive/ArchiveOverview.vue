@@ -19,37 +19,67 @@
                 </div>
                 <div  :class="{'table-bulkAction-bar': true, 'open':this.selectedItems.length}">
                     <span class="bulkaction-text">{{this.selectedItems.length}} opties van de {{this.items['data'].length}} geselecteerd. <span @click="selectAllItems()" class="select-all-text">Selecteer alle opties</span></span>
-                    <button class="bulkaction-button">
+                    <button @click="bulkRestore()" class="bulkaction-button">
                         Herstellen
                     </button>
-                    <button class="bulkaction-button">
+                    <button @click="toggleBulkForceDeletePopup()" class="bulkaction-button">
                         Verwijderen
                     </button>
                 </div>
                 <div class="table-content">
-                    <div v-for="item in items['data']" :class="{'table-item': true, 'active': isActive(item.type + item.id)}">
+                    <div v-for="item in items['data']" :class="{'table-item': true, 'active': isActive(item)}">
                         <div class="table-info" >
                             <div class="select-name">
                                 <input @click="toggleItemById($event.target.checked ,item)" :checked="itemIsChecked(item)" type="checkbox">
-                                <span @click="toggleActive(item.type + item.id)">{{ item.name }}</span>
+                                <span @click="toggleActive(item)">{{ item.name }}</span>
                             </div>
-                            <div class="type"  @click="toggleActive(item.type + item.id)">
+                            <div class="type"  @click="toggleActive(item)">
                                 {{ item.type }}
                             </div>
-                            <div class="date" @click="toggleActive(item.type + item.id)">
+                            <div class="date" @click="toggleActive(item)">
                                 {{ formatDate(item.deleted_at) }}
-                                <img  :class="{'chevron-down': true, 'active': isActive(item.type + item.id)}" src="/images/chevron-down-dark.svg" alt="chevron-down" >
+                                <img  :class="{'chevron-down': true, 'active': isActive(item)}" src="/images/chevron-down-dark.svg" alt="chevron-down" >
                             </div>
                         </div>
                         <div class="action-buttons">
                             <button @click="restoreItem(item.id, item.type)">Herstellen</button>
-                            <button @click="forceDeleteItem(item.id, item.type)">Verwijderen</button>
+                            <button @click="toggleForceDeletePopup()">Verwijderen</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="archive-filter">
                 filter
+            </div>
+        </div>
+        <!-- popups -->
+        <div :class="{'force-delete-popup':true, 'visable' : forceDeletePopup}">
+            <div class="popup">
+                <img @click="toggleForceDeletePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img src="/images/warning-icon.svg" alt="warning">
+                <span class="title">verwijderen?</span>
+                <p>Weet u zeker dat u dit item <strong>permanent</strong>wilt verwijderen?
+                <br>
+                Deze actie kan niet ongedaan gemaakt worden!</p>
+                <div class="warning-buttons">
+                    <button @click="toggleForceDeletePopup()" class="cancel-button">Annuleren</button>
+                    <button @click="forceDeleteItem(this.activeItem.id, this.activeItem.type)" class="confirm-button">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+        <div :class="{'bulk-force-delete-popup':true, 'visable' : bulkForceDeletePopup}">
+            <div class="popup">
+                <img @click="toggleBulkForceDeletePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img src="/images/warning-icon.svg" alt="warning">
+                <span class="title">verwijderen?</span>
+                <p>Weet u zeker dat u deze items <strong>permanent</strong> 
+                    wilt verwijderen?
+                <br>
+                Deze actie kan niet ongedaan gemaakt worden!</p>
+                <div class="warning-buttons">
+                    <button @click="toggleBulkForceDeletePopup()" class="cancel-button">Annuleren</button>
+                    <button @click="bulkForceDelete()" class="confirm-button">Verwijderen</button>
+                </div>
             </div>
         </div>
     </div>
@@ -70,19 +100,22 @@ export default defineComponent({
     },
     data() {
         return {
-            activeItemId: null,
+            activeItem: null,
             selectedItems:[],
+
+            forceDeletePopup:false,
+            bulkForceDeletePopup:false
         };
     },
     methods: {
         formatDate(date) {
             return format(new Date(date), 'yyyy-MM-dd HH:mm:ss');
         },
-        toggleActive(id) {
-            this.activeItemId = this.activeItemId === id ? null : id;
+        toggleActive(item) {
+            this.activeItem = JSON.stringify(this.activeItem) == JSON.stringify(item) ? null : item;
         },
-        isActive(id) {
-            return this.activeItemId === id;
+        isActive(item) {
+            return JSON.stringify(this.activeItem) == JSON.stringify(item);
         },
         restoreItem(itemId, itemType) {
             const data = {
@@ -119,19 +152,29 @@ export default defineComponent({
         toggleItemById(checked, value){
             checked ? this.selectedItems.push(value) : this.selectedItems = this.selectedItems.filter(item => JSON.stringify(item) != JSON.stringify(value));
             console.log(this.selectedItems);
-            
         },
         isAllChecked(){
             return this.items.data.every(item => this.selectedItems.includes(item));
         },
         bulkRestore(){
-            const data = this.selectedItems;
-            
-            console.log(data);
-            axios.post(this.route('archive.forcedelete'), data)
+            const data =  {items: this.selectedItems };
+            axios.post(this.route('archive.bulkrestore'), data)
             .then(response => {
                 window.location.href = this.route('archive.index');
             });
+        },
+        bulkForceDelete(){
+            const data =  {items: this.selectedItems };
+            axios.post(this.route('archive.bulkforcedelete'), data)
+            .then(response => {
+                window.location.href = this.route('archive.index');
+            });
+        },
+        toggleForceDeletePopup(){
+            this.forceDeletePopup = !this.forceDeletePopup;
+        },
+        toggleBulkForceDeletePopup(){
+            this.bulkForceDeletePopup = !this.bulkForceDeletePopup;
         }
     },
     setup() {
