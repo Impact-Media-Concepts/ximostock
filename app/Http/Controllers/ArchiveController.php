@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
-
 class ArchiveController extends Controller
 {
     public function index(Request $request)
@@ -19,20 +18,29 @@ class ArchiveController extends Controller
         $current_workspace = (int) session('active_workspace_id');
             // Haal de producten op die gearchiveerd (soft-deleted) zijn en hernoem 'title' naar 'name'
             $products = Product::onlyTrashed()
-            ->select('id', DB::raw('title as name'), 'deleted_at', DB::raw("'Product' as type"));
+            ->select('id', DB::raw('title as name'), 'deleted_at', DB::raw("'Product' as type"))
+            ->where('work_space_id', $current_workspace);
 
             // Haal de categorieën op die gearchiveerd zijn
             $categories = Category::onlyTrashed()
-            ->select('id', 'name', 'deleted_at', DB::raw("'Category' as type"));
+            ->select('id', 'name', 'deleted_at', DB::raw("'Category' as type"))
+            ->where('work_space_id', $current_workspace);        
 
             // Haal de properties op die gearchiveerd zijn
             $properties = Property::onlyTrashed()
-            ->select('id', 'name', 'deleted_at', DB::raw("'Property' as type"));
+            ->select('id', 'name', 'deleted_at', DB::raw("'Property' as type"))
+            ->where('work_space_id', $current_workspace);
+
+            // Haal de verkoopkanalen op die gearchiveerd zijn
+            $properties = SalesChannel::onlyTrashed()
+            ->select('id', 'name', 'deleted_at', DB::raw("'Saleschannel' as type"))
+            ->where('work_space_id', $current_workspace);
 
             // Combineer de queries met union en sorteer op deleted_at
             $archivedItems = $products->union($categories)->union($properties)
             ->orderBy('deleted_at', 'desc') // Sorteer op deleted_at
             ->paginate(15); // Paginate de resultaten
+
         $results = [
             'items' => $archivedItems
         ];
@@ -43,10 +51,10 @@ class ArchiveController extends Controller
     public function restore(Request $request){
         $values = $request->validate([
             'id' => ['required', 'numeric'],
-            'type' => ['required', Rule::in(['Property', 'Product', 'Category'])]
+            'type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
         ]);
 
-        Log::debug($values);
+        //TODO authorize
         
         switch ($values['type']) {
             case 'Property':
@@ -70,11 +78,71 @@ class ArchiveController extends Controller
                     return response()->json(['message' => 'Category restored successfully'], 200);
                 }
                 break;
+            case 'Saleschannel':
+                $saleschannel = SalesChannel::onlyTrashed()->findOrFail($values['id']);
+                if($saleschannel){
+                    $saleschannel->restore();
+                    return response()->json(['message' => 'Saleschannel restored successfully'], 200);
+                }
+                break;
             default:
                 return response()->json(['message' => 'bad request'], 400);
             break;
         }
+    }
+
+    public function forceDelete(Request $request){
+        $values = $request->validate([
+            'id' => ['required', 'numeric'],
+            'type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
+        ]);
+
+        //TODO authorise
         
 
+        switch ($values['type']) {
+            case 'Property':
+                $property = Property::onlyTrashed()->findOrFail($values['id']);
+                if($property){
+                    $property->forceDelete();
+                    return response()->json(['message' => 'Property destroyed successfully'], 200);
+                }
+                break;
+            case 'Product':
+                $product = Product::onlyTrashed()->findOrFail($values['id']);
+                if($product){
+                    $product->forceDelete();
+                    return response()->json(['message' => 'Product destroyed successfully'], 200);
+                }
+                break;
+            case 'Category':
+                $category = Category::onlyTrashed()->findOrFail($values['id']);
+                if($category){
+                    $category->forceDelete();
+                    return response()->json(['message' => 'Category destroyed successfully'], 200);
+                }
+                break;
+            case 'Saleschannel':
+                $saleschannel = SalesChannel::onlyTrashed()->findOrFail($values['id']);
+                if($saleschannel){
+                    $saleschannel->forceDelete();
+                    return response()->json(['message' => 'Saleschannel destroyed successfully'], 200);
+                }
+                break;
+            default:
+                return response()->json(['message' => 'bad request'], 400);
+            break;
+        }
     }
+
+    public function bulkRestore(Request $request){
+        $values = $request->validate([
+            'items' => ['required', 'array'],
+            'items.*.id' => ['required', 'numeric'],
+            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
+        ]);
+
+        Log::debug($values);
+    }
+    
 }

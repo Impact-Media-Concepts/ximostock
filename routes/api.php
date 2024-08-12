@@ -60,6 +60,8 @@ Route::prefix('/api/v1')->group(function() {
 
     Route::prefix('/archive')->group(function(){
         Route::post('/restore', [ArchiveController::class, 'restore'])->name('archive.restore');
-
+        Route::post('/forcedelete', [ArchiveController::class, 'forceDelete'])->name('archive.forcedelete');
+        Route::post('/bulkrestore', [ArchiveController::class, 'bulkRestore'])->name('archive.bulkrestore');
+        
     });
 });
