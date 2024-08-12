@@ -46,6 +46,9 @@
                             <button @click="toggleForceDeletePopup()">Verwijderen</button>
                         </div>
                     </div>
+                    <div v-if="items['data'].length == 0">
+                            er zijn geen verwijderde items in het archief.
+                        </div>
                 </div>
                 <div class="table-footer">
                     
