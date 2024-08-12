@@ -47,9 +47,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="table-footer">
+                    
+                </div>
             </div>
             <div class="archive-filter">
-                filter
+                <span class="title">Soort</span>
+                <hr>
+                <div class="filter-list">
+                    <div class="filter-item">
+                        <input type="checkbox" id="product"> <label  for="product">Product</label>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="Category"> <label for="Category">Categorie</label>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="saleschannel"> <label for="saleschannel">Verkoopkanaal</label>
+                    </div>
+                    <div class="filter-item">
+                        <input type="checkbox" id="property"> <label for="property">Eigenschap</label>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- popups -->
@@ -96,7 +114,7 @@ export default defineComponent({
         items: {
             type: [Array, Object],
             required: true,
-        }
+        },
     },
     data() {
         return {

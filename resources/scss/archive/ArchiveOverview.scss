@@ -47,9 +47,6 @@
                     width: 244px;
                 }
             }
-            .table-bulkAction-bar{
-
-            }
             .table-content{
                 .table-item{
                     transition: height 0.3s ease; 
@@ -103,11 +100,49 @@
                     }
                 }
             }
+            .table-footer{
+                height: 60px;
+                background-color: var(--primary);
+                
+            }
         }
         .archive-filter{
             width: 265px;
             background: $light;
             border-radius: 10px;
+            padding: 20px;
+            height: min-content;
+            .title{
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 20px;
+                margin:0;
+            }
+            hr{
+                border-style: solid;
+                border-width: 1px;
+                border-color: var(--border-secondary);
+            }
+            .filter-list{
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                .filter-item{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 5px;
+                    label{
+                        font-size: 14px;
+                        font-weight: bold;
+                        line-height: 17px;
+                    }
+                    input{
+                        height: 14px;
+                        width: 14px;
+                    }
+                }
+            }
         }
     }
     .force-delete-popup{
