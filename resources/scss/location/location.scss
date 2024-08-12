@@ -1,0 +1,120 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.locations{
+    padding: 20px;
+    .title{
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 24px;
+        display: block;
+        margin-bottom: 35px;
+    }
+    .location-table{
+        @include table-wrapper;
+        .table-header{
+            color: var(--text-light);
+            padding-left: 38px;
+            padding-right: 20px;
+            .select-name{
+                display: flex;
+                flex-direction: row;
+                flex: 1;
+                align-items: center;
+                gap: 13px;
+                width: 19%;
+                min-width: 200px;
+                .select-all{
+                    height: 14px;
+                    width: 14px;
+                }
+            }
+            .date-create{
+                display: flex;
+                flex-direction: row;
+                justify-self: right;
+                align-items: center;
+                .date{
+                    width: 200px;
+                }
+                .create-button{
+                    color: var(--text-light);
+                    font-size: 14px;
+                    line-height: 17px;
+                    width: 240px;
+                    height: 40px;
+                    background-color: var(--primary);
+                    border-radius: 5px;
+                    border-color: var(--light);
+                    border-style: solid;
+                    border-width: 1px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    &:hover{
+                       background-color: var(--hover-primary);
+                    }
+                }
+            }
+        }
+        .table-content{
+            .table-item{
+                .table-info{
+                    .select-name{
+                        flex: 1;
+                        display: flex;
+                        gap: 13px;
+                        font-size: 14px;
+                        line-height: 17px;
+                        input{
+                            width: 14px;
+                            height: 14px;
+                        }
+                    }
+                    .end-info-wrapper{
+                        justify-self: right;
+                        align-items: center;
+                        display: flex;
+                        flex-direction: row;
+                        .date{
+                            display: block;
+                           width: 200px; 
+                        }
+                        .delete-button{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            gap: 6px;
+                            justify-content: center;
+                            width: 180px;
+                            height: 40px;
+                            background-color: var(--secondary);
+                            border-radius: 5px;
+                            border-style: solid;
+                            border-color: var(--border-dark);
+                            border-width: 1px;
+                            color: var(--text-color);
+                            &:hover{
+                                background-color: var(--hover-secondary);
+                            }
+                            .trash-icon{
+                                height: 20px;
+                                width: 20px;
+                                path {
+                                    fill: var(--border-dark);
+                                }
+                            }
+                        }
+                        .chevron-down{
+                            width: 17px;
+                            height: 10px;
+                            margin: 10px 20px 10px 14px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

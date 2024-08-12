@@ -262,6 +262,10 @@
             }
         }
     }
+    .table-footer{
+        height: 60px;
+        background-color: var(--primary);
+    }
 }
 
 @mixin content-container {

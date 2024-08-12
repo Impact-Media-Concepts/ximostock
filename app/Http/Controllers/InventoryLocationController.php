@@ -12,24 +12,15 @@ use Illuminate\Support\Facades\Auth;
 class InventoryLocationController extends Controller
 {
     public function index(Request $request){
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-            $locations = InventoryLocation::where('work_space_id', $request['workspace'])->get();
-        }else{
-            $workspaces = null;
-            $activeWorkspace = null;
-            $locations = InventoryLocation::where('work_space_id', Auth::user()->work_space_id)->get();
-        }
-        return view('inventoryLocation.index',[
-            'sidenavActive' => 'locations',
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace,
+        $current_workspace = (int) session('active_workspace_id');
+        
+        $locations = InventoryLocation::where('work_space_id', $current_workspace)->paginate(10);
+
+        $result = [
             'locations' => $locations
-        ]);
+        ];
+
+        return view('inventoryLocation.index', $result);
     }
 
     public function show(Request $request, InventoryLocation $location){
