@@ -153,22 +153,130 @@
                         }
                     }
                     .save-button{
-                        @include primary-button;
                         align-self: flex-end;
+                        height: 43px;
+                        width: 126px;
+                        background-color: var(--primary);
+                        color: var(--text-light);
+                        border-radius: 5px;
                         display: flex;
-                        align-items: center;
                         justify-content: center;
-                        gap: 12px;
-                        .save-icon{
-                            width: 15px;
-                            height: 20px;
-                            path{
-                                fill: var(--light);
-                            }
+                        border-style: none;
+                        align-items: center;
+                        font-size: 14px;
+                        line-height: 17px;
+                        gap: 10px;
+                        &:hover{
+                            background-color: var(--hover-primary);
                         }
                     }
                 }
             }
         }
+    }
+    .create-popup{
+        @include popup-container;
+
+        .popup-content{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            border-color: var(--border-secondary);
+            border-width: 1px;
+            border-style: solid;
+            .popup-header{
+                display: flex;
+                flex-direction: row;
+                height: 40px;
+                padding-left: 22px;
+                background-color: var(--primary);
+                color: $text-light;
+                align-items: center;
+                font-size: 14px;
+                line-height: 17px;
+            }
+            .create-form{
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                padding: 20px 24px;
+                .create-form-inputs{
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px 42px;
+                    .create-input{
+                        text-align: left;
+                        display: flex;
+                        flex-direction: column;
+                        font-size: 14px;
+                        line-height: 24px;
+                        color: var(--text);
+                        input{
+                            height: 40px;
+                            border-radius: 5px;
+                            border-style: solid;
+                            outline: none;
+                            border-color: var(--border);
+                            color: $text;
+                            padding-left: 18px;
+                            font-size: 14px;
+                            line-height: 17px;
+                            border-width: 1px;
+
+                        }
+                    }
+                }
+            }
+            .action-buttons{
+                display: flex;
+                flex-direction: row-reverse;
+                padding: 10px 24px 20px 0px;
+                gap: 7px;
+                .save-button{
+                    height: 43px;
+                    width: 126px;
+                    background-color: var(--primary);
+                    color: var(--text-light);
+                    border-radius: 5px;
+                    display: flex;
+                    justify-content: center;
+                    border-style: none;
+                    align-items: center;
+                    font-size: 14px;
+                    line-height: 17px;
+                    gap: 10px;
+                    &:hover{
+                        background-color: var(--hover-primary);
+                    }
+                }
+                .cancel-button{
+                    height: 43px;
+                    width: 126px;
+                    background-color: var(--light);
+                    color: $text;
+                    border-radius: 5px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 14px;
+                    line-height: 17px;
+                    border-style: solid;
+                    border-color: var(--border-dark);
+                    &:hover{
+                        background-color: var(--hover-light);
+                    }
+                }
+                .button-icon{
+                    width: 14px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+    .delete-popup{
+        @include popup-container;
     }
 }

@@ -8,6 +8,7 @@ use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class InventoryLocationController extends Controller
 {
@@ -81,4 +82,16 @@ class InventoryLocationController extends Controller
         }
         return redirect('/locations');
     }
+
+    public function deleteById(Request $request, $location){
+        $location = InventoryLocation::findOrFail($location);
+
+        if($location){
+            $location->delete();
+            return response()->json(['message' => 'Saleschannel deleted successfully'], 200);
+        }else{
+            return response()->json(['error' => 'Saleschannel not found'], 404);
+        }
+    }
+
 }

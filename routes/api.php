@@ -9,6 +9,7 @@ use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\InventoryLocationController;
 
 
 /*
@@ -64,4 +65,10 @@ Route::prefix('/api/v1')->group(function() {
         Route::post('/bulkrestore', [ArchiveController::class, 'bulkRestore'])->name('archive.bulkrestore');
         Route::post('/bulkforcedelete', [ArchiveController::class, 'bulkForceDelete'])->name('archive.bulkforcedelete');
     });
+
+    Route::prefix('/locations')->group(function(){
+        Route::delete('/delete/{inventorylocation}', [InventoryLocationController::class, 'deleteById'])->name('locations.deletebyid');
+
+    });
+
 });
