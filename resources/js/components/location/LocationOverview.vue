@@ -13,23 +13,54 @@
                 </div>
             </div>
             <div class="table-content">
-                <div v-for="location in locations['data']" class="table-item">
-                    <div class="table-info">
+                <div v-for="location in locations['data']" :class="{'table-item': true, 'active' : isActive(location.id)}">
+                    <div class="table-info" @click="toggleActive(location.id)">
                         <div class="select-name">
-                            <input class="select-all" type="checkbox">
-                            <span class="orderby">{{location.name}}</span>
+                            <input class="select-all" type="checkbox" @click.stop>
+                            <span class="orderby">{{ location.name }}</span>
                         </div>
                         <div class="end-info-wrapper">
                             <span class="date">30-10-24 09:00</span>
-                            <button class="delete-button">  <span class="trash-icon" v-html="this.icons.trash"></span> Verwijderen</button>
-                            <img class="chevron-down" src="/images/chevron-down-dark.svg" alt="chevron-down">
+                            <button class="delete-button" @click.stop>
+                                <span class="trash-icon" v-html="this.icons.trash"></span> Verwijderen
+                            </button>
+                            <img class="chevron-down" src="/images/chevron-down-dark.svg" alt="chevron-down" @click.stop="toggleActive(location.id)">
                         </div>
-                    </div>  
+                    </div> 
+                    <div class="item-content">
+                        <div class="sublocation-grid">
+                            <div class="grid-item">
+                                <input type="text" value="henk">
+                            </div>
+                            <div class="grid-item">
+                                <input type="text" value="henk">
+                            </div>
+                            <div class="grid-item">
+                                <input type="text" value="henk">
+                            </div>
+                            <div class="grid-item">
+                                <input type="text" value="henk">
+                            </div>
+                            <div class="grid-item">
+                                <input type="text" value="henk">
+                            </div>
+                            <div class="grid-item">
+                                <input type="text" value="henk">
+                            </div>
+                            <div class="grid-item">
+                                <input type="text" value="henk">
+                            </div>
+
+                        </div>
+                        <button class="save-button"><span class="save-icon" v-html="this.icons.save"></span>save</button>
+                    </div> 
                 </div>
             </div>
             <div class="table-footer">
             </div>
         </div>
+        <!-- popups -->
+         
     </div>
 </template>
 
@@ -52,13 +83,20 @@ export default defineComponent({
     },
     data() {
         return {
-
+            activeItemId: null,
         };
     },
     methods: {
         formatDate(date) {
             return format(new Date(date), 'yyyy-MM-dd HH:mm:ss');
         },
+        toggleActive(id) {
+            this.activeItemId = this.activeItemId === id ? null : id;
+        },
+        isActive(id) {
+            return this.activeItemId === id;
+        },
+
     },
     setup() {
         const route = inject('route'); // Injecting route helper

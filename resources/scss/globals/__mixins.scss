@@ -39,6 +39,19 @@
     gap: 10px;
 }
 
+@mixin primary-button{
+    background-color: var(--primary);
+    height: 43px;
+    width: 126px;
+    color: var(--text-light);
+    border-radius: 5px;
+    border-style: none;
+    cursor: pointer;
+    &:hover{
+        background-color: var(--hover-primary);
+    }
+}
+
 @mixin select-options($background-color, $text-color, $hover-color) {
     display: none;
     position: absolute;

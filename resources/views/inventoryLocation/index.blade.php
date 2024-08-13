@@ -4,7 +4,7 @@
 @php
     $icons= [
         'trash' => file_get_contents('images/trash-icon.svg'),
-
+        'save' => file_get_contents('images/save-icon.svg'),
     ];
 @endphp
 <div id="app">
