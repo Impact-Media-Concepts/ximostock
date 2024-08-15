@@ -34,14 +34,14 @@
                     <div :key="location.id" class="item-content">
                         <div class="sublocation-grid">
                             <div v-for="(zone, index) in location.location_zones" :key="zone.name + index" class="grid-item">
-                                <span @click="removeZoneField(index)" v-html="this.icons.close" class="close-icon"></span>
+                                <span @click="deleteZone(location.id,index)" v-html="this.icons.close" class="close-icon"></span>
                                 <input v-model="zone.name" type="text"  placeholder="nieuwe zone">
                             </div>
                             <div @click="createNewZone(location.id)"  class="add-zone-button">
                                 voeg zone toe
                             </div>
                         </div>
-                        <button class="save-button"><span class="save-icon" v-html="this.icons.save"></span>save</button>
+                        <button @click="updateLocation(location.id)" class="save-button"><span class="save-icon" v-html="this.icons.save"></span>save</button>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,6 @@
                 </div>
             </div>
         </div>
-        {{ this.locations }}
     </div>
 </template>
 
@@ -167,7 +166,26 @@ export default defineComponent({
                 window.location.href = this.route('locations.index');
             });
         },
-
+        createLocation(){
+            const data = {
+                name: this.locationToCreateName,
+                zones: this.zones
+            };
+            console.log(data);
+            axios.post(this.route('locations.store'), data)
+            .then(response => {
+                window.location.href = this.route('locations.index');
+            });
+        },
+        updateLocation(locationId){
+            const list = this.locations['data'].filter(location => location.id == locationId);
+            const data = list[0];
+            console.log(data);
+            axios.put(this.route('locations.update'), data)
+            .then(response => {
+                window.location.href = this.route('locations.index');
+            });
+        },
         //handle sublocations for update
         createNewZone(locationId) {
             const locationIndex = this.locations.data.findIndex(loc => loc.id === locationId);
@@ -180,7 +198,14 @@ export default defineComponent({
                 // Force a reactivity update
                 this.$forceUpdate();
             }
-        }, 
+        },
+        deleteZone(locationId, zoneIndex) {
+            const location = this.locations.data.find(loc => loc.id === locationId);
+            if (location) {
+                location.location_zones.splice(zoneIndex, 1);
+            }
+            this.$forceUpdate();
+        },
         //select handeler
         itemIsChecked(id){
             const check = this.selectedLocations.includes(id);

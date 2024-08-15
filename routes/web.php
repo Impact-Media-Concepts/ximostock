@@ -100,9 +100,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('/locations')->middleware('auth')->group(function() {
         Route::get('/', [InventoryLocationController::class, 'index'])->middleware('can:viewAny,App\Models\InventoryLocation')->name('locations.index');
-        Route::get('/create', [InventoryLocationController::class, 'create'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.create');
-        Route::get('/{location}', [InventoryLocationController::class, 'show'])->middleware('can:view,location')->name('locations.show');
         Route::post('', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.store');
+        Route::put('/update',[InventoryLocationController::class, 'update'])->name('locations.update');
     });
     
     Route::prefix('/users')->middleware('auth')->group(function() {

@@ -68,7 +68,7 @@
                 flex-direction: column;
 
                 &.active{
-                    height: 200px;
+                    height: 220px;
                 }
                 .table-info{
                     .select-name{
@@ -127,7 +127,7 @@
                 .item-content{
                     display: flex;
                     flex-direction: row;
-                    height: 140px;
+                    height: 160px;
                     gap: 20px;
                     padding: 0px 20px 20px 40px;
                     .sublocation-grid{
@@ -136,6 +136,9 @@
                         padding: 20px;
                         grid-auto-flow: column; // Prioritize filling columns over rows
                         grid-template-rows: repeat(3, 1fr);
+                        grid-template-columns: repeat(6, 1fr);
+                        overflow-x: auto;
+                        overflow-y: hidden;
                         gap: 10px;
                         .grid-item{
                             display: flex;
@@ -168,7 +171,7 @@
                             }
                         }
                         .add-zone-button{
-                            width: 173px;
+                            width: 199px;
                             cursor: pointer;
                             &:hover{
                                 text-decoration: underline;

@@ -46,7 +46,7 @@ Route::prefix('/api/v1')->group(function() {
 
     Route::prefix('/saleschannels')->group(function() {
         Route::delete('/delete/{saleschannel}', [SalesChannelController::class, 'deleteById'])->name('saleschannels.deleteBuId');
-        Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
+        //Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
         Route::put('/update/{saleschannel}', [SalesChannelController::class, 'updateById'])->name('saleschannels.updateById');
         Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
     });
@@ -69,6 +69,8 @@ Route::prefix('/api/v1')->group(function() {
     Route::prefix('/locations')->group(function(){
         Route::delete('/delete/{inventorylocation}', [InventoryLocationController::class, 'deleteById'])->name('locations.deletebyid');
         Route::post('/bulkdelete', [InventoryLocationController::class, 'bulkDelete'])->name('locations.bulkDelete');
+        Route::put('/update',[InventoryLocationController::class, 'update'])->name('locations.update');
+        //Route::post('', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.store');
     });
 
 });
