@@ -138,18 +138,40 @@
                         grid-template-rows: repeat(3, 1fr);
                         gap: 10px;
                         .grid-item{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
                             .input-wrapper {
                                 display: inline-flex;
                                 .auto-width-input {
                                     min-width: 20px;
                                     width: fit-content;
                                     box-sizing: border-box;
-                                  }
+                                }
                             }
                             input{
                                 background: none;
                                 border: none;
-                                width: fit-content;
+                                height: 26px;
+                                max-width: 200px;
+                                min-width: 100px;
+                            }
+                            .close-icon{
+                                justify-content: center;
+                                align-items: center;
+                                display: flex;
+                                height: 16px;
+                                width: 16px;
+                                padding: 0px;
+                                margin-right: 8px;
+                                cursor: pointer;
+                            }
+                        }
+                        .add-zone-button{
+                            width: 173px;
+                            cursor: pointer;
+                            &:hover{
+                                text-decoration: underline;
                             }
                         }
                     }

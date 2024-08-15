@@ -31,14 +31,18 @@
                             <img class="chevron-down" src="/images/chevron-down-dark.svg" alt="chevron-down" @click.stop="toggleActive(location.id)">
                         </div>
                     </div>
-                    <div class="item-content">
+                    <div :key="location.id" class="item-content">
                         <div class="sublocation-grid">
-                            <div v-for="zone in  location['location_zones']" class="grid-item">
-                                <input type="text" :value="zone.name">
+                            <div v-for="(zone, index) in location.location_zones" :key="zone.name + index" class="grid-item">
+                                <span @click="removeZoneField(index)" v-html="this.icons.close" class="close-icon"></span>
+                                <input v-model="zone.name" type="text"  placeholder="nieuwe zone">
+                            </div>
+                            <div @click="createNewZone(location.id)"  class="add-zone-button">
+                                voeg zone toe
                             </div>
                         </div>
                         <button class="save-button"><span class="save-icon" v-html="this.icons.save"></span>save</button>
-                    </div> 
+                    </div>
                 </div>
             </div>
             <div class="table-footer">
@@ -113,6 +117,7 @@
                 </div>
             </div>
         </div>
+        {{ this.locations }}
     </div>
 </template>
 
@@ -162,17 +167,20 @@ export default defineComponent({
                 window.location.href = this.route('locations.index');
             });
         },
-        createLocation(){
-            const data = {
-                name: this.locationToCreateName,
-                zones: this.zones
-            };
-            console.log(data);
-            axios.post(this.route('locations.store'), data)
-            .then(response => {
-                window.location.href = this.route('locations.index');
-            });
-        },
+
+        //handle sublocations for update
+        createNewZone(locationId) {
+            const locationIndex = this.locations.data.findIndex(loc => loc.id === locationId);
+            if (locationIndex !== -1) {
+                const location = this.locations.data[locationIndex];
+                
+                // Add a new zone
+                location.location_zones.push({ name: '' });
+                
+                // Force a reactivity update
+                this.$forceUpdate();
+            }
+        }, 
         //select handeler
         itemIsChecked(id){
             const check = this.selectedLocations.includes(id);
@@ -201,7 +209,7 @@ export default defineComponent({
             });
         },
         //create popup handeler
-        createZoneField(){
+        createZoneField(){ //create a new zone for new location
             this.zones.push('');
             console.log(this.zones);
         },
@@ -223,7 +231,7 @@ export default defineComponent({
         closeDeletePopup(){
             this.DeletePopupIsOpen = false;
         },
-        //end habndle popups
+        //end handdle popups
     },
     setup() {
         const route = inject('route'); // Injecting route helper
