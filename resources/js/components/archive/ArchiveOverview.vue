@@ -27,6 +27,7 @@
                     </button>
                 </div>
                 <div class="table-content">
+                    <div class="contant-wrapper"></div>
                     <div v-for="item in items['data']" :class="{'table-item': true, 'active': isActive(item)}">
                         <div class="table-info" >
                             <div class="select-name">

@@ -4,7 +4,7 @@
         <div class="location-table">
             <div class="table-header">
                 <div class="select-name">
-                    <input class="select-all" type="checkbox">
+                    <input :checked="isAllChecked()" @click="toggleAllItems($event.target.checked)" class="select-all" type="checkbox">
                     <span class="orderby">Naam <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
                 </div>
                 <div class="date-create">
@@ -12,15 +12,19 @@
                     <button @click="toggleCreatePopup()" class="create-button"><img src="/images/location-icon-light.svg" alt="inventory-icon">Opslaglocatie aanmaken</button>
                 </div>
             </div>
+            <div :class="{'table-bulkAction-bar': true, 'open':this.selectedLocations.length}">
+                <span class="bulkaction-text"> {{this.selectedLocations.length}} verkoopkanalen van de {{ this.locations['data'].length }} geselecteerd. <span @click="selectAllItems()" class="select-all-text">Selecteer alle verkoopkanalen</span></span>
+                <button class="bulkaction-button" @click="toggleBulkDeleteUpdate()">Archiveren</button>
+            </div>
             <div class="table-content">
                 <div v-for="location in locations['data']" :class="{'table-item': true, 'active' : isActive(location.id)}">
                     <div class="table-info" @click="toggleActive(location.id)">
                         <div class="select-name">
-                            <input class="select-all" type="checkbox" @click.stop>
+                            <input @click="toggleItemById($event.target.checked, location.id)" :checked="itemIsChecked(location.id)" class="select-all" type="checkbox" @click.stop>
                             <span class="orderby">{{ location.name }}</span>
                         </div>
                         <div class="end-info-wrapper">
-                            <span class="date">30-10-24 09:00</span>
+                            <span class="date">{{formatDate(location.created_at)}}</span>
                             <button @click="opeDenletePopup(location.id)" class="delete-button" @click.stop>
                                 <span class="trash-icon" v-html="this.icons.trash"></span> Verwijderen
                             </button>
@@ -29,26 +33,8 @@
                     </div>
                     <div class="item-content">
                         <div class="sublocation-grid">
-                            <div class="grid-item">
-                                <input type="text" value="henk">
-                            </div>
-                            <div class="grid-item">
-                                <input type="text" value="henk">
-                            </div>
-                            <div class="grid-item">
-                                <input type="text" value="henk">
-                            </div>
-                            <div class="grid-item">
-                                <input type="text" value="henk">
-                            </div>
-                            <div class="grid-item">
-                                <input type="text" value="henk">
-                            </div>
-                            <div class="grid-item">
-                                <input type="text" value="henk">
-                            </div>
-                            <div class="grid-item">
-                                <input type="text" value="henk">
+                            <div v-for="zone in  location['location_zones']" class="grid-item">
+                                <input type="text" :value="zone.name">
                             </div>
                         </div>
                         <button class="save-button"><span class="save-icon" v-html="this.icons.save"></span>save</button>
@@ -70,21 +56,28 @@
                         <div class="create-form-inputs">
                             <div class="create-input">
                                 <span>Naam:</span>
-                                <input  type="text">
+                                <input v-model="this.locationToCreateName" type="text">
                             </div>
-                            <div></div>
-                            <div  v-for="(subLocation, index) in subLocations" :key="index" class="create-input">
-                                <span>sublocatie:</span>
-                                <input
+                            <div class="add-button-container">
+                                <button @click="createZoneField()" class="add-zone-button">Zone toevoegen</button>
+                            </div>
+                            <div  v-for="(subLocation, index) in zones" :key="index" class="create-input">
+                                <span>Zone:</span>
+                                <div class="input-wrapper">
+                                    <input
                                     type="text"
-                                    v-model="subLocations[index]"
+                                    v-model="zones[index]"
                                     class="text-input"
                                 />
+                                <span @click="removeZoneField(index)" v-html="this.icons.close" class="close-icon"></span>
+                                </div>
+                                
+
                             </div>
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button   class="save-button">
+                        <button @click="createLocation()"  class="save-button">
                             <span class="save-icon" v-html="this.icons.save"> </span>
                             save
                         </button>
@@ -105,6 +98,18 @@
                 <div class="warning-buttons">
                     <button @click="closeDeletePopup()" class="cancel-button">Annuleren</button>
                     <button @click="deleteLocation()" class="confirm-button">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+        <div :class="{'bulk-delete-popup':true, 'visable' : this.BulkDeletePopupIsOpen}">
+            <div class="popup">
+                <img @click="toggleBulkDeleteUpdate()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img src="/images/warning-icon.svg" alt="warning">
+                <span class="title">verwijderen?</span>
+                <p>Weet u zeker dat u deze locaties wilt verwijderen?</p>
+                <div class="warning-buttons">
+                    <button @click="toggleBulkDeleteUpdate()" class="cancel-button">Annuleren</button>
+                    <button @click="bulkdeleteSelectedLocations()" class="confirm-button">Verwijderen</button>
                 </div>
             </div>
         </div>
@@ -133,8 +138,11 @@ export default defineComponent({
             activeItemId: null,
             createPopupIsOpen: false,
             DeletePopupIsOpen:false,
-            subLocations: [''],
+            BulkDeletePopupIsOpen:false,
+            zones: [''],
             locationToDelete: null,
+            selectedLocations:[],
+            locationToCreateName:'',
         };
     },
     methods: {
@@ -147,8 +155,66 @@ export default defineComponent({
         isActive(id) {
             return this.activeItemId === id;
         },
+        deleteLocation(){
+
+            axios.delete(this.route('locations.deletebyid', this.locationToDelete ))
+            .then(response => {
+                window.location.href = this.route('locations.index');
+            });
+        },
+        createLocation(){
+            const data = {
+                name: this.locationToCreateName,
+                zones: this.zones
+            };
+            console.log(data);
+            axios.post(this.route('locations.store'), data)
+            .then(response => {
+                window.location.href = this.route('locations.index');
+            });
+        },
+        //select handeler
+        itemIsChecked(id){
+            const check = this.selectedLocations.includes(id);
+            return check;
+        },
+        toggleAllItems(checked){
+            checked ? this.selectedLocations = this.locations.data.map(location => location.id) : this.selectedLocations = [];
+        },
+        selectAllItems(){
+            this.selectedLocations = this.locations.data.map(item => item.id);
+        },
+        toggleItemById(checked, value){
+            checked ? this.selectedLocations.push(value) : this.selectedLocations = this.selectedLocations.filter(id => id !== value);
+        },
+        isAllChecked(){
+            return this.locations.data.every(sc => this.selectedLocations.includes(sc.id));
+        },
+        //end select handeler
+        //bulkactions
+        bulkdeleteSelectedLocations(){
+            const data = {locations: this.selectedLocations};
+            console.log(data);
+            axios.post(this.route('locations.bulkDelete'), data)
+            .then(response => {
+                window.location.href = this.route('locations.index');
+            });
+        },
+        //create popup handeler
+        createZoneField(){
+            this.zones.push('');
+            console.log(this.zones);
+        },
+        removeZoneField(index) {
+            this.zones.splice(index, 1);
+        },
+        //handlepopups
         toggleCreatePopup(){
             this.createPopupIsOpen = !this.createPopupIsOpen;
+            this.zones = [''];
+        },
+        toggleBulkDeleteUpdate(){
+            this.BulkDeletePopupIsOpen = !this.BulkDeletePopupIsOpen;
         },
         opeDenletePopup(locationId){
             this.DeletePopupIsOpen = true;
@@ -157,13 +223,7 @@ export default defineComponent({
         closeDeletePopup(){
             this.DeletePopupIsOpen = false;
         },
-        deleteLocation(){
-            console.log(this.locationToDelete);
-            axios.delete(this.route('locations.deletebyid', this.locationToDelete ))
-            .then(response => {
-                window.location.href = this.route('locations.index');
-            });
-        },
+        //end habndle popups
     },
     setup() {
         const route = inject('route'); // Injecting route helper

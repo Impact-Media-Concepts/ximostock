@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Category; 
 use App\Models\Product;
 use App\Models\Property;
 use App\Models\SalesChannel;
+use App\Models\InventoryLocation; // Toegevoegd
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -16,42 +15,52 @@ class ArchiveController extends Controller
     public function index(Request $request)
     {
         $current_workspace = (int) session('active_workspace_id');
-            // Haal de producten op die gearchiveerd (soft-deleted) zijn en hernoem 'title' naar 'name'
-            $products = Product::onlyTrashed()
+        
+        // Haal de producten op die gearchiveerd (soft-deleted) zijn en hernoem 'title' naar 'name'
+        $products = Product::onlyTrashed()
             ->select('id', DB::raw('title as name'), 'deleted_at', DB::raw("'Product' as type"))
             ->where('work_space_id', $current_workspace);
 
-            // Haal de categorieën op die gearchiveerd zijn
-            $categories = Category::onlyTrashed()
+        // Haal de categorieën op die gearchiveerd zijn
+        $categories = Category::onlyTrashed()
             ->select('id', 'name', 'deleted_at', DB::raw("'Category' as type"))
             ->where('work_space_id', $current_workspace);        
 
-            // Haal de properties op die gearchiveerd zijn
-            $properties = Property::onlyTrashed()
+        // Haal de properties op die gearchiveerd zijn
+        $properties = Property::onlyTrashed()
             ->select('id', 'name', 'deleted_at', DB::raw("'Property' as type"))
             ->where('work_space_id', $current_workspace);
 
-            // Haal de verkoopkanalen op die gearchiveerd zijn
-            $properties = SalesChannel::onlyTrashed()
+        // Haal de verkoopkanalen op die gearchiveerd zijn
+        $salesChannels = SalesChannel::onlyTrashed()
             ->select('id', 'name', 'deleted_at', DB::raw("'Saleschannel' as type"))
             ->where('work_space_id', $current_workspace);
 
-            // Combineer de queries met union en sorteer op deleted_at
-            $archivedItems = $products->union($categories)->union($properties)
+        // Haal de InventoryLocations op die gearchiveerd zijn
+        $locations = InventoryLocation::onlyTrashed()
+            ->select('id', 'name', 'deleted_at', DB::raw("'Location' as type"))
+            ->where('work_space_id', $current_workspace);
+
+        // Combineer de queries met union en sorteer op deleted_at
+        $archivedItems = $products->union($categories)
+            ->union($properties)
+            ->union($salesChannels)
+            ->union($locations)
             ->orderBy('deleted_at', 'desc') // Sorteer op deleted_at
-            ->paginate(15); // Paginate de resultaten
+            ->paginate(12); // Paginate de resultaten
 
         $results = [
             'items' => $archivedItems
         ];
-        //Log::debug($results['salesChannels']);
+
         return view('archive.index', $results);
     }
 
-    public function restore(Request $request){
+    public function restore(Request $request)
+    {
         $values = $request->validate([
             'id' => ['required', 'numeric'],
-            'type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
+            'type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location'])]
         ]);
 
         //TODO authorize
@@ -85,21 +94,27 @@ class ArchiveController extends Controller
                     return response()->json(['message' => 'Saleschannel restored successfully'], 200);
                 }
                 break;
+            case 'Location':
+                $location = InventoryLocation::onlyTrashed()->findOrFail($values['id']);
+                if($location){
+                    $location->restore();
+                    return response()->json(['message' => 'Location restored successfully'], 200);
+                }
+                break;
             default:
-                return response()->json(['message' => 'bad request'], 400);
-            break;
+                return response()->json(['message' => 'Bad request'], 400);
         }
     }
 
-    public function forceDelete(Request $request){
+    public function forceDelete(Request $request)
+    {
         $values = $request->validate([
             'id' => ['required', 'numeric'],
-            'type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
+            'type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location'])]
         ]);
 
-        //TODO authorise
+        //TODO authorize
         
-
         switch ($values['type']) {
             case 'Property':
                 $property = Property::onlyTrashed()->findOrFail($values['id']);
@@ -129,19 +144,24 @@ class ArchiveController extends Controller
                     return response()->json(['message' => 'Saleschannel destroyed successfully'], 200);
                 }
                 break;
+            case 'Location':
+                $location = InventoryLocation::onlyTrashed()->findOrFail($values['id']);
+                if($location){
+                    $location->forceDelete();
+                    return response()->json(['message' => 'Location destroyed successfully'], 200);
+                }
+                break;
             default:
-                return response()->json(['message' => 'bad request'], 400);
-            break;
+                return response()->json(['message' => 'Bad request'], 400);
         }
     }
 
-    public function bulkRestore(Request $request){
-        Log::debug( $request);
-
+    public function bulkRestore(Request $request)
+    {
         $values = $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'numeric'],
-            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
+            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location'])]
         ]);
 
         // Groepeer de items per type
@@ -162,13 +182,15 @@ class ArchiveController extends Controller
                     Property::onlyTrashed()->whereIn('id', $ids)->restore();
                     break;
                 case 'Saleschannel':
-                    Saleschannel::onlyTrashed()->whereIn('id', $ids)->restore();
+                    SalesChannel::onlyTrashed()->whereIn('id', $ids)->restore();
+                    break;
+                case 'Location':
+                    InventoryLocation::onlyTrashed()->whereIn('id', $ids)->restore();
                     break;
             }
         }
 
-
-        return response()->json(['message' => 'succesfull restore'], 200);
+        return response()->json(['message' => 'Items successfully restored'], 200);
     }
 
     public function bulkForceDelete(Request $request)
@@ -176,7 +198,7 @@ class ArchiveController extends Controller
         $values = $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'numeric'],
-            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel'])]
+            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location'])]
         ]);
 
         // Groepeer de items per type
@@ -197,13 +219,14 @@ class ArchiveController extends Controller
                     Property::onlyTrashed()->whereIn('id', $ids)->forceDelete();
                     break;
                 case 'Saleschannel':
-                    Saleschannel::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+                    SalesChannel::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+                    break;
+                case 'Location':
+                    InventoryLocation::onlyTrashed()->whereIn('id', $ids)->forceDelete();
                     break;
             }
         }
 
         return response()->json(['message' => 'Items successfully deleted permanently'], 200);
     }
-
-
 }

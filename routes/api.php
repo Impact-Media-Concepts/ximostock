@@ -68,7 +68,7 @@ Route::prefix('/api/v1')->group(function() {
 
     Route::prefix('/locations')->group(function(){
         Route::delete('/delete/{inventorylocation}', [InventoryLocationController::class, 'deleteById'])->name('locations.deletebyid');
-
+        Route::post('/bulkdelete', [InventoryLocationController::class, 'bulkDelete'])->name('locations.bulkDelete');
     });
 
 });
