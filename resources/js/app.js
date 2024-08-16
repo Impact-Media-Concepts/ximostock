@@ -15,6 +15,7 @@ import CategoryOverview from './components/category/CategoryOverview.vue';
 import ThemeConfigurator from './components/user/ThemeConfigurator.vue';
 import StepForm from './components/components/StepForm.vue';
 import LocationOverview from './components/location/LocationOverview.vue';
+import SupplierOverview from './components/supplier/SupplierOverview.vue';
 
 // Create the Vue application
 const app = createApp({});
@@ -33,6 +34,7 @@ app.component('CategoryOverview', CategoryOverview);
 app.component('ThemeConfigurator', ThemeConfigurator);
 app.component('StepForm', StepForm);
 app.component('LocationOverview', LocationOverview);
+app.component('SupplierOverview', SupplierOverview);
 
 // Provide the route function globally
 app.provide('route', route);

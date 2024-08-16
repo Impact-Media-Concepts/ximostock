@@ -75,8 +75,6 @@
                                 />
                                 <span @click="removeZoneField(index)" v-html="this.icons.close" class="close-icon"></span>
                                 </div>
-                                
-
                             </div>
                         </div>
                     </div>
@@ -191,10 +189,10 @@ export default defineComponent({
             const locationIndex = this.locations.data.findIndex(loc => loc.id === locationId);
             if (locationIndex !== -1) {
                 const location = this.locations.data[locationIndex];
-                
+
                 // Add a new zone
                 location.location_zones.push({ name: '' });
-                
+
                 // Force a reactivity update
                 this.$forceUpdate();
             }

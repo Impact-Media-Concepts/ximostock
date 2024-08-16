@@ -29,15 +29,15 @@
                 <div class="table-content">
                     <div class="contant-wrapper"></div>
                     <div v-for="item in items['data']" :class="{'table-item': true, 'active': isActive(item)}">
-                        <div class="table-info" >
+                        <div @click="toggleActive(item)" class="table-info" >
                             <div class="select-name">
-                                <input @click="toggleItemById($event.target.checked ,item)" :checked="itemIsChecked(item)" type="checkbox">
-                                <span @click="toggleActive(item)">{{ item.name }}</span>
+                                <input @click.stop @click="toggleItemById($event.target.checked ,item)" :checked="itemIsChecked(item)" type="checkbox">
+                                <span >{{ item.name }}</span>
                             </div>
-                            <div class="type"  @click="toggleActive(item)">
+                            <div class="type" >
                                 {{ item.type }}
                             </div>
-                            <div class="date" @click="toggleActive(item)">
+                            <div class="date">
                                 {{ formatDate(item.deleted_at) }}
                                 <img  :class="{'chevron-down': true, 'active': isActive(item)}" src="/images/chevron-down-dark.svg" alt="chevron-down" >
                             </div>

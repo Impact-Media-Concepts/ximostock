@@ -13,6 +13,7 @@ use App\Http\Controllers\WorkSpaceController;
 use App\Http\Controllers\WooCommerceWebhookController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\auth\PasswordController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -74,7 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/restore', [CategoryController::class, 'restore'])->middleware('can:restore,App\Models\categories')->name('categories.restore');
         Route::post('/forcedelete', [CategoryController::class, 'forceDelete'])->middleware('can:forceDelete,App\Models\categories')->name('categories.forceDelete');
     });
-    
+
     // Properties prefixed and grouped
     Route::prefix('/properties')->middleware('auth')->group(function() {
         Route::get('', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
@@ -96,14 +97,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/restore', [SalesChannelController::class, 'restore'])->middleware('can:restore,App\Models\SalesChannel')->name('saleschannels.restore');
         Route::post('/forcedelete', [SalesChannelController::class, 'forceDelete'])->middleware('can:foreceDelete,App\Models\SalesChannel')->name('saleschannels.forceDelete');
     });
-    
+
 
     Route::prefix('/locations')->middleware('auth')->group(function() {
         Route::get('/', [InventoryLocationController::class, 'index'])->middleware('can:viewAny,App\Models\InventoryLocation')->name('locations.index');
         Route::post('', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.store');
         Route::put('/update',[InventoryLocationController::class, 'update'])->name('locations.update');
     });
-    
+
     Route::prefix('/users')->middleware('auth')->group(function() {
         Route::get('/', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User')->name('users.index');
         Route::get('/theme', [UserController::class, 'theme'])->name('users.theme');
@@ -124,6 +125,10 @@ Route::middleware('auth')->group(function () {
         Route::patch('/{workspace}', [WorkSpaceController::class, 'update'])->name('workspaces.update');
         Route::delete('/{workspace}', [WorkSpaceController::class, 'destroy'])->name('workspaces.destroy');
         Route::post('/switch', [WorkSpaceController::class, 'switch'])->name('workspaces.switch');
+    });
+
+    Route::prefix('/suppliers')->middleware('auth')->group(function() {
+        Route::get('/', [SupplierController::class, 'index'])->name('supplier.index');
     });
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');

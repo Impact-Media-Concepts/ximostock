@@ -92,6 +92,11 @@
             'title' => 'archief' ,
             'image_url' => file_get_contents('images/sidebar/archive-icon.svg'),
         ],
+        [
+            'url' => route('supplier.index'),
+            'title' => 'Leveranciers' ,
+            'image_url' => file_get_contents('images/sidebar/supplier-icon.svg'),
+        ],
     ];
 @endphp
 <!DOCTYPE html>

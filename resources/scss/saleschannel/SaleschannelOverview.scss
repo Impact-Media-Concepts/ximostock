@@ -21,7 +21,7 @@
             height: 60px;
             background-color: var(--primary);
             display: flex;
-            
+
             .select-name{
                 margin-left: 40px;
                 display: flex;
@@ -55,7 +55,7 @@
                 color: var(--text-light);
                 align-items: center;
                 .chevron{
-                    
+
                     fill: var(--light);
                     width: 10px;
                     height: 6px;
@@ -98,7 +98,7 @@
             font-size: 14px;
             line-height: 17px;
             gap: 9px;
-            transition: height 0.3s ease; 
+            transition: height 0.3s ease;
             overflow: hidden;
             &.open{
                 height: 60px;
@@ -139,7 +139,7 @@
                 border-width: 1px;
                 border-style: solid;
                 border-color: var(--border-secondary);
-                transition: height 0.5s ease; 
+                transition: height 0.5s ease;
                 &.active{
                     height: 282px;
                 }
@@ -187,10 +187,10 @@
                             .open{
                                 width: 17px;
                                 height: 10px;
-                                margin: 20px; 
+                                margin: 20px;
                             }
                         }
-                        
+
                         .delete-button{
                             height: 40px;
                             width: 180px;
@@ -367,7 +367,7 @@
                     &:hover{
                         background-color: var(--hover-light);
                     }
-                    
+
                 }
                 .button-icon{
                     width: 14px;

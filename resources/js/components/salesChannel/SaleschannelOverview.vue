@@ -26,10 +26,10 @@
             </div>
             <div class="saleschannels-content">
                 <div v-for="saleschannel in saleschannels['data']" :key="saleschannel.id" :class="{'saleschannel-item': true, 'active': isActive(saleschannel.id)}">
-                    <div class="saleschannel-info">
+                    <div @click="toggleActive(saleschannel.id)" class="saleschannel-info">
                         <div class="select-name">
-                            <input @click="toggleSaleschannelById($event.target.checked,saleschannel.id)" :checked="saleschannelIsChecked(saleschannel.id)" class="select" :value="saleschannel.id" type="checkbox">
-                            <span @click="toggleActive(saleschannel.id)" class="name">{{ saleschannel.name }}</span>
+                            <input @click.stop @click="toggleSaleschannelById($event.target.checked,saleschannel.id)" :checked="saleschannelIsChecked(saleschannel.id)" class="select" :value="saleschannel.id" type="checkbox">
+                            <span  class="name">{{ saleschannel.name }}</span>
                         </div>
                         <div class="type">
                             <span>{{ saleschannel.channel_type }}</span>
@@ -38,10 +38,10 @@
                             <span>{{ formatDate(saleschannel.created_at) }}</span>
                         </div>
                         <div class="delete-open">
-                            <div @click="toggleActive(saleschannel.id)" class="dropdown-wrapper">
+                            <div class="dropdown-wrapper">
                                 <img class="open" src="/images/chevron-down-dark.svg" alt="chevron-down">
                             </div>
-                            <button @click="openDeleteSinglePopup(saleschannel.id)" class="delete-button">Verwijderen</button>
+                            <button @click.stop @click="openDeleteSinglePopup(saleschannel.id)" class="delete-button">Verwijderen</button>
                         </div>
                     </div>
                     <div class="saleschannel-form">
