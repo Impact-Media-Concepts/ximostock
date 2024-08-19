@@ -17,6 +17,7 @@ use App\Models\Sale;
 use App\Models\SalesChannel;
 use App\Models\User;
 use App\Models\WorkSpace;
+use App\Models\Supplier;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Log;
@@ -79,6 +80,8 @@ class DatabaseSeeder extends Seeder
             'ean' => null
         ]);
 
+        $suppliers = Supplier::factory(15)->create();
+
         $products = $products->concat($primeProducts);
 
         $properties = Property::factory(5)->create();
@@ -114,7 +117,7 @@ class DatabaseSeeder extends Seeder
                 switch ($prop->type) {
                     case 'multiselect':
                         $value = [
-                            $faker->randomElement($propvalue), 
+                            $faker->randomElement($propvalue),
                             $faker->randomElement($propvalue)
                         ];
                         break;

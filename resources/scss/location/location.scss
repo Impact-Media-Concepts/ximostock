@@ -1,0 +1,295 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.locations{
+    padding: 20px;
+    button{
+        cursor: pointer;
+    }
+    .title{
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 24px;
+        display: block;
+        margin-bottom: 35px;
+    }
+    .location-table{
+        @include table-wrapper;
+        .table-header{
+            color: var(--text-light);
+            padding-left: 38px;
+            padding-right: 20px;
+            .select-name{
+                display: flex;
+                flex-direction: row;
+                flex: 1;
+                align-items: center;
+                gap: 13px;
+                width: 19%;
+                min-width: 200px;
+                .select-all{
+                    height: 14px;
+                    width: 14px;
+                }
+            }
+            .date-create{
+                display: flex;
+                flex-direction: row;
+                justify-self: right;
+                align-items: center;
+                .date{
+                    width: 200px;
+                }
+                .create-button{
+                    color: var(--text-light);
+                    font-size: 14px;
+                    line-height: 17px;
+                    width: 240px;
+                    height: 40px;
+                    background-color: var(--primary);
+                    border-radius: 5px;
+                    border-color: var(--light);
+                    border-style: solid;
+                    border-width: 1px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    &:hover{
+                       background-color: var(--hover-primary);
+                    }
+                }
+            }
+        }
+        .table-content{
+            .table-item{
+                transition: height 0.3s ease; 
+                flex-direction: column;
+
+                &.active{
+                    height: 220px;
+                }
+                .table-info{
+                    .select-name{
+                        flex: 1;
+                        display: flex;
+                        gap: 13px;
+                        font-size: 14px;
+                        line-height: 17px;
+                        input{
+                            width: 14px;
+                            height: 14px;
+                        }
+                    }
+                    .end-info-wrapper{
+                        justify-self: right;
+                        align-items: center;
+                        display: flex;
+                        flex-direction: row;
+                        .date{
+                            display: block;
+                           width: 200px; 
+                        }
+                        .delete-button{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            gap: 6px;
+                            justify-content: center;
+                            width: 180px;
+                            height: 40px;
+                            background-color: var(--secondary);
+                            border-radius: 5px;
+                            border-style: solid;
+                            border-color: var(--border-dark);
+                            border-width: 1px;
+                            color: var(--text-color);
+                            &:hover{
+                                background-color: var(--hover-secondary);
+                            }
+                            .trash-icon{
+                                height: 20px;
+                                width: 20px;
+                                path {
+                                    fill: var(--border-dark);
+                                }
+                            }
+                        }
+                        .chevron-down{
+                            width: 17px;
+                            height: 10px;
+                            margin: 10px 20px 10px 14px;
+                            cursor: pointer;
+                        }
+                    }
+                }
+                .item-content{
+                    display: flex;
+                    flex-direction: row;
+                    height: 160px;
+                    gap: 20px;
+                    padding: 0px 20px 20px 40px;
+                    .sublocation-grid{
+                        flex: 1;
+                        display: grid;
+                        padding: 20px;
+                        grid-auto-flow: column; // Prioritize filling columns over rows
+                        grid-template-rows: repeat(3, 1fr);
+                        grid-template-columns: repeat(6, 1fr);
+                        overflow-x: auto;
+                        overflow-y: hidden;
+                        gap: 10px;
+                        .grid-item{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            .input-wrapper {
+                                display: inline-flex;
+                                .auto-width-input {
+                                    min-width: 20px;
+                                    width: fit-content;
+                                    box-sizing: border-box;
+                                }
+                            }
+                            input{
+                                background: none;
+                                border: none;
+                                height: 26px;
+                                max-width: 200px;
+                                min-width: 100px;
+                            }
+                            .close-icon{
+                                justify-content: center;
+                                align-items: center;
+                                display: flex;
+                                height: 16px;
+                                width: 16px;
+                                padding: 0px;
+                                margin-right: 8px;
+                                cursor: pointer;
+                            }
+                        }
+                        .add-zone-button{
+                            width: 199px;
+                            cursor: pointer;
+                            &:hover{
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                    .save-button{
+                        @include primary-button;
+                        height: 43px;
+                        width: 126px;
+                        align-self: flex-end;
+                    }
+                }
+            }
+        }
+    }
+    .create-popup{
+        @include popup-container;
+        .popup-content{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            border-color: var(--border-secondary);
+            border-width: 1px;
+            border-style: solid;
+            .popup-header{
+                display: flex;
+                flex-direction: row;
+                height: 40px;
+                padding-left: 22px;
+                background-color: var(--primary);
+                color: $text-light;
+                align-items: center;
+                font-size: 14px;
+                line-height: 17px;
+            }
+            .create-form{
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                padding: 20px 24px;
+                .create-form-inputs{
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px 42px;
+                    .create-input{
+                        text-align: left;
+                        display: flex;
+                        flex-direction: column;
+                        font-size: 14px;
+                        line-height: 24px;
+                        color: var(--text);
+                        input{
+                            @include text-input;
+
+                        }
+                        .input-wrapper{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            height: 40px;
+                            input{
+                                flex: 1;
+                            }
+                            .close-icon{
+                                justify-content: center;
+                                display: flex;
+                                padding: 0px;
+                                margin-left: 10px;
+                                cursor: pointer;
+                            }
+                        }
+                        
+                        
+                    }
+                    .add-button-container{
+                        display: flex;
+                        flex-direction:column-reverse;
+                        height: 100%;
+                        .add-zone-button{
+                            @include secondary-buttton;
+                            width: 100%;
+                            height: 40px;
+                            
+                        }
+                    }
+                    
+                }
+            }
+            .action-buttons{
+                display: flex;
+                flex-direction: row-reverse;
+                padding: 10px 24px 20px 0px;
+                gap: 7px;
+                .save-button{
+                    @include primary-button;
+                    height: 43px;
+                    width: 126px;
+                }
+                .cancel-button{
+                    @include secondary-buttton;
+                    height: 43px;
+                    width: 126px;
+                }
+                .button-icon{
+                    width: 14px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+    .delete-popup{
+        @include popup-container;
+    }
+    .bulk-delete-popup{
+        @include popup-container;
+    }
+}

@@ -58,17 +58,17 @@ class ProductController extends BaseProductController
 
         // Eager loading categories for products
         $products->load('categories');
-    
+
         // Collecting related categories
         $relatedCategories = $products->pluck('categories')->flatten()->unique('id');
-    
+
         // Loading hierarchical categories
         $hierarchicalCategories = $relatedCategories->map(function($category) {
             return Category::with('child_categories_recursive')->find($category->id);
         });
 
         $hierarchicalCategories = $hierarchicalCategories->unique('id')->toArray();
-        
+
         //loading saleschannels for the user
         $saleschannels = SalesChannel::where('work_space_id', $current_workspace)->orderBy('name', 'desc')->get();
 
@@ -77,10 +77,10 @@ class ProductController extends BaseProductController
             'categories' => $hierarchicalCategories,
             'saleschannels' => $saleschannels
         ];
-    
+
         return view('product.index', $data);
     }
-    
+
     public function create(Request $request)
     {
         if (Auth::user()->role === 'admin') {
@@ -123,7 +123,7 @@ class ProductController extends BaseProductController
 
     public function show(Request $request, Product $product)
     {
-            // Eager load all necessary relationships
+        // Eager load all necessary relationships
         $product->load([
             'childProducts',
             'parentProduct',
@@ -151,7 +151,7 @@ class ProductController extends BaseProductController
         Log::info( "product-propties:");
         // Log::info( $product->properties[0]);
 
-        return view('product.show', [   
+        return view('product.show', [
             'product' => $product,
             'unrelatedCategories' => $unrelatedCategories,
         ]);
@@ -173,27 +173,27 @@ class ProductController extends BaseProductController
             'properties' => 'array',
             'properties.*.pivot.property_value' => 'string', // Adjust validation as necessary
         ]);
-    
+
         // Find the product by ID
         $product = Product::find($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-    
+
         // Update the product with the request data
         $product->update($request->only([
             'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description', 'stock_quantity', 'backorders'
         ]));
-    
-    
+
+
         // Sync the categories
         if ($request->has('categories')) {
             $product->categories()->sync($request->categories);
         }
-    
+
         Log::info("product after sync: " . $product);
-    
+
         // Update properties
         if ($request->has('properties')) {
             $requestPropertyIds = [];
@@ -214,14 +214,14 @@ class ProductController extends BaseProductController
                     } else {
                         // If ID is null, add a new property to the database and also create a new pivot
                         Log::info("Adding new property to the database and creating new pivot with data: ", $propertyData['pivot']);
-                        
+
                         // Create the new property
                         $newProperty = Property::create([
                             'name' => $propertyData['name'],
                             'work_space_id' => $product->work_space_id,
                             'values' => $propertyData['pivot']['property_value'],
                         ]);
-                
+
                         // Attach the new property to the product with the pivot data
                         $product->properties()->attach(
                             $newProperty->id,
@@ -229,7 +229,7 @@ class ProductController extends BaseProductController
                                 'property_value' => $propertyData['pivot']['property_value'],
                             ]
                         );
-                
+
                         Log::info("New property added with ID: " . $newProperty->id);
                         Log::info("New property added with value: " . $propertyData['pivot']['property_value']);
                         $requestPropertyIds[] = $newProperty->id;
@@ -251,12 +251,12 @@ class ProductController extends BaseProductController
             }
         }
 
-    
-    
+
+
         // Return a response
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }
-    
+
 
     public function destroy($id)
     {
@@ -291,7 +291,7 @@ class ProductController extends BaseProductController
     public function bulkDiscount(Request $request)
     {
         Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
-        
+
         //validate request
         $validatedData = request()->validate([
             'product_ids' => ['required', 'array'],
@@ -509,7 +509,7 @@ class ProductController extends BaseProductController
         $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
 
         return redirect()->back();
-    }    
+    }
 
     public function store(Request $request)
     {
@@ -983,7 +983,7 @@ class ProductController extends BaseProductController
 
     protected function linkPropertiesToProduct($product, $attributes)
     {
-        if(isset($attributes['properties'])){  
+        if(isset($attributes['properties'])){
             foreach ($attributes['properties'] as $propertyId => $propertyValue) {
                 ProductProperty::create([
                     'product_id' => $product->id,
@@ -1042,11 +1042,11 @@ class ProductController extends BaseProductController
     public function switchStatus(Request $request)
     {
         $selectedProducts = $request->input('selectedProducts');
-        
+
         if (!$selectedProducts || !is_array($selectedProducts)) {
             return response()->json(['error' => 'Invalid request body'], 400);
         }
-    
+
         // Switch the status of the selected products
         foreach ($selectedProducts as $productId) {
             $product = Product::find($productId);
@@ -1056,10 +1056,10 @@ class ProductController extends BaseProductController
                 $product->save();
             }
         }
-    
+
         return response()->json(['message' => 'Product status were switched successfully'], 200);
     }
-    
+
     public function deleteById($productId)
     {
         $product = Product::find($productId);
@@ -1074,12 +1074,12 @@ class ProductController extends BaseProductController
     public function deleteProducts(Request $request)
     {
         $selectedProducts = $request->input('selectedProducts');
-        
+
 
         if (!$selectedProducts || !is_array($selectedProducts)) {
             return response()->json(['error' => 'Invalid request body'], 400);
         }
-    
+
         // Delete the selected products
         foreach ($selectedProducts as $productId) {
             $product = Product::find($productId);
@@ -1087,22 +1087,22 @@ class ProductController extends BaseProductController
                 $product->delete();
             }
         }
-    
+
         return response()->json(['message' => 'Product were deleted successfully'], 200);
     }
 
     public function duplicate($id) {
         // Find the product by its ID
         $product = Product::find($id);
-    
+
         // Check if the product exists
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
-    
+
         // Duplicate the product
         $newProduct = $product->replicate();
-    
+
 
         $newProduct->sku = null;
         $newProduct->ean = null;
@@ -1113,10 +1113,10 @@ class ProductController extends BaseProductController
             $newTitle = $product->title . ' (copy)' . '-' . Str::random(5);
         }
         $newProduct->title = $newTitle;
-    
+
         // Save the new product
         $newProduct->save();
-    
+
         // Return the new product as a JSON response
         return response()->json($newProduct, 201);
     }
@@ -1125,15 +1125,15 @@ class ProductController extends BaseProductController
     public function archiveById($id) {
         // Find the product by its ID
         $product = Product::find($id);
-    
+
         // Check if the product exists
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
-    
+
         $product->archived = true;
         $product->save();
-    
+
         // Return the new product as a JSON response
         return response()->json($product, 201);
     }
@@ -1141,12 +1141,12 @@ class ProductController extends BaseProductController
     public function exportById($id) {
         // Find the product by its ID
         $product = Product::find($id);
-    
+
         // Check if the product exists
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
-        
+
         $filename = 'products-' . Str::random(20) . '.csv';
         while (Storage::disk('public')->exists($filename)) {
             $filename = 'products-' . Str::random(20) . '.csv';

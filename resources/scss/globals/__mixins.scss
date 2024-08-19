@@ -39,6 +39,52 @@
     gap: 10px;
 }
 
+@mixin primary-button{
+    background-color: var(--primary);
+    color: var(--text-light);
+    border-radius: 5px;
+    border-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 17px;
+    gap: 10px;
+    cursor: pointer;
+    &:hover{
+        background-color: var(--hover-primary);
+    }
+}
+
+@mixin secondary-buttton{
+    background-color: var(--light);
+    color: $text;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    line-height: 17px;
+    border-style: solid;
+    border-color: var(--border-dark);
+    &:hover{
+        background-color: var(--hover-light);
+    }
+}
+
+@mixin text-input{
+    height: 40px;
+    border-radius: 5px;
+    border-style: solid;
+    outline: none;
+    border-color: var(--border);
+    color: $text;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 17px;
+    border-width: 1px;
+}
+
 @mixin select-options($background-color, $text-color, $hover-color) {
     display: none;
     position: absolute;
@@ -128,10 +174,10 @@
         display: flex;
     }
     .popup{
-        background-color: #ffffff;
+        background-color: var(--light);
         display: flex;
         flex-direction: column;
-        border-color: $border;
+        border-color: var(--border);
         border-style:solid;
         border-width: 1px;
         justify-content: center;
@@ -145,46 +191,78 @@
             height: 21px;
             width: 21px;
             align-self:flex-end;
+            cursor: pointer;
+        }
+        .warning-buttons{
+            display: flex;
+            flex-direction: row;
+            gap: 28px;
+            .confirm-button{
+                border-radius: 5px;
+                color: $text-light;
+                border-style: none;
+                background-color: var(--alert);
+                width: 215px;
+                height: 43px;
+                &:hover{
+                    background-color: var(--hover-alert);
+                }
+            }
+            .cancel-button{
+                border-radius: 5px;
+                color: $text;
+                border-style: solid;
+                background-color: var(--light);
+                border-color: var(--border-dark);
+                width: 215px;
+                height: 43px;
+                &:hover{
+                    background-color: var(--hover-light);
+                }
+            }
         }
     }
 }
 
 @mixin table-wrapper{
     border-radius: 10px;
-    background-color: $light;
+    background-color: var(--light);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     .table-header{
         height: 60px;
-        background-color: $primary;
+        background-color: var(--primary);
         display: flex;
         .orderby{
             font-size: 14px;
             line-height: 17px;
-            color: $text-light;
+            color: var(--text-light);
             align-items: center;
             display: flex;
             gap: 6px;
             flex-direction: row;
             align-items: center;
             .chevron{
-                fill: $text-light;
+                fill: var(--text-light);
                 width: 10px;
                 height: 6px;
+                path{
+                    fill: var(--text-light);
+                }
             }
         }
     }
     .table-bulkAction-bar{
         height: 0px;
-        background-color: $secondary;
+        background-color: var(--secondary);
         display: flex;
         flex-direction: row;
         align-items: center;
         font-size: 14px;
         line-height: 17px;
         gap: 9px;
-        transition: height 0.3s ease; 
+        transition: height 0.3s ease;
         overflow: hidden;
         &.open{
             height: 60px;
@@ -192,18 +270,18 @@
         .bulkaction-text{
             margin-left: 36px;
             .select-all-text{
-                color: $primary;
+                color: var(--primary);
                 cursor: pointer;
             }
         }
         .bulkaction-button{
-            background-color: $secondary;
+            background-color: var(--secondary);
             height: 36px;
             width: 114px;
             border-radius: 5px;
             border-style: solid;
             border-width: 1px;
-            border-color: $border-dark;
+            border-color: var(--border-dark);
             color: $text;
             &:hover{
                 background-color: darken($color: $secondary, $amount: 10);
@@ -215,28 +293,33 @@
         flex-direction: column;
         gap: 10px;
         padding: 15px 25px;
+        min-height: 70vh;
+
         .table-item{
             height: 60px;
             display: block;
             overflow: hidden;
-            background-color: $secondary;
+            background-color: var(--secondary);
             border-radius: 10px;
             border-width: 1px;
             border-style: solid;
-            border-color: $border-secondary;
+            border-color: var(--border-secondary);
             .table-info{
                 height: 60px;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
                 padding-left: 13px;
+                cursor: pointer;
             }
-            
-
         }
     }
-
+    .table-footer{
+        height: 60px;
+        background-color: var(--primary);
+    }
 }
+
 @mixin content-container {
     display: flex;
     flex-direction: column;

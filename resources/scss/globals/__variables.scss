@@ -17,6 +17,8 @@ $text-light: #FFFFFF;
 // Hover colors
 $hover-primary: rgb(57, 153, 190);
 $hover-light: rgb(240, 240, 240);
+$hover-secondary: #e8e8e8;
+$hover-alert: #cf7f23;
 
 // Set CSS variables using SCSS variables
 :root {
@@ -30,8 +32,13 @@ $hover-light: rgb(240, 240, 240);
   --border-dark: #{$border-dark};
   --border: #{$border};
   --border-light: #{$border-light};
+  --border-secondary: #{$border-secondary};
   --text: #{$text};
   --text-light: #{$text-light};
+
+  //hoovers
   --hover-primary: #{$hover-primary};
   --hover-light: #{$hover-light};
+  --hover-secondary: #{$hover-secondary};
+  --hover-alert: #{$hover-alert};
 }

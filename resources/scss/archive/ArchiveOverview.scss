@@ -86,15 +86,15 @@
                         padding: 21px 18px;
                         gap: 10px;
                         button{
-                            background-color: $primary;
+                            background-color: var(--primary);
                             height: 43px;
                             width: 126px;
-                            color: $text-light;
+                            color: var(--text-light);
                             border-radius: 5px;
                             border-style: none;
                             cursor: pointer;
                             &:hover{
-                                background-color: darken($color: $primary, $amount: 10);
+                                background-color: var(--hover-primary);
                             }
                         }
                     }
@@ -105,6 +105,48 @@
             width: 265px;
             background: $light;
             border-radius: 10px;
+            padding: 20px;
+            height: min-content;
+            .title{
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 20px;
+                margin:0;
+            }
+            hr{
+                border-style: solid;
+                border-width: 1px;
+                border-color: var(--border-secondary);
+            }
+            .filter-list{
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                .filter-item{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 5px;
+                    label{
+                        font-size: 14px;
+                        font-weight: bold;
+                        line-height: 17px;
+                    }
+                    input{
+                        height: 14px;
+                        width: 14px;
+                    }
+                }
+            }
         }
     }
+    .force-delete-popup{
+        @include popup-container;
+        
+    }
+    .bulk-force-delete-popup{
+        @include popup-container;
+        
+    }
+
 }
