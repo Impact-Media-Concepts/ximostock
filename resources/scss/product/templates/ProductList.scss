@@ -281,6 +281,9 @@
                             border-style: solid;
                             border-width: 1px;
                             text-align: center;
+
+                            -moz-appearance: textfield;
+
                             &::placeholder{
                                 text-align: center;
                                 color: $border;
@@ -291,9 +294,6 @@
                                 -webkit-appearance: none;
                                 margin: 0;
                             }
-
-                            /* Verberg de spinner-pijltjes in Firefox */
-                            -moz-appearance: textfield;
 
                             /* Verberg de clear-knop in Microsoft Edge */
                             &::-ms-clear {

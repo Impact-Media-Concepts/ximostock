@@ -27,11 +27,11 @@
     }
 
     .counter {
-        @include button(var(--border-dark), var(--secondary), var(--text), var(--secondary));
         font-size: 18px;
         line-height: 21px;
         font-weight: 700;
         padding: 13px 80px;
+        @include button(var(--border-dark), var(--secondary), var(--text), var(--secondary));
     }
 }
 

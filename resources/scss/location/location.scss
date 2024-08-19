@@ -179,10 +179,10 @@
                         }
                     }
                     .save-button{
-                        @include primary-button;
                         height: 43px;
                         width: 126px;
                         align-self: flex-end;
+                        @include primary-button;
                     }
                 }
             }
@@ -255,10 +255,9 @@
                         flex-direction:column-reverse;
                         height: 100%;
                         .add-zone-button{
-                            @include secondary-buttton;
                             width: 100%;
                             height: 40px;
-                            
+                            @include secondary-buttton;
                         }
                     }
                     
@@ -270,14 +269,14 @@
                 padding: 10px 24px 20px 0px;
                 gap: 7px;
                 .save-button{
-                    @include primary-button;
                     height: 43px;
                     width: 126px;
+                    @include primary-button;
                 }
                 .cancel-button{
-                    @include secondary-buttton;
                     height: 43px;
                     width: 126px;
+                    @include secondary-buttton;
                 }
                 .button-icon{
                     width: 14px;

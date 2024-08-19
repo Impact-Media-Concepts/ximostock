@@ -7,12 +7,12 @@
         section {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            column-gap: 63px;
             > span {
                 display: block;
                 width: 100%;
                 grid-column: span 2;
             }
-            column-gap: 63px;
             .form-group {
                 padding: 0;
                 margin-top: 16px;

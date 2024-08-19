@@ -48,8 +48,8 @@
                 }
 
                 input {
-                    @include default-input;
                     width: 100%;
+                    @include default-input;
                 }
 
                 &.row {
