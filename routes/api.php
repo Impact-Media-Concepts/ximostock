@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('/api/v1')->group(function() {
+Route::prefix('/api/v1')->middleware(['web'])->group(function() {
     Route::prefix('/products')->group(function() {
         Route::post('/archive', [ProductController::class, 'archiveProducts'])->name('products.archiveProducts');
         Route::post('/switchstatus', [ProductController::class, 'switchStatus'])->name('products.switchStatus');
@@ -45,10 +45,12 @@ Route::prefix('/api/v1')->group(function() {
 
     Route::prefix('/saleschannels')->group(function() {
         Route::delete('/delete/{saleschannel}', [SalesChannelController::class, 'deleteById'])->name('saleschannels.deleteBuId');
-        //Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
+        Route::post('', [SalesChannelController::class, 'store'])->name('saleschannels.store');
         Route::put('/update/{saleschannel}', [SalesChannelController::class, 'updateById'])->name('saleschannels.updateById');
         Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
     });
+
+
     Route::prefix('/user')->group(function() {
         Route::patch('/theme/update/{id}', [UserController::class, 'updateThemeById'])->name('user.updateThemeById');
     });

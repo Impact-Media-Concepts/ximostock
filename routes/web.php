@@ -92,7 +92,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/saleschannels')->middleware('auth')->group(function() {
         Route::get('', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
         Route::get('/{salesChannel}', [SalesChannelController::class, 'show'])->middleware('can:view,salesChannel')->name('saleschannels.show');
-        Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
+        //Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
         Route::patch('/{salesChannel}', [SalesChannelController::class, 'update'])->middleware('can:update,salesChannel')->name('saleschannels.update');
         Route::post('/restore', [SalesChannelController::class, 'restore'])->middleware('can:restore,App\Models\SalesChannel')->name('saleschannels.restore');
         Route::post('/forcedelete', [SalesChannelController::class, 'forceDelete'])->middleware('can:foreceDelete,App\Models\SalesChannel')->name('saleschannels.forceDelete');

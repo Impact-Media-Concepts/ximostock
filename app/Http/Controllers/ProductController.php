@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ProductsExport;
+use App\Exports\ProductsExport; 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
