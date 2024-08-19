@@ -67,43 +67,16 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/categories')->middleware('auth')->group(function() {
         Route::get('', [CategoryController::class, 'index'])->middleware('can:viewAny,App\Models\Category')->name('categories.index');
         Route::get('/create', [CategoryController::class, 'create'])->middleware('can:create,App\Models\Category')->name('categories.create');
-        Route::get('/archive', [CategoryController::class, 'archive'])->middleware('can:restore,App\Models\categories')->middleware('can:forceDelete,App\Models\categories')->name('categories.archive');
-        Route::get('/{category}', [CategoryController::class, 'show'])->middleware('can:view,category')->name('categories.show');
-        Route::post('', [CategoryController::class, 'store'])->name('categories.store');
-        Route::patch('/{category}', [CategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/{category}', [CategoryController::class, 'destroy'])->middleware('can:delete,category')->name('categories.destroy');
-        Route::post('/restore', [CategoryController::class, 'restore'])->middleware('can:restore,App\Models\categories')->name('categories.restore');
-        Route::post('/forcedelete', [CategoryController::class, 'forceDelete'])->middleware('can:forceDelete,App\Models\categories')->name('categories.forceDelete');
     });
 
     // Properties prefixed and grouped
     Route::prefix('/properties')->middleware('auth')->group(function() {
         Route::get('', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
-        Route::get('/create', [PropertyController::class, 'create'])->middleware('can:\Property')->name('properties.create');
-        Route::get('/archive', [PropertyController::class, 'archive'])->middleware('can:create,App\Models:restore,App\Models\Property')->middleware('can:forceDelete,App\Models\Property')->name('properties.archive');
-        Route::get('/{property}', [PropertyController::class, 'show'])->middleware('can:view,property')->name('properties.show');
-        Route::post('', [PropertyController::class, 'store'])->middleware('can:create,App\Models\Property')->name('properties.store');
-        Route::patch('/{property}', [PropertyController::class, 'update'])->middleware('can:update,property')->name('properties.update');
-        Route::post('/bulkdelete', [PropertyController::class, 'bulkDelete'])->name('properties.bulkDelete');
-        Route::post('/restore', [PropertyController::class, 'restore'])->middleware('can:restore,App\Models\Property')->name('properties.restore');
-        Route::post('/forcedelete', [PropertyController::class, 'forceDelete'])->middleware('can:foreceDelete,App\Models\Property')->name('properties.forceDelete');
     });
 
-    Route::prefix('/saleschannels')->middleware('auth')->group(function() {
-        Route::get('', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
-        Route::get('/{salesChannel}', [SalesChannelController::class, 'show'])->middleware('can:view,salesChannel')->name('saleschannels.show');
-        //Route::post('', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel')->name('saleschannels.store');
-        Route::patch('/{salesChannel}', [SalesChannelController::class, 'update'])->middleware('can:update,salesChannel')->name('saleschannels.update');
-        Route::post('/restore', [SalesChannelController::class, 'restore'])->middleware('can:restore,App\Models\SalesChannel')->name('saleschannels.restore');
-        Route::post('/forcedelete', [SalesChannelController::class, 'forceDelete'])->middleware('can:foreceDelete,App\Models\SalesChannel')->name('saleschannels.forceDelete');
-    });
+    Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
+    Route::get('/locations', [InventoryLocationController::class, 'index'])->middleware('can:viewAny,App\Models\InventoryLocation')->name('locations.index');
 
-
-    Route::prefix('/locations')->middleware('auth')->group(function() {
-        Route::get('/', [InventoryLocationController::class, 'index'])->middleware('can:viewAny,App\Models\InventoryLocation')->name('locations.index');
-        Route::post('', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.store');
-        Route::put('/update',[InventoryLocationController::class, 'update'])->name('locations.update');
-    });
 
     Route::prefix('/users')->middleware('auth')->group(function() {
         Route::get('/', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User')->name('users.index');
