@@ -101,7 +101,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('/suppliers')->middleware('auth')->group(function() {
-        Route::get('/', [SupplierController::class, 'index'])->name('supplier.index');
+        Route::get('/', [SupplierController::class, 'index'])->name('suppliers.index');
     });
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');

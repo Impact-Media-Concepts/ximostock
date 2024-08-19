@@ -93,7 +93,7 @@
             'image_url' => file_get_contents('images/sidebar/archive-icon.svg'),
         ],
         [
-            'url' => route('supplier.index'),
+            'url' => route('suppliers.index'),
             'title' => 'Leveranciers' ,
             'image_url' => file_get_contents('images/sidebar/supplier-icon.svg'),
         ],
@@ -138,7 +138,7 @@
 
             //set hoover colours
             function darkenColor(hex, percentage) {
-                return `#${hex.slice(1).match(/.{2}/g).map(c => 
+                return `#${hex.slice(1).match(/.{2}/g).map(c =>
                 Math.max(0, Math.floor(parseInt(c, 16) * (1 - percentage / 100))).toString(16).padStart(2, '0')).join('')}`;
             }
 

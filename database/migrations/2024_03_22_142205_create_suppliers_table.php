@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('website');
             $table->bigInteger('phone_number');
             $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 
@@ -31,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('suppliers');
     }
 };
+ 

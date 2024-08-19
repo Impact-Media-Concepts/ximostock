@@ -1,11 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Models\Category; 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Property;
 use App\Models\SalesChannel;
-use App\Models\InventoryLocation; // Toegevoegd
+use App\Models\InventoryLocation;
+use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,7 @@ class ArchiveController extends Controller
     public function index(Request $request)
     {
         $current_workspace = (int) session('active_workspace_id');
-        
+
         // Haal de producten op die gearchiveerd (soft-deleted) zijn en hernoem 'title' naar 'name'
         $products = Product::onlyTrashed()
             ->select('id', DB::raw('title as name'), 'deleted_at', DB::raw("'Product' as type"))
@@ -24,7 +25,7 @@ class ArchiveController extends Controller
         // Haal de categorieën op die gearchiveerd zijn
         $categories = Category::onlyTrashed()
             ->select('id', 'name', 'deleted_at', DB::raw("'Category' as type"))
-            ->where('work_space_id', $current_workspace);        
+            ->where('work_space_id', $current_workspace);
 
         // Haal de properties op die gearchiveerd zijn
         $properties = Property::onlyTrashed()
@@ -41,11 +42,17 @@ class ArchiveController extends Controller
             ->select('id', 'name', 'deleted_at', DB::raw("'Location' as type"))
             ->where('work_space_id', $current_workspace);
 
+        // Haal de suppliers op die gearchiveerd zijn
+        $suppliers = Supplier::onlyTrashed()
+            ->select('id', 'name', 'deleted_at', DB::raw("'Supplier' as type"))
+            ->where('work_space_id', $current_workspace);
+
         // Combineer de queries met union en sorteer op deleted_at
         $archivedItems = $products->union($categories)
             ->union($properties)
             ->union($salesChannels)
             ->union($locations)
+            ->union($suppliers)
             ->orderBy('deleted_at', 'desc') // Sorteer op deleted_at
             ->paginate(12); // Paginate de resultaten
 
@@ -64,7 +71,7 @@ class ArchiveController extends Controller
         ]);
 
         //TODO authorize
-        
+
         switch ($values['type']) {
             case 'Property':
                 $property = Property::onlyTrashed()->findOrFail($values['id']);
@@ -114,7 +121,7 @@ class ArchiveController extends Controller
         ]);
 
         //TODO authorize
-        
+
         switch ($values['type']) {
             case 'Property':
                 $property = Property::onlyTrashed()->findOrFail($values['id']);

@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\InventoryLocationController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +72,13 @@ Route::prefix('/api/v1')->middleware(['web'])->group(function() {
         Route::delete('/delete/{inventorylocation}', [InventoryLocationController::class, 'deleteById'])->name('locations.deletebyid');
         Route::post('/bulkdelete', [InventoryLocationController::class, 'bulkDelete'])->name('locations.bulkDelete');
         Route::put('/update',[InventoryLocationController::class, 'update'])->name('locations.update');
-        //Route::post('', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.store');
+        Route::post('', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.store');
+    });
+    Route::prefix('/suppliers')->group(function(){
+        Route::delete('/delete/{supplier}', [SupplierController::class, 'deleteById'])->name('suppliers.deleteById');
+        Route::delete('/bulkdelete', [SupplierController::class, 'bulkDelete'])->name('suppliers.bulkDelete');
+        Route::put('/update',[SupplierController::class, 'update'])->name('suppliers.update');
+        Route::post('', [SupplierController::class, 'store'])->middleware('can:create,App\Models\Supplier')->name('suppliers.store');
     });
 
 });

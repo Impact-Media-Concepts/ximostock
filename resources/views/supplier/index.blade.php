@@ -7,6 +7,7 @@
         'close' => file_get_contents('images/close-icon.svg'),
         'chevron' => file_get_contents('images/chevron-down-dark.svg'),
         'supplier' => file_get_contents('images/supplier-icon.svg'),
+        'warning' => file_get_contents('images/warning-icon.svg'),
     ];
 @endphp
 @section('content')

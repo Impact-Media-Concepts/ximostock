@@ -11,14 +11,22 @@
     z-index: 9999;
     width: 265px;
     padding: 10px;
-    background-color: var(--danger);
+    background-color: black;
     color: var(--text-light);
     font-size: 16px;
     font-weight: 700;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: top 0.5s;
+    animation: fadeOut 3s forwards;
+    &.succes {
+        background-color: var(--primary);
+    }
+    &.error {
+        background-color: var(--danger);
+    }
 }
+
 
 @keyframes fadeOut {
     0% {

@@ -197,6 +197,9 @@
             display: flex;
             flex-direction: row;
             gap: 28px;
+            button{
+                cursor: pointer;
+            }
             .confirm-button{
                 border-radius: 5px;
                 color: $text-light;
@@ -230,6 +233,9 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    button{
+        cursor: pointer;
+    }
     .table-header{
         height: 60px;
         background-color: var(--primary);

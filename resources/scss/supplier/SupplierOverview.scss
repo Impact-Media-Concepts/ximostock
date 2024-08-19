@@ -134,7 +134,11 @@
                             width: 17px;
                             height: 10px;
                             margin: 10px 20px 10px 14px;
+                            transition: transform 0.3s ease;
                             cursor: pointer;
+                            &.active{
+                                transform: rotate(180deg);
+                            }
                         }
                     }
                 }
@@ -166,14 +170,20 @@
                         }
                     }
                     .save-button{
-                        @include primary-button;
                         height: 43px;
                         width: 126px;
                         align-self: flex-end;
                         justify-self: right;
+                        @include primary-button;
                     }
                 }
             }
         }
+    }
+    .delete-popup{
+        @include popup-container;
+    }
+    .delete-selected-popup{
+        @include popup-container;
     }
 }

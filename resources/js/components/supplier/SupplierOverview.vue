@@ -4,7 +4,7 @@
         <div class="supplier-table">
             <div class="table-header">
                 <div class="orderby select-name">
-                    <input class="select-all" type="checkbox" name="" id="">
+                    <input :checked="isCheckedAll()" @click="toggleCheckedAll($event.target.checked)" class="select-all" type="checkbox" >
                     <span>Naam <span class="chevron" v-html="icons['chevron']"></span></span>
                 </div>
                 <div class="orderby company-name">
@@ -15,14 +15,17 @@
                     <button class="create-button"><span class="supplier-icon" v-html="icons['supplier']"></span>Leverancier aanmaken</button>
                 </div>
             </div>
-            <div class="table-bulkAction-bar">
-
+            <div :class="{'table-bulkAction-bar': true, 'open': this.selectedSuppliers.length}">
+                <div class="bulkaction-text">
+                    <span>{{ this.selectedSuppliers.length }} leveranciers van de {{ this.suppliers['data'].length }} geselecteerd. <span @click="toggleCheckedAll(true)" class="select-all-text">Selecteer alle leveranciers </span></span>
+                    <button @click="isOpenDeleteSelectedPopup = true" class="bulkaction-button">Bulk verwijderen</button>
+                </div>
             </div>
             <div class="table-content">
                 <div v-for="supplier in suppliers['data']" :class="{'table-item': true, 'active': isActive(supplier.id) }">
                     <div @click="toggleActive(supplier.id)" class="table-info">
                         <div class="select-name">
-                            <input type="checkbox">
+                            <input @click.stop @click="toggleChecked(supplier.id)" :checked="isChecked(supplier.id)" type="checkbox">
                             <span>{{supplier.name}}</span>
                         </div>
                         <div class="company-name">
@@ -30,8 +33,8 @@
                         </div>
                         <div class="end-info-wrapper">
                             <div class="date">{{ formatDate(supplier.updated_at) }}</div>
-                            <button class="delete-button"> <span class="trash-icon" v-html="icons['trash']"></span>Verwijderen</button>
-                            <img class="chevron-down" src="/images/chevron-down-dark.svg" alt="chevron-down" @click.stop="toggleActive(location.id)">
+                            <button @click.stop @click="OpenDeletePopup(supplier.id)" class="delete-button"> <span class="trash-icon" v-html="icons['trash']"></span>Verwijderen</button>
+                            <img :class="{'chevron-down': true, 'active' : isActive(supplier.id)}" src="/images/chevron-down-dark.svg" alt="chevron-down" @click.stop="toggleActive(location.id)">
                         </div>
                     </div>
                     <div class="item-content">
@@ -53,7 +56,7 @@
                                 <input type="text" v-model="supplier.website">
                             </div>
                         </div>
-                        <button class="save-button">
+                        <button @click="updateSupplier(supplier)" class="save-button">
                             <img src="/images/save-icon.svg" alt="save icon">
                             Save
                         </button>
@@ -66,6 +69,29 @@
 
             </div>
         </div>
+        <div :class="{'delete-popup' : true, 'visable' : isOpenDeleteWaringSupplier}">
+            <div class="popup">
+                <span v-html="icons['close']" class="popup-close" @click="isOpenDeleteWaringSupplier = false"></span>
+                <span v-html="icons['warning']"></span>
+                <span>Weet je zeker dat je deze leverancier wilt verwijderen?</span>
+                <div class="warning-buttons">
+                    <button @click="isOpenDeleteWaringSupplier = false" class="cancel-button">Annuleren</button>
+                    <button @click="deleteActiveSupplier" class="confirm-button">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+        <div :class="{'delete-selected-popup': true, 'visable' : isOpenDeleteSelectedPopup}" >
+            <div class="popup">
+                <span v-html="icons['close']" class="popup-close" @click="isOpenDeleteSelectedPopup = false"></span>
+                <span v-html="icons['warning']"></span>
+                <span>Weet je zeker dat je de geselecteerde leveranciers wilt verwijderen?</span>
+                <div class="warning-buttons">
+                    <button @click="isOpenDeleteSelectedPopup = false" class="cancel-button">Annuleren</button>
+                    <button @click="deleteSelectedSuppliers()" class="confirm-button">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+        <GeneralNotification :messages="messages" :isError="messageIsError" v-if="messages"/>
     </div>
 </template>
 
@@ -73,8 +99,10 @@
 <script>
 import { defineComponent, inject } from 'vue';
 import '../../../scss/supplier/SupplierOverview.scss';
-import { format, formatDate } from 'date-fns';
+import { format, formatDate, set } from 'date-fns';
 import axios from 'axios';
+import { is } from 'date-fns/locale';
+import GeneralNotification from '../GeneralNotification.vue';
 
 export default defineComponent({
 
@@ -91,6 +119,12 @@ export default defineComponent({
     data() {
         return {
             activeItemId: null,
+            selectedSuppliers: [],
+            supplierToDelete: null,
+            isOpenDeleteWaringSupplier: false,
+            isOpenDeleteSelectedPopup: false,
+            messages: null,
+            messageIsError: false,
         };
     },
     methods: {
@@ -103,6 +137,68 @@ export default defineComponent({
         isActive(id) {
             return this.activeItemId === id;
         },
-    }
+        isChecked(id) {
+            return this.selectedSuppliers.includes(id);
+        },
+        toggleChecked(id) {
+            if (this.selectedSuppliers.includes(id)) {
+                this.selectedSuppliers = this.selectedSuppliers.filter((item) => item !== id);
+            } else {
+                this.selectedSuppliers.push(id);
+            }
+        },
+        isCheckedAll() {
+            return this.selectedSuppliers.length === this.suppliers['data'].length;
+        },
+        toggleCheckedAll(checked) {
+            if (checked) {
+                this.selectedSuppliers = this.suppliers['data'].map((item) => item.id);
+            } else {
+                this.selectedSuppliers = [];
+            }
+        },
+        //deleteFucntionalitijd
+        deleteActiveSupplier() {
+            axios.delete(this.route('suppliers.deleteById', this.supplierToDelete))
+            .then(response => {
+                window.location.href = this.route('suppliers.index');
+            });
+        },
+        OpenDeletePopup(id) {
+            this.supplierToDelete = id;
+            this.isOpenDeleteWaringSupplier = true;
+        },
+        //bulkdeleteFunctionality
+        deleteSelectedSuppliers() {
+            const data = {
+                suppliers: this.selectedSuppliers,
+            };
+            console.log(data);
+            axios.delete(this.route('suppliers.bulkDelete', data))
+            .then(response => {
+                window.location.href = this.route('suppliers.index');
+            });
+        },
+        //update functionality
+        updateSupplier(supplier) {
+            console.log(supplier);
+            const updatedSupplier = supplier;
+            axios.put(this.route('suppliers.update'), updatedSupplier)
+                .then(response => {
+                    this.messageIsError = false;
+                    this.messages = response.data.message;
+                })
+                .catch(error => {
+                    this.messageIsError = true;
+                    this.messages = error.response.data.errors;
+                });
+        },
+    },
+    setup() {
+        const route = inject('route');
+        return {
+            route,
+        };
+    },
 })
 </script>
