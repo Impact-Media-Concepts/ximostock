@@ -72,7 +72,6 @@ class Product extends Model
         $props = $this->properties;
         $decodedProps = [];
         foreach ($props as $prop) {
-
             $propjson = json_decode($prop->pivot->property_value);
             array_push($decodedProps, ['name' => $prop->name, 'value' => $propjson->value]);
         }
@@ -147,7 +146,7 @@ class Product extends Model
     }
 
 
-    //returns true if the product is a concept and cant be set to online 
+    //returns true if the product is a concept and cant be set to online
     public function getConceptAttribute(): bool
     {
         if ($this->childProducts->isEmpty()) {

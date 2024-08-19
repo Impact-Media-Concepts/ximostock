@@ -13,6 +13,8 @@ class Supplier extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
+    protected $guarded = ['id'];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

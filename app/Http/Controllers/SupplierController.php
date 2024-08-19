@@ -56,7 +56,6 @@ class SupplierController extends Controller
 
         $supplier = Supplier::find($attributes['id']);
 
-
         if (!$supplier) {
             return response()->json(['message' => 'Supplier not found'], 404);
         }
@@ -66,5 +65,19 @@ class SupplierController extends Controller
         $supplier->phone_number = $attributes['phone_number'];
         $supplier->save();
         return response()->json(['message' => 'Supplier updated successfully'], 200);
+    }
+
+    public function store(Request $request){
+        $attributes = $request->validate([
+            'name' => ['required', 'string'],
+            'company_name' => ['required', 'string'],
+            'website' => ['required', 'url'],
+            'phone_number' => ['required', 'numeric'],
+        ]);
+
+        $attributes['work_space_id'] = (int) session('active_workspace_id');
+        $supplier = Supplier::create($attributes);
+
+        return response()->json(['message' => 'Supplier created successfully'], 200);
     }
 }

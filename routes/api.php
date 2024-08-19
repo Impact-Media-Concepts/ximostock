@@ -78,7 +78,7 @@ Route::prefix('/api/v1')->middleware(['web'])->group(function() {
         Route::delete('/delete/{supplier}', [SupplierController::class, 'deleteById'])->name('suppliers.deleteById');
         Route::delete('/bulkdelete', [SupplierController::class, 'bulkDelete'])->name('suppliers.bulkDelete');
         Route::put('/update',[SupplierController::class, 'update'])->name('suppliers.update');
-        Route::post('', [SupplierController::class, 'store'])->middleware('can:create,App\Models\Supplier')->name('suppliers.store');
+        Route::post('', [SupplierController::class, 'store'])->name('suppliers.store');
     });
 
 });

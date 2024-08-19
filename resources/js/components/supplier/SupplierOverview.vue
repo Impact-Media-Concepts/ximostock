@@ -12,7 +12,7 @@
                 </div>
                 <div class="date-create orderby">
                     <span class="date">Datem<span class="chevron" v-html="icons['chevron']"></span></span>
-                    <button class="create-button"><span class="supplier-icon" v-html="icons['supplier']"></span>Leverancier aanmaken</button>
+                    <button @click="isOpenCreatePopup = true" class="create-button"><span class="supplier-icon" v-html="icons['supplier']"></span>Leverancier aanmaken</button>
                 </div>
             </div>
             <div :class="{'table-bulkAction-bar': true, 'open': this.selectedSuppliers.length}">
@@ -70,7 +70,7 @@
             </div>
         </div>
         <!-- popups -->
-        <div :class="{'delete-popup' : true, 'visable' : isOpenDeleteWaringSupplier}">
+        <div :class="{'delete-popup' : true, 'visible' : isOpenDeleteWaringSupplier}">
             <div class="popup">
                 <span v-html="icons['close']" class="popup-close" @click="isOpenDeleteWaringSupplier = false"></span>
                 <span v-html="icons['warning']"></span>
@@ -81,7 +81,7 @@
                 </div>
             </div>
         </div>
-        <div :class="{'delete-selected-popup': true, 'visable' : isOpenDeleteSelectedPopup}" >
+        <div :class="{'delete-selected-popup': true, 'visible' : isOpenDeleteSelectedPopup}" >
             <div class="popup">
                 <span v-html="icons['close']" class="popup-close" @click="isOpenDeleteSelectedPopup = false"></span>
                 <span v-html="icons['warning']"></span>
@@ -93,26 +93,38 @@
             </div>
         </div>
         <!-- create popup -->
-        <div :class="{'create-popup': true, 'visible': false}">
+        <div :class="{'create-popup': true, 'visible': isOpenCreatePopup}">
             <div class="popup">
                 <span v-html="icons['close']" class="popup-close" @click="isOpenCreatePopup = false"></span>
-                <div class="form-input">
-                    Naam:
-                    <input type="text" v-model="newSupplier.name">
+                <div class="popup-content">
+                    <div class="popup-header">
+                        <span>Leverancier aanmaken</span>
+                    </div>
+                    <div class="supplier-create-form">
+                        <div class="create-form-inputs">
+                            <div class="create-input">
+                                <span>Naam:</span>
+                                <input type="text" v-model="newSupplier.name">
+                            </div>
+                            <div class="create-input">
+                                <span>Bedrijfsnaam:</span>
+                                <input type="text" v-model="newSupplier.company_name">
+                            </div>
+                            <div class="create-input">
+                                <span>Telefoonnummer:</span>
+                                <input type="text" v-model="newSupplier.phone_number">
+                            </div>
+                            <div class="create-input">
+                                <span>Website:</span>
+                                <input type="text" v-model="newSupplier.website">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button @click="createSupplier()" class="save-button"><span v-html="icons['save']"></span>Save</button>
+                        <button @click="isOpenCreatePopup = false" class="cancel-button"><img class="button-icon" src="/images/close-icon.svg" alt="close"> Annuleren</button>
+                    </div>
                 </div>
-                <div class="form-input">
-                    Bedrijfsnaam:
-                    <input type="text" v-model="newSupplier.company_name">
-                </div>
-                <div class="form-input">
-                    Telefoonnummer:
-                    <input type="text" v-model="newSupplier.phone_number">
-                </div>
-                <div class="form-input">
-                    Website:
-                    <input type="text" v-model="newSupplier.website">
-                </div>
-                <button @click="createSupplier" class="create-button">Leverancier aanmaken</button>
             </div>
         </div>
         <!-- succes and error messages -->
@@ -148,6 +160,7 @@ export default defineComponent({
             supplierToDelete: null,
             isOpenDeleteWaringSupplier: false,
             isOpenDeleteSelectedPopup: false,
+            isOpenCreatePopup: false,
             messages: null,
             messageIsError: false,
             newSupplier: {
@@ -218,6 +231,20 @@ export default defineComponent({
                 .then(response => {
                     this.messageIsError = false;
                     this.messages = response.data.message;
+                })
+                .catch(error => {
+                    this.messageIsError = true;
+                    this.messages = error.response.data.errors;
+                });
+        },
+        //create functionality
+        createSupplier() {
+            console.log(this.newSupplier);
+            axios.post(this.route('suppliers.store'), this.newSupplier)
+                .then(response => {
+                    this.messageIsError = false;
+                    this.messages = response.data.message;
+                    window.location.reload();
                 })
                 .catch(error => {
                     this.messageIsError = true;
