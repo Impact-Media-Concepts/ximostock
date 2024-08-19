@@ -11,7 +11,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\InventoryLocationController;
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes

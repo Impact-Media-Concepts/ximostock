@@ -38,19 +38,19 @@
                         <div class="supplier-form">
                             <div class="form-input">
                                 Naam:
-                                <input type="text">
+                                <input type="text" v-model="supplier.name">
                             </div>
                             <div class="form-input">
                                 Bedrijfsnaam:
-                                <input type="text">
+                                <input type="text" v-model="supplier.company_name">
                             </div>
                             <div class="form-input">
                                 Telefoonnummer:
-                                <input type="text">
+                                <input type="text" v-model="supplier.phone_number">
                             </div>
                             <div class="form-input">
                                 Website:
-                                <input type="text">
+                                <input type="text" v-model="supplier.website">
                             </div>
                         </div>
                         <button class="save-button">
