@@ -186,4 +186,7 @@
     .delete-selected-popup{
         @include popup-container;
     }
+    .create-popup{
+        @include popup-container;
+    }
 }

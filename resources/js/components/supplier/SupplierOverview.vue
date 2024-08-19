@@ -69,6 +69,7 @@
 
             </div>
         </div>
+        <!-- popups -->
         <div :class="{'delete-popup' : true, 'visable' : isOpenDeleteWaringSupplier}">
             <div class="popup">
                 <span v-html="icons['close']" class="popup-close" @click="isOpenDeleteWaringSupplier = false"></span>
@@ -91,6 +92,30 @@
                 </div>
             </div>
         </div>
+        <!-- create popup -->
+        <div :class="{'create-popup': true, 'visible': false}">
+            <div class="popup">
+                <span v-html="icons['close']" class="popup-close" @click="isOpenCreatePopup = false"></span>
+                <div class="form-input">
+                    Naam:
+                    <input type="text" v-model="newSupplier.name">
+                </div>
+                <div class="form-input">
+                    Bedrijfsnaam:
+                    <input type="text" v-model="newSupplier.company_name">
+                </div>
+                <div class="form-input">
+                    Telefoonnummer:
+                    <input type="text" v-model="newSupplier.phone_number">
+                </div>
+                <div class="form-input">
+                    Website:
+                    <input type="text" v-model="newSupplier.website">
+                </div>
+                <button @click="createSupplier" class="create-button">Leverancier aanmaken</button>
+            </div>
+        </div>
+        <!-- succes and error messages -->
         <GeneralNotification :messages="messages" :isError="messageIsError" v-if="messages"/>
     </div>
 </template>
@@ -125,6 +150,12 @@ export default defineComponent({
             isOpenDeleteSelectedPopup: false,
             messages: null,
             messageIsError: false,
+            newSupplier: {
+                name: '',
+                company_name: '',
+                phone_number: '',
+                website: '',
+            },
         };
     },
     methods: {

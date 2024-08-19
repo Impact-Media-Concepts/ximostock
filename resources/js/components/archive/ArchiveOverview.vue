@@ -52,7 +52,7 @@
                         </div>
                 </div>
                 <div class="table-footer">
-                    
+
                 </div>
             </div>
             <div class="archive-filter">
@@ -75,7 +75,7 @@
             </div>
         </div>
         <!-- popups -->
-        <div :class="{'force-delete-popup':true, 'visable' : forceDeletePopup}">
+        <div :class="{'force-delete-popup':true, 'visible' : forceDeletePopup}">
             <div class="popup">
                 <img @click="toggleForceDeletePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
@@ -89,12 +89,12 @@
                 </div>
             </div>
         </div>
-        <div :class="{'bulk-force-delete-popup':true, 'visable' : bulkForceDeletePopup}">
+        <div :class="{'bulk-force-delete-popup':true, 'visible' : bulkForceDeletePopup}">
             <div class="popup">
                 <img @click="toggleBulkForceDeletePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
                 <span class="title">verwijderen?</span>
-                <p>Weet u zeker dat u deze items <strong>permanent</strong> 
+                <p>Weet u zeker dat u deze items <strong>permanent</strong>
                     wilt verwijderen?
                 <br>
                 Deze actie kan niet ongedaan gemaakt worden!</p>

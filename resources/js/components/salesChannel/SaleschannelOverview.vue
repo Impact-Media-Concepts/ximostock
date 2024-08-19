@@ -72,12 +72,12 @@
                 </div>
             </div>
             <div class="saleschannel-footer">
-                
+
             </div>
         </div>
 
         <!-- popups -->
-         <div :class="{'create-popup': true, 'visable': this.isOpenCreatePopup}">
+         <div :class="{'create-popup': true, 'visible': this.isOpenCreatePopup}">
             <div class="popup">
                 <img @click="toggleCreatePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <div class="popup-content">
@@ -86,7 +86,7 @@
                     </div>
                     <div class="saleschannel-create-form">
                         <div class="create-form-inputs">
-                            
+
                             <div class="create-input">
                                 <span>Naam:</span>
                                 <input v-model="this.createSaleschannel.name" type="text">
@@ -125,11 +125,11 @@
                 </div>
             </div>
          </div>
-         <div :class="{'warning-delete-one-popup': true, 'visable': this.isOpenDeleteSinglePopup}">
+         <div :class="{'warning-delete-one-popup': true, 'visible': this.isOpenDeleteSinglePopup}">
             <div class="popup">
                 <img @click="closeDeleteSinglePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
-                
+
                 <span class="title">verwijderen?</span>
                 <p>Weet u zeker dat u dit Verkoopkanaal wilt verwijderen?</p>
                 <div class="warning-buttons">
@@ -138,11 +138,11 @@
                 </div>
             </div>
          </div>
-         <div :class="{'warning-delete-one-popup': true, 'visable': this.isOpenDeleteMultiPopup}">
+         <div :class="{'warning-delete-one-popup': true, 'visible': this.isOpenDeleteMultiPopup}">
             <div class="popup">
                 <img @click="toggleDeleteMultiPopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
-                
+
                 <span class="title">verwijderen?</span>
                 <p>Weet u zeker dat u de geselecteerde  wilt verwijderen?</p>
                 <div class="warning-buttons">

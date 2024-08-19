@@ -49,7 +49,7 @@
             </div>
         </div>
         <!-- popups -->
-        <div :class="{'create-popup': true,  'visable': this.createPopupIsOpen}">
+        <div :class="{'create-popup': true,  'visible': this.createPopupIsOpen}">
             <div class="popup">
                 <img @click="toggleCreatePopup()"  class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <div class="popup-content">
@@ -91,7 +91,7 @@
                 </div>
             </div>
         </div>
-        <div :class="{'delete-popup':true, 'visable' : this.DeletePopupIsOpen}">
+        <div :class="{'delete-popup':true, 'visible' : this.DeletePopupIsOpen}">
             <div class="popup">
                 <img @click="closeDeletePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
@@ -103,7 +103,7 @@
                 </div>
             </div>
         </div>
-        <div :class="{'bulk-delete-popup':true, 'visable' : this.BulkDeletePopupIsOpen}">
+        <div :class="{'bulk-delete-popup':true, 'visible' : this.BulkDeletePopupIsOpen}">
             <div class="popup">
                 <img @click="toggleBulkDeleteUpdate()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
