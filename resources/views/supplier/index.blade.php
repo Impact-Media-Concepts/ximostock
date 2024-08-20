@@ -15,6 +15,8 @@
     <supplier-overview
         :suppliers='@json($suppliers)'
         :icons='@json($icons)'
+        :order='@json($order)'
+        :orderby='@json($orderby)'
     ></supplier-overview>
 </div>
 @endsection

@@ -8,13 +8,25 @@
                 <div class="table-header">
                     <div class="select-name">
                         <input :checked="isAllChecked()" @click="toggleAllItems($event.target.checked)" class="select-all"  type="checkbox">
-                        <span class="orderby">Naam <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                        <span @click="orderByArchive('name')" class="orderby">Naam
+                            <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'name'}">
+                                <span v-html="icons['chevron']"></span>
+                            </div>
+                        </span>
                     </div>
                     <div class="type">
-                        <span class="orderby">Type <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                        <span @click="orderByArchive('itemtype')" class="orderby">Type
+                            <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'itemtype'}">
+                                <span v-html="icons['chevron']"></span>
+                            </div>
+                        </span>
                     </div>
                     <div class="date">
-                        <span class="orderby">Datem <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                        <span @click="orderByArchive('deleted_at')" class="orderby">Datem
+                            <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'deleted_at'}">
+                                <span v-html="icons['chevron']"></span>
+                            </div>
+                        </span>
                     </div>
                 </div>
                 <div  :class="{'table-bulkAction-bar': true, 'open':this.selectedItems.length}">
@@ -35,7 +47,7 @@
                                 <span >{{ item.name }}</span>
                             </div>
                             <div class="type" >
-                                {{ item.type }}
+                                {{ item.itemtype }}
                             </div>
                             <div class="date">
                                 {{ formatDate(item.deleted_at) }}
@@ -43,7 +55,7 @@
                             </div>
                         </div>
                         <div class="action-buttons">
-                            <button @click="restoreItem(item.id, item.type)">Herstellen</button>
+                            <button @click="restoreItem(item.id, item.itemtype)">Herstellen</button>
                             <button @click="toggleForceDeletePopup()">Verwijderen</button>
                         </div>
                     </div>
@@ -59,18 +71,10 @@
                 <span class="title">Soort</span>
                 <hr>
                 <div class="filter-list">
-                    <div class="filter-item">
-                        <input type="checkbox" id="product"> <label  for="product">Product</label>
+                    <div v-for="itemtype in types" class="filter-item">
+                        <input @change="filterByType()" type="checkbox" :id="itemtype.name" v-model="itemtype.value"><label  :for="itemtype.name">{{itemtype.name}}</label>
                     </div>
-                    <div class="filter-item">
-                        <input type="checkbox" id="Category"> <label for="Category">Categorie</label>
-                    </div>
-                    <div class="filter-item">
-                        <input type="checkbox" id="saleschannel"> <label for="saleschannel">Verkoopkanaal</label>
-                    </div>
-                    <div class="filter-item">
-                        <input type="checkbox" id="property"> <label for="property">Eigenschap</label>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -85,7 +89,7 @@
                 Deze actie kan niet ongedaan gemaakt worden!</p>
                 <div class="warning-buttons">
                     <button @click="toggleForceDeletePopup()" class="cancel-button">Annuleren</button>
-                    <button @click="forceDeleteItem(this.activeItem.id, this.activeItem.type)" class="confirm-button">Verwijderen</button>
+                    <button @click="forceDeleteItem(this.activeItem.id, this.activeItem.itemtype)" class="confirm-button">Verwijderen</button>
                 </div>
             </div>
         </div>
@@ -119,6 +123,22 @@ export default defineComponent({
             type: [Array, Object],
             required: true,
         },
+        icons: {
+            type: [Array, Object],
+            required: true,
+        },
+        order: {
+            type: String,
+            required: false,
+        },
+        orderby: {
+            type: String,
+            required: false,
+        },
+        types: {
+            type: [Array, Object],
+            required: true,
+        }
     },
     data() {
         return {
@@ -139,20 +159,20 @@ export default defineComponent({
         isActive(item) {
             return JSON.stringify(this.activeItem) == JSON.stringify(item);
         },
-        restoreItem(itemId, itemType) {
+        restoreItem(itemId, itemtype) {
             const data = {
                 id: itemId,
-                type: itemType
+                type: itemtype
             }
             axios.post(this.route('archive.restore'), data)
             .then(response => {
                 window.location.href = this.route('archive.index');
             });
         },
-        forceDeleteItem(itemId, itemType) {
+        forceDeleteItem(itemId, itemtype) {
             const data = {
                 id: itemId,
-                type: itemType
+                type: itemtype
             }
             console.log(data);
             axios.post(this.route('archive.forcedelete'), data)
@@ -190,6 +210,9 @@ export default defineComponent({
             axios.post(this.route('archive.bulkforcedelete'), data)
             .then(response => {
                 window.location.href = this.route('archive.index');
+            })
+            .catch(error => {
+                console.log(error);
             });
         },
         toggleForceDeletePopup(){
@@ -197,7 +220,50 @@ export default defineComponent({
         },
         toggleBulkForceDeletePopup(){
             this.bulkForceDeletePopup = !this.bulkForceDeletePopup;
-        }
+        },
+        //order functionallity
+        orderByArchive(column) {
+            let order;
+            if (this.orderby === column) {
+                order = this.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                order = 'asc';
+            }
+
+            // Get the currently selected types
+            let typelist = Array.isArray(this.types) ? this.types : Object.values(this.types);
+            let checked_types = typelist.filter(type => type.value).map(type => type.name);
+
+            // Create the parameters object including both order and type filters
+            const params = {
+                orderby: column,
+                order: order,
+                checked_types: checked_types
+            };
+
+            // Navigate to the updated URL
+            const url = this.route('archive.index', params);
+            window.location.href = url;
+        },
+
+        //filte by type
+        filterByType() {
+            // Get the currently selected types
+            let typelist = Array.isArray(this.types) ? this.types : Object.values(this.types);
+            let checked_types = typelist.filter(type => type.value).map(type => type.name);
+
+            // Create the parameters object including both type filters and the current order
+            const params = {
+                checked_types: checked_types,
+                orderby: this.orderby,
+                order: this.order
+            };
+
+            // Navigate to the updated URL
+            const url = this.route('archive.index', params);
+            window.location.href = url;
+        },
+
     },
     setup() {
         const route = inject('route'); // Injecting route helper

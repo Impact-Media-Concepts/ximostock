@@ -21,4 +21,9 @@ class Supplier extends Model
         ->logAll()
         ->logOnlyDirty();
     }
+
+    public function scopeFilterOrderBy($query, $column, $direction = 'asc')
+    {
+        return $query->orderBy($column, $direction);
+    }
 }

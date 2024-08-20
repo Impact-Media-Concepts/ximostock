@@ -254,6 +254,16 @@
                 fill: var(--text-light);
                 width: 10px;
                 height: 6px;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                translate: transform 0.3s ease;
+                &.asc{
+                    transform: rotate(180deg);
+                }
+                &.active{
+                    display: flex;
+                }
                 path{
                     fill: var(--text-light);
                 }

@@ -15,49 +15,80 @@ class ArchiveController extends Controller
 {
     public function index(Request $request)
     {
+        $validatedRequest = $request->validate([
+            'orderby' => ['nullable', 'string', Rule::in(['name', 'company_name', 'website', 'phone_number', 'deleted_at', 'itemtype'])],
+            'order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
+            'checked_types' => ['nullable', 'array'],
+            'checked_types.*' => ['required', Rule::in(['Supplier', 'Product', 'Category', 'Property', 'Saleschannel', 'Location'])]
+        ]);
+
         $current_workspace = (int) session('active_workspace_id');
+        $orderby = $request->orderby ?? 'deleted_at';
+        $order = $request->order ?? 'desc';
 
-        // Haal de producten op die gearchiveerd (soft-deleted) zijn en hernoem 'title' naar 'name'
-        $products = Product::onlyTrashed()
-            ->select('id', DB::raw('title as name'), 'deleted_at', DB::raw("'Product' as type"))
-            ->where('work_space_id', $current_workspace);
+        // Define the types and corresponding models
+        $typesConfig = [
+            'Product' => Product::class,
+            'Category' => Category::class,
+            'Property' => Property::class,
+            'Saleschannel' => SalesChannel::class,
+            'Location' => InventoryLocation::class,
+            'Supplier' => Supplier::class,
+        ];
 
-        // Haal de categorieën op die gearchiveerd zijn
-        $categories = Category::onlyTrashed()
-            ->select('id', 'name', 'deleted_at', DB::raw("'Category' as type"))
-            ->where('work_space_id', $current_workspace);
+        // Get the checked types, allow empty but don't filter in that case
+        $checkedTypes = $validatedRequest['checked_types'] ?? [];
 
-        // Haal de properties op die gearchiveerd zijn
-        $properties = Property::onlyTrashed()
-            ->select('id', 'name', 'deleted_at', DB::raw("'Property' as type"))
-            ->where('work_space_id', $current_workspace);
+        // Initialize the query builder
+        $archivedItemsQuery = null;
 
-        // Haal de verkoopkanalen op die gearchiveerd zijn
-        $salesChannels = SalesChannel::onlyTrashed()
-            ->select('id', 'name', 'deleted_at', DB::raw("'Saleschannel' as type"))
-            ->where('work_space_id', $current_workspace);
+        if (!empty($checkedTypes)) {
+            // Build the query for each selected type
+            foreach ($checkedTypes as $type) {
+                $model = $typesConfig[$type];
+                $query = $model::onlyTrashed()
+                    ->select('id', 'name', 'deleted_at', DB::raw("'$type' as itemtype"))
+                    ->where('work_space_id', $current_workspace);
 
-        // Haal de InventoryLocations op die gearchiveerd zijn
-        $locations = InventoryLocation::onlyTrashed()
-            ->select('id', 'name', 'deleted_at', DB::raw("'Location' as type"))
-            ->where('work_space_id', $current_workspace);
+                if ($type === 'Product') {
+                    $query->select('id', DB::raw('title as name'), 'deleted_at', DB::raw("'$type' as itemtype"));
+                }
 
-        // Haal de suppliers op die gearchiveerd zijn
-        $suppliers = Supplier::onlyTrashed()
-            ->select('id', 'name', 'deleted_at', DB::raw("'Supplier' as type"))
-            ->where('work_space_id', $current_workspace);
+                // Combine the queries
+                $archivedItemsQuery = $archivedItemsQuery ? $archivedItemsQuery->union($query) : $query;
+            }
+        } else {
+            // If no types are selected, fetch all items from all types without filtering
+            foreach ($typesConfig as $type => $model) {
+                $query = $model::onlyTrashed()
+                    ->select('id', 'name', 'deleted_at', DB::raw("'$type' as itemtype"))
+                    ->where('work_space_id', $current_workspace);
 
-        // Combineer de queries met union en sorteer op deleted_at
-        $archivedItems = $products->union($categories)
-            ->union($properties)
-            ->union($salesChannels)
-            ->union($locations)
-            ->union($suppliers)
-            ->orderBy('deleted_at', 'desc') // Sorteer op deleted_at
-            ->paginate(12); // Paginate de resultaten
+                if ($type === 'Product') {
+                    $query->select('id', DB::raw('title as name'), 'deleted_at', DB::raw("'$type' as itemtype"));
+                }
+
+                // Combine the queries
+                $archivedItemsQuery = $archivedItemsQuery ? $archivedItemsQuery->union($query) : $query;
+            }
+        }
+
+        // Apply ordering and paginate
+        $archivedItems = $archivedItemsQuery
+            ->orderBy($orderby, $order)
+            ->paginate(12);
+
+        // Prepare the types data for the checkboxes
+        $types = [];
+        foreach ($typesConfig as $key => $model) {
+            $types[strtolower($key)] = ['name' => $key, 'value' => in_array($key, $checkedTypes)];
+        }
 
         $results = [
-            'items' => $archivedItems
+            'items' => $archivedItems,
+            'orderby' => $orderby,
+            'order' => $order,
+            'types' => $types,
         ];
 
         return view('archive.index', $results);
@@ -168,11 +199,11 @@ class ArchiveController extends Controller
         $values = $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'numeric'],
-            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location'])]
+            'items.*.itemtype' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location', 'Supplier'])]
         ]);
 
         // Groepeer de items per type
-        $groupedItems = collect($values['items'])->groupBy('type');
+        $groupedItems = collect($values['items'])->groupBy('itemtype');
 
         // Herstel items per type in één query
         foreach ($groupedItems as $type => $items) {
@@ -194,6 +225,9 @@ class ArchiveController extends Controller
                 case 'Location':
                     InventoryLocation::onlyTrashed()->whereIn('id', $ids)->restore();
                     break;
+                case 'Supplier':
+                    Supplier::onlyTrashed()->whereIn('id', $ids)->restore();
+                    break;
             }
         }
 
@@ -205,11 +239,11 @@ class ArchiveController extends Controller
         $values = $request->validate([
             'items' => ['required', 'array'],
             'items.*.id' => ['required', 'numeric'],
-            'items.*.type' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location'])]
+            'items.*.itemtype' => ['required', Rule::in(['Property', 'Product', 'Category', 'Saleschannel', 'Location', 'Supplier'])]
         ]);
 
         // Groepeer de items per type
-        $groupedItems = collect($values['items'])->groupBy('type');
+        $groupedItems = collect($values['items'])->groupBy('itemtype');
 
         // Force delete items per type in één query
         foreach ($groupedItems as $type => $items) {
@@ -230,6 +264,9 @@ class ArchiveController extends Controller
                     break;
                 case 'Location':
                     InventoryLocation::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+                    break;
+                case 'Supplier':
+                    Supplier::onlyTrashed()->whereIn('id', $ids)->forceDelete();
                     break;
             }
         }

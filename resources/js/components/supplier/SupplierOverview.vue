@@ -5,13 +5,19 @@
             <div class="table-header">
                 <div class="orderby select-name">
                     <input :checked="isCheckedAll()" @click="toggleCheckedAll($event.target.checked)" class="select-all" type="checkbox" >
-                    <span>Naam <span class="chevron" v-html="icons['chevron']"></span></span>
+                    <span @click="orderBySuppliers('name')">Naam </span>
+                    <div @click="orderBySuppliers('name')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'name'}"><span  v-html="icons['chevron']"></span></div>
                 </div>
-                <div class="orderby company-name">
-                    <span>Bedrijfsnaam<span class="chevron" v-html="icons['chevron']"></span></span>
+                <div   class="orderby company-name">
+                    <span @click="orderBySuppliers('company_name')">Bedrijfsnaam</span>
+                    <div @click="orderBySuppliers('company_name')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'company_name'}"><span  v-html="icons['chevron']"></span></div>
+
                 </div>
                 <div class="date-create orderby">
-                    <span class="date">Datem<span class="chevron" v-html="icons['chevron']"></span></span>
+                    <span @click="orderBySuppliers('updated_at')" class="date">Datem
+                        <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'updated_at'}"><span  v-html="icons['chevron']"></span></div>
+                    </span>
+
                     <button @click="isOpenCreatePopup = true" class="create-button"><span class="supplier-icon" v-html="icons['supplier']"></span>Leverancier aanmaken</button>
                 </div>
             </div>
@@ -152,6 +158,14 @@ export default defineComponent({
             type: [Array, Object],
             required: true,
         },
+        order: {
+            type: String,
+            required: false,
+        },
+        orderby: {
+            type: String,
+            required: false,
+        },
     },
     data() {
         return {
@@ -244,13 +258,34 @@ export default defineComponent({
                 .then(response => {
                     this.messageIsError = false;
                     this.messages = response.data.message;
-                    window.location.reload();
+                    const params = {
+                        messages: this.messages,
+                        isError: this.messageIsError
+                    };
+                    const url = this.route('suppliers.index', params);
+                    window.location.href = url;
                 })
                 .catch(error => {
                     this.messageIsError = true;
                     this.messages = error.response.data.errors;
                 });
         },
+        //orderby functionality
+        orderBySuppliers(column) {
+            let order;
+            if(this.orderby === column) {
+                order = this.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                order = 'asc';
+            }
+
+            const params = {
+                orderby: column,
+                order: order
+            };
+            const url = this.route('suppliers.index', params);
+            window.location.href = url;
+        }
     },
     setup() {
         const route = inject('route');

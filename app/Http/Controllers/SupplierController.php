@@ -10,13 +10,28 @@ use Illuminate\Validation\Rule;
 class SupplierController extends Controller
 {
     public function index(Request $request){
-        $current_workspace = (int) session('active_workspace_id');
+        $request->validate([
+            'orderby' => ['nullable', 'string', Rule::in(['name', 'company_name', 'website', 'phone_number','updated_at'])],
+            'order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
+        ]);
 
-        $suppliers = Supplier::where('work_space_id', $current_workspace)->paginate(12);
+        $current_workspace = (int) session('active_workspace_id');
+        $request->orderby = $request->orderby ?? 'updated_at';
+        $request->order = $request->order ?? 'desc';
+        $query = Supplier::where('work_space_id', $current_workspace);
+
+        if ($request->orderby && $request->order) {
+            $query->orderBy($request->orderby, $request->order);
+        }
+
+        $suppliers = $query->paginate(12);
 
         $result = [
             'suppliers' => $suppliers,
+            'orderby' => $request->orderby,
+            'order' => $request->order,
         ];
+
         return view('supplier.index', $result);
     }
 

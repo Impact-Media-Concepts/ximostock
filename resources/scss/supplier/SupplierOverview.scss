@@ -14,6 +14,9 @@
     .supplier-table{
         @include table-wrapper;
         .table-header{
+            span{
+                cursor: pointer;
+            }
             .select-name{
                 margin-left: 40px;
                 width: 200px;
@@ -33,6 +36,9 @@
                 padding-right: 26px;
                 .date{
                     width: 166px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
                 }
                 .create-button{
                     color: var(--text-light);

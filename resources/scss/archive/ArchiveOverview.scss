@@ -15,13 +15,16 @@
         flex-direction: row;
         gap: 30px;
         .archive-table{
-            flex: 1; 
+            flex: 1;
             background: $light;
             overflow: hidden;
             border-radius: 10px;
             @include table-wrapper;
             .table-header{
                 padding-left: 38px;
+                span{
+                    cursor: pointer;
+                }
                 .select-name{
                     display: flex;
                     align-items: center;
@@ -49,7 +52,7 @@
             }
             .table-content{
                 .table-item{
-                    transition: height 0.3s ease; 
+                    transition: height 0.3s ease;
 
                     &.active{
                         height: 144px;
@@ -73,7 +76,7 @@
                         .chevron-down{
                             width: 17px;
                             margin: 0px 15px;
-                            transition: transform 0.3s ease; 
+                            transition: transform 0.3s ease;
 
                             &.active{
                                 transform: rotate(180deg);
@@ -142,11 +145,11 @@
     }
     .force-delete-popup{
         @include popup-container;
-        
+
     }
     .bulk-force-delete-popup{
         @include popup-container;
-        
+
     }
 
 }
