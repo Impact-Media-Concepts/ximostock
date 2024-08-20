@@ -24,13 +24,6 @@
 // Import utilities
 import { markRaw } from 'vue';
 
-// Import components
-import ProductInfo from './ProductInfo.vue';
-import ProductCategories from './ProductCategories.vue';
-import ProductImages from './ProductImages.vue';
-// import ProductSaleschannels from './ProductSaleschannels.vue';
-import ProductStock from './ProductStock.vue';
-// import ProductProperties from './ProductProperties.vue';
 
 // Import styles
 import '../../../scss/components/StepForm.scss';
@@ -48,7 +41,7 @@ export default {
         return {
             components: [
                 markRaw(ProductInfo),
-                markRaw(ProductImages),
+                // markRaw(ProductImages),
                 markRaw(ProductCategories),
                 // markRaw(ProductSaleschannels),
                 markRaw(ProductStock),
@@ -56,6 +49,7 @@ export default {
             ],
             currentStep: 0,
             product: {
+                id: null,
                 parent_product_id: null,
                 sku: '',
                 ean: null,

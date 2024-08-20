@@ -67,14 +67,19 @@ class DatabaseSeeder extends Seeder
             'work_space_id' => 1,
             'price' => $faker->numberBetween(1, 1000),
             'discount' => $faker->numberBetween(0, 50),
+            'title' => $faker->word(),
         ]);
         $products_second = Product::factory(50)->create([
             'work_space_id' => 2,
             'price' => $faker->numberBetween(1, 1000),
             'discount' => $faker->numberBetween(0, 50),
+            'title' => $faker->word(),
         ]);
 
         $primeProducts = Product::factory(25)->create([
+            'price' => $faker->numberBetween(1, 1000),
+            'discount' => $faker->numberBetween(0, 50),
+            'title' => $faker->word(). " -  PRIME",
             'work_space_id' => 2,
             'sku' => null,
             'ean' => null
@@ -106,6 +111,18 @@ class DatabaseSeeder extends Seeder
         SalesChannel::factory(3)->create([
             'work_space_id' => 3,
         ]);
+
+        foreach ($primeProducts as $product) {
+            $new_product = Product::factory(3)->create([
+                'parent_product_id' => $product->id,
+                'title' => $faker->word(),
+                'short_description' => null,
+                'long_description' => null,
+                'price' => $faker->numberBetween(1, 1000),
+                'discount' => $faker->numberBetween(0, 50),
+            ]);
+            $products = $products->concat($new_product);
+        }
 
         // Link properties
         foreach ($properties as $prop) {
@@ -140,16 +157,6 @@ class DatabaseSeeder extends Seeder
                     'property_value' => json_encode(['value' => $value])
                 ]);
             }
-        }
-
-        foreach ($primeProducts as $product) {
-            Product::factory(3)->create([
-                'parent_product_id' => $product->id,
-                'title' => null,
-                'short_description' => null,
-                'long_description' => null,
-                'price' => null
-            ]);
         }
 
         // Create subcategories

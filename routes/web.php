@@ -42,7 +42,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product')->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product')->name('products.create');
         Route::get('/export', [ProductController::class, 'export'])->name('products.export');
+        
+        // Product variations
         Route::get('/{id}/variation/add', [ProductController::class, 'addVariation'])->name('products.addVariation');
+        
         Route::get('/{product}', [ProductController::class, 'show'])->middleware('can:view,product')->name('products.show');
         Route::post('/', [ProductController::class, 'store'])->name('products.store');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');

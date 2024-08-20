@@ -1,5 +1,13 @@
 <template>
   <div class="product-view">
+    <div class="product-type-toggle">
+      <h4 class="title">Type product</h4>
+      <label class="switch">
+        <input type="checkbox" @change="toggleProductType" :checked="this.checked" >
+        <span class="slider round"></span>
+        <span class="type">{{ this.productData.type }}</span>
+      </label>
+    </div>
     <div class="main-product-info">
       <div class="image-container">
         <img v-if="productData.photos.length" :src="productData.photos[0].url" alt="Product Image">
@@ -17,11 +25,11 @@
           <label for="discount">Discount:</label>
           <input type="number" v-model="productData.discount" id="discount" step="0.01">
         </div>
-        <div class="form-group">
+        <div class="form-group" v-if="!this.checked">
           <label for="sku">SKU:</label>
           <input type="text" v-model="productData.sku" id="sku">
         </div>
-        <div class="form-group">
+        <div class="form-group" v-if="!this.checked">
           <label for="ean">EAN:</label>
           <input type="number" v-model="productData.ean" id="ean">
         </div>
@@ -148,7 +156,7 @@
                 </span>
                 <div class="form-group">
                   <label for="title">Waarden:</label>
-                  {{ property.pivot.property_value.value }}
+                  {{ property.pivot.property_value }}
                   <input type="text" v-model="property.pivot.property_value" @input="updatePropertyValue(property)" />
                 </div>
               </section>
@@ -165,7 +173,26 @@
               <h4>Variaties</h4>
             </div>
             <div class="content variaties">
-              <a :href="route('products.addVariation', productData.id)" class="button"> Show variable</a>
+              <section>
+                <span>Acties</span>
+                <div class="form-group">
+                  <button @click="addNewVariation()">Nieuwe toevoegen</button>
+                </div>
+              </section>
+              <section v-for="variation in this.productData.child_products">
+                <span>{{ variation.title }}</span>
+                <div class="form-group">
+                  <h3>Id: {{ variation.id }}</h3>
+                  <h3>Parent: {{ variation.parent_product_id }}</h3>
+                  <h3>Sku: {{ variation.sku }}</h3>
+                  <h3>Ean: {{ variation.ean }}</h3>
+                  <h3>Price: {{ variation.price }}</h3>
+                  <h3>Discount: {{ variation.discount }}</h3>
+                  <h3>Stock Quantity: {{ variation.stock_quantity }}</h3>
+                  <h3>Backorders: {{ variation.backorders }}</h3>
+                  <h3>Status: {{ variation.status }}</h3>
+                </div>
+              </section>
             </div>
           </div>
           <div class="content-container" v-if="activeTab === 6">
@@ -209,6 +236,7 @@
 import { defineComponent, inject } from 'vue';
 import axios from 'axios';
 import '../../../scss/product/SingleProduct.scss';
+import { id, th } from 'date-fns/locale';
 
 export default defineComponent({
   props: {
@@ -245,10 +273,11 @@ export default defineComponent({
       availableCategories: Object.values(this.categories),
       filteredCategories: Object.values(this.categories),
       productData: this.product,
-      activeTab: 6,
+      activeTab: 5,
       tabs: ['Informatie', 'Foto\'s', 'Categorieën', 'Eigenschappen', 'Verkoopkanalen', 'Variaties', 'Voorraad'],
       filterInputText: '',
-      errors: 0
+      errors: null,
+      checked: false
     };
   },
   methods: {
@@ -272,7 +301,7 @@ export default defineComponent({
       axios.put(this.route('products.update', this.productData.id), productDataToSend)
         .then(response => {
           console.log('Product saved');
-          this.errors = 0; // Reset errors
+          this.errors = null; // Reset errors
         })
         .catch(error => {
           if (error.response) {
@@ -339,12 +368,10 @@ export default defineComponent({
         this.filteredCategories = this.filteredCategories.filter(c => c.id !== category.id);
         // Add category to selected
         this.productData.categories.push(category);
-        console.log('Moving category to selected', category);
       } else {
         this.productData.categories = this.productData.categories.filter(c => c.id !== category.id);
         this.filteredCategories.push(category);
         this.availableCategories.push(category);
-        console.log('Moving category to available', category);
       }
     },
     FilterAvailableCategories() {
@@ -357,18 +384,28 @@ export default defineComponent({
     updatePropertyValue(property) {
       console.log('Updating property value', property);
     },
-    // addExistingProperty() {
-    //   console.log('Adding existing property');
-    // },
     removeProperty(property) {
       this.productData.properties = this.productData.properties.filter(p => p !== property);
     },
     addNewProperty() {
       var currentPropertyLength = this.productData.properties.length - 1;
-      var newProperty = JSON.parse(JSON.stringify(this.productData.properties[currentPropertyLength]));
-      newProperty.name = newProperty.name + ' (copy)';
-      newProperty.id = null;
-      this.productData.properties.push(newProperty);
+      if (this.productData.properties[currentPropertyLength]) {
+        var newProperty = JSON.parse(JSON.stringify(this.productData.properties[currentPropertyLength]));
+        newProperty.name = newProperty.name + ' (copy)';
+        newProperty.id = null;
+        this.productData.properties.push(newProperty);
+      } else {
+        this.productData.properties.push({
+          id: null,
+          name: 'Nieuwe eigenschap',
+          options: {
+            type: 'text',
+          },
+          pivot: {
+            property_value: '',
+          },
+        });
+      }
     },
     parsePropertyValue(value) {
       try {
@@ -376,7 +413,33 @@ export default defineComponent({
       } catch (e) {
         return value;
       }
-    }
+    },
+    toggleProductType() {
+      this.productData.type = this.productData.type == 'variable' ? 'simple' : 'variable';
+      this.checked = !this.checked;
+      this.productData.sku = '';
+      this.productData.ean = '';
+    },
+    addNewVariation() {
+      this.productData.child_products.push({
+        id: null,
+        work_space_id: this.productData.work_space_id,
+        parent_product_id: this.productData.id,
+        type: 'simple',
+        sku: null,
+        ean: null,
+        title: null, // different
+        short_description: null,
+        long_description: null,
+        price: this.productData.price, // different
+        discount: this.productData.discount,// different
+        backorders: this.productData.backorders,// different
+        stock_quantity: this.productData.stock_quantity,// different
+        status: this.productData.status,// different
+        updated_at: null,
+        created_at: null,
+      });
+    },
   },
   setup() {
     const route = inject('route'); // Injecting route helper
@@ -385,12 +448,13 @@ export default defineComponent({
     };
   },
   mounted() {
-    console.log(this.productData.properties);
-    // this.productData.properties.forEach(property => {
-    //   property.values = JSON.parse(property.values);
-    //   property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
-    // });
+    console.log('Product data', this.productData);
+    
+    this.productData.properties.forEach(property => {
+      property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
+    });
     this.productData.backorders = this.productData.backorders === 1 ? true : false;
+    this.checked = this.productData.type === 'simple' ? false : true;
   },
 });
 </script>

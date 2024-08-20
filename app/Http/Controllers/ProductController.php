@@ -105,6 +105,7 @@ class ProductController extends BaseProductController
             ->with('child_categories_recursive')
             ->whereNull('parent_category_id')
             ->get();
+
         return view('product.create', [
             'categories' => $categories,
             'properties' => $properties,
@@ -159,12 +160,14 @@ class ProductController extends BaseProductController
 
     public function update(Request $request, $id)
     {
+        
         // Validate the request data
         $request->validate([
+            'type' => ['required', Rule::in(['simple', 'variable'])],
             'title' => 'required|string|max:255',
             'price' => 'required|numeric',
             'discount' => 'nullable|numeric',
-            'sku' => 'required|string|max:255',
+            'sku' => 'nullable|string|max:255',
             'ean' => 'nullable|numeric',
             'short_description' => 'nullable|string',
             'long_description' => 'nullable|string',
@@ -173,6 +176,28 @@ class ProductController extends BaseProductController
             'properties' => 'array',
             'properties.*.pivot.property_value' => 'string', // Adjust validation as necessary
         ]);
+
+        foreach ($request->child_products as $child_product) {
+            // Log::info("Child Product:");
+            // Log::info($child_product);
+            if($child_product['id'] === null) {
+                Log::info("Creating new child product");
+                $newProduct = Product::create([
+                    'type' => 'simple',
+                    'title' => '',
+                    'price' => $child_product['price'],
+                    'discount' => $child_product['discount'],
+                    'sku' => $child_product['sku'],
+                    'ean' => $child_product['ean'],
+                    'short_description' => $child_product['short_description'],
+                    'long_description' => $child_product['long_description'],
+                    'stock_quantity' => $child_product['stock_quantity'],
+                    'backorders' => $child_product['backorders'],
+                    'parent_product_id' => $id,
+                    'work_space_id' => $child_product['work_space_id'],
+                ]);
+            }
+        }
 
         // Find the product by ID
         $product = Product::find($id);
@@ -183,7 +208,7 @@ class ProductController extends BaseProductController
 
         // Update the product with the request data
         $product->update($request->only([
-            'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description', 'stock_quantity', 'backorders'
+            'type', 'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description', 'stock_quantity', 'backorders'
         ]));
 
 
@@ -250,8 +275,6 @@ class ProductController extends BaseProductController
                 Log::info("Detached properties with IDs: " . implode(', ', $propertyIdsToDetach));
             }
         }
-
-
 
         // Return a response
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);

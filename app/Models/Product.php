@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use App\Enums\ProductType;
 
 class Product extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'values' => 'array',
+        'type' => ProductType::class,
+    ];
 
     public function getActivitylogOptions(): LogOptions
     {

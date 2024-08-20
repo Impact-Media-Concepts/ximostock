@@ -13,7 +13,6 @@ import ArchiveOverview from './components/archive/ArchiveOverview.vue';
 
 import CategoryOverview from './components/category/CategoryOverview.vue';
 import ThemeConfigurator from './components/user/ThemeConfigurator.vue';
-import StepForm from './components/components/StepForm.vue';
 import LocationOverview from './components/location/LocationOverview.vue';
 import SupplierOverview from './components/supplier/SupplierOverview.vue';
 
@@ -32,7 +31,6 @@ app.component('SaleschannelOverview', SaleschannelOverview);
 app.component('ArchiveOverview', ArchiveOverview);
 app.component('CategoryOverview', CategoryOverview);
 app.component('ThemeConfigurator', ThemeConfigurator);
-app.component('StepForm', StepForm);
 app.component('LocationOverview', LocationOverview);
 app.component('SupplierOverview', SupplierOverview);
 
