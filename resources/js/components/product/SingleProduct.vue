@@ -200,7 +200,7 @@
               </section>
             </div>
           </div>
-          <div class="content-container" v-if="activeTab === 6">
+          <div class="content-container" v-if="activeTab === 6">            
             <div class="title">
               <h4>Voorraad beheren</h4>
             </div>
