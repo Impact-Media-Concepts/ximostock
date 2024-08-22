@@ -2,34 +2,50 @@
     <div class="saleschannel-view">
         <span class="page-title">Verkoopkanalen</span>
         <div class="saleschannel-table">
-            <div class="saleschannel-table-header">
-                <div class="select-name">
-                    <input @click="toggleAllSaleschannels($event.target.checked)" :checked="isAllChecked()" class="select-all" type="checkbox">
-                    <span class="orderby orderby-name">Naam <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+            <div class="table-header">
+                <div class="orderby select-name">
+                    <input @click="toggleAllSaleschannels($event.target.checked)" :checked="isAllChecked()"
+                        class="select-all" type="checkbox">
+                    <span @click="orderBySaleschannels('name')" class="">Naam</span>
+                    <div @click="orderBySaleschannels('name')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'name'}">
+                        <span v-html="icons['chevron']"></span>
+                    </div>
                 </div>
-                <div class="orderby-type">
-                    <span class="orderby">Type <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                <div @click="orderBySaleschannels('channel_type')" class="orderby orderby-type">
+                    <span class="orderby">Type </span>
+                    <div  :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'channel_type'}">
+                        <span  v-html="icons['chevron']"></span>
+                    </div>
                 </div>
-                <div class="orderby-date">
-                    <span class="orderby">Datum <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                <div class="orderby orderby-date" @click="orderBySaleschannels('updated_at')">
+                    <span class="orderby">Datum</span>
+                    <div  :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'updated_at'}">
+                        <span v-html="icons['chevron']"></span>
+                    </div>
                 </div>
-                <div class="create-button-wraper">
+                <div class="orderby create-button-wraper">
                     <button @click="toggleCreatePopup()" class="button-create">
-                        <img class="saleschannel-icon" src="/images/saleschannel-icon-light.svg" alt="saleschannel-icon-light"> Verkoopkanaal aanmaken
+                        <img class="saleschannel-icon" src="/images/saleschannel-icon-light.svg"
+                            alt="saleschannel-icon-light"> Verkoopkanaal aanmaken
                     </button>
                 </div>
             </div>
-            <div :class="{'saleschannel-bulkAction-bar': true, 'open':this.selectedSaleschannels.length}">
-                <span class="bulkaction-text"> {{this.selectedSaleschannels.length}} verkoopkanalen van de {{this.saleschannels.data.length}} geselecteerd. <span @click="selectAll()" class="select-all-text">Selecteer alle verkoopkanalen</span></span>
+            <div :class="{ 'table-bulkAction-bar': true, 'open': this.selectedSaleschannels.length }">
+                <span class="bulkaction-text"> {{ this.selectedSaleschannels.length }} verkoopkanalen van de
+                    {{ this.saleschannels.data.length }} geselecteerd. <span @click="selectAll()"
+                        class="select-all-text">Selecteer alle verkoopkanalen</span></span>
                 <button class="bulkaction-button" @click="toggleDeleteMultiPopup()">Archiveren</button>
                 <!-- <button class="bulkaction-button">Verwijderen</button> -->
             </div>
-            <div class="saleschannels-content">
-                <div v-for="saleschannel in saleschannels['data']" :key="saleschannel.id" :class="{'saleschannel-item': true, 'active': isActive(saleschannel.id)}">
-                    <div @click="toggleActive(saleschannel.id)" class="saleschannel-info">
+            <div class="table-content">
+                <div v-for="saleschannel in saleschannels['data']" :key="saleschannel.id"
+                    :class="{ 'table-item': true, 'active': isActive(saleschannel.id) }">
+                    <div @click="toggleActive(saleschannel.id)" class="table-info">
                         <div class="select-name">
-                            <input @click.stop @click="toggleSaleschannelById($event.target.checked,saleschannel.id)" :checked="saleschannelIsChecked(saleschannel.id)" class="select" :value="saleschannel.id" type="checkbox">
-                            <span  class="name">{{ saleschannel.name }}</span>
+                            <input @click.stop @click="toggleSaleschannelById($event.target.checked, saleschannel.id)"
+                                :checked="saleschannelIsChecked(saleschannel.id)" class="select"
+                                :value="saleschannel.id" type="checkbox">
+                            <span class="name">{{ saleschannel.name }}</span>
                         </div>
                         <div class="type">
                             <span>{{ saleschannel.channel_type }}</span>
@@ -41,7 +57,8 @@
                             <div class="dropdown-wrapper">
                                 <img class="open" src="/images/chevron-down-dark.svg" alt="chevron-down">
                             </div>
-                            <button @click.stop @click="openDeleteSinglePopup(saleschannel.id)" class="delete-button">Verwijderen</button>
+                            <button @click.stop @click="openDeleteSinglePopup(saleschannel.id)"
+                                class="delete-button">Verwijderen</button>
                         </div>
                     </div>
                     <div class="saleschannel-form">
@@ -71,13 +88,13 @@
                     </div>
                 </div>
             </div>
-            <div class="saleschannel-footer">
+            <div class="table-footer">
 
             </div>
         </div>
 
         <!-- popups -->
-         <div :class="{'create-popup': true, 'visible': this.isOpenCreatePopup}">
+        <div :class="{ 'create-popup': true, 'visible': this.isOpenCreatePopup }">
             <div class="popup">
                 <img @click="toggleCreatePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
                 <div class="popup-content">
@@ -113,21 +130,22 @@
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button  @click="createNewSaleschannel()" class="save-button">
+                        <button @click="createNewSaleschannel()" class="save-button">
                             <img class="button-icon" src="/images/save-icon.svg" alt="cross">
                             save
                         </button>
                         <button @click="toggleCreatePopup()" class="cancel-button">
-                            <img  class="button-icon" src="/images/close-icon.svg" alt="cross">
+                            <img class="button-icon" src="/images/close-icon.svg" alt="cross">
                             Annuleren
                         </button>
                     </div>
                 </div>
             </div>
-         </div>
-         <div :class="{'warning-delete-one-popup': true, 'visible': this.isOpenDeleteSinglePopup}">
+        </div>
+        <div :class="{ 'warning-delete-one-popup': true, 'visible': this.isOpenDeleteSinglePopup }">
             <div class="popup">
-                <img @click="closeDeleteSinglePopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img @click="closeDeleteSinglePopup()" class="popup-close" src="/images/close-icon.svg"
+                    alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
 
                 <span class="title">verwijderen?</span>
@@ -137,21 +155,26 @@
                     <button @click="deleteSaleschannel()" class="confirm-button">Verwijderen</button>
                 </div>
             </div>
-         </div>
-         <div :class="{'warning-delete-one-popup': true, 'visible': this.isOpenDeleteMultiPopup}">
+        </div>
+        <div :class="{ 'warning-delete-one-popup': true, 'visible': this.isOpenDeleteMultiPopup }">
             <div class="popup">
-                <img @click="toggleDeleteMultiPopup()" class="popup-close" src="/images/close-icon.svg" alt="close-popup">
+                <img @click="toggleDeleteMultiPopup()" class="popup-close" src="/images/close-icon.svg"
+                    alt="close-popup">
                 <img src="/images/warning-icon.svg" alt="warning">
 
                 <span class="title">verwijderen?</span>
-                <p>Weet u zeker dat u de geselecteerde  wilt verwijderen?</p>
+                <p>Weet u zeker dat u de geselecteerde wilt verwijderen?</p>
                 <div class="warning-buttons">
                     <button @click="toggleDeleteMultiPopup()" class="cancel-button">Annuleren</button>
                     <button @click="bulkdeleteSelectedSaleschannels()" class="confirm-button">Verwijderen</button>
                 </div>
             </div>
-         </div>
+        </div>
+        <!-- succes and error messages -->
+        <general-notification :messages="messages" :isError="messageIsError" v-if="messages" />
+
     </div>
+
 </template>
 
 <script>
@@ -159,29 +182,44 @@ import { defineComponent, inject } from 'vue';
 import '../../../scss/saleschannel/SaleschannelOverview.scss';
 import { format } from 'date-fns';
 import axios from 'axios';
+import GeneralNotification from '../GeneralNotification.vue';
+
 
 export default defineComponent({
     props: {
         saleschannels: {
             type: [Array, Object],
             required: true,
-        }
+        },
+        order: {
+            type: String,
+            required: true,
+        },
+        orderby: {
+            type: String,
+            required: true,
+        },
+        icons: {
+            type: [Array, Object],
+            required: true,
+        },
     },
     data() {
         return {
             activeItemId: null,
-            selectedSaleschannels : [],
+            selectedSaleschannels: [],
             isOpenCreatePopup: false,
-            isOpenDeleteSinglePopup:false,
-            isOpenDeleteMultiPopup:false,
-            createSaleschannel:{
-                name:'',
+            isOpenDeleteSinglePopup: false,
+            isOpenDeleteMultiPopup: false,
+            createSaleschannel: {
+                name: '',
                 type: '',
                 url: '',
                 api_key: '',
                 secret: ''
             },
             toDeleteId: null,
+            messages: null,
         };
     },
     methods: {
@@ -196,9 +234,13 @@ export default defineComponent({
         },
         deleteSaleschannel() {
             axios.delete(this.route('saleschannels.deleteBuId', this.toDeleteId))
-            .then(response => {
-                window.location.href = this.route('saleschannels.index');
-            });
+                .then(response => {
+                    window.location.href = this.route('saleschannels.index');
+                })
+                .catch(error => {
+                    this.messageIsError = true;
+                    this.messages = error.response.data.errors;
+                });
         },
         updateSaleschannel(saleschannelId) {
             const saleschannel = this.saleschannels.data.find(sc => sc.id === saleschannelId);
@@ -209,43 +251,51 @@ export default defineComponent({
                 secret: saleschannel.secret,
             };
             axios.put(this.route('saleschannels.updateById', saleschannelId), data)
-            .then(response => {
-                window.location.href = this.route('saleschannels.index');
-            });
+                .then(response => {
+                    window.location.href = this.route('saleschannels.index');
+                })
+                .catch(error => {
+                    this.messageIsError = true;
+                    this.messages = error.response.data.errors;
+                });
         },
-        saleschannelIsChecked(id){
+        saleschannelIsChecked(id) {
             const check = this.selectedSaleschannels.includes(id)
 
             return check;
         },
-        toggleAllSaleschannels(checked){
+        toggleAllSaleschannels(checked) {
             checked ? this.selectedSaleschannels = this.saleschannels.data.map(sc => sc.id) : this.selectedSaleschannels = [];
         },
-        toggleSaleschannelById(checked, value){
+        toggleSaleschannelById(checked, value) {
             checked ? this.selectedSaleschannels.push(value) : this.selectedSaleschannels = this.selectedSaleschannels.filter(id => id !== value);
 
         },
-        isAllChecked(){
+        isAllChecked() {
             return this.saleschannels.data.every(sc => this.selectedSaleschannels.includes(sc.id));
         },
-        selectAll(){
+        selectAll() {
             this.selectedSaleschannels = this.saleschannels.data.map(sc => sc.id);
         },
-        numberOfSelectedSaleschannels(){
+        numberOfSelectedSaleschannels() {
             return this.selectedSaleschannels.count();
         },
-        bulkdeleteSelectedSaleschannels(){
-            const data = {saleschannels: this.selectedSaleschannels};
+        bulkdeleteSelectedSaleschannels() {
+            const data = { saleschannels: this.selectedSaleschannels };
             console.log(data);
             axios.post(this.route('saleschannels.bulkDelete'), data)
-            .then(response => {
-                window.location.href = this.route('saleschannels.index');
-            });
+                .then(response => {
+                    window.location.href = this.route('saleschannels.index');
+                })
+                .catch(error => {
+                    this.messageIsError = true;
+                    this.messages = error.response.data.errors;
+                });
         },
-        toggleCreatePopup(){
+        toggleCreatePopup() {
             this.isOpenCreatePopup = !this.isOpenCreatePopup;
         },
-        createNewSaleschannel(){
+        createNewSaleschannel() {
             const saleschannel = this.createSaleschannel;
             const data = {
                 name: saleschannel.name,
@@ -256,20 +306,39 @@ export default defineComponent({
             };
             console.log(data);
             axios.post(this.route('saleschannels.store'), data)
-            .then(response => {
-                window.location.href = this.route('saleschannels.index');
-            });
+                .then(response => {
+                    window.location.href = this.route('saleschannels.index');
+                })
+                .catch(error => {
+                    this.messageIsError = true;
+                    this.messages = error.response.data.errors;
+                });
         },
-        closeDeleteSinglePopup(){
+        closeDeleteSinglePopup() {
             this.isOpenDeleteSinglePopup = false;
             this.toDeleteId = null;
         },
-        openDeleteSinglePopup(id){
+        openDeleteSinglePopup(id) {
             this.isOpenDeleteSinglePopup = true;
             this.toDeleteId = id;
         },
-        toggleDeleteMultiPopup(){
+        toggleDeleteMultiPopup() {
             this.isOpenDeleteMultiPopup = !this.isOpenDeleteMultiPopup;
+        },
+        orderBySaleschannels(column) {
+            let order;
+            if(this.orderby === column) {
+                order = this.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                order = 'asc';
+            }
+
+            const params = {
+                orderby: column,
+                order: order
+            };
+            const url = this.route('saleschannels.index', params);
+            window.location.href = url;
         }
     },
     setup() {

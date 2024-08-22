@@ -9,17 +9,34 @@ use App\Rules\ValidWorkspaceKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class InventoryLocationController extends Controller
 {
     public function index(Request $request){
+        $request->validate([
+            'orderby' => ['nullable', 'string', Rule::in(['name','updated_at'])],
+            'order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
+        ]);
+
         $current_workspace = (int) session('active_workspace_id');
-        $locations = InventoryLocation::where('work_space_id', $current_workspace)
-            ->with('location_zones')
-            ->orderBy('updated_at','desc')
-            ->paginate(15);
+
+        $request->orderby = $request->orderby ?? 'updated_at';
+        $request->order = $request->order ?? 'desc';
+
+        $query = InventoryLocation::where('work_space_id', $current_workspace)->with('location_zones');
+        if ($request->orderby && $request->order) {
+            $query->orderBy($request->orderby, $request->order);
+        }
+
+        $locations = $query->paginate(15);
+
+
+
         $result = [
-            'locations' => $locations
+            'locations' => $locations,
+            'orderby' => $request->orderby,
+            'order' => $request->order,
         ];
         Log::debug($current_workspace);
 
@@ -36,12 +53,12 @@ class InventoryLocationController extends Controller
             'zones' => ['nullable', 'array'],
             'zones.*' => ['required', 'string', 'max:255']
         ]);
-        
+
         $location = InventoryLocation::create([
             'name' => $attributes['name'],
             'work_space_id' => $current_workspace
         ]);
-        
+
         foreach($attributes['zones'] as $zone){
             LocationZone::create([
                 'name' => $zone,
@@ -73,7 +90,7 @@ class InventoryLocationController extends Controller
 
         $attributes = $request->validate([
             'locations' => ['required', 'array'],
-            'locations.*' => ['required', 'numeric'] 
+            'locations.*' => ['required', 'numeric']
         ]);
 
         InventoryLocation::WhereIn('id', $attributes['locations'])->delete();
@@ -85,7 +102,7 @@ class InventoryLocationController extends Controller
     public function update(Request $request){
         // Retrieve the current workspace ID from the session
         $current_workspace = (int) session('active_workspace_id');
-        
+
         // Validate the incoming request
         $attributes = $request->validate([
             'id' => ['required', 'numeric'],
@@ -94,17 +111,17 @@ class InventoryLocationController extends Controller
             'location_zones.*.id' => ['nullable', 'numeric'],
             'location_zones.*.name' => ['required', 'string'],
         ]);
-        
+
         // Find the InventoryLocation or fail
         $location = InventoryLocation::findOrFail($attributes['id']);
-        
+
         // Retrieve existing location zones for the inventory location
         $existingZones = LocationZone::where('inventory_location_id', $location->id)->get();
 
         // Separate the incoming zones into old (with ID) and new (without ID) zones
         $oldZones = [];
         $newZones = [];
-        
+
         foreach ($request['location_zones'] as $zone) {
             if (isset($zone['id'])) {
                 $oldZones[$zone['id']] = $zone;  // Use ID as key for easy comparison

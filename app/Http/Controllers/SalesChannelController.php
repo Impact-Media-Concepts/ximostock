@@ -11,26 +11,30 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
 
-
 class SalesChannelController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'orderby' => ['nullable', 'string', Rule::in(['name', 'channel_type','updated_at'])],
+            'order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
+        ]);
+
         $current_workspace = (int) session('active_workspace_id');
-        if (Auth::user()->role === 'admin') {
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-            $workspace = $activeWorkspace;
-        } else {
-            $workspaces = null;
-            $activeWorkspace = null;
-            $workspace = Auth::user()->work_space_id;
+        $request->orderby = $request->orderby ?? 'updated_at';
+        $request->order = $request->order ?? 'desc';
+
+        $query = SalesChannel::where('work_space_id', $current_workspace);
+        if ($request->orderby && $request->order) {
+            $query->orderBy($request->orderby, $request->order);
         }
-        
+
+        $salesChannels = $query->paginate(12);
+
         $results = [
-            'activeWorkspace' => $activeWorkspace,
-            'sidenavActive' => 'saleschannels',
-            'saleschannels' => SalesChannel::where('work_space_id', $current_workspace)->paginate(10)
+            'saleschannels' => $salesChannels,
+            'orderby' => $request->orderby,
+            'order' => $request->order,
         ];
         //Log::debug($results['salesChannels']);
         return view('salesChannel.index', $results);
@@ -48,7 +52,7 @@ class SalesChannelController extends Controller
             $workspaces = null;
             $activeWorkspace = null;
         }
-        
+
         $results = [
             'activeWorkspace' => $activeWorkspace,
             'workspaces' => $workspaces,

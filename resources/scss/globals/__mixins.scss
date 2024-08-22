@@ -260,7 +260,10 @@
         justify-content: space-between;
         align-items: center;
         > div {
-            
+
+        }
+        span{
+            cursor: pointer;
         }
         .orderby{
             font-size: 14px;
@@ -341,6 +344,7 @@
             border-radius: 10px;
             border-width: 1px;
             border-style: solid;
+            transition: height 0.3s ease;
             border-color: var(--border-secondary);
             .table-info{
                 height: 60px;
