@@ -111,6 +111,8 @@
 </head>
 <body>
 
+    @dump("test");
+
     <div id="app">
         <Navbar :items='@json($navbaritems)' :user='@json($user)'></Navbar>
 
