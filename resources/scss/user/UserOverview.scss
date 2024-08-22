@@ -1,3 +1,37 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
 .user-overview {
-    
+    padding: 20px;
+    .title{
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 24px;
+        display: block;
+        margin-bottom: 35px;
+    }
+    .user-wrapper{
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
+        .user-table{
+            flex: 1;
+            background: var(--light);
+            overflow: hidden;
+            border-radius: 10px;
+            @include table-wrapper;
+            .table-content {
+                padding: 15px 25px;
+                .table-item {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr auto;
+                    .table-info {
+                        display: inline-flex;
+                        gap: 10px;
+                        padding: 13px;
+                    }
+                }
+            }
+        }
+    }
 }

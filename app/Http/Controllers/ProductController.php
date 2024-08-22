@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ProductsExport; 
+use App\Exports\ProductsExport;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\CategoryProduct;
@@ -50,11 +50,12 @@ class ProductController extends BaseProductController
     {
         $current_workspace = (int) session('active_workspace_id');
         $products = Product::where('work_space_id', $current_workspace)
-                    ->with(['categories', 'photos' => function ($query) {
-                        $query->where('primary', 1);
-                    }])
-                    ->orderBy('created_at', 'desc') // Order by creation date
-                    ->paginate(11); // Use paginate instead of limit
+            ->with(['categories', 'photos' => function ($query) {
+                $query->where('primary', 1);
+            }])
+            ->whereNull('parent_product_id') // Only show parent products
+            ->orderBy('created_at', 'desc') // Order by creation date
+            ->paginate(11); // Use paginate instead of limit
 
         // Eager loading categories for products
         $products->load('categories');
@@ -63,7 +64,7 @@ class ProductController extends BaseProductController
         $relatedCategories = $products->pluck('categories')->flatten()->unique('id');
 
         // Loading hierarchical categories
-        $hierarchicalCategories = $relatedCategories->map(function($category) {
+        $hierarchicalCategories = $relatedCategories->map(function ($category) {
             return Category::with('child_categories_recursive')->find($category->id);
         });
 
@@ -126,7 +127,9 @@ class ProductController extends BaseProductController
     {
         // Eager load all necessary relationships
         $product->load([
-            'childProducts',
+            'childProducts' => function ($query) {
+                $query->with('properties');
+            },
             'parentProduct',
             'categories',
             'photos',
@@ -149,9 +152,6 @@ class ProductController extends BaseProductController
         // Filter out the categories that are already related to the product
         $unrelatedCategories = $workspaceCategories->whereNotIn('id', $productCategoryIds);
 
-        Log::info( "product-propties:");
-        // Log::info( $product->properties[0]);
-
         return view('product.show', [
             'product' => $product,
             'unrelatedCategories' => $unrelatedCategories,
@@ -160,11 +160,12 @@ class ProductController extends BaseProductController
 
     public function update(Request $request, $id)
     {
-        
         // Validate the request data
-        $request->validate([
+        try {
+            $validatedData = $request->validate([
             'type' => ['required', Rule::in(['simple', 'variable'])],
             'title' => 'required|string|max:255',
+            'work_space_id' => 'required|integer|exists:work_spaces,id',
             'price' => 'required|numeric',
             'discount' => 'nullable|numeric',
             'sku' => 'nullable|string|max:255',
@@ -173,113 +174,166 @@ class ProductController extends BaseProductController
             'long_description' => 'nullable|string',
             'categories' => 'array',
             'categories.*' => 'integer|exists:categories,id',
-            'properties' => 'array',
-            'properties.*.pivot.property_value' => 'string', // Adjust validation as necessary
-        ]);
-
-        foreach ($request->child_products as $child_product) {
-            // Log::info("Child Product:");
-            // Log::info($child_product);
-            if($child_product['id'] === null) {
-                Log::info("Creating new child product");
-                $newProduct = Product::create([
-                    'type' => 'simple',
-                    'title' => '',
-                    'price' => $child_product['price'],
-                    'discount' => $child_product['discount'],
-                    'sku' => $child_product['sku'],
-                    'ean' => $child_product['ean'],
-                    'short_description' => $child_product['short_description'],
-                    'long_description' => $child_product['long_description'],
-                    'stock_quantity' => $child_product['stock_quantity'],
-                    'backorders' => $child_product['backorders'],
-                    'parent_product_id' => $id,
-                    'work_space_id' => $child_product['work_space_id'],
-                ]);
-            }
+            'child_products' => 'nullable|array',
+            'child_products.*.id' => 'nullable|integer|exists:products,id',
+            'child_products.*.title' => 'nullable|string|max:255',
+            'child_products.*.price' => 'required|numeric|min:0',
+            'child_products.*.properties' => 'nullable|array',
+            'child_products.*.properties.*.id' => 'nullable|integer|exists:properties,id',
+            'child_products.*.properties.*.name' => 'required|string|max:255',
+            'child_products.*.properties.*.pivot.property_value' => 'required|string|max:255',
+            'properties' => 'nullable|array',
+            'properties.*.id' => 'nullable|integer|exists:properties,id',
+            'properties.*.name' => 'required|string|max:255',
+            'properties.*.pivot.property_value' => 'required|string|max:255',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->errors();
+            Log::info($errors);
+            // Handle the validation errors here
         }
 
-        // Find the product by ID
         $product = Product::find($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        // Update the product with the request data
-        $product->update($request->only([
-            'type', 'title', 'price', 'discount', 'sku', 'ean', 'short_description', 'long_description', 'stock_quantity', 'backorders'
-        ]));
 
-
-        // Sync the categories
-        if ($request->has('categories')) {
-            $product->categories()->sync($request->categories);
+        // Update or create child products
+        foreach ($validatedData['child_products'] as $childProductData) {
+            $this->updateOrCreateChildProduct($product, $childProductData);
         }
 
-        Log::info("product after sync: " . $product);
+
+        // Update the main product
+        $product->update($validatedData);
+
+        // Sync categories if provided
+        if (isset($validatedData['categories'])) {
+            $product->categories()->sync($validatedData['categories']);
+        }
 
         // Update properties
-        if ($request->has('properties')) {
-            $requestPropertyIds = [];
-
-            foreach ($request->properties as $propertyData) {
-                Log::info("propertyData: ", $propertyData);
-                if (isset($propertyData['pivot']['property_value'])) {
-                    if (isset($propertyData['id'])) {
-                        // Update the existing property
-                        Log::info("Updating property with data: ", $propertyData['pivot']);
-                        $product->properties()->updateExistingPivot(
-                            $propertyData['id'],
-                            [
-                                'property_value' => $propertyData['pivot']['property_value'],
-                            ]
-                        );
-                        $requestPropertyIds[] = $propertyData['id'];
-                    } else {
-                        // If ID is null, add a new property to the database and also create a new pivot
-                        Log::info("Adding new property to the database and creating new pivot with data: ", $propertyData['pivot']);
-
-                        // Create the new property
-                        $newProperty = Property::create([
-                            'name' => $propertyData['name'],
-                            'work_space_id' => $product->work_space_id,
-                            'values' => $propertyData['pivot']['property_value'],
-                        ]);
-
-                        // Attach the new property to the product with the pivot data
-                        $product->properties()->attach(
-                            $newProperty->id,
-                            [
-                                'property_value' => $propertyData['pivot']['property_value'],
-                            ]
-                        );
-
-                        Log::info("New property added with ID: " . $newProperty->id);
-                        Log::info("New property added with value: " . $propertyData['pivot']['property_value']);
-                        $requestPropertyIds[] = $newProperty->id;
-                    }
-                } else {
-                    Log::error("Invalid property data: ", $propertyData);
-                }
-            }
-
-            // Get currently attached property IDs
-            $currentPropertyIds = $product->properties->pluck('id')->toArray();
-
-            // Find property IDs that need to be detached
-            $propertyIdsToDetach = array_diff($currentPropertyIds, $requestPropertyIds);
-
-            if (!empty($propertyIdsToDetach)) {
-                $product->properties()->detach($propertyIdsToDetach);
-                Log::info("Detached properties with IDs: " . implode(', ', $propertyIdsToDetach));
-            }
+        if (isset($validatedData['properties'])) {
+            $this->updateProductProperties($product, $validatedData['properties']);
         }
 
-        // Return a response
+        $product->touch();
+
+        // Eager load necessary relationships
+        $product->load([
+            'childProducts.properties',
+            'parentProduct',
+            'categories',
+            'photos',
+            'properties',
+            'locationZones',
+            'salesChannels',
+            'productSalesChannels',
+            'sales',
+        ]);
+
+        Log::info($product);
+
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }
 
+    /**
+     * Updates or creates a child product associated with a parent product.
+     */
+    protected function updateOrCreateChildProduct(Product $parentProduct, array $childProductData)
+    {
+        // Check if the child product exists based on the ID, otherwise set it to null.
+        $childProduct = isset($childProductData['id']) ? Product::find($childProductData['id']) : null;
+
+        // If the child product doesn't exist, create a new one and associate it with the parent product.
+        if (!$childProduct) {
+            log::info($childProductData);
+            $childProduct = Product::create(array_merge($childProductData, [
+                'type' => 'simple',
+                'parent_product_id' => $parentProduct->id,
+                'work_space_id' => $parentProduct->work_space_id,
+                'discount' => $parentProduct->discount,
+            ]));
+        } else {
+            // If the child product exists, update it with the new data.
+            $childProduct->update($childProductData);
+        }
+
+        // Iterate through each property associated with the child product and update or create it.
+        foreach ($childProductData['properties'] as $propertyData) {
+            $this->updatePivotOrCreateNew($childProduct, $propertyData);
+        }
+    }
+
+    /**
+     * Updates the properties of a given product.
+     */
+    protected function updateProductProperties(Product $product, array $properties)
+    {
+        // Initialize an array to keep track of property IDs that are processed.
+        $requestPropertyIds = [];
+
+        // Loop through each property and update or create it, storing the ID of each processed property.
+        foreach ($properties as $propertyData) {
+            $requestPropertyIds[] = $this->updatePivotOrCreateNew($product, $propertyData);
+        }
+
+        // Detach any properties that are no longer present in the request data.
+        $this->detachUnusedProperties($product, $requestPropertyIds);
+    }
+
+    /**
+     * Updates an existing property or creates a new one, attaching it to the product via a pivot table.
+     */
+    protected function updatePivotOrCreateNew(Product $product, array $propertyData)
+    {
+        // If the pivot data doesn't include a property value, log an error and return null.
+        if (!isset($propertyData['pivot']['property_value'])) {
+            Log::error("Invalid property data: ", $propertyData);
+            return null;
+        }
+
+        // If the property ID is provided, update the existing property in the pivot table.
+        if (isset($propertyData['id'])) {
+            $product->properties()->updateExistingPivot(
+                $propertyData['id'],
+                ['property_value' => $propertyData['pivot']['property_value']]
+            );
+            return $propertyData['id'];
+        } else {
+            // If no ID is provided, create a new property and attach it to the product via the pivot table.
+            $newProperty = Property::create([
+                'name' => $propertyData['name'],
+                'work_space_id' => $product->work_space_id,
+                'values' => $propertyData['pivot']['property_value'],
+            ]);
+
+            $product->properties()->attach($newProperty->id, [
+                'property_value' => $propertyData['pivot']['property_value'],
+            ]);
+
+            return $newProperty->id;
+        }
+    }
+
+    /**
+     * Detaches properties that are no longer associated with the product based on the provided property IDs.
+     */
+    protected function detachUnusedProperties(Product $product, array $requestPropertyIds)
+    {
+        // Get the current property IDs attached to the product.
+        $currentPropertyIds = $product->properties->pluck('id')->toArray();
+
+        // Determine which property IDs should be detached (those not in the request).
+        $propertyIdsToDetach = array_diff($currentPropertyIds, $requestPropertyIds);
+
+        // Detach the unused properties from the product if there are any to detach.
+        if (!empty($propertyIdsToDetach)) {
+            $product->properties()->detach($propertyIdsToDetach);
+        }
+    }
 
     public function destroy($id)
     {
@@ -478,7 +532,7 @@ class ProductController extends BaseProductController
         Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => true]);
 
         $woocommerce = new WooCommerceManager();
-        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
+        $woocommerce->uploadOrUpdateProductsSalesChannels($validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -495,7 +549,7 @@ class ProductController extends BaseProductController
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['backorders' => false]);
         $woocommerce = new WooCommerceManager();
-        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
+        $woocommerce->uploadOrUpdateProductsSalesChannels($validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -512,7 +566,7 @@ class ProductController extends BaseProductController
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => true]);
         $woocommerce = new WooCommerceManager();
-        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
+        $woocommerce->uploadOrUpdateProductsSalesChannels($validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -529,7 +583,7 @@ class ProductController extends BaseProductController
 
         Product::whereIn('id', $validatedData['product_ids'])->update(['communicate_stock' => false]);
         $woocommerce = new WooCommerceManager();
-        $woocommerce->uploadOrUpdateProductsSalesChannels( $validatedData['product_ids']);
+        $woocommerce->uploadOrUpdateProductsSalesChannels($validatedData['product_ids']);
 
         return redirect()->back();
     }
@@ -664,12 +718,12 @@ class ProductController extends BaseProductController
     {
         return Product::create([
             'work_space_id' => Auth::user()->work_space_id,
-            'sku' => isset($attributes['sku']) ? $attributes['sku'] : null ,
+            'sku' => isset($attributes['sku']) ? $attributes['sku'] : null,
             'ean' => isset($attributes['ean']) ? $attributes['ean'] : null,
             'title' => isset($attributes['title']) ? $attributes['title'] : null,
             'price' => isset($attributes['price']) ? $attributes['price'] : null,
             'long_description' => isset($attributes['long_description']) ? $attributes['long_description'] : null,
-            'short_description' =>isset($attributes['short_description']) ? $attributes['short_description'] : null,
+            'short_description' => isset($attributes['short_description']) ? $attributes['short_description'] : null,
             'backorders' => isset($attributes['backorders']) ? $attributes['backorders'] : null,
             'communicate_stock' => isset($attributes['communicate_stock']) ? $attributes['communicate_stock'] : null
         ]);
@@ -677,7 +731,7 @@ class ProductController extends BaseProductController
 
     protected function createInventories($product, $request)
     {
-        if($request->input('location_zones')){
+        if ($request->input('location_zones')) {
             foreach ($request->input('location_zones') as $location_zone_id => $stock) {
                 Inventory::create([
                     'product_id' => $product->id,
@@ -1006,7 +1060,7 @@ class ProductController extends BaseProductController
 
     protected function linkPropertiesToProduct($product, $attributes)
     {
-        if(isset($attributes['properties'])){
+        if (isset($attributes['properties'])) {
             foreach ($attributes['properties'] as $propertyId => $propertyValue) {
                 ProductProperty::create([
                     'product_id' => $product->id,
@@ -1114,7 +1168,8 @@ class ProductController extends BaseProductController
         return response()->json(['message' => 'Product were deleted successfully'], 200);
     }
 
-    public function duplicate($id) {
+    public function duplicate($id)
+    {
         // Find the product by its ID
         $product = Product::find($id);
 
@@ -1145,7 +1200,8 @@ class ProductController extends BaseProductController
     }
 
 
-    public function archiveById($id) {
+    public function archiveById($id)
+    {
         // Find the product by its ID
         $product = Product::find($id);
 
@@ -1161,7 +1217,8 @@ class ProductController extends BaseProductController
         return response()->json($product, 201);
     }
 
-    public function exportById($id) {
+    public function exportById($id)
+    {
         // Find the product by its ID
         $product = Product::find($id);
 
@@ -1175,11 +1232,10 @@ class ProductController extends BaseProductController
             $filename = 'products-' . Str::random(20) . '.csv';
         }
 
-        if(Excel::store(new ProductsExport($id), $filename, 'public')) {
+        if (Excel::store(new ProductsExport($id), $filename, 'public')) {
             return response()->json(['message' => 'Product exported successfully', 'filename' => $filename], 200);
         } else {
             return response()->json(['error' => 'Failed to export product'], 500);
         }
     }
-
 }

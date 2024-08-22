@@ -22,7 +22,7 @@
                         </span>
                     </div>
                     <div class="date">
-                        <span @click="orderByArchive('deleted_at')" class="orderby">Datem
+                        <span @click="orderByArchive('deleted_at')" class="orderby">Datum
                             <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'deleted_at'}">
                                 <span v-html="icons['chevron']"></span>
                             </div>

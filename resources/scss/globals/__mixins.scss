@@ -238,9 +238,15 @@
         cursor: pointer;
     }
     .table-header{
+        padding: 15px 25px;
         height: 60px;
         background-color: var(--primary);
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        > div {
+            
+        }
         .orderby{
             font-size: 14px;
             line-height: 17px;

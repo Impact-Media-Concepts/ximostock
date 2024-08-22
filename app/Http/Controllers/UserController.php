@@ -17,7 +17,6 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-
         $users = User::all();
 
         return view('user.index', compact('users'));
@@ -41,18 +40,14 @@ class UserController extends Controller
 
     public function destroy(Request $request, int $userId)
     {
-        try {
-            $user = User::find($userId);
-            if (!$user) {
-                return redirect('/users')->withErrors(['error' => 'User not found']);
-            }
-            Log::info('User deleted: ', ['user_id' => $userId]);
-            $user->delete();
-            return redirect('/users')->with('success', 'User deleted successfully');
-        } catch (\Exception $e) {
-            Log::error('Error deleting user: ', ['error' => $e->getMessage()]);
-            return redirect('/users')->withErrors(['error' => 'An error occurred while deleting the user']);
+        $user = User::find($userId);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
+
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully'], 200);
     }
     
 

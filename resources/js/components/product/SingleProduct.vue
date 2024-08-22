@@ -3,7 +3,7 @@
     <div class="product-type-toggle">
       <h4 class="title">Type product</h4>
       <label class="switch">
-        <input type="checkbox" @change="toggleProductType" :checked="this.checked" >
+        <input type="checkbox" @change="toggleProductType" :checked="this.checked">
         <span class="slider round"></span>
         <span class="type">{{ this.productData.type }}</span>
       </label>
@@ -39,7 +39,7 @@
     <div class="product-content">
       <div class="product-tabs">
         <div class="tab-heading">
-          <span class="heading" v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
+          <span class="heading" v-for="(tab, index) in filteredTabs" :key="index" @click="activeTab = index"
             :class="{ active: activeTab === index }">
             {{ tab }}
           </span>
@@ -168,7 +168,7 @@
             </div>
             <div class="content verkoopkanalen"></div>
           </div>
-          <div class="content-container" v-if="activeTab === 5">
+          <div class="content-container" v-if="activeTab === 5 && checked === true">
             <div class="title">
               <h4>Variaties</h4>
             </div>
@@ -191,11 +191,16 @@
                   <h3>Stock Quantity: {{ variation.stock_quantity }}</h3>
                   <h3>Backorders: {{ variation.backorders }}</h3>
                   <h3>Status: {{ variation.status }}</h3>
+                  <div v-for="property in variation.properties">
+                    <span>name: {{ property.name }}</span><br>
+                    <span>value:{{ property.pivot.property_value }}</span>
+                    <input type="text" v-model="property.pivot.property_value">
+                  </div>
                 </div>
               </section>
             </div>
           </div>
-          <div class="content-container" v-if="activeTab === 6">
+          <div class="content-container" v-if="activeTab === 6">            
             <div class="title">
               <h4>Voorraad beheren</h4>
             </div>
@@ -236,7 +241,6 @@
 import { defineComponent, inject } from 'vue';
 import axios from 'axios';
 import '../../../scss/product/SingleProduct.scss';
-import { id, th } from 'date-fns/locale';
 
 export default defineComponent({
   props: {
@@ -273,17 +277,47 @@ export default defineComponent({
       availableCategories: Object.values(this.categories),
       filteredCategories: Object.values(this.categories),
       productData: this.product,
-      activeTab: 5,
-      tabs: ['Informatie', 'Foto\'s', 'Categorieën', 'Eigenschappen', 'Verkoopkanalen', 'Variaties', 'Voorraad'],
+      activeTab: 0,
+      tabs: {
+        0: 'Informatie',
+        1: 'Foto\'s',
+        2: 'Categorieën',
+        3: 'Eigenschappen',
+        4: 'Verkoopkanalen',
+        5: 'Variaties',
+        6: 'Voorraad'
+      },
       filterInputText: '',
       errors: null,
       checked: false
     };
   },
+  computed: {
+    filteredTabs() {
+      // Convert the tabs object to an array of keys
+      const tabKeys = Object.keys(this.tabs);
+
+      // Find the key of the 'Variaties' tab in the tabs object
+      const variatiesKey = tabKeys.find(key => this.tabs[key] === 'Variaties');
+
+      // If the 'Variaties' tab is currently active and checked is false, reset activeTab to 0
+      if (!this.checked && this.activeTab == variatiesKey) {
+        this.activeTab = 0;
+      }
+
+      // If checked is false, filter out the 'Variaties' tab
+      if (!this.checked) {
+        return tabKeys.filter(key => this.tabs[key] !== 'Variaties').map(key => this.tabs[key]);
+      }
+
+      // Otherwise, return the original tabs array
+      return tabKeys.map(key => this.tabs[key]);
+    }
+  },
   methods: {
     save() {
       // Create a copy of productData to modify
-      let productDataToSend = { ...this.productData };
+      let productDataToSend = JSON.parse(JSON.stringify(this.productData));
       productDataToSend.categories = this.productData.categories.map(category => category.id);
 
       // Stringify property values
@@ -295,12 +329,26 @@ export default defineComponent({
         }
       }));
 
+      // Stringify child product property values
+      productDataToSend.child_products.map(childProduct => {
+        childProduct.properties = childProduct.properties.map(property => ({
+          id: property.id,
+          name: property.name,
+          pivot: {
+            property_value: JSON.stringify({ value: property.pivot.property_value }),
+          }
+        }));
+      });
+
       console.log('Product data to send', productDataToSend);
 
-      console.log(productDataToSend);
+
       axios.put(this.route('products.update', this.productData.id), productDataToSend)
         .then(response => {
-          console.log('Product saved');
+
+          this.productData = response.data.product;
+          this.parsePropertyValues();
+
           this.errors = null; // Reset errors
         })
         .catch(error => {
@@ -407,13 +455,6 @@ export default defineComponent({
         });
       }
     },
-    parsePropertyValue(value) {
-      try {
-        return JSON.parse(value).value;
-      } catch (e) {
-        return value;
-      }
-    },
     toggleProductType() {
       this.productData.type = this.productData.type == 'variable' ? 'simple' : 'variable';
       this.checked = !this.checked;
@@ -421,24 +462,54 @@ export default defineComponent({
       this.productData.ean = '';
     },
     addNewVariation() {
-      this.productData.child_products.push({
+
+      // Create a non-reference copy of properties to add to child product
+      var propertiesToAdd = JSON.parse(JSON.stringify(this.productData.properties));
+      propertiesToAdd.forEach(property => {
+        property.id = null;
+      });
+
+      // Create a new child product
+      var newChildProduct = {
         id: null,
         work_space_id: this.productData.work_space_id,
         parent_product_id: this.productData.id,
         type: 'simple',
-        sku: null,
-        ean: null,
-        title: null, // different
-        short_description: null,
-        long_description: null,
-        price: this.productData.price, // different
-        discount: this.productData.discount,// different
-        backorders: this.productData.backorders,// different
-        stock_quantity: this.productData.stock_quantity,// different
-        status: this.productData.status,// different
-        updated_at: null,
-        created_at: null,
+        sku: '',
+        ean: '',
+        title: 'Nieuwe title',
+        short_description: this.productData.short_description,
+        long_description: this.productData.long_description,
+        price: this.productData.price,
+        discount: this.productData.discount,
+        backorders: this.productData.backorders,
+        stock_quantity: 0,
+        created_at: new Date(),
+        updated_at: new Date(),
+        properties: propertiesToAdd, // Add properties to child product
+      };
+
+      // Add new child product to product data
+      this.productData.child_products.push(newChildProduct);
+
+    },
+    parsePropertyValues() {
+      this.productData.properties.forEach(property => {
+        property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
       });
+
+      this.productData.child_products.forEach(childProduct => {
+        childProduct.properties.forEach(property => {
+          property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
+        });
+      });
+    },
+    parsePropertyValue(value) {
+      try {
+        return JSON.parse(value).value;
+      } catch (e) {
+        return value;
+      }
     },
   },
   setup() {
@@ -449,10 +520,9 @@ export default defineComponent({
   },
   mounted() {
     console.log('Product data', this.productData);
-    
-    this.productData.properties.forEach(property => {
-      property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
-    });
+
+    this.parsePropertyValues();
+
     this.productData.backorders = this.productData.backorders === 1 ? true : false;
     this.checked = this.productData.type === 'simple' ? false : true;
   },

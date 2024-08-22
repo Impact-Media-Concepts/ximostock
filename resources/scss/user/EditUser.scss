@@ -1,0 +1,29 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.edit-user {
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px 21px;
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            label {
+                @include default-label;
+            }
+
+            input {
+                width: 100%;
+                @include default-input;
+            }
+
+            &.row {
+                grid-column: span 2;
+            }
+        }
+    }
+}
