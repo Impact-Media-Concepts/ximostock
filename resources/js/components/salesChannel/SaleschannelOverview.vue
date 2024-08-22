@@ -171,7 +171,7 @@
             </div>
         </div>
         <!-- succes and error messages -->
-        <GeneralNotification :messages="messages" :isError="messageIsError" v-if="messages" />
+        <general-notification :messages="messages" :isError="messageIsError" v-if="messages" />
 
     </div>
 

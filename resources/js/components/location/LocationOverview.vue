@@ -3,12 +3,20 @@
         <span class="title">Opslaglocaties</span>
         <div class="location-table">
             <div class="table-header">
-                <div class="select-name">
+                <div class="orderby select-name">
                     <input :checked="isAllChecked()" @click="toggleAllItems($event.target.checked)" class="select-all" type="checkbox">
-                    <span class="orderby">Naam <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                    <span @click="orderByLocations('name')">Naam</span>
+                    <div @click="orderByLocations('name')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'name'}">
+                        <span v-html="icons['chevron']" ></span>
+                    </div>
                 </div>
                 <div class="date-create">
-                    <span class="orderby date">Datem <img class="chevron" src="/images/chevron-down-light.svg" alt="chevron-down"></span>
+                    <div @click="orderByLocations('updated_at')" class="orderby date">
+                        <span>Datem</span>
+                        <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'updated_at'}">
+                            <span v-html="icons['chevron']"></span>
+                        </div>
+                    </div>
                     <button @click="toggleCreatePopup()" class="create-button"><img src="/images/location-icon-light.svg" alt="inventory-icon">Opslaglocatie aanmaken</button>
                 </div>
             </div>
@@ -133,7 +141,15 @@ export default defineComponent({
         locations: {
             type: [Array, Object],
             required: true,
-        }
+        },
+        order: {
+            type: String,
+            required: true,
+        },
+        orderby: {
+            type: String,
+            required: true,
+        },
     },
     data() {
         return {
@@ -255,6 +271,21 @@ export default defineComponent({
             this.DeletePopupIsOpen = false;
         },
         //end handdle popups
+        orderByLocations(column) {
+            let order;
+            if(this.orderby === column) {
+                order = this.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                order = 'asc';
+            }
+
+            const params = {
+                orderby: column,
+                order: order
+            };
+            const url = this.route('locations.index', params);
+            window.location.href = url;
+        }
     },
     setup() {
         const route = inject('route'); // Injecting route helper

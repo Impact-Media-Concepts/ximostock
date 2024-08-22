@@ -18,13 +18,11 @@
                 cursor: pointer;
             }
             .select-name{
-                margin-left: 55px;
+                margin-left: 30px;
                 display: flex;
                 align-items: center;
                 gap: 13px;
-                width: 15%;
-                min-width: 220px;
-
+                width: 320px;
                 .select-all{
                     height: 14px;
                     width: 14px;
@@ -38,7 +36,7 @@
                 align-items: center;
             }
             .orderby-date{
-                min-width: 240px;
+                min-width: 215px;
                 display: flex;
                 flex-direction: row;
                 gap: 5px;
@@ -98,8 +96,7 @@
                         gap: 16px;
                         align-items: center;
                         margin-left: 17px;
-                        width: 15%;
-                        min-width: 210px;
+                        min-width: 320px;
                         .name{
                             cursor: pointer;
                         }
