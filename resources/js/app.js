@@ -4,7 +4,6 @@ import { route } from '../../vendor/tightenco/ziggy/dist/index'; // Import the r
 import Navbar from './components/Navbar.vue';
 import Sidebar from './components/Sidebar.vue';
 import SingleProduct from './components/product/SingleProduct.vue';
-import GeneralNotification from './components/GeneralNotification.vue';
 import UserOverview from './components/user/UserOverview.vue';
 import AddUser from './components/user/AddUser.vue';
 import ProductOverview from './components/product/ProductOverview.vue';
@@ -24,7 +23,6 @@ const app = createApp({});
 app.component('Navbar', Navbar);
 app.component('Sidebar', Sidebar);
 app.component('SingleProduct', SingleProduct);
-app.component('GeneralNotification', GeneralNotification);
 app.component('UserOverview', UserOverview);
 app.component('AddUser', AddUser);
 app.component('ProductOverview', ProductOverview);

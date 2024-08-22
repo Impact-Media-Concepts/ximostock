@@ -39,10 +39,13 @@
     <div class="product-content">
       <div class="product-tabs">
         <div class="tab-heading">
-          <span class="heading" v-for="(tab, index) in filteredTabs" :key="index" @click="activeTab = index"
-            :class="{ active: activeTab === index }">
-            {{ tab }}
-          </span>
+          <span class="heading active" @click="changeActiveTab(0)">Informatie</span>
+          <span class="heading" @click="changeActiveTab(1)">Foto's</span>
+          <span class="heading" @click="changeActiveTab(2)">Categorieën</span>
+          <span class="heading" @click="changeActiveTab(3)">Eigenschappen</span>
+          <span class="heading" @click="changeActiveTab(4)">Verkoopkanalen</span>
+          <span class="heading" @click="changeActiveTab(5)" v-if="checked">Variaties</span>
+          <span class="heading" @click="changeActiveTab(6)" v-if="!checked">Voorraad</span>
         </div>
         <div class="tab-content">
           <div class="content-container" v-if="activeTab === 0">
@@ -112,7 +115,7 @@
                     placeholder="Typ hier waarop u de lijst wil filteren">
                   <ul>
                     <li v-for="category in filteredCategories" :key="category.id">
-                      <input type="checkbox" :value="category.id" @change="moveCategory(category, 'available')">
+                      <input type="checkbox" :value="category.id" @change="moveCategory(category, 'available')" />
                       {{ category.name }}
                     </li>
                   </ul>
@@ -168,7 +171,7 @@
             </div>
             <div class="content verkoopkanalen"></div>
           </div>
-          <div class="content-container" v-if="activeTab === 5 && checked === true">
+          <div class="content-container" v-if="activeTab === 5 && checked">
             <div class="title">
               <h4>Variaties</h4>
             </div>
@@ -182,25 +185,45 @@
               <section v-for="variation in this.productData.child_products">
                 <span>{{ variation.title }}</span>
                 <div class="form-group">
-                  <h3>Id: {{ variation.id }}</h3>
-                  <h3>Parent: {{ variation.parent_product_id }}</h3>
-                  <h3>Sku: {{ variation.sku }}</h3>
-                  <h3>Ean: {{ variation.ean }}</h3>
-                  <h3>Price: {{ variation.price }}</h3>
-                  <h3>Discount: {{ variation.discount }}</h3>
-                  <h3>Stock Quantity: {{ variation.stock_quantity }}</h3>
-                  <h3>Backorders: {{ variation.backorders }}</h3>
-                  <h3>Status: {{ variation.status }}</h3>
-                  <div v-for="property in variation.properties">
-                    <span>name: {{ property.name }}</span><br>
-                    <span>value:{{ property.pivot.property_value }}</span>
-                    <input type="text" v-model="property.pivot.property_value">
+                  <div class="form-input">
+                    <label>Sku: {{ variation.sku }}</label>
+                    <input type="text" v-model="variation.sku" />
+                  </div>
+                  <div class="form-input">
+                    <label>Ean: {{ variation.ean }}</label>
+                    <input type="number" v-model="variation.ean" />
+                  </div>
+                  <div class="form-input">
+                    <label>Price: {{ variation.price }}</label>
+                    <input type="text" v-model="variation.price" />
+                  </div>
+                  <div class="form-input">
+                    <label>Discount: {{ variation.discount }}</label>
+                    <input type="text" v-model="variation.discount" />
+                  </div>
+                  <div class="form-input">
+                    <label>Stock Quantity: {{ variation.stock_quantity }}</label>
+                    <input type="number" v-model="variation.stock_quantity" />
+                  </div>
+                  <div class="form-input">
+                    <label>Backorders: {{ variation.backorders }}</label>
+                    <input type="checkbox" v-model="variation.backorders" />
+                  </div>
+                  <div class="form-input">
+                    <label>beschrijving: {{ variation.long_description }}</label>
+                    <input type="text" v-model="variation.long_description" />
+                  </div>
+                  <div class="form-input">
+                    <div v-for="property in variation.properties">
+                      <span>name: {{ property.name }}</span><br>
+                      <input type="text" v-model="property.pivot.property_value">
+                    </div>
                   </div>
                 </div>
               </section>
             </div>
           </div>
-          <div class="content-container" v-if="activeTab === 6">            
+          <div class="content-container" v-if="activeTab === 6 && !checked">
             <div class="title">
               <h4>Voorraad beheren</h4>
             </div>
@@ -224,11 +247,21 @@
         </div>
       </div>
       <div class="product-actions">
-        <button @click="save" class="save">Opslaan</button>
-        <button @click="duplicate" class="dupliceren">Dupliceren</button>
-        <button @click="exportProduct" class="export">Export</button>
-        <button @click="archiveProduct" class="archive">Archiveer</button>
-        <button @click="deleteProduct" class="delete">Verwijderen</button>
+        <button @click="save" class="save">
+          Opslaan
+        </button>
+        <button @click="duplicate" class="dupliceren">
+          Dupliceren
+        </button>
+        <button @click="exportProduct" class="export">
+          Export
+        </button>
+        <button @click="archiveProduct" class="archive">
+          Archiveer
+        </button>
+        <button @click="deleteProduct" class="delete">
+          Verwijderen
+        </button>
       </div>
     </div>
 
@@ -277,42 +310,11 @@ export default defineComponent({
       availableCategories: Object.values(this.categories),
       filteredCategories: Object.values(this.categories),
       productData: this.product,
-      activeTab: 0,
-      tabs: {
-        0: 'Informatie',
-        1: 'Foto\'s',
-        2: 'Categorieën',
-        3: 'Eigenschappen',
-        4: 'Verkoopkanalen',
-        5: 'Variaties',
-        6: 'Voorraad'
-      },
+      activeTab: 2,
       filterInputText: '',
       errors: null,
       checked: false
     };
-  },
-  computed: {
-    filteredTabs() {
-      // Convert the tabs object to an array of keys
-      const tabKeys = Object.keys(this.tabs);
-
-      // Find the key of the 'Variaties' tab in the tabs object
-      const variatiesKey = tabKeys.find(key => this.tabs[key] === 'Variaties');
-
-      // If the 'Variaties' tab is currently active and checked is false, reset activeTab to 0
-      if (!this.checked && this.activeTab == variatiesKey) {
-        this.activeTab = 0;
-      }
-
-      // If checked is false, filter out the 'Variaties' tab
-      if (!this.checked) {
-        return tabKeys.filter(key => this.tabs[key] !== 'Variaties').map(key => this.tabs[key]);
-      }
-
-      // Otherwise, return the original tabs array
-      return tabKeys.map(key => this.tabs[key]);
-    }
   },
   methods: {
     save() {
@@ -430,10 +432,31 @@ export default defineComponent({
       );
     },
     updatePropertyValue(property) {
-      console.log('Updating property value', property);
     },
     removeProperty(property) {
       this.productData.properties = this.productData.properties.filter(p => p !== property);
+    },
+    changeActiveTab(tab) {
+      // Calculate the number of hidden tabs before the selected tab
+      let indexAdjustment = 0;
+
+      if (!this.checked) {
+        if (tab > 4) indexAdjustment++;
+        if (tab > 5) indexAdjustment--;
+      }
+
+      // Adjust the tab index based on the number of hidden tabs
+      this.activeTab = tab - indexAdjustment;
+
+      // Update the active class on the headings
+      const headings = document.querySelectorAll('.heading');
+      headings.forEach((heading, index) => {
+        if (index === this.activeTab) {
+          heading.classList.add('active');
+        } else {
+          heading.classList.remove('active');
+        }
+      });
     },
     addNewProperty() {
       var currentPropertyLength = this.productData.properties.length - 1;
@@ -456,10 +479,16 @@ export default defineComponent({
       }
     },
     toggleProductType() {
-      this.productData.type = this.productData.type == 'variable' ? 'simple' : 'variable';
+      // Toggle checkbox
       this.checked = !this.checked;
+      this.activeTab = 0;
+      // Change type text
+      this.productData.type = this.productData.type == 'variable' ? 'simple' : 'variable';
+      // Reset product data fields
       this.productData.sku = '';
       this.productData.ean = '';
+      this.productData.stock_quantity = 0;
+      this.productData.backorders = false;
     },
     addNewVariation() {
 
@@ -519,8 +548,6 @@ export default defineComponent({
     };
   },
   mounted() {
-    console.log('Product data', this.productData);
-
     this.parsePropertyValues();
 
     this.productData.backorders = this.productData.backorders === 1 ? true : false;

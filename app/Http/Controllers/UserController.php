@@ -12,14 +12,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
         $users = User::all();
-
-        return view('user.index', compact('users'));
+        $roles = ['admin', 'manager', 'supplier'];
+        return view('user.index', compact('users', 'roles'));
     }
 
     public function show(Request $request, User $user){
@@ -103,30 +104,56 @@ class UserController extends Controller
         return view('user.edit', compact('user', 'roles'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'work_space_id' => 'nullable|integer',
-            'name' => 'required|string|max:255',
-            'role' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'email_verified_at' => 'nullable|date',
-            'password' => 'nullable|string|min:8|confirmed',
-            'remember_token' => 'nullable|string|max:100',
-        ]);
+        Log::info($request->all());
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+
+        if (Auth::user()->role === 'admin') {
+            $validatedData = $request->validate([
+                'id' => 'required|exists:users,id',
+                'work_space_id' => 'nullable|exists:work_spaces,id',
+                'name' => 'required|string|max:255',
+                'role' => 'required|in:admin,manager,supplier',
+                'email' => 'required|email',
+                'password' => 'nullable|string|min:8|confirmed',
+            ]);
+        } else {
+            $validatedData = $request->validate([
+                'id' => 'required|exists:users,id',
+                'name' => 'required|string|max:255',
+                'email' => 'required|email',
+                'password' => 'nullable|string|min:8|confirmed',
+            ]);
+        }
+        Log::info($validatedData);
+
+        
+
+        Log::info($validatedData);
+
+        $user = User::find($validatedData['id']);
+
+        if (!$user) {
+            return redirect()->back()->withErrors(['error' => 'User not found.']);
         }
 
-        $data = $request->only(['work_space_id', 'name', 'role', 'email', 'email_verified_at', 'remember_token']);
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+        if (Auth::user()->role === 'admin') {
+            $user->work_space_id = $validatedData['work_space_id'];
+            $user->role = $validatedData['role'];
         }
 
-        $user->update($data);
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
 
-        return redirect()->route('users.show', $user->id)->with('success', 'User updated successfully.');
+        if (isset($validatedData['password'])) {
+            $user->password = bcrypt($validatedData['password']);
+        }
+
+        $user->save();
+        
+        return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
+
     }
 
     public function theme(Request $request) {

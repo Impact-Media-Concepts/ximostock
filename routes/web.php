@@ -86,9 +86,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/theme', [UserController::class, 'theme'])->name('users.theme');
         Route::get('/create', [UserController::class, 'create'])->middleware('can:viewAny,App\Models\User')->name('users.create');
         Route::get('/{user}', [UserController::class, 'show'])->middleware('can:viewAny,App\Models\User')->name('users.show');
-        Route::get('/{user}/edit', [UserController::class, 'edit'])->middleware('can:viewAny,App\Models\User')->name('users.edit');
         Route::post('', [UserController::class, 'store'])->middleware('can:viewAny,App\Models\User')->name('users.store');
-        Route::patch('/{user}', [UserController::class, 'update'])->middleware('can:viewAny,App\Models\User')->name('users.update');
+        
+        Route::patch('/{user}', [UserController::class, 'update'])->name('users.update');
+        
         Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:viewAny,App\Models\User')->name('users.destroy');
     });
 

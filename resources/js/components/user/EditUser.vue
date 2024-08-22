@@ -1,49 +1,75 @@
 <template>
     <div class="edit-user">
         <div class="form-container">
-            <div class="form-group row">
-                <label for="title">Name:</label>
-                <input type="text" v-model="localUser.name" id="title">
+            <div class="form-group" v-if="this.admin">
+                <label>Work space:</label>
+                <input type="number" v-model="localUser.work_space_id">
             </div>
             <div class="form-group">
-                <label for="mail">Email:</label>
-                <input type="email" v-model="localUser.email" id="mail">
+                <label>Name:</label>
+                <input type="text" v-model="localUser.name">
             </div>
-            <div class="form-group">
-                <label for="workspace">Work space:</label>
-                <input type="number" v-model="localUser.work_space_id" id="workspace">
-            </div>
-            <div class="form-group">
+            <div class="form-group" v-if="this.admin">
                 <label for="role">Role:</label>
-                <input type="text" v-model="localUser.role" id="role">
+                <select v-model="localUser.role">
+                    <option v-for="role in roles" :value="role">{{ role }}</option>
+                </select>
             </div>
-            
-
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" v-model="localUser.email">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" v-model="localUser.password">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password:</label>
+                <input type="password" v-model="localUser.password_confirmation">
+            </div>
+            <div class="form-group">
+                <button @click="save()" class="save">Opslaan</button>
+            </div>
         </div>
-        <pre>
-            {{ localUser }}
-        </pre>
     </div>
 </template>
 
 <script>
 import { defineComponent, inject } from 'vue';
 import '../../../scss/user/EditUser.scss';
+import axios from 'axios';
 
 export default defineComponent({
     props: {
         user: {
-            type: Array, // Ensure the prop type is Array
+            type: Object, // Ensure the prop type is Array
             default: () => [],
+        },
+        roles: {
+            type: Object, // Ensure the prop type is Array
+            default: () => [],
+        },
+        admin: {
+            type: Boolean,
+            default: false,
         },
     },
     data() {
         return {
-            localUser: this.user, // Store users in local data for reactivity
+            localUser: { ...this.user, password: '', password_confirmation: '' },
         };
     },
     methods: {
-
+        save() {
+            axios.patch(route('users.update', this.localUser.id), this.localUser)
+                .then((response) => {
+                    console.log(response.data.user);
+                    this.localUser = response.data.user;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
     },
     setup() {
         const route = inject('route'); // Injecting route helper

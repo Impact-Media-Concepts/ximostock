@@ -160,37 +160,65 @@ class ProductController extends BaseProductController
 
     public function update(Request $request, $id)
     {
+
         // Validate the request data
         try {
-            $validatedData = $request->validate([
-            'type' => ['required', Rule::in(['simple', 'variable'])],
-            'title' => 'required|string|max:255',
-            'work_space_id' => 'required|integer|exists:work_spaces,id',
-            'price' => 'required|numeric',
-            'discount' => 'nullable|numeric',
-            'sku' => 'nullable|string|max:255',
-            'ean' => 'nullable|numeric',
-            'short_description' => 'nullable|string',
-            'long_description' => 'nullable|string',
-            'categories' => 'array',
-            'categories.*' => 'integer|exists:categories,id',
-            'child_products' => 'nullable|array',
-            'child_products.*.id' => 'nullable|integer|exists:products,id',
-            'child_products.*.title' => 'nullable|string|max:255',
-            'child_products.*.price' => 'required|numeric|min:0',
-            'child_products.*.properties' => 'nullable|array',
-            'child_products.*.properties.*.id' => 'nullable|integer|exists:properties,id',
-            'child_products.*.properties.*.name' => 'required|string|max:255',
-            'child_products.*.properties.*.pivot.property_value' => 'required|string|max:255',
-            'properties' => 'nullable|array',
-            'properties.*.id' => 'nullable|integer|exists:properties,id',
-            'properties.*.name' => 'required|string|max:255',
-            'properties.*.pivot.property_value' => 'required|string|max:255',
-            ]);
+            if($request['type'] === "variable") {
+                Log::info("Variable product");
+                $validatedData = $request->validate([
+                    'type' => ['required', Rule::in(['simple', 'variable'])],
+                    'title' => 'required|string|max:255',
+                    'work_space_id' => 'required|integer|exists:work_spaces,id',
+                    'price' => 'required|numeric',
+                    'discount' => 'nullable|numeric',
+                    'short_description' => 'nullable|string',
+                    'long_description' => 'nullable|string',
+                    'categories' => 'array',
+                    'categories.*' => 'integer|exists:categories,id',
+                    'child_products' => 'nullable|array',
+                    'child_products.*.id' => 'nullable|integer|exists:products,id',
+                    'child_products.*.title' => 'nullable|string|max:255',
+                    'child_products.*.price' => 'required|numeric|min:0',
+                    'child_products.*.discount' => 'nullable|numeric',
+                    'child_products.*.sku' => 'nullable|string|max:255',
+                    'child_products.*.ean' => 'nullable|numeric',
+                    'child_products.*.long_description' => 'nullable|string',
+                    'child_products.*.stock_quantity' => 'nullable|integer',
+                    'child_products.*.backorders' => 'nullable|boolean',
+                    'child_products.*.properties' => 'nullable|array',
+                    'child_products.*.properties.*.id' => 'nullable|integer|exists:properties,id',
+                    'child_products.*.properties.*.name' => 'required|string|max:255',
+                    'child_products.*.properties.*.pivot.property_value' => 'required|string|max:255',
+                    'properties' => 'nullable|array',
+                    'properties.*.id' => 'nullable|integer|exists:properties,id',
+                    'properties.*.name' => 'required|string|max:255',
+                    'properties.*.pivot.property_value' => 'required|string|max:255',
+                ]);
+            } else {
+                Log::info("Simple product");
+                $validatedData = $request->validate([
+                    'type' => ['required', Rule::in(['simple', 'variable'])],
+                    'title' => 'required|string|max:255',
+                    'work_space_id' => 'required|integer|exists:work_spaces,id',
+                    'price' => 'required|numeric',
+                    'discount' => 'nullable|numeric',
+                    'sku' => 'nullable|string|max:255',
+                    'ean' => 'nullable|numeric',
+                    'short_description' => 'nullable|string',
+                    'long_description' => 'nullable|string',
+                    'stock_quantity' => 'nullable|integer',
+                    'backorders' => 'nullable|boolean',
+                    'categories' => 'array',
+                    'categories.*' => 'integer|exists:categories,id',
+                    'properties' => 'nullable|array',
+                    'properties.*.id' => 'nullable|integer|exists:properties,id',
+                    'properties.*.name' => 'required|string|max:255',
+                    'properties.*.pivot.property_value' => 'required|string|max:255',
+                ]);
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->errors();
             Log::info($errors);
-            // Handle the validation errors here
         }
 
         $product = Product::find($id);
@@ -200,11 +228,11 @@ class ProductController extends BaseProductController
         }
 
 
-        // Update or create child products
-        foreach ($validatedData['child_products'] as $childProductData) {
-            $this->updateOrCreateChildProduct($product, $childProductData);
+        if ($validatedData['type'] === 'variable') {
+            foreach ($validatedData['child_products'] as $childProductData) {
+                $this->updateOrCreateChildProduct($product, $childProductData);
+            }
         }
-
 
         // Update the main product
         $product->update($validatedData);
@@ -234,7 +262,6 @@ class ProductController extends BaseProductController
             'sales',
         ]);
 
-        Log::info($product);
 
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }

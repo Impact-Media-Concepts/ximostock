@@ -67,9 +67,24 @@
     line-height: 17px;
     border-style: solid;
     border-color: var(--border-dark);
+    cursor: pointer;
     &:hover{
         background-color: var(--hover-light);
     }
+}
+
+@mixin dark-buttton{
+    background-color: var(--text);
+    color: $light;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    line-height: 17px;
+    border-style: solid;
+    border-color: var(--border-dark);
+    cursor: pointer;
 }
 
 @mixin text-input{

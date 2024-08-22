@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-
-    <user-overview :users='@json($users)'></user-overview>
-    
+    <user-overview :users='@json($users)' :roles='@json($roles)'></user-overview>
 @endsection

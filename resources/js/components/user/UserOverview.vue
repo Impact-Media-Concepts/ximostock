@@ -1,6 +1,9 @@
 <template>
   <div class="user-overview">
-    <span class="title">Gebruikers</span>
+    <div class="title-bar">
+      <span class="title">Gebruikers</span>
+      <a :href="route('users.create')" class="button add">Nieuwe toevoegen</a>  
+    </div>
     <div class="user-wrapper">
       <div class="user-table">
         <div class="table-header">
@@ -16,12 +19,12 @@
         </div>
         <div class="table-content">
           <div class="table-item" v-for="user in localUsers" :key="user.id">
-            <span class="table-info">{{ user.name }}</span>
-            <span class="table-info">{{ user.email }}</span>
+            <span @click="ToggleUserInfo(user.id)" class="table-info">{{ user.name }}</span>
+            <span @click="ToggleUserInfo(user.id)" class="table-info">{{ user.email }}</span>
             <span class="table-info">
-              <a :href="route('users.edit', user.id)" class="edit">Edit</a>
               <button @click="deleteUser(user.id)" class="delete">Delete</button>
             </span>
+            <edit-user :id="user.id" :user='user' :roles='roles'></edit-user>
           </div>          
         </div>
         <div class="table-footer">
@@ -29,6 +32,10 @@
         </div>
       </div>
     </div>
+    
+    <!-- succes and error messages -->
+    <general-notification :messages="messages" :isError="messageIsError" v-if="messages"/>
+
   </div>
 </template>
 
@@ -36,10 +43,20 @@
 import { defineComponent, inject } from 'vue';
 import '../../../scss/user/UserOverview.scss';
 import axios from 'axios';
+import EditUser from './EditUser.vue';
+import GeneralNotification from '../GeneralNotification.vue';
 
 export default defineComponent({
+  components: {
+    EditUser,
+    GeneralNotification,
+  },
   props: {
     users: {
+      type: Array, // Ensure the prop type is Array
+      default: () => [],
+    },
+    roles: {
       type: Array, // Ensure the prop type is Array
       default: () => [],
     },
@@ -47,17 +64,26 @@ export default defineComponent({
   data() {
     return {
       localUsers: this.users, // Store users in local data for reactivity
+      messages: null,
+      messageIsError: false,
     };
   },
   methods: {
     deleteUser(id) {
       axios.delete(this.route('users.destroy', id))
         .then(response => {
-          this.localUsers = this.localUsers.filter(user => user.id !== id); // Update the local array reactively
+          this.localUsers = this.localUsers.filter(user => user.id !== id);
+          this.messageIsError = false;
+          this.messages = response.data.message;
         })
         .catch(error => {
-          console.log(error);
+          this.messageIsError = true;
+          this.messages = error.response.data.message;
         });
+    },
+    ToggleUserInfo(id) {
+      const htmlItem = document.getElementById(id);
+      htmlItem.classList.toggle('active');
     },
   },
   setup() {

@@ -1,36 +1,6 @@
-<script setup lang="ts">
-import { defineProps, ref, onMounted } from 'vue';
-import '../../scss/Navbar.scss';
-
-// Define and accept the prop 'items' which can be an array or an object
-const props = defineProps({
-  items: {
-    type: [Array, Object],
-    default: () => ({})
-  },
-  user: {
-    type: Object,
-    default: () => ({})
-  }
-});
-
-const handleClick = (classname: string) => (event: Event) => {
-  event.stopPropagation();
-  const selectOptions = document.querySelector(classname);
-  selectOptions?.classList.toggle('active');
-
-  if (selectOptions?.classList.contains('active')) {
-    window.addEventListener('click', () => {
-      selectOptions.classList.remove('active');
-    });
-  }
-};
-</script>
-
 <template>
   <div id="navbar" class="container">
     <div class="wrapper">
-
       <div class="logo-container" v-if="items.logo">
         <a :href="items.logo.href" class="logo-link">
           <span class="logo" v-html="items.logo.src"></span>
@@ -39,9 +9,8 @@ const handleClick = (classname: string) => (event: Event) => {
       </div>
 
       <div class="options">
-
         <div class="add" v-if="items.add">
-          <div @click="handleClick('.add.select-options')" class="select-trigger button">
+          <div @click="toggleDropdown('.add.select-options')" class="select-trigger button">
             <span class="icon" v-html="items.add.image"></span>
             {{ items.add.text }}
           </div>
@@ -59,7 +28,7 @@ const handleClick = (classname: string) => (event: Event) => {
             <span class="profile-picture" v-html="items.select.image"></span>
           </div>
           <div class="custom-selectbox">
-            <div @click="handleClick('.user.select-options')" id="select-trigger">
+            <div @click="toggleDropdown('.user.select-options')" id="select-trigger">
               <span id="username">{{ user.name }}</span>
               <span class="arrow" v-html="items.select.arrow" v-if="items.select"></span>
             </div>
@@ -71,12 +40,42 @@ const handleClick = (classname: string) => (event: Event) => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-/* Add your SCSS or CSS styles here */
-</style>
+<script>
+import { defineComponent, onMounted, onUnmounted } from 'vue';
+import '../../scss/Navbar.scss';
+
+
+export default defineComponent({
+  props: {
+    items: {
+      type: Object,
+      default: () => ({})
+    },
+    user: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  data() {
+    return {
+      activeDropdown: null,
+    };
+  },
+  methods: {
+    toggleDropdown(classname) {      
+      const selectOptions = document.querySelector(classname);
+      selectOptions.classList.toggle('active');
+      if (selectOptions.classList.contains('active')) {
+        this.activeDropdown = classname;
+      } else {
+        this.activeDropdown = null;
+      }
+    },
+  },
+});
+</script>

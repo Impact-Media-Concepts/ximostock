@@ -134,7 +134,7 @@
             </div>
         </div>
         <!-- succes and error messages -->
-        <GeneralNotification :messages="messages" :isError="messageIsError" v-if="messages"/>
+        <general-notification :messages="messages" :isError="messageIsError" v-if="messages"/>
     </div>
 </template>
 
@@ -144,11 +144,12 @@ import { defineComponent, inject } from 'vue';
 import '../../../scss/supplier/SupplierOverview.scss';
 import { format, formatDate, set } from 'date-fns';
 import axios from 'axios';
-import { is } from 'date-fns/locale';
 import GeneralNotification from '../GeneralNotification.vue';
 
 export default defineComponent({
-
+    components: {
+        GeneralNotification,
+    },
     props: {
         suppliers:{
             type: [Array, Object],
@@ -220,6 +221,7 @@ export default defineComponent({
             axios.delete(this.route('suppliers.deleteById', this.supplierToDelete))
             .then(response => {
                 window.location.href = this.route('suppliers.index');
+                this.isOpenDeleteWaringSupplier.suppliers = response.data.suppliers;
             });
         },
         OpenDeletePopup(id) {
