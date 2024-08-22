@@ -12,38 +12,33 @@
         margin-left: 4px;
     }
     .saleschannel-table{
-        border-radius: 10px;
-        background-color: var(--light);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        .saleschannel-table-header{
-            height: 60px;
-            background-color: var(--primary);
-            display: flex;
-
+        @include table-wrapper;
+        .table-header{
+            span{
+                cursor: pointer;
+            }
             .select-name{
-                margin-left: 40px;
+                margin-left: 55px;
                 display: flex;
                 align-items: center;
                 gap: 13px;
                 width: 15%;
                 min-width: 220px;
+
                 .select-all{
                     height: 14px;
                     width: 14px;
                 }
             }
             .orderby-type{
-                width: 50%;
+                flex:1 ;
                 min-width: 210px;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
             }
             .orderby-date{
-                width: 20%;
-                min-width: 220px;
+                min-width: 240px;
                 display: flex;
                 flex-direction: row;
                 gap: 5px;
@@ -63,7 +58,6 @@
             }
             .create-button-wraper{
                 display: flex;
-                flex: 1;
                 flex-direction: row-reverse;
                 align-items: center;
                 .button-create{
@@ -89,66 +83,15 @@
                 }
             }
         }
-        .saleschannel-bulkAction-bar{
-            height: 0px;
-            background-color: var(--secondary);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            font-size: 14px;
-            line-height: 17px;
-            gap: 9px;
-            transition: height 0.3s ease;
-            overflow: hidden;
-            &.open{
-                height: 60px;
-            }
-            .bulkaction-text{
-                margin-left: 36px;
-                .select-all-text{
-                    color: var(--primary);
-                    cursor: pointer;
-                }
-            }
-            .bulkaction-button{
-                background-color: var(--secondary);
-                height: 36px;
-                width: 114px;
-                border-radius: 5px;
-                border-style: solid;
-                border-width: 1px;
-                border-color: var(--border-dark);
-                color: var(--text);
-                &:hover{
-                    background-color:var(--hover-secondary);
-                }
-            }
-        }
-        .saleschannels-content{
-            display: flex;
-            flex-direction: column;
-            gap:10px;
-            padding: 22px;
-            width: 100%;
-            .saleschannel-item{
-                display: block;
-                height: 60px;
-                overflow: hidden;
-                background-color: var(--secondary);
-                border-radius: 10px;
-                border-width: 1px;
-                border-style: solid;
-                border-color: var(--border-secondary);
-                transition: height 0.5s ease;
+        .table-content{
+
+            .table-item{
+
                 &.active{
                     height: 282px;
                 }
 
-                .saleschannel-info{
-                    height: 60px;
-                    overflow: hidden;
-                    display:flex;
-                    gap: 15px;
+                .table-info{
                     .select-name{
                         display: flex;
                         flex-direction: row;
@@ -162,21 +105,22 @@
                         }
                     }
                     .type{
+                        flex: 1;
                         display: flex;
                         flex-direction: row;
                         align-items: center;
-                        width: 50%;
+
                         min-width: 200px;
                     }
                     .date{
                         display: flex;
                         flex-direction: row;
                         align-items: center;
-                        width: 10%;
+
                         min-width: 200px;
                     }
                     .delete-open{
-                        flex: 1;
+
                         display: flex;
                         flex-direction: row-reverse;
                         align-items: center;
@@ -256,11 +200,8 @@
                 }
             }
         }
-        .saleschannel-footer{
-            height: 60px;
-            background-color: var(--primary);
-            display: flex;
-        }
+
+
     }
     .create-popup{
         @include popup-container;

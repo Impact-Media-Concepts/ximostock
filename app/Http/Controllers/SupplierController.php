@@ -22,6 +22,7 @@ class SupplierController extends Controller
 
         if ($request->orderby && $request->order) {
             $query->orderBy($request->orderby, $request->order);
+            
         }
 
         $suppliers = $query->paginate(12);

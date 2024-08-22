@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
         $properties = Property::factory(5)->create();
 
         SalesChannel::factory()->create([
-            'work_space_id' => 2,
+            'work_space_id' => 1,
             'name' => 'XimostockCommerce',
             'url' => 'https://test.com',
             'api_key' => 'ck_cc7e1e85dbe0f56504134ee5caa3a114351e0012',
@@ -106,7 +106,7 @@ class DatabaseSeeder extends Seeder
             'secret' => 'cs_c6581c4eb86e71728eeee93224214b0d5594c137'
         ]);
         $saleschannels = SalesChannel::factory(4)->create([
-            'work_space_id' => 2,
+            'work_space_id' => 1,
         ]);
         SalesChannel::factory(3)->create([
             'work_space_id' => 3,
