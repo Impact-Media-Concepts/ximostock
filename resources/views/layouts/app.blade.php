@@ -6,7 +6,7 @@
         // file_get_contents('images/ximostock-logo.svg')
         'logo' => [
             'src' => file_get_contents('images/default-profile-picture.svg'),
-            'alt' => "Ximostock",
+            'alt' => 'Ximostock',
             'href' => secure_url('/products'),
         ],
         'select' => [
@@ -14,32 +14,31 @@
             'arrow' => file_get_contents('images/chevron-down-dark.svg'),
             'options' => [
                 'Settings' => [
-                    'title' => "Instellingen",
+                    'title' => 'Instellingen',
                     'href' => route('profile.edit'),
                     'icon' => file_get_contents('images/settings-grey.svg'),
                 ],
                 'Logout' => [
-                    'title' => "Uitloggen",
+                    'title' => 'Uitloggen',
                     'href' => route('logout'),
                     'icon' => file_get_contents('images/exit-grey.svg'),
                 ],
             ],
-        ]
+        ],
     ];
 
     if ($user->role == 'admin') {
         $navbaritems['add'] = [
             'image' => file_get_contents('images/grid-icon.svg'),
-            'text' => "Nieuwe toevoegen",
+            'text' => 'Nieuwe toevoegen',
             'href' => secure_url('/products/create'),
         ];
         $navbaritems['workspace'] = [
             'image' => file_get_contents('images/grid-icon.svg'),
-            'text' => "Workspaces",
+            'text' => 'Workspaces',
             'href' => secure_url('/workspaces'),
         ];
     }
-
 
     $sidebarItems = [
         [
@@ -89,29 +88,30 @@
         ],
         [
             'url' => route('archive.index'),
-            'title' => 'archief' ,
+            'title' => 'archief',
             'image_url' => file_get_contents('images/sidebar/archive-icon.svg'),
         ],
         [
             'url' => route('suppliers.index'),
-            'title' => 'Leveranciers' ,
+            'title' => 'Leveranciers',
             'image_url' => file_get_contents('images/sidebar/supplier-icon.svg'),
         ],
     ];
 @endphp
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ximostock</title>
     @routes
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/css/app.css')
 </head>
-<body>
 
-    @dump("test");
+<body>
 
     <div id="app">
         <Navbar :items='@json($navbaritems)' :user='@json($user)'></Navbar>
@@ -144,11 +144,13 @@
                 Math.max(0, Math.floor(parseInt(c, 16) * (1 - percentage / 100))).toString(16).padStart(2, '0')).join('')}`;
             }
 
-            root.style.setProperty('--hover-primary', darkenColor('{{$user->primary_color}}',10));
-            root.style.setProperty('--hover-light', darkenColor('{{$user->background_color}}',10));
-            root.style.setProperty('--hover-secondary', darkenColor('{{$user->secondary_color}}',10));
+            root.style.setProperty('--hover-primary', darkenColor('{{ $user->primary_color }}', 10));
+            root.style.setProperty('--hover-light', darkenColor('{{ $user->background_color }}', 10));
+            root.style.setProperty('--hover-secondary', darkenColor('{{ $user->secondary_color }}', 10));
 
         });
     </script>
+
 </body>
+
 </html>

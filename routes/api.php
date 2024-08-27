@@ -32,6 +32,7 @@ Route::prefix('/api/v1')->middleware(['web'])->group(function() {
         Route::post('/archive', [ProductController::class, 'archiveProducts'])->name('products.archiveProducts');
         Route::post('/switchstatus', [ProductController::class, 'switchStatus'])->name('products.switchStatus');
         Route::delete('/delete', [ProductController::class, 'deleteProducts'])->name('products.deleteProducts');
+        Route::post('/get-pagination-products', [ProductController::class, 'getPaginationProducts'])->name('products.getPaginationProducts');
         Route::put('/update/{id}', [ProductController::class, 'update'])->name('products.update');
         Route::post('/duplicate/{id}', [ProductController::class, 'duplicate'])->name('products.duplicate');
         Route::delete('/delete/{id}', [ProductController::class, 'deleteById'])->name('products.delete');

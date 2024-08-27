@@ -55,32 +55,43 @@ class ProductController extends BaseProductController
             }])
             ->whereNull('parent_product_id') // Only show parent products
             ->orderBy('created_at', 'desc') // Order by creation date
-            ->paginate(11); // Use paginate instead of limit
-
+            ->paginate(15); // Use paginate instead of limit
+    
         // Eager loading categories for products
         $products->load('categories');
-
+    
         // Collecting related categories
         $relatedCategories = $products->pluck('categories')->flatten()->unique('id');
-
+    
         // Loading hierarchical categories
         $hierarchicalCategories = $relatedCategories->map(function ($category) {
             return Category::with('child_categories_recursive')->find($category->id);
         });
-
+    
         $hierarchicalCategories = $hierarchicalCategories->unique('id')->toArray();
-
-        //loading saleschannels for the user
+    
+        // Loading sales channels for the user
         $saleschannels = SalesChannel::where('work_space_id', $current_workspace)->orderBy('name', 'desc')->get();
-
+    
+        // Only return products in JSON if the request is an AJAX request
+        if ($request->ajax()) {
+            return response()->json([
+                'products' => $products,
+                'categories' => $hierarchicalCategories,
+                'saleschannels' => $saleschannels,
+            ]);
+        }
+    
         $data = [
             'products' => $products,
             'categories' => $hierarchicalCategories,
-            'saleschannels' => $saleschannels
+            'saleschannels' => $saleschannels,
         ];
-
+    
         return view('product.index', $data);
     }
+    
+
 
     public function create(Request $request)
     {

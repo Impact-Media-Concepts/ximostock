@@ -180,7 +180,27 @@
         gap: 21px;
         background-color: var(--primary);
         padding: 17px 25px;
+        color: var(--light);
         border-radius: 0 0 ;
+        .pagination {
+            display: flex;
+            gap: 5px;
+            .link {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                color: var(--text-light);
+                border: 1px solid var(--border-light);
+                border-radius: 5px;
+                width: 42px;
+                height: 42px;
+                &:hover {
+                    color: var(--primary);
+                    background-color: var(--light);
+                }
+            }
+        }
     }
 
     .saleschannel-link-popup{
