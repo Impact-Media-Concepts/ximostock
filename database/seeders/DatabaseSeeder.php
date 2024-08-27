@@ -116,6 +116,7 @@ class DatabaseSeeder extends Seeder
             'work_space_id' => null,
             'email' => 'supplier@stage.com'
         ]);
+
         $categories = Category::factory(3)->create();
 
         $products = Product::factory(50)->create([
@@ -124,6 +125,7 @@ class DatabaseSeeder extends Seeder
             'discount' => $faker->numberBetween(0, 50),
             'title' => $faker->word(),
         ]);
+
         $products_second = Product::factory(50)->create([
             'work_space_id' => 2,
             'price' => $faker->numberBetween(1, 1000),
@@ -148,15 +150,15 @@ class DatabaseSeeder extends Seeder
 
         SalesChannel::factory()->create([
             'work_space_id' => 1,
-            'name' => 'XimostockCommerce',
-            'url' => 'https://test.com',
-            'api_key' => 'ck_cc7e1e85dbe0f56504134ee5caa3a114351e0012',
-            'secret' => 'cs_9d52cf66d9fc3d26cf693b912f2d41c1db005020'
+            'name' => 'Ximoshop',
+            'url' => 'https://ximoshop.dev-imc.com',
+            'api_key' => 'ck_58c3a317b19546d15560b2cc3f19a33ad8e75880',
+            'secret' => 'cs_6acaceaf1ad08b001e4532b3c9e3462879f970eb'
         ]);
         SalesChannel::factory()->create([
             'work_space_id' => 2,
-            'name' => 'ximoshop',
-            'url' => 'https://ximoshop.dev-imc.com',
+            'name' => 'henk',
+            'url' => 'https://example.com',
             'api_key' => 'ck_6307bb7387ba14f2b2440a3d6b4add2be3c28c69',
             'secret' => 'cs_c6581c4eb86e71728eeee93224214b0d5594c137'
         ]);

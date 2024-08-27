@@ -69,13 +69,13 @@
             </a>
         </div>
         <p v-else>Geen producten gevonden</p>
-        
+
         <div class="product-table-footer">
             <span>
                 {{ currentPagination.current_page }} van {{ currentPagination.last_page }} pagina's.
             </span>
             <div class="pagination">
-                <span v-for="link in currentPagination.links" :key="link.label" 
+                <span v-for="link in currentPagination.links" :key="link.label"
                       @click="changePagination(link)"
                       :class="['link', { 'active-link': link.active }]">
                     {{ link.label }}
@@ -84,7 +84,7 @@
         </div>
 
         <!-- Saleschannel Link Popup -->
-        <div :class="['popup-container', { visable: isLinkSaleschannelPopupVisible }]">
+        <div :class="['popup-container', { visible: isLinkSaleschannelPopupVisible }]">
             <div class="popup">
                 <img @click="toggleSaleschannelsLinkPopup()" class="popup-close" src="/images/close-icon.svg"
                     alt="close-discount">
@@ -94,13 +94,13 @@
                     </div>
                     <div class="saleschannels-content">
                         <div v-for="saleschannel in saleschannels" :key="saleschannel.id" class="saleschannel">
-                            <input :value="saleschannel.id" type="checkbox">
+                            <input :checked="isSalechannelSelected(saleschannel.id)" @change="toggleSaleschannel($event.target.checked, saleschannel.id)" type="checkbox">
                             {{ saleschannel.name }}
                         </div>
                     </div>
                 </div>
                 <div class="action-buttons">
-                    <button class="submit">
+                    <button @click="uploadProducts()" class="submit">
                         Koppel
                     </button>
                     <button @click="toggleSaleschannelsLinkPopup()" class="cancel">
@@ -111,7 +111,7 @@
         </div>
 
         <!-- Saleschannel Unlink Popup -->
-        <div :class="['popup-container', { visable: isUnlinkSaleschannelPopupVisible }]">
+        <div :class="['popup-container', { visible: isUnlinkSaleschannelPopupVisible }]">
             <div class="popup">
                 <img @click="toggleSaleschannelsUnlinkPopup()" class="popup-close" src="/images/close-icon.svg"
                     alt="close-discount">
@@ -138,7 +138,7 @@
         </div>
 
         <!-- Discount Popup -->
-        <div :class="['popup-container', { visable: isDiscountPopupVisible }]">
+        <div :class="['popup-container', { visible: isDiscountPopupVisible }]">
             <div class="popup">
                 <img @click="toggleDiscountPopup()" class="popup-close" src="/images/close-icon.svg"
                     alt="close-discount">
@@ -193,6 +193,7 @@ export default defineComponent({
             isUnlinkSaleschannelPopupVisible: false,
             isDiscountPopupVisible: false,
             currentPagination: this.pagination, // Initialize with the prop value
+            selectedSalesChannels: [],
         };
     },
     watch: {
@@ -282,7 +283,7 @@ export default defineComponent({
                 selectedProducts: this.selectedProducts
             };
             console.log(data);
-            
+
 
             if (this.selectedProducts.length === 0) {
                 this.showUserMessage('No products selected', 'warning');
@@ -335,6 +336,30 @@ export default defineComponent({
             .catch(error => {
                 this.showUserMessage('Network error', 'error');
             });
+        },
+        uploadProducts() {
+            const data = {
+                'sales_channel_ids': this.selectedSalesChannels,
+                'product_ids': this.selectedProducts,
+            };
+            console.log(data);
+            axios.post(this.route('products.bulkLinkSalesChannel'), data)
+                .then(response => {
+                    // Handle the response
+                })
+                .catch(error => {
+                    // Handle the error
+                });
+        },
+        toggleSaleschannel(checked, saleschannelId) {
+            if (checked) {
+                this.selectedSalesChannels.push(saleschannelId);
+            } else {
+                this.selectedSalesChannels = this.selectedSalesChannels.filter(id => id !== saleschannelId);
+            }
+        },
+        isSalechannelSelected(saleschannelId) {
+            return this.selectedSalesChannels.includes(saleschannelId);
         },
         showUserMessage(message, type) {
             // You can use a library like toastr for better UI feedback

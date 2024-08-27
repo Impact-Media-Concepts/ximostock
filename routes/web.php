@@ -42,17 +42,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product')->name('products.index');
         Route::get('/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product')->name('products.create');
         Route::get('/export', [ProductController::class, 'export'])->name('products.export');
-        
+
         // Product variations
         Route::get('/{id}/variation/add', [ProductController::class, 'addVariation'])->name('products.addVariation');
-        
+
         Route::get('/{product}', [ProductController::class, 'show'])->middleware('can:view,product')->name('products.show');
         Route::post('/', [ProductController::class, 'store'])->name('products.store');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');
         Route::post('/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
         Route::post('/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
         Route::post('/bulkdiscountforce', [ProductController::class, 'bulkDiscountForce'])->name('products.bulkDiscountForce');
-        Route::post('/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
         Route::post('/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
         Route::post('/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');
         Route::post('/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');
@@ -87,9 +86,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', [UserController::class, 'create'])->middleware('can:viewAny,App\Models\User')->name('users.create');
         Route::get('/{user}', [UserController::class, 'show'])->middleware('can:viewAny,App\Models\User')->name('users.show');
         Route::post('', [UserController::class, 'store'])->middleware('can:viewAny,App\Models\User')->name('users.store');
-        
+
         Route::patch('/{user}', [UserController::class, 'update'])->name('users.update');
-        
+
         Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:viewAny,App\Models\User')->name('users.destroy');
     });
 

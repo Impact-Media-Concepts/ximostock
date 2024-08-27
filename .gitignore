@@ -23,3 +23,4 @@ Homestead.json
 .phpunit.result.cache
 public/build/manifest.json
 public/build/assets
+public/build/manifest.json
