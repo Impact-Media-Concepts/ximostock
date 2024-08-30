@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-
+use App\SalesChannelManager;
 
 class ProductController extends BaseProductController
 {
@@ -54,25 +54,26 @@ class ProductController extends BaseProductController
                 $query->where('primary', 1);
             }])
             ->whereNull('parent_product_id') // Only show parent products
+            ->where('type', 'simple') // Only show simple products
             ->orderBy('created_at', 'desc') // Order by creation date
             ->paginate(15); // Use paginate instead of limit
-    
+
         // Eager loading categories for products
         $products->load('categories');
-    
+
         // Collecting related categories
         $relatedCategories = $products->pluck('categories')->flatten()->unique('id');
-    
+
         // Loading hierarchical categories
         $hierarchicalCategories = $relatedCategories->map(function ($category) {
             return Category::with('child_categories_recursive')->find($category->id);
         });
-    
+
         $hierarchicalCategories = $hierarchicalCategories->unique('id')->toArray();
-    
+
         // Loading sales channels for the user
         $saleschannels = SalesChannel::where('work_space_id', $current_workspace)->orderBy('name', 'desc')->get();
-    
+
         // Only return products in JSON if the request is an AJAX request
         if ($request->ajax()) {
             return response()->json([
@@ -81,16 +82,16 @@ class ProductController extends BaseProductController
                 'saleschannels' => $saleschannels,
             ]);
         }
-    
+
         $data = [
             'products' => $products,
             'categories' => $hierarchicalCategories,
             'saleschannels' => $saleschannels,
         ];
-    
+
         return view('product.index', $data);
     }
-    
+
 
 
     public function create(Request $request)
@@ -484,7 +485,6 @@ class ProductController extends BaseProductController
     public function bulkLinkSalesChannel(Request $request)
     {
         Log::info($request);
-        //die();
         $productIds = isset($request['product_ids']) ? $request['product_ids'] : [];
         $salesChannels = isset($request['sales_channel_ids']) ? $request['sales_channel_ids'] : [];
 
@@ -501,21 +501,9 @@ class ProductController extends BaseProductController
         // link saleschannels to product
         $products = Product::whereIn('id', $validatedData['product_ids'])->with('photos', 'locationZones', 'productSalesChannels', 'properties', 'categories')->get();
         $salesChannels = SalesChannel::whereIn('id', $validatedData['sales_channel_ids'])->get();
-        $data = [];
-        foreach ($products as $product) {
-            foreach ($salesChannels as $salesChannel) {
-                $productSalesChannel = [
-                    'product_id' => $product->id,
-                    'sales_channel_id' => $salesChannel->id
-                ];
-                array_push($data, $productSalesChannel);
-            }
-        }
-        DB::table('products')->whereIn('id', $validatedData['product_ids'])->update(['updated_at' => now()]);
-        DB::table('product_sales_channel')->insert($data);
-        $woocommerce = new WooCommerceManager;
+        $manager = new SaleschannelManager;
         foreach ($salesChannels as $salesChannel) {
-            $woocommerce->uploadOrUpdateProductsSalesChannel($products, $salesChannel);
+            $manager->UploadProductsToSalesChannel($products, $salesChannel);
         }
         return redirect('/products');
     }

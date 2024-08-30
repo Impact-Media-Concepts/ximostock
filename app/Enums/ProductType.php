@@ -7,5 +7,6 @@ use BenSampo\Enum\Enum;
 final class ProductType extends Enum
 {
     const SIMPLE = 'simple';
-    const VARIABLE = 'variable';
+    const MAIN = 'main';
+    const VARIATION = 'variation';
 }
