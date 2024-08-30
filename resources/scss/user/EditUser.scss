@@ -4,8 +4,11 @@
 .edit-user {
     display: block;
     grid-column: span 3;
-    padding: 13px;
     width: 100%;
+    padding: 20px 25px;
+    border-radius: 10px;
+    background-color: var(--light);
+
     .form-container {
         display: block;
         flex-direction: column;

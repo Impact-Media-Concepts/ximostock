@@ -49,9 +49,11 @@ import { defineComponent, inject, reactive, watch } from 'vue';
 import axios from 'axios';
 import '../../../scss/category/CategoryOverview.scss';
 import CategoryItem from './partials/CategoryItem.vue';
+import GeneralNotification from '../GeneralNotification.vue';
 
 export default defineComponent({
     components: {
+        GeneralNotification,
         CategoryItem,
     },
     props: {

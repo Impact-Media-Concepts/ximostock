@@ -14,6 +14,7 @@
     line-height: 17px;
     text-decoration: none;
     cursor: pointer;
+
     &:hover {
         background-color: $hover-background;
     }
@@ -39,7 +40,7 @@
     gap: 10px;
 }
 
-@mixin primary-button{
+@mixin primary-button {
     background-color: var(--primary);
     color: var(--text-light);
     border-radius: 5px;
@@ -51,12 +52,13 @@
     line-height: 17px;
     gap: 10px;
     cursor: pointer;
-    &:hover{
+
+    &:hover {
         background-color: var(--hover-primary);
     }
 }
 
-@mixin secondary-buttton{
+@mixin secondary-buttton {
     background-color: var(--light);
     color: $text;
     border-radius: 5px;
@@ -68,12 +70,13 @@
     border-style: solid;
     border-color: var(--border-dark);
     cursor: pointer;
-    &:hover{
+
+    &:hover {
         background-color: var(--hover-light);
     }
 }
 
-@mixin dark-buttton{
+@mixin dark-buttton {
     background-color: var(--text);
     color: $light;
     border-radius: 5px;
@@ -87,7 +90,7 @@
     cursor: pointer;
 }
 
-@mixin text-input{
+@mixin text-input {
     height: 40px;
     border-radius: 5px;
     border-style: solid;
@@ -141,9 +144,9 @@
 }
 
 @mixin box-shadow {
-    -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
-    -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
-    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
+    -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+    -moz-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
 }
 
 @mixin default-label {
@@ -153,6 +156,7 @@
     font-weight: 400;
     color: var(--text);
     margin-bottom: 5px;
+
     &:not(:first-child) {
         margin-top: 10px;
     }
@@ -165,7 +169,8 @@
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 5px;
-    padding: 8px 18px;
+    padding: 8px;
+
     &:focus {
         border-color: var(--primary);
         outline: none;
@@ -173,7 +178,7 @@
 }
 
 @mixin popup-container {
-    position:fixed;
+    position: fixed;
     align-items: center;
     width: 100%;
     height: 100%;
@@ -186,15 +191,17 @@
     backdrop-filter: blur(6px);
     background: rgba(0, 0, 0, .25);
     z-index: 1000;
-    &.visible{
+
+    &.visible {
         display: flex;
     }
-    .popup{
+
+    .popup {
         background-color: var(--light);
         display: flex;
         flex-direction: column;
         border-color: var(--border);
-        border-style:solid;
+        border-style: solid;
         border-width: 1px;
         justify-content: center;
         align-items: center;
@@ -203,31 +210,37 @@
         max-width: 704px;
         width: 80%;
         gap: 20px;
-        .popup-close{
+
+        .popup-close {
             height: 21px;
             width: 21px;
-            align-self:flex-end;
+            align-self: flex-end;
             cursor: pointer;
         }
-        .warning-buttons{
+
+        .warning-buttons {
             display: flex;
             flex-direction: row;
             gap: 28px;
-            button{
+
+            button {
                 cursor: pointer;
             }
-            .confirm-button{
+
+            .confirm-button {
                 border-radius: 5px;
                 color: $text-light;
                 border-style: none;
                 background-color: var(--alert);
                 width: 215px;
                 height: 43px;
-                &:hover{
+
+                &:hover {
                     background-color: var(--hover-alert);
                 }
             }
-            .cancel-button{
+
+            .cancel-button {
                 border-radius: 5px;
                 color: $text;
                 border-style: solid;
@@ -235,7 +248,8 @@
                 border-color: var(--border-dark);
                 width: 215px;
                 height: 43px;
-                &:hover{
+
+                &:hover {
                     background-color: var(--hover-light);
                 }
             }
@@ -243,29 +257,32 @@
     }
 }
 
-@mixin table-wrapper{
+@mixin table-wrapper {
     border-radius: 10px;
     background-color: var(--light);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    button{
+
+    button {
         cursor: pointer;
     }
-    .table-header{
+
+    .table-header {
         padding: 15px 25px;
         height: 60px;
         background-color: var(--primary);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        > div {
 
-        }
-        span{
+        >div {}
+
+        span {
             cursor: pointer;
         }
-        .orderby{
+
+        .orderby {
             font-size: 14px;
             line-height: 17px;
             color: var(--text-light);
@@ -274,7 +291,8 @@
             gap: 6px;
             flex-direction: row;
             align-items: center;
-            .chevron{
+
+            .chevron {
                 fill: var(--text-light);
                 width: 10px;
                 height: 6px;
@@ -282,19 +300,23 @@
                 justify-content: center;
                 align-items: center;
                 translate: transform 0.3s ease;
-                &.asc{
+
+                &.asc {
                     transform: rotate(180deg);
                 }
-                &.active{
+
+                &.active {
                     display: flex;
                 }
-                path{
+
+                path {
                     fill: var(--text-light);
                 }
             }
         }
     }
-    .table-bulkAction-bar{
+
+    .table-bulkAction-bar {
         height: 0px;
         background-color: var(--secondary);
         display: flex;
@@ -305,17 +327,21 @@
         gap: 9px;
         transition: height 0.3s ease;
         overflow: hidden;
-        &.open{
+
+        &.open {
             height: 60px;
         }
-        .bulkaction-text{
+
+        .bulkaction-text {
             margin-left: 36px;
-            .select-all-text{
+
+            .select-all-text {
                 color: var(--primary);
                 cursor: pointer;
             }
         }
-        .bulkaction-button{
+
+        .bulkaction-button {
             background-color: var(--secondary);
             height: 36px;
             width: 114px;
@@ -324,19 +350,21 @@
             border-width: 1px;
             border-color: var(--border-dark);
             color: $text;
-            &:hover{
+
+            &:hover {
                 background-color: darken($color: $secondary, $amount: 10);
             }
         }
     }
-    .table-content{
+
+    .table-content {
         display: flex;
         flex-direction: column;
         gap: 10px;
         padding: 15px 25px;
         min-height: 70vh;
 
-        .table-item{
+        .table-item {
             height: 60px;
             display: block;
             overflow: hidden;
@@ -346,17 +374,23 @@
             border-style: solid;
             transition: height 0.3s ease;
             border-color: var(--border-secondary);
-            .table-info{
+
+            .table-info {
                 height: 60px;
                 display: flex;
                 flex-direction: row;
                 align-items: center;
                 padding-left: 13px;
                 cursor: pointer;
+                button {
+                    @include dark-buttton;
+                    padding: 6px 24px;
+                }
             }
         }
     }
-    .table-footer{
+
+    .table-footer {
         height: 60px;
         background-color: var(--primary);
     }
@@ -369,12 +403,14 @@
     padding: 25px;
     background-color: var(--light);
     border-radius: 10px;
+
     section {
         display: flex;
         flex-direction: column;
         border: 1px solid var(--border);
         border-radius: 10px;
-        > span {
+
+        >span {
             position: relative;
             background-color: var(--primary);
             padding: 10px 22px;
@@ -382,10 +418,12 @@
             line-height: 20px;
             color: var(--light);
             border-radius: 10px 10px 0 0;
+
             small {
                 display: block;
                 margin-top: -5px;
             }
+
             img.remove {
                 position: absolute;
                 right: 10px;
@@ -394,12 +432,14 @@
                 cursor: pointer;
             }
         }
+
         .form-group {
             display: flex;
             flex-direction: column;
             padding: 25px;
-            label {
-            }
+
+            label {}
+
             input:not(.categorieen input),
             textarea {
                 &:not(:last-child) {
@@ -424,4 +464,20 @@
     color: inherit;
     line-height: normal;
     letter-spacing: normal;
+}
+
+@mixin filter-list {
+    list-style-type: none;
+    padding-inline: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        &:not(:first-child) {
+            margin-top: 3px;
+        }
+    }
 }

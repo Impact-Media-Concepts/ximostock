@@ -1,0 +1,9 @@
+@import "../../globals/_mixins";
+@import "../../globals/_variables";
+
+.category-filter-container {
+    ul {
+        @include filter-list;
+        margin-top: 10px;
+    }
+}

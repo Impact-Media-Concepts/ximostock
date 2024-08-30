@@ -1,0 +1,9 @@
+.category-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-left: 15px;
+    &:first-child {
+        margin-left: 0;
+    }
+}

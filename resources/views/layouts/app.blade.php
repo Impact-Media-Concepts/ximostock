@@ -3,7 +3,6 @@
     $user = Auth::user();
 
     $navbaritems = [
-        // file_get_contents('images/ximostock-logo.svg')
         'logo' => [
             'src' => file_get_contents('images/default-profile-picture.svg'),
             'alt' => 'Ximostock',
@@ -28,11 +27,6 @@
     ];
 
     if ($user->role == 'admin') {
-        $navbaritems['add'] = [
-            'image' => file_get_contents('images/grid-icon.svg'),
-            'text' => 'Nieuwe toevoegen',
-            'href' => secure_url('/products/create'),
-        ];
         $navbaritems['workspace'] = [
             'image' => file_get_contents('images/grid-icon.svg'),
             'text' => 'Workspaces',
@@ -57,7 +51,7 @@
             'image_url' => file_get_contents('images/sidebar/logboek.svg'),
         ],
         [
-            'url' => route('dashboard'),
+            'url' => route('profile.edit'),
             'title' => 'Instellingen',
             'image_url' => file_get_contents('images/sidebar/instellingen.svg'),
         ],

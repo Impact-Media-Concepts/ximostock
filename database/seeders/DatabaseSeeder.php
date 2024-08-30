@@ -160,10 +160,10 @@ class DatabaseSeeder extends Seeder
             'api_key' => 'ck_6307bb7387ba14f2b2440a3d6b4add2be3c28c69',
             'secret' => 'cs_c6581c4eb86e71728eeee93224214b0d5594c137'
         ]);
-        $saleschannels = SalesChannel::factory(4)->create([
+        $saleschannels = SalesChannel::factory(40)->create([
             'work_space_id' => 1,
         ]);
-        SalesChannel::factory(3)->create([
+        SalesChannel::factory(30)->create([
             'work_space_id' => 3,
         ]);
 

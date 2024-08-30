@@ -42,6 +42,7 @@
           line-height: 22px;
           border: 1px solid transparent;
           display: inline-block;
+          width: 250px;
 
           &:focus {
             background-color: var(--light);
@@ -56,6 +57,8 @@
       }
 
       .category-item-container {
+        display: flex;
+        flex-direction: column;
         padding-left: 40px;
         overflow: hidden;
         height: 0;

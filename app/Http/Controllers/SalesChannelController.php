@@ -29,7 +29,16 @@ class SalesChannelController extends Controller
             $query->orderBy($request->orderby, $request->order);
         }
 
-        $salesChannels = $query->paginate(12);
+        $salesChannels = $query->paginate(14);
+
+        // Only return products in JSON if the request is an AJAX request
+        if ($request->ajax()) {
+            return response()->json([
+                'saleschannels' => $salesChannels,
+                'orderby' => $request->orderby,
+                'order' => $request->order,
+            ]);
+        }
 
         $results = [
             'saleschannels' => $salesChannels,
