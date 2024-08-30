@@ -345,10 +345,10 @@ export default defineComponent({
             console.log(data);
             axios.post(this.route('products.bulkLinkSalesChannel'), data)
                 .then(response => {
-                    // Handle the response
+                    console.log(response.data);
                 })
                 .catch(error => {
-                    // Handle the error
+                    console.error('Error linking sales channels:', error);
                 });
         },
         toggleSaleschannel(checked, saleschannelId) {

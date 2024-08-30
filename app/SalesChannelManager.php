@@ -388,7 +388,6 @@ class SalesChannelManager
         }catch(Exception $ex){
             Log::error($ex->getMessage());
         }
-
     }
 
     //update names and slugs of categories
