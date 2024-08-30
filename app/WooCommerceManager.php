@@ -335,7 +335,6 @@ class WooCommerceManager
                             'slug' => env('XS_PREFIX', 'xs_') . $category->name,
                             'parent' => $parent->external_id
                         ];
-
                         $response = $woocommerce->post('products/categories', $data);
                         CategorySalesChannel::create([
                             'category_id' => $category->id,

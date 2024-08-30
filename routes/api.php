@@ -36,6 +36,7 @@ Route::prefix('/api/v1')->middleware(['web'])->group(function() {
         Route::put('/update/{id}', [ProductController::class, 'update'])->name('products.update');
         Route::post('/duplicate/{id}', [ProductController::class, 'duplicate'])->name('products.duplicate');
         Route::delete('/delete/{id}', [ProductController::class, 'deleteById'])->name('products.delete');
+        Route::post('/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');
         Route::put('/archive/{id}', [ProductController::class, 'archiveById'])->name('products.archive');
         Route::get('/export/{id}', [ProductController::class, 'exportById'])->name('products.exportByid');
     });

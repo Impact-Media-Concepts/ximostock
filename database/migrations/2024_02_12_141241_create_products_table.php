@@ -39,6 +39,7 @@ return new class extends Migration
             $table->boolean('backorders')->default(false)->required();
             $table->bigInteger('stock_quantity')->default(0)->required();
             $table->boolean('status')->default(false)->required();
+            $table->boolean('communicate_stock')->default(true)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
