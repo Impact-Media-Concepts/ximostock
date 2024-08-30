@@ -32,13 +32,13 @@
             </div>
             <div :class="{ 'table-bulkAction-bar': true, 'open': this.selectedSaleschannels.length }">
                 <span class="bulkaction-text"> {{ this.selectedSaleschannels.length }} verkoopkanalen van de
-                    {{ this.saleschannels.data.length }} geselecteerd. <span @click="selectAll()"
+                    {{ this.usedSalesChannels.data.length }} geselecteerd. <span @click="selectAll()"
                         class="select-all-text">Selecteer alle verkoopkanalen</span></span>
                 <button class="bulkaction-button" @click="toggleDeleteMultiPopup()">Archiveren</button>
                 <!-- <button class="bulkaction-button">Verwijderen</button> -->
             </div>
             <div class="table-content">
-                <div v-for="saleschannel in saleschannels['data']" :key="saleschannel.id"
+                <div v-for="saleschannel in usedSalesChannels['data']" :key="saleschannel.id"
                     :class="{ 'table-item': true, 'active': isActive(saleschannel.id) }">
                     <div @click="toggleActive(saleschannel.id)" class="table-info">
                         <div class="select-name">
@@ -89,7 +89,16 @@
                 </div>
             </div>
             <div class="table-footer">
-
+            <span>
+                {{ this.usedSalesChannels.current_page }} van {{ this.usedSalesChannels.last_page }} pagina's.
+            </span>
+            <div class="pagination">
+                <span v-for="link in this.usedSalesChannels.links" :key="link.label" 
+                      @click="changePagination(link)"
+                      :class="['link', { 'active-link': link.active }]">
+                    {{ link.label }}
+                </span>
+            </div>
             </div>
         </div>
 
@@ -170,6 +179,7 @@
                 </div>
             </div>
         </div>
+
         <!-- succes and error messages -->
         <general-notification :messages="messages" :isError="messageIsError" v-if="messages" />
 
@@ -186,10 +196,14 @@ import GeneralNotification from '../GeneralNotification.vue';
 
 
 export default defineComponent({
+    components: {
+        GeneralNotification,
+    },
     props: {
         saleschannels: {
             type: [Array, Object],
             required: true,
+            default: () => [],
         },
         order: {
             type: String,
@@ -220,6 +234,7 @@ export default defineComponent({
             },
             toDeleteId: null,
             messages: null,
+            usedSalesChannels: this.saleschannels,
         };
     },
     methods: {
@@ -243,7 +258,7 @@ export default defineComponent({
                 });
         },
         updateSaleschannel(saleschannelId) {
-            const saleschannel = this.saleschannels.data.find(sc => sc.id === saleschannelId);
+            const saleschannel = this.usedSalesChannels.data.find(sc => sc.id === saleschannelId);
             const data = {
                 name: saleschannel.name,
                 url: saleschannel.url,
@@ -265,17 +280,17 @@ export default defineComponent({
             return check;
         },
         toggleAllSaleschannels(checked) {
-            checked ? this.selectedSaleschannels = this.saleschannels.data.map(sc => sc.id) : this.selectedSaleschannels = [];
+            checked ? this.selectedSaleschannels = this.usedSalesChannels.data.map(sc => sc.id) : this.selectedSaleschannels = [];
         },
         toggleSaleschannelById(checked, value) {
             checked ? this.selectedSaleschannels.push(value) : this.selectedSaleschannels = this.selectedSaleschannels.filter(id => id !== value);
 
         },
         isAllChecked() {
-            return this.saleschannels.data.every(sc => this.selectedSaleschannels.includes(sc.id));
+            return this.usedSalesChannels.data.every(sc => this.selectedSaleschannels.includes(sc.id));
         },
         selectAll() {
-            this.selectedSaleschannels = this.saleschannels.data.map(sc => sc.id);
+            this.selectedSaleschannels = this.usedSalesChannels.data.map(sc => sc.id);
         },
         numberOfSelectedSaleschannels() {
             return this.selectedSaleschannels.count();
@@ -339,13 +354,40 @@ export default defineComponent({
             };
             const url = this.route('saleschannels.index', params);
             window.location.href = url;
-        }
+        },
+        changePagination(link) {            
+            // Check if the link is not active (to prevent reloading the same page)
+            if (!link.active && link.url) {
+                axios.get(link.url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => {
+                    
+                    this.usedSalesChannels = response.data.saleschannels;
+                })
+                .catch(error => {
+                    console.error('Error loading more saleschannels:', error);
+                });
+            }
+        },
+    },
+    watch: {
+        usedSalesChannels: {
+            handler(newSalesChannels) {
+                newSalesChannels.links = newSalesChannels.links.slice(1, -1);
+            },
+        },
     },
     setup() {
         const route = inject('route');
         return {
             route,
         };
+    },
+    mounted() {
+        this.usedSalesChannels.links = this.usedSalesChannels.links.slice(1, -1);
     },
 })
 </script>

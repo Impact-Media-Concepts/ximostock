@@ -1,5 +1,5 @@
 <template>
-    <div class="filter-container">
+    <div class="category-filter-container">
         <h2>Filter</h2>
         <ul>
             <li v-for="category in categories" :key="category.id">

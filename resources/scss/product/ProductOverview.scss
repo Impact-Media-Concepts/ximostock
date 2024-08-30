@@ -5,7 +5,7 @@
     display: flex;
     gap: 31px;
     .product-container,
-    .filter-container {
+    .category-filter-container {
         display: flex;
         flex-direction: column;
         background-color: var(--light);
@@ -15,7 +15,7 @@
     .product-container {
         flex-grow: 1;
     }
-    .filter-container {
+    .category-filter-container {
         width: 100%;
         max-width: 265px;
         padding: 20px;

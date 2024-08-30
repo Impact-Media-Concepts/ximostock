@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
     // Categories prefixed and grouped
     Route::prefix('/categories')->middleware('auth')->group(function() {
         Route::get('', [CategoryController::class, 'index'])->middleware('can:viewAny,App\Models\Category')->name('categories.index');
-        Route::get('/create', [CategoryController::class, 'create'])->middleware('can:create,App\Models\Category')->name('categories.create');
+        Route::post('/create', [CategoryController::class, 'create'])->middleware('can:create,App\Models\Category')->name('categories.create');
     });
 
     // Properties prefixed and grouped

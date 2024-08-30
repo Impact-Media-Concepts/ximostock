@@ -18,29 +18,12 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = Category::where('work_space_id', session('active_workspace_id'))->get();
+        $categories = Category::where('work_space_id', session('active_workspace_id'))->where('parent_category_id', null)->with('child_categories_recursive')->get();
+        Log::info($categories);
 
-        $categoriesTree = $this->buildCategoryTree($categories);
-
-        return view('category.index', ['categoriesTree' => $categoriesTree]);
+        return view('category.index', ['categoriesTree' => $categories]);
     }
 
-    private function buildCategoryTree($categories, $parentId = null)
-    {
-        $branch = [];
-
-        foreach ($categories as $category) {
-            if ($category->parent_category_id == $parentId) {
-                $children = $this->buildCategoryTree($categories, $category->id);
-                if ($children) {
-                    $category->children = $children;
-                }
-                $branch[] = $category;
-            }
-        }
-
-        return $branch;
-    }
 
     public function show(Request $request, Category $category)
     {
@@ -64,23 +47,20 @@ class CategoryController extends Controller
 
     public function create(Request $request)
     {
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-        } else {
-            $workspaces = null;
-            $activeWorkspace = null;
+
+        if ($request->addCategory == null) {
+            return response()->json(['message' => 'Category name is required'], 422);
         }
 
-        return view('category.create', [
-            'sidenavActive' => 'categories',
-            'categories' => Category::all(),
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
+        $newCategory = Category::create([
+            'name' => $request->addCategory,
+            'work_space_id' => session('active_workspace_id'),
+            'parent_category_id' => $request->category['id']
         ]);
+
+        $categories = Category::with('child_categories_recursive')->find($request->category['id']);
+
+        return response()->json(['message' => 'Category has been added succesfully' , 'category' => $categories], 200);
     }
 
     public function store()
