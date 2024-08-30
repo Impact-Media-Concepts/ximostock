@@ -173,12 +173,14 @@ class ProductController extends BaseProductController
 
     public function update(Request $request, $id)
     {
+        // Retrieve the enum values from the model
+       $productTypes = EnumProductTypeHelper::getEnumValuesFromProduct(Product::class, 'type');
 
         // Validate the request data
         try {
             if($request['type'] === "variable") {
                 $validatedData = $request->validate([
-                    'type' => ['required', Rule::in(['simple', 'variable'])],
+                    'type' => ['required', Rule::in($productTypes)],
                     'title' => 'required|string|max:255',
                     'work_space_id' => 'required|integer|exists:work_spaces,id',
                     'price' => 'required|numeric',
@@ -210,7 +212,7 @@ class ProductController extends BaseProductController
                 ]);
             } else {
                 $validatedData = $request->validate([
-                    'type' => ['required', Rule::in(['simple', 'variable'])],
+                    'type' => ['required', Rule::in($productTypes)],
                     'title' => 'required|string|max:255',
                     'work_space_id' => 'required|integer|exists:work_spaces,id',
                     'price' => 'required|numeric',

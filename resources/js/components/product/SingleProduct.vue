@@ -563,10 +563,7 @@ export default defineComponent({
 
     this.availableCategories.map(category => {
       this.addSelectedCheck(category);
-    });
-
-    log
-    
+    });    
 
     this.productData.backorders = this.productData.backorders === 1 ? true : false;
     this.checked = this.productData.type === 'simple' ? false : true;
