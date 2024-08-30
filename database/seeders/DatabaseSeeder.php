@@ -127,7 +127,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $products_second = Product::factory(50)->create([
-            'work_space_id' => 2,
+            'work_space_id' => 1,
             'price' => $faker->numberBetween(1, 1000),
             'discount' => $faker->numberBetween(0, 50),
             'title' => $faker->word(),
@@ -137,7 +137,7 @@ class DatabaseSeeder extends Seeder
             'price' => $faker->numberBetween(1, 1000),
             'discount' => $faker->numberBetween(0, 50),
             'title' => $faker->word(). " -  PRIME",
-            'work_space_id' => 2,
+            'work_space_id' => 1,
             'type' => 'main',
             'sku' => null,
             'ean' => null

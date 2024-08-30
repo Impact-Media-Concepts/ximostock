@@ -18,7 +18,6 @@ use Exception;
 
 class SalesChannelManager
 {
-
     protected function createSalesChannelsClient(SalesChannel $salesChannel): Client|null
     {
         try {
@@ -87,6 +86,13 @@ class SalesChannelManager
         //update existing products
         $SimpleProductsToUpdate = Product::whereIn('id', $SimpleProductsToUpdate)->get(); //get the products
         $this->updateSimpleProducts($SimpleProductsToUpdate, $salesChannel, $woocommmerce);
+
+        //upload new variable products
+        Log::info('variable products');
+        Log::info(json_encode($VariableProductsToCreate));
+        $VariableProductsToCreate = Product::whereIn('id', $VariableProductsToCreate)->get(); //get the products
+        $this->uploadVariableProducts($VariableProductsToCreate, $salesChannel, $woocommmerce);
+        Log::info('great success');
     }
 
     //if a product is already linked to a saleschannel return false. (being linked means an entry in the pivot table exits. it is not jet live on the saleschannel)
@@ -115,14 +121,10 @@ class SalesChannelManager
                 $data = ['create' => []];
                 foreach($productBatch as $product){//prepare data
                     $productLink = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first();
-
-                    Log::info("ProductLink");
                     //prepare properties
                     $properties = $this->prepareProductPropertyData($product, $salesChannel); //null reference
-                    Log::info("prepared properties");
                     //prepare categories
                     $categories = $this->prepareProductCategoryData($product, $productLink);
-                    Log::info("prepared categories");
 
                     $productData = [
                         'name' => isset($productLink->title) ? $productSalesChannel->title : $product->title,
@@ -205,7 +207,7 @@ class SalesChannelManager
                                 'key' => '_xs_id',
                                 'value' => $product->id
                             ]
-                            ]
+                        ]
                     ];
                     array_push($data['update'], $productData);
                 }
@@ -217,6 +219,93 @@ class SalesChannelManager
             Log::error($ex->getMessage());
         }
 
+    }
+
+    protected function uploadVariableProducts(Collection $products, SalesChannel $salesChannel, Client $woocommerce){
+        $current_workspace = (int) session('active_workspace_id');
+        Log::info('uploading variable products');
+        Log::info($products);
+        try{
+            foreach($products as $product){//prepare data
+                $productLink = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first();
+                //prepare properties
+                $properties = $this->prepareProductPropertyData($product, $salesChannel); //null reference
+                Log::info("prepared properties");
+                //prepare categories
+                $categories = $this->prepareProductCategoryData($product, $productLink);
+                Log::info("prepared categories");
+                $data = [
+                    'name' => isset($productLink->title) ? $productSalesChannel->title : $product->title,
+                    'short_description' => isset($productLink->short_description) ? $productSalesChannel->short_description : $product->short_description,
+                    'sku' => isset($productLink->sku) ? $productSalesChannel->sku : $product->sku,
+                    'type' => 'variable',
+                    'regular_price' => isset($productLink->price) ? $productSalesChannel->price : $product->price,
+                    'sale_price' => isset($productLink->discount) ? ($productSalesChannel->discount) : ($product->discount ? $product->discount : ''), //if discount is null set value empty string. WIP
+                    'description' => isset($productLink->long_description) ? $productSalesChannel->long_description : $product->long_description,
+                    'categories' => $categories,
+                    // 'attributes' => $properties,
+                    'manage_stock' => $product->communicate_stock,
+                    'backorders' => $product->backorders ? 'yes' : 'no',
+                    'meta_data' => [
+                        [
+                            'key' => '_xs_id',
+                            'value' => $product->id
+                        ]
+                    ]
+                ];
+                Log::info(json_encode($data));
+                $response = $woocommerce->post('products/batch', $data);
+                Log::info(json_encode($response ));
+                //prepare variations
+                $this->prepareVariationsData($product, $salesChannel);
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+        }
+    }
+
+    protected function prepareVariationsData(Product $product, SalesChannel $salesChannel){
+        try{
+            $variations = ['create'];
+            $productBatchs = $product->childProducts->chunk(100);
+            foreach($productBatchs as $productBatch){
+                foreach($product->childProducts as $variation){
+                    $properties = $this->prepareProductPropertyData($variation, $salesChannel);
+                    $variation = [
+                        'regular_price' => $variation->price,
+                        'sale_price' => $variation->discount,
+                        'sku' => $variation->sku,
+                        'description' => $variation->long_description,
+                        'manage_stock' => $variation->communicate_stock,
+                        'stock_quantity' => $variation->stock,
+                        'attributes' => $properties,
+                        'meta_data' => [
+                            [
+                                'key' => '_ean_code',
+                                'value' => isset($productLink->ean) ? $productLink->ean : $product->ean
+                            ],
+                            [
+                                'key' => '_xs_id',
+                                'value' => $product->id
+                            ]
+                        ]
+                    ];
+                    array_push($variations, $variation);
+                }
+                Log::info('variation Data');
+                Log::info(json_encode($variations));
+                $response = $woocommerce->post('products/'. $product->id . '/variations/batch', $variations);
+                Log::info('variation response');
+                Log::info(json_encode($response));
+                foreach($response->create as $variation){
+                    $variationLink = ProductSalesChannel::where('product_id', $variation->id)->where('sales_channel_id', $salesChannel->id)->first();
+                    $variationLink->external_id = $variation->id;
+                    $variationLink->save();
+                }
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+        }
     }
 
     protected function prepareProductPropertyData(Product $product, SalesChannel $salesChannel)
@@ -292,6 +381,7 @@ class SalesChannelManager
         }
 
     }
+
 
 
     #region Properties
