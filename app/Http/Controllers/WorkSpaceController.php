@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\WorkSpace;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class WorkSpaceController extends Controller
 {
@@ -25,11 +26,13 @@ class WorkSpaceController extends Controller
      */
     public function index()
     {
+        $currentUser = $this->currentUser;
         $workspaces = $this->currentUser->role === 'admin' 
             ? WorkSpace::all() 
             : WorkSpace::where('id', $this->currentUser->work_space_id)->get();
+        
             
-        return view('workspace.index', compact('workspaces'));
+        return view('workspace.index', compact('workspaces', 'currentUser'));
     }
 
     /**
@@ -48,14 +51,28 @@ class WorkSpaceController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
 
-        WorkSpace::create($request->all());
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+            ]);
 
-        return redirect()->route('workspaces')
-                         ->with('success', 'Workspace created successfully.');
+            $workspace = WorkSpace::create($request->all());
+
+            return response()->json(
+                [
+                    'message' => 'Workspace has been added succesfully',
+                    'workspace' => $workspace
+                ], 
+            200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->errors();
+
+            return response()->json(['message' => 'Add request has failed'], 500);
+        }
+
+
     }
 
     /**
@@ -106,14 +123,12 @@ class WorkSpaceController extends Controller
      */
     public function destroy(WorkSpace $workspace)
     {
-        if ($this->isAuthorized($workspace)) {
-            $workspace->delete();
-
-            return redirect()->route('workspaces')
-                             ->with('success', 'Workspace deleted successfully.');
+        if (!$workspace) {
+            return response()->json(['message' => 'Workspace not found'], 404);
         }
 
-        return $this->unauthorizedResponse();
+        $workspace->delete();
+        return response()->json(['message' => 'Workspace deleted successfully'], 200);
     }
 
     public function switch(Request $request)

@@ -33,8 +33,11 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\EnumProductTypeHelper;
+
 use App\SalesChannelManager;
 
+ 
 class ProductController extends BaseProductController
 {
 
@@ -137,6 +140,9 @@ class ProductController extends BaseProductController
 
     public function show(Request $request, Product $product)
     {
+         // Retrieve the enum values from the model
+        $propertyTypes = EnumProductTypeHelper::getEnumValuesFromProduct(Property::class, 'type');
+
         // Eager load all necessary relationships
         $product->load([
             'childProducts' => function ($query) {
@@ -156,37 +162,74 @@ class ProductController extends BaseProductController
         $activeWorkspaceId = session('active_workspace_id');
 
         // Get all categories related to the active workspace
-        $workspaceCategories = \App\Models\Category::where('work_space_id', $activeWorkspaceId)->get();
-
-        // Get the categories that are already related to the product
-        $productCategoryIds = $product->categories->pluck('id')->toArray();
-
-        // Filter out the categories that are already related to the product
-        $unrelatedCategories = $workspaceCategories->whereNotIn('id', $productCategoryIds);
+        $workspaceCategories = \App\Models\Category::where('work_space_id', $activeWorkspaceId)->where('parent_category_id', null)->with('child_categories_recursive')->get();
 
         return view('product.show', [
             'product' => $product,
-            'unrelatedCategories' => $unrelatedCategories,
+            'propertyTypes' => $propertyTypes,
+            'unrelatedCategories' => $workspaceCategories,
         ]);
     }
 
     public function update(Request $request, $id)
     {
+        // Retrieve the enum values from the model
+       $productTypes = EnumProductTypeHelper::getEnumValuesFromProduct(Product::class, 'type');
 
         // Validate the request data
         try {
             if($request['type'] === "variable") {
-                Log::info("Variable product");
                 $validatedData = $request->validate([
-                    'type' => ['required', Rule::in(['simple', 'variable'])],
-                    'title' => 'required|string|max:255',
-                    'work_space_id' => 'required|integer|exists:work_spaces,id',
-                    'price' => 'required|numeric',
-                    'discount' => 'nullable|numeric',
-                    'short_description' => 'nullable|string',
-                    'long_description' => 'nullable|string',
-                    'categories' => 'array',
-                    'categories.*' => 'integer|exists:categories,id',
+                    'type' => ['required', Rule::in($productTypes)],
+                    'title' => ['required', 'string', 'max:255'],
+                    'work_space_id' => ['required', 'integer', 'exists:work_spaces,id'],
+                    'price' => ['required', 'numeric'],
+                    'discount' => ['nullable', 'numeric'],
+                    'short_description' => ['nullable', 'string'],
+                    'long_description' => ['nullable', 'string'],
+                    'categories' => ['array'],
+                    'categories.*' => ['integer', 'exists:categories,id'],
+                    'child_products' => ['nullable', 'array'],
+                    'child_products.*.id' => ['nullable', 'integer', 'exists:products,id'],
+                    'child_products.*.title' => ['nullable', 'string', 'max:255'],
+                    'child_products.*.price' => ['required', 'numeric', 'min:0'],
+                    'child_products.*.discount' => ['nullable', 'numeric'],
+                    'child_products.*.sku' => ['nullable', 'string', 'max:255'],
+                    'child_products.*.ean' => ['nullable', 'numeric'],
+                    'child_products.*.long_description' => ['nullable', 'string'],
+                    'child_products.*.stock_quantity' => ['nullable', 'integer'],
+                    'child_products.*.backorders' => ['nullable', 'boolean'],
+                    'child_products.*.properties' => ['nullable', 'array'],
+                    'child_products.*.properties.*.id' => ['nullable', 'integer', 'exists:properties,id'],
+                    'child_products.*.properties.*.name' => ['required', 'string', 'max:255'],
+                    'child_products.*.properties.*.type' => ['required', 'string', 'max:255'],
+                    'child_products.*.properties.*.pivot.property_value' => ['required', 'string', 'max:255'],
+                    'properties' => ['nullable', 'array'],
+                    'properties.*.id' => ['nullable', 'integer', 'exists:properties,id'],
+                    'properties.*.name' => ['required', 'string', 'max:255'],
+                    'properties.*.type' => ['required', 'string', 'max:255'],
+                    'properties.*.pivot.property_value' => ['required', 'string', 'max:255'],
+                ]);
+            } else {
+                $validatedData = $request->validate([
+                    'type' => ['required', Rule::in($productTypes)],
+                    'title' => ['required','string' ,'max:255'],
+                    'work_space_id' => ['required', 'integer', 'exists:work_spaces,id'],
+                    'price' => ['required', 'numeric'],
+                    'discount' => ['nullable', 'numeric'],
+                    'sku' => ['nullable', 'string', 'max:255'],
+                    'ean' => ['nullable', 'numeric'],
+                    'short_description' => ['nullable', 'string'],
+                    'long_description' => ['nullable', 'string'],
+                    'stock_quantity' => ['nullable', 'integer'],
+                    'backorders' => ['nullable', 'boolean'],
+                    'categories' => ['array'],
+                    'categories.*' => ['integer', 'exists:categories,id'],
+                    'properties' => ['nullable', 'array'],
+                    'properties.*.id' => ['nullable', 'integer', 'exists:properties,id'],
+                    'properties.*.name' => ['required', 'string', 'max:255'],
+                    'properties.*.type' => ['required', 'string', 'max:255'],
+                    'properties.*.pivot.property_value' => ['required', 'string', 'max:255'],
                     'child_products' => 'nullable|array',
                     'child_products.*.id' => 'nullable|integer|exists:products,id',
                     'child_products.*.title' => 'nullable|string|max:255',
@@ -200,32 +243,8 @@ class ProductController extends BaseProductController
                     'child_products.*.properties' => 'nullable|array',
                     'child_products.*.properties.*.id' => 'nullable|integer|exists:properties,id',
                     'child_products.*.properties.*.name' => 'required|string|max:255',
+                    'child_products.*.properties.*.type' => 'required|string|max:255',
                     'child_products.*.properties.*.pivot.property_value' => 'required|string|max:255',
-                    'properties' => 'nullable|array',
-                    'properties.*.id' => 'nullable|integer|exists:properties,id',
-                    'properties.*.name' => 'required|string|max:255',
-                    'properties.*.pivot.property_value' => 'required|string|max:255',
-                ]);
-            } else {
-                Log::info("Simple product");
-                $validatedData = $request->validate([
-                    'type' => ['required', Rule::in(['simple', 'variable'])],
-                    'title' => 'required|string|max:255',
-                    'work_space_id' => 'required|integer|exists:work_spaces,id',
-                    'price' => 'required|numeric',
-                    'discount' => 'nullable|numeric',
-                    'sku' => 'nullable|string|max:255',
-                    'ean' => 'nullable|numeric',
-                    'short_description' => 'nullable|string',
-                    'long_description' => 'nullable|string',
-                    'stock_quantity' => 'nullable|integer',
-                    'backorders' => 'nullable|boolean',
-                    'categories' => 'array',
-                    'categories.*' => 'integer|exists:categories,id',
-                    'properties' => 'nullable|array',
-                    'properties.*.id' => 'nullable|integer|exists:properties,id',
-                    'properties.*.name' => 'required|string|max:255',
-                    'properties.*.pivot.property_value' => 'required|string|max:255',
                 ]);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -238,7 +257,6 @@ class ProductController extends BaseProductController
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-
 
         if ($validatedData['type'] === 'variable') {
             foreach ($validatedData['child_products'] as $childProductData) {
@@ -274,6 +292,7 @@ class ProductController extends BaseProductController
             'sales',
         ]);
 
+        Log::info($product);
 
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }
@@ -288,7 +307,6 @@ class ProductController extends BaseProductController
 
         // If the child product doesn't exist, create a new one and associate it with the parent product.
         if (!$childProduct) {
-            log::info($childProductData);
             $childProduct = Product::create(array_merge($childProductData, [
                 'type' => 'simple',
                 'parent_product_id' => $parentProduct->id,
@@ -334,17 +352,27 @@ class ProductController extends BaseProductController
             return null;
         }
 
+        Log::info($propertyData);
+
         // If the property ID is provided, update the existing property in the pivot table.
         if (isset($propertyData['id'])) {
             $product->properties()->updateExistingPivot(
                 $propertyData['id'],
                 ['property_value' => $propertyData['pivot']['property_value']]
             );
+
+            $property = Property::find($propertyData['id']);
+            $property->update([
+                'name' => $propertyData['name'],
+                'type' => $propertyData['type'],
+            ]);
+            
             return $propertyData['id'];
         } else {
             // If no ID is provided, create a new property and attach it to the product via the pivot table.
             $newProperty = Property::create([
                 'name' => $propertyData['name'],
+                'type' => $propertyData['type'],
                 'work_space_id' => $product->work_space_id,
                 'values' => $propertyData['pivot']['property_value'],
             ]);

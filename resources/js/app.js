@@ -15,6 +15,7 @@ import ThemeConfigurator from './components/user/ThemeConfigurator.vue';
 import EditUser from './components/user/EditUser.vue';
 import LocationOverview from './components/location/LocationOverview.vue';
 import SupplierOverview from './components/supplier/SupplierOverview.vue';
+import WorkspaceOveriew from './components/workspace/WorkspaceOverview.vue';
 
 // Create the Vue application
 const app = createApp({});
@@ -33,6 +34,7 @@ app.component('ThemeConfigurator', ThemeConfigurator);
 app.component('LocationOverview', LocationOverview);
 app.component('SupplierOverview', SupplierOverview);
 app.component('EditUser', EditUser);
+app.component('WorkspaceOverview', WorkspaceOveriew);
 
 // Provide the route function globally
 app.provide('route', route);

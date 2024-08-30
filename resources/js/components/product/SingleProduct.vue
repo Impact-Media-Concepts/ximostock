@@ -115,20 +115,7 @@
                     placeholder="Typ hier waarop u de lijst wil filteren">
                   <ul>
                     <li v-for="category in filteredCategories" :key="category.id">
-                      <input type="checkbox" :value="category.id" @change="moveCategory(category, 'available')" />
-                      {{ category.name }}
-                    </li>
-                  </ul>
-                </div>
-              </section>
-
-              <section>
-                <span>Geselecteerde categorieën</span>
-                <div class="form-group">
-                  <ul>
-                    <li v-for="category in productData.categories" :key="category.id">
-                      <input type="checkbox" :value="category.id" @change="moveCategory(category, 'selected')" checked>
-                      {{ category.name }}
+                      <category-item @toggleCategory="toggleCategory" :category="category"></category-item>
                     </li>
                   </ul>
                 </div>
@@ -145,7 +132,6 @@
                 <span>Acties</span>
                 <div class="form-group">
                   <button @click="addNewProperty">Nieuwe toevoegen</button>
-                  <!-- <button @click="addExistingProperty">Bestaande toevoegen</button> -->
                 </div>
               </section>
               <section>
@@ -153,14 +139,18 @@
               </section>
               <section v-for="property in this.productData.properties" :key="property.id">
                 <span>
-                  <strong> {{ property.name }} </strong>
+                  <strong>{{ property.name }}</strong>
                   <small>type: {{ property.options.type }}</small>
                   <img @click="removeProperty(property)" src="/images/cross-white.svg" alt="" class="remove">
                 </span>
                 <div class="form-group">
                   <label for="title">Waarden:</label>
-                  {{ property.pivot.property_value }}
                   <input type="text" v-model="property.pivot.property_value" @input="updatePropertyValue(property)" />
+                  <select v-model="selectedIndexes[property.id]" @change="changePropertyType()">
+                    <option v-for="(propertyType, index) in propertyTypes" :key="index" :value="index">
+                      {{ propertyType }}
+                    </option>
+                  </select>
                 </div>
               </section>
             </div>
@@ -246,27 +236,17 @@
           </div>
         </div>
       </div>
+
       <div class="product-actions">
-        <button @click="save" class="save">
-          Opslaan
-        </button>
-        <button @click="duplicate" class="dupliceren">
-          Dupliceren
-        </button>
-        <button @click="exportProduct" class="export">
-          Export
-        </button>
-        <button @click="archiveProduct" class="archive">
-          Archiveer
-        </button>
-        <button @click="deleteProduct" class="delete">
-          Verwijderen
-        </button>
+        <button @click="save" class="save">Opslaan</button>
+        <button @click="duplicate" class="dupliceren">Dupliceren</button>
+        <button @click="exportProduct" class="export">Export</button>
+        <button @click="archiveProduct" class="archive">Archiveer</button>
+        <button @click="deleteProduct" class="delete">Verwijderen</button>
       </div>
     </div>
 
     <general-notification v-if="errors" :errors="errors"></general-notification>
-
   </div>
 </template>
 
@@ -274,8 +254,14 @@
 import { defineComponent, inject } from 'vue';
 import axios from 'axios';
 import '../../../scss/product/SingleProduct.scss';
+import GeneralNotification from '../GeneralNotification.vue';
+import CategoryItem from './templates/CategoryItem.vue';
 
 export default defineComponent({
+  components: {
+    GeneralNotification,
+    CategoryItem,
+  },
   props: {
     product: {
       type: Object,
@@ -304,6 +290,10 @@ export default defineComponent({
       type: Object,
       default: () => [],
     },
+    eigenschappen: {
+      type: [Array, Object],
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -313,45 +303,40 @@ export default defineComponent({
       activeTab: 2,
       filterInputText: '',
       errors: null,
-      checked: false
+      checked: false,
+      propertyTypes: this.eigenschappen,
+      selectedIndexes: {},
     };
   },
   methods: {
     save() {
-      // Create a copy of productData to modify
       let productDataToSend = JSON.parse(JSON.stringify(this.productData));
       productDataToSend.categories = this.productData.categories.map(category => category.id);
-
-      // Stringify property values
       productDataToSend.properties = this.productData.properties.map(property => ({
         id: property.id,
         name: property.name,
+        type: property.type,
         pivot: {
           property_value: JSON.stringify({ value: property.pivot.property_value }),
         }
       }));
-
-      // Stringify child product property values
       productDataToSend.child_products.map(childProduct => {
         childProduct.properties = childProduct.properties.map(property => ({
           id: property.id,
           name: property.name,
+          type: property.type,
           pivot: {
             property_value: JSON.stringify({ value: property.pivot.property_value }),
           }
         }));
       });
 
-      console.log('Product data to send', productDataToSend);
-
-
       axios.put(this.route('products.update', this.productData.id), productDataToSend)
         .then(response => {
-
           this.productData = response.data.product;
+          this.setSelectedIndexes();
           this.parsePropertyValues();
-
-          this.errors = null; // Reset errors
+          this.errors = null;
         })
         .catch(error => {
           if (error.response) {
@@ -359,9 +344,14 @@ export default defineComponent({
           }
         });
     },
+    changePropertyType() {
+      this.productData.properties.forEach((property, index) => {
+        property.type = this.propertyTypes[this.selectedIndexes[property.id]];
+      });
+    },
     duplicate() {
       axios.post(this.route('products.duplicate', this.productData.id))
-        .then(response => {
+        .then(() => {
           window.location.href = this.route('products.index');
         });
     },
@@ -374,81 +364,77 @@ export default defineComponent({
     },
     archiveProduct() {
       axios.put(this.route('products.archive', this.productData.id))
-        .then(response => {
+        .then(() => {
           window.location.href = this.route('products.index');
         });
     },
     deleteProduct() {
       axios.delete(this.route('products.delete', this.productData.id))
-        .then(response => {
+        .then(() => {
           window.location.href = this.route('products.index');
         });
     },
     handleFileUpload(event) {
       var file = event.target.files[0];
-
-      if (!file) {
-        return;
-      }
-
+      if (!file) return;
       var formData = new FormData();
       formData.append('file', file);
-      formData.append('product_id', this.productData.id); // Make sure this.productId is set to the correct product ID
-
+      formData.append('product_id', this.productData.id);
       axios.post(this.route('photos.store'), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      })
-        .then(response => {
-          this.productData.photos.push(response.data);
-        });
-
+      }).then(response => {
+        this.productData.photos.push(response.data);
+      });
     },
     deletePhoto(photoId) {
       axios.delete(this.route('photos.delete', photoId))
-        .then(response => {
+        .then(() => {
           this.productData.photos = this.productData.photos.filter(photo => photo.id !== photoId);
         });
     },
-    moveCategory(category, from) {
-      if (from === 'available') {
-        // Remove category from available
-        this.availableCategories = this.availableCategories.filter(c => c.id !== category.id);
-        this.filteredCategories = this.filteredCategories.filter(c => c.id !== category.id);
-        // Add category to selected
-        this.productData.categories.push(category);
-      } else {
-        this.productData.categories = this.productData.categories.filter(c => c.id !== category.id);
-        this.filteredCategories.push(category);
-        this.availableCategories.push(category);
-      }
-    },
     FilterAvailableCategories() {
-      console.log('Filtering categories', this.filterInputText);
-      // Filter results into the new array
-      this.filteredCategories = this.availableCategories.filter(category =>
-        category.name.toLowerCase().includes(this.filterInputText.toLowerCase())
-      );
+      this.filteredCategories = this.filterRecursive(this.availableCategories, this.filterInputText.toLowerCase());
+      console.log("Results: ", this.filteredCategories);
     },
-    updatePropertyValue(property) {
+    filterRecursive(categories, filterText) {
+      console.log(categories);
+
+      return categories
+        .map(category => {
+          if (category.name.toLowerCase().includes(filterText)) {
+            return {
+              ...category,
+              child_categories_recursive: this.filterRecursive(category.child_categories_recursive, filterText),
+            };
+          } else {
+            var filteredChilds = this.filterRecursive(category.child_categories_recursive, filterText);
+            if (filteredChilds.length > 0) {
+              return {
+                ...category,
+                child_categories_recursive: filteredChilds,
+              };
+            }
+          }
+          return null;
+
+        })
+        .filter(category => category !== null); // Remove any null entries
     },
     removeProperty(property) {
+      // Remove property from productData
       this.productData.properties = this.productData.properties.filter(p => p !== property);
+      // Remove property from selectedIndexes
+      delete this.selectedIndexes[property.id];
     },
     changeActiveTab(tab) {
-      // Calculate the number of hidden tabs before the selected tab
       let indexAdjustment = 0;
-
       if (!this.checked) {
         if (tab > 4) indexAdjustment++;
         if (tab > 5) indexAdjustment--;
       }
-
-      // Adjust the tab index based on the number of hidden tabs
       this.activeTab = tab - indexAdjustment;
-
-      // Update the active class on the headings
       const headings = document.querySelectorAll('.heading');
       headings.forEach((heading, index) => {
         if (index === this.activeTab) {
@@ -479,26 +465,19 @@ export default defineComponent({
       }
     },
     toggleProductType() {
-      // Toggle checkbox
       this.checked = !this.checked;
       this.activeTab = 0;
-      // Change type text
       this.productData.type = this.productData.type == 'variable' ? 'simple' : 'variable';
-      // Reset product data fields
       this.productData.sku = '';
       this.productData.ean = '';
       this.productData.stock_quantity = 0;
       this.productData.backorders = false;
     },
     addNewVariation() {
-
-      // Create a non-reference copy of properties to add to child product
       var propertiesToAdd = JSON.parse(JSON.stringify(this.productData.properties));
       propertiesToAdd.forEach(property => {
         property.id = null;
       });
-
-      // Create a new child product
       var newChildProduct = {
         id: null,
         work_space_id: this.productData.work_space_id,
@@ -515,18 +494,14 @@ export default defineComponent({
         stock_quantity: 0,
         created_at: new Date(),
         updated_at: new Date(),
-        properties: propertiesToAdd, // Add properties to child product
+        properties: propertiesToAdd,
       };
-
-      // Add new child product to product data
       this.productData.child_products.push(newChildProduct);
-
     },
     parsePropertyValues() {
       this.productData.properties.forEach(property => {
         property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
       });
-
       this.productData.child_products.forEach(childProduct => {
         childProduct.properties.forEach(property => {
           property.pivot.property_value = this.parsePropertyValue(property.pivot.property_value);
@@ -540,15 +515,55 @@ export default defineComponent({
         return value;
       }
     },
+    setSelectedIndexes() {
+
+      this.productData.properties.forEach((property) => {
+        this.selectedIndexes[property.id] = this.propertyTypes.indexOf(property.type);
+      });
+
+      Object.entries(this.selectedIndexes).forEach(([propertyId, index]) => {
+        if (propertyId === 'null') {
+          delete this.selectedIndexes[propertyId];
+        }
+      });
+
+    },
+    toggleCategory(category, event) {
+      const isChecked = event.target.checked;
+
+      if (isChecked) {
+        this.productData.categories.push(category);
+      } else {
+        this.productData.categories = this.productData.categories.filter(c => c.id !== category.id);
+      }
+    },
+
+    addSelectedCheck(category) {
+      category.selected = this.productData.categories.some(c => c.id === category.id);
+      category.child_categories_recursive.map(child => {
+        this.addSelectedCheck(child);
+      });
+    },
+
   },
   setup() {
-    const route = inject('route'); // Injecting route helper
+    const route = inject('route');
+    
     return {
       route,
     };
+
   },
   mounted() {
     this.parsePropertyValues();
+
+    this.productData.properties.forEach((property) => {
+      this.selectedIndexes[property.id] = this.propertyTypes.indexOf(property.type);
+    });
+
+    this.availableCategories.map(category => {
+      this.addSelectedCheck(category);
+    });    
 
     this.productData.backorders = this.productData.backorders === 1 ? true : false;
     this.checked = this.productData.type === 'simple' ? false : true;
