@@ -54,6 +54,7 @@ class ProductController extends BaseProductController
                 $query->where('primary', 1);
             }])
             ->whereNull('parent_product_id') // Only show parent products
+            ->where('type', 'simple') // Only show simple products
             ->orderBy('created_at', 'desc') // Order by creation date
             ->paginate(15); // Use paginate instead of limit
 

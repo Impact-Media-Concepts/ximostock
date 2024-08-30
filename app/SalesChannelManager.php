@@ -6,7 +6,10 @@ use App\Models\CategorySalesChannel;
 use App\Models\Product;
 use App\Models\ProductSalesChannel;
 use App\Models\Property;
+use App\Models\ProductProperty;
 use App\Models\PropertySalesChannel;
+use App\Models\ProductSalesChannelProperty;
+use App\Models\CategoryProductSalesChannel;
 use App\Models\SalesChannel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
@@ -36,11 +39,35 @@ class SalesChannelManager
     }
 
     //Upload products to a given saleschannel (woocommerce)
-    public function UploadProductsToSaleschannel(Collection $products, SalesChannel $salesChannel)
+    public function uploadProductsToSaleschannel(Collection $products, SalesChannel $salesChannel)
     {
+        Log::debug($products);
+        //collect from all products the data of what needs to happen.
+        $SimpleProductsToCreate = [];
+        $VariableProductsToCreate = [];
+        $SimpleProductsToUpdate = [];
+        $VariableProductsToUpdate = [];
+        foreach ($products as $product) { //deel de produtcen correct in
+            if($product->type == 'simple'){
+                if($this->productIsLinked($product, $salesChannel)){
+                    Log::debug($product->id);
+                    array_push($SimpleProductsToUpdate, $product->id);
+                }else{
+                    array_push($SimpleProductsToCreate, $product->id);
+                }
+            }else{
+                if($this->productIsLinked($product, $salesChannel)){
+                    array_push($VariableProductsToUpdate, $product->id);
+                }else{
+                    array_push($VariableProductsToCreate, $product->id);
+                }
+            }
+        }
+        Log::debug('Simple Products to create: ');
+        Log::debug($SimpleProductsToCreate);
+
         //create a connection to the saleschannel
         $woocommmerce = $this->createSalesChannelsClient($salesChannel);
-
         //upload or update properties of products
         $properties = $products->flatMap(function ($product) {
             return $product->properties;
@@ -55,16 +82,13 @@ class SalesChannelManager
         $categories = Category::whereIn("id", $categories)->get();
         $this->uploadCategoriesToSalesChannel($categories, $salesChannel, $woocommmerce);
 
-        //collect from all products the data of what needs to happen.
-        $prodcutsToCreate = [];
-        $prodcutsToUpdate = [];
-        foreach ($products as $product) {
-            if($this->productIsLinked($product, $salesChannel)){
-                array_push($prodcutsToCreate, $product);
-            }else{
-                array_push($prodcutsToUpdate, $product);
-            }
-        }
+
+
+        //upload new products
+        Log::debug($SimpleProductsToCreate);
+        $SimpleProductsToCreate = Product::whereIn('id', $SimpleProductsToCreate)->get(); //get the products
+        Log::debug($SimpleProductsToCreate);
+        $this->uploadSimpleProducts($SimpleProductsToCreate, $salesChannel, $woocommmerce);
     }
 
     //if a product is already linked to a saleschannel return false. (being linked means an entry in the pivot table exits. it is not jet live on the saleschannel)
@@ -72,15 +96,153 @@ class SalesChannelManager
     protected function productIsLinked(Product $product, SalesChannel $salesChannel)
     {
         if($product->salesChannels->contains($salesChannel)){
-            return false;
+            return true;
         }else{
             ProductSalesChannel::create([
                 'product_id' => $product->id,
                 'sales_channel_id' => $salesChannel->id
             ]);
-            return true;
+            return false;
         }
     }
+
+    protected function uploadSimpleProducts(Collection $products, SalesChannel $salesChannel, Client $woocommerce)
+    {
+        $current_workspace = (int) session('active_workspace_id');
+        Log::info('uploading simple products');
+        Log::info($products);
+        $productBatchs = $products->chunk(100);
+        try{
+            foreach ($productBatchs as $productBatch) {
+                $data = ['create' => []];
+                foreach($productBatch as $product){//prepare data
+                    $productLink = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first();
+
+                    Log::info("ProductLink");
+                    //prepare properties
+                    $properties = $this->prepareProductPropertyData($product, $salesChannel); //null reference
+                    Log::info("prepared properties");
+                    //prepare categories
+                    $categories = $this->prepareProductCategoryData($product, $productLink);
+                    Log::info("prepared categories");
+
+                    $productData = [
+                        'name' => isset($productLink->title) ? $productSalesChannel->title : $product->title,
+                        'short_description' => isset($productLink->short_description) ? $productSalesChannel->short_description : $product->short_description,
+                        'sku' => isset($productLink->sku) ? $productSalesChannel->sku : $product->sku,
+                        'type' => 'simple',
+                        'regular_price' => isset($productLink->price) ? $productSalesChannel->price : $product->price,
+                        'sale_price' => isset($productLink->discount) ? ($productSalesChannel->discount) : ($product->discount ? $product->discount : ''), //if discount is null set value empty string. WIP
+                        'description' => isset($productLink->long_description) ? $productSalesChannel->long_description : $product->long_description,
+                        'categories' => $categories,
+                        'attributes' => $properties,
+                        'manage_stock' => $product->communicate_stock,
+                        'stock_quantity' => $product->stock,
+                        'backorders' => $product->backorders ? 'yes' : 'no',
+                        'meta_data' => [
+                            [
+                                'key' => '_ean_code',
+                                'value' => isset($productLink->ean) ? $productLink->ean : $product->ean
+                            ],
+                            [
+                                'key' => '_xs_id',
+                                'value' => $product->id
+                            ]
+                        ]
+                    ];
+                    array_push($data['create'], $productData);
+                }
+                Log::info(json_encode($data));
+                $response = $woocommerce->post('products/batch', $data);
+                Log::info(json_encode($responce));
+                foreach ($responce->create as $uploadedProduct) {
+                    Log::debug(json_encode($uploadedProduct));
+                    $productLink = ProductSalesChannel::where('product_id', $uploadedProduct->meta_data[1]->value)->where('sales_channel_id', $salesChannel->id)->first();
+                    $productLink->external_id = $uploadedProduct->id;
+                    $productLink->save();
+                }
+
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+        }
+
+    }
+
+    protected function prepareProductPropertyData(Product $product, SalesChannel $salesChannel)
+    {
+        $productLink = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first();
+        $productPropertiesLink = ProductSalesChannelProperty::where('product_sales_channel_id', $productLink->id)->get();
+        //check if the saleschannelproductproperties are presend.
+        try{
+            if($productPropertiesLink->count() > 0){
+                //prepare properties of the link
+                $data = [];
+                foreach ($productPropertiesLink->properties as $property) {
+                    $properSaleschannel = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->first();
+                    $propertyProductLink = ProductSalesChannelProperty::where('product_id', $product->id)->where('property_id', $property->id)->first();
+                    //prepare the value of the property
+
+                    $propertyValue = json_decode($propertyProductLink->property_value);
+                    array_push($data, [
+                        'id' => $properSaleschannel->external_id,
+                        'options' => $propertyValue->value
+                    ]);
+                }
+                return $data;
+            }else{
+                //prepare default properties
+                $data = [];
+                foreach ($product->properties as $property) {
+
+                    $properSaleschannel = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->first();
+                    $propertyProductLink = ProductProperty::where('product_id', $product->id)->where('property_id', $property->id)->first();
+                    //prepare the value of the property
+                    $propertyValue = json_decode($propertyProductLink->property_value);
+                    array_push($data, [
+                        'id' => $properSaleschannel->external_id,
+                        'options' => $propertyValue->value
+                    ]);
+                }
+                Log::info(json_encode($data));
+                Log::info('property data');
+                return $data;
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return [];
+        }
+
+    }
+
+    protected function prepareProductCategoryData(Product $product, ProductSalesChannel $productSalesChannel)
+    {
+        try{
+            $categoryIds = CategoryProductSalesChannel::where('product_sales_channel_id', $productSalesChannel->id)->pluck('category_id')->toArray();
+            if (Count($categoryIds)) {
+                $categoryIds = CategorySalesChannel::whereIn('category_id', $categoryIds)->get()->pluck('external_id')->toArray();
+                $categories = [];
+                foreach ($categoryIds as $categoryId) {
+                    array_push($categories, ['id' => $categoryId]);
+                }
+                return $categories;
+            } else {
+                //prepare product categories
+                $categoryIds = $product->categories->pluck('id')->toArray();
+                $categoryIds = CategorySalesChannel::whereIn('category_id', $categoryIds)->pluck('external_id')->toArray();
+                $categories = [];
+                foreach ($categoryIds as $category) {
+                    array_push($categories, ['id' => $category]);
+                }
+                return $categories;
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return [];
+        }
+
+    }
+
 
     #region Properties
 
@@ -105,7 +267,6 @@ class SalesChannelManager
         Log::debug(json_encode($propertiesToUpload));
         Log::debug(json_encode($propertiesToUpdate));
         if(count($propertiesToUpload) > 0){
-
             $this->uploadProperties($propertiesToUpload, $salesChannel, $woocommerce);
         }
         if(count($propertiesToUpdate) > 0){
@@ -125,7 +286,7 @@ class SalesChannelManager
             ];
                 array_push($data['create'], $prop);
             }
-            $responce = $woocommerce->post('products/attributes/batch', $data);
+            $response = $woocommerce->post('products/attributes/batch', $data);
             Log::info(json_encode($responce));
             //Add external id to the properties
 
@@ -158,7 +319,7 @@ class SalesChannelManager
                 ];
                 array_push($data['update'], $prop);
             }
-            $responce = $woocommerce->post('products/attributes/batch', $data);
+            $response = $woocommerce->post('products/attributes/batch', $data);
             Log::info(json_encode($responce));
         }
     }
@@ -175,7 +336,7 @@ class SalesChannelManager
         $categoryIdsToUpload = array_diff($categoryIdsToUpload, CategorySalesChannel::where('sales_channel_id', $salesChannel->id)->pluck('category_id')->toArray());
         $categoriesToUpload = Category::whereIn('id', $categoryIdsToUpload)->get();
 
-        $categoriesToUpDate = $categories->diff($categoriesToUpload);
+        $categoriesToUpdate = $categories->diff($categoriesToUpload);
 
         //upload all categories that where not uploaded yet
         foreach ($categoriesToUpload as $category) {
@@ -216,7 +377,7 @@ class SalesChannelManager
 
         Log::info(json_encode($data));
         try{
-        $responce = $woocommerce->post('products/categories', $data);
+        $response = $woocommerce->post('products/categories', $data);
         Log::info(json_encode($responce));
 
             CategorySalesChannel::create([
@@ -245,7 +406,7 @@ class SalesChannelManager
                 ];
                 array_push($data['update'], $cat);
             }
-            $responce = $woocommerce->post('products/categories/batch', $data);
+            $response = $woocommerce->post('products/categories/batch', $data);
             Log::info(json_encode($responce));
         }
     }

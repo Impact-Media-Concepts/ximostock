@@ -138,6 +138,7 @@ class DatabaseSeeder extends Seeder
             'discount' => $faker->numberBetween(0, 50),
             'title' => $faker->word(). " -  PRIME",
             'work_space_id' => 2,
+            'type' => 'main',
             'sku' => null,
             'ean' => null
         ]);
@@ -157,7 +158,7 @@ class DatabaseSeeder extends Seeder
         ]);
         SalesChannel::factory()->create([
             'work_space_id' => 2,
-            'name' => 'henk',
+            'name' => 'exampleshop',
             'url' => 'https://example.com',
             'api_key' => 'ck_6307bb7387ba14f2b2440a3d6b4add2be3c28c69',
             'secret' => 'cs_c6581c4eb86e71728eeee93224214b0d5594c137'
@@ -172,6 +173,7 @@ class DatabaseSeeder extends Seeder
         foreach ($primeProducts as $product) {
             $new_product = Product::factory(3)->create([
                 'parent_product_id' => $product->id,
+                'type' => 'variation',
                 'title' => $faker->word(),
                 'short_description' => null,
                 'long_description' => null,
