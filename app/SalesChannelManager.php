@@ -41,7 +41,6 @@ class SalesChannelManager
     //Upload products to a given saleschannel (woocommerce)
     public function uploadProductsToSaleschannel(Collection $products, SalesChannel $salesChannel)
     {
-        Log::debug($products);
         //collect from all products the data of what needs to happen.
         $SimpleProductsToCreate = [];
         $VariableProductsToCreate = [];
@@ -63,11 +62,10 @@ class SalesChannelManager
                 }
             }
         }
-        Log::debug('Simple Products to create: ');
-        Log::debug($SimpleProductsToCreate);
 
         //create a connection to the saleschannel
         $woocommmerce = $this->createSalesChannelsClient($salesChannel);
+
         //upload or update properties of products
         $properties = $products->flatMap(function ($product) {
             return $product->properties;
@@ -82,13 +80,13 @@ class SalesChannelManager
         $categories = Category::whereIn("id", $categories)->get();
         $this->uploadCategoriesToSalesChannel($categories, $salesChannel, $woocommmerce);
 
-
-
         //upload new products
-        Log::debug($SimpleProductsToCreate);
         $SimpleProductsToCreate = Product::whereIn('id', $SimpleProductsToCreate)->get(); //get the products
-        Log::debug($SimpleProductsToCreate);
         $this->uploadSimpleProducts($SimpleProductsToCreate, $salesChannel, $woocommmerce);
+
+        //update existing products
+        $SimpleProductsToUpdate = Product::whereIn('id', $SimpleProductsToUpdate)->get(); //get the products
+        $this->updateSimpleProducts($SimpleProductsToUpdate, $salesChannel, $woocommmerce);
     }
 
     //if a product is already linked to a saleschannel return false. (being linked means an entry in the pivot table exits. it is not jet live on the saleschannel)
@@ -154,14 +152,66 @@ class SalesChannelManager
                 }
                 Log::info(json_encode($data));
                 $response = $woocommerce->post('products/batch', $data);
-                Log::info(json_encode($responce));
-                foreach ($responce->create as $uploadedProduct) {
+                Log::info(json_encode($response ));
+                foreach ($response ->create as $uploadedProduct) {
                     Log::debug(json_encode($uploadedProduct));
                     $productLink = ProductSalesChannel::where('product_id', $uploadedProduct->meta_data[1]->value)->where('sales_channel_id', $salesChannel->id)->first();
                     $productLink->external_id = $uploadedProduct->id;
                     $productLink->save();
                 }
 
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+        }
+
+    }
+
+    protected function updateSimpleProducts(Collection $products, SalesChannel $salesChannel, Client $woocommerce)
+    {
+        Log::info('updating simple products');
+        Log::info($products);
+        $productBatchs = $products->chunk(100);
+        try{
+            foreach ($productBatchs as $productBatch) {
+                $data = ['update' => []];
+                foreach($productBatch as $product){//prepare data
+                    $productLink = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first();
+                    //prepare properties
+                    $properties = $this->prepareProductPropertyData($product, $salesChannel); //null reference
+                    //prepare categories
+                    $categories = $this->prepareProductCategoryData($product, $productLink);
+
+                    $productData = [
+                        'id' => $productLink->external_id,
+                        'name' => isset($productLink->title) ? $productSalesChannel->title : $product->title,
+                        'short_description' => isset($productLink->short_description) ? $productSalesChannel->short_description : $product->short_description,
+                        'sku' => isset($productLink->sku) ? $productSalesChannel->sku : $product->sku,
+                        'type' => 'simple',
+                        'regular_price' => isset($productLink->price) ? $productSalesChannel->price : $product->price,
+                        'sale_price' => isset($productLink->discount) ? ($productSalesChannel->discount) : ($product->discount ? $product->discount : ''), //if discount is null set value empty string. WIP
+                        'description' => isset($productLink->long_description) ? $productSalesChannel->long_description : $product->long_description,
+                        'categories' => $categories,
+                        'attributes' => $properties,
+                        'manage_stock' => $product->communicate_stock,
+                        'stock_quantity' => $product->stock,
+                        'backorders' => $product->backorders ? 'yes' : 'no',
+                        'meta_data' => [
+                            [
+                                'key' => '_ean_code',
+                                'value' => isset($productLink->ean) ? $productLink->ean : $product->ean
+                            ],
+                            [
+                                'key' => '_xs_id',
+                                'value' => $product->id
+                            ]
+                            ]
+                    ];
+                    array_push($data['update'], $productData);
+                }
+                Log::info(json_encode($data));
+                $response = $woocommerce->post('products/batch', $data);
+                Log::info(json_encode($response ));
             }
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -287,11 +337,11 @@ class SalesChannelManager
                 array_push($data['create'], $prop);
             }
             $response = $woocommerce->post('products/attributes/batch', $data);
-            Log::info(json_encode($responce));
+            Log::info(json_encode($response ));
             //Add external id to the properties
 
             try {
-                foreach ($responce->create as $uploadedProperty) {
+                foreach ($response ->create as $uploadedProperty) {
                     $current_workspace = (int) session('active_workspace_id');
                     $property = Property::where('name', $uploadedProperty->name)->where('work_space_id', $current_workspace)->first();
                     $property = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->first();
@@ -320,7 +370,7 @@ class SalesChannelManager
                 array_push($data['update'], $prop);
             }
             $response = $woocommerce->post('products/attributes/batch', $data);
-            Log::info(json_encode($responce));
+            Log::info(json_encode($response ));
         }
     }
 
@@ -343,7 +393,7 @@ class SalesChannelManager
             $this->uploadCategoryRecursive($category, $salesChannel, $woocommerce);
         }
         //update all categories that where already uploaded
-        $this->updateCategories($categoriesToUpDate, $salesChannel, $woocommerce);
+        $this->updateCategories($categoriesToUpdate, $salesChannel, $woocommerce);
     }
 
     protected function uploadCategoryRecursive(Category $category, SalesChannel $salesChannel, Client $woocommerce){
@@ -378,12 +428,12 @@ class SalesChannelManager
         Log::info(json_encode($data));
         try{
         $response = $woocommerce->post('products/categories', $data);
-        Log::info(json_encode($responce));
+        Log::info(json_encode($response ));
 
             CategorySalesChannel::create([
                 'category_id' => $category->id,
                 'sales_channel_id' => $salesChannel->id,
-                'external_id' => $responce->id
+                'external_id' => $response ->id
             ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -406,7 +456,7 @@ class SalesChannelManager
                 array_push($data['update'], $cat);
             }
             $response = $woocommerce->post('products/categories/batch', $data);
-            Log::info(json_encode($responce));
+            Log::info(json_encode($response ));
         }
     }
     #endregion
