@@ -14,7 +14,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-
         // Retrieve the enum values from the model
         $enumValues = EnumProductTypeHelper::getEnumValuesFromProduct(Product::class, 'type');
         log::info('Migration');

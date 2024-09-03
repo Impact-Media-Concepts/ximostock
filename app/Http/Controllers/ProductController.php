@@ -37,7 +37,7 @@ use App\Helpers\EnumProductTypeHelper;
 
 use App\SalesChannelManager;
 
- 
+
 class ProductController extends BaseProductController
 {
 
@@ -57,7 +57,6 @@ class ProductController extends BaseProductController
                 $query->where('primary', 1);
             }])
             ->whereNull('parent_product_id') // Only show parent products
-            ->where('type', 'simple') // Only show simple products
             ->orderBy('created_at', 'desc') // Order by creation date
             ->paginate(15); // Use paginate instead of limit
 
@@ -366,7 +365,7 @@ class ProductController extends BaseProductController
                 'name' => $propertyData['name'],
                 'type' => $propertyData['type'],
             ]);
-            
+
             return $propertyData['id'];
         } else {
             // If no ID is provided, create a new property and attach it to the product via the pivot table.
@@ -553,23 +552,18 @@ class ProductController extends BaseProductController
             'sales_channel_ids.*' => ['required', 'numeric', Rule::exists('sales_channels', 'id')]
         ]);
 
-
         //remove from the saleschannel
-        $woocommerce = new WooCommerceManager;
-        foreach ($validatedData['sales_channel_ids'] as $salesChannel) {
-            $salesChannel = SalesChannel::findOrFail($salesChannel);
-            $woocommerce->deleteProductsFromSalesChannel($validatedData['product_ids'], $salesChannel);
+        $woocommerce = new SaleschannelManager;
+        $products = Product::whereIn('id', $validatedData['product_ids'])->get();
+        $salesChannels = SalesChannel::whereIn('id', $validatedData['sales_channel_ids'])->get();
+        foreach ($salesChannels as $salesChannel) {
+            $woocommerce->removeProductsFromSalesChannel($products, $salesChannel);
         }
+
         $products = Product::whereIn('id', $validatedData['product_ids'])->get();
         foreach ($products as $product) {
             $product->touch();
         }
-        // Unlink sales channels from products
-        ProductSalesChannel::whereIn('product_id', $validatedData['product_ids'])
-            ->whereIn('sales_channel_id', $validatedData['sales_channel_ids'])
-            ->delete();
-
-
         return redirect()->back();
     }
 

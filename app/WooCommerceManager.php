@@ -591,9 +591,9 @@ class WooCommerceManager
         } else {
             //prepare product properies
             $propertyIds = $product->properties->pluck('id')->toArray();
+           
             $propertyIds = $propertySalesChannels->whereIn('property_id', $propertyIds)->pluck('property_id', 'external_id')->toArray();
             $properties = [];
-
             foreach ($propertyIds as $externalId => $propertyId) {
                 $values = $productProperties->where('property_id', $propertyId)->where('product_id', $product->id)->first();
                 $values = (array) json_decode($values->property_value)->value;
