@@ -99,6 +99,8 @@ class SalesChannelManager
         Log::info('great success');
     }
 
+    #region Products
+
     //if a product is already linked to a saleschannel return false. (being linked means an entry in the pivot table exits. it is not jet live on the saleschannel)
     //Otherwise create a link and return true
     protected function productIsLinked(Product $product, SalesChannel $salesChannel)
@@ -215,9 +217,9 @@ class SalesChannelManager
                     ];
                     array_push($data['update'], $productData);
                 }
-                Log::info(json_encode($data));
+
                 $response = $woocommerce->post('products/batch', $data);
-                Log::info(json_encode($response ));
+
             }
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -226,9 +228,6 @@ class SalesChannelManager
     }
 
     protected function uploadVariableProducts(Collection $products, SalesChannel $salesChannel, Client $woocommerce){
-        $current_workspace = (int) session('active_workspace_id');
-        Log::info('uploading variable products');
-        Log::info($products);
         try{
             foreach($products as $product){//prepare data
                 $productLink = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first();
@@ -237,7 +236,6 @@ class SalesChannelManager
                 Log::info("prepared properties");
                 //prepare categories
                 $categories = $this->prepareProductCategoryData($product, $productLink);
-                Log::info("prepared categories");
                 $data = [
                     'name' => isset($productLink->title) ? $productSalesChannel->title : $product->title,
                     'short_description' => isset($productLink->short_description) ? $productSalesChannel->short_description : $product->short_description,
@@ -257,14 +255,16 @@ class SalesChannelManager
                         ]
                     ]
                 ];
+
+                Log::info('uploading product');
                 Log::info(json_encode($data));
                 $response = $woocommerce->post('products', $data);
-                Log::info(json_encode($response ));
+                Log::info('product response');
+                Log::info(json_encode($response));
+
                 $productLink->external_id = $response->id;
                 $productLink->save();
-                foreach($product->childProducts as $variation){
-                    $this->uploadVariationsData($product, $salesChannel, $woocommerce);
-                }
+                $this->uploadVariationsData($product, $salesChannel, $woocommerce);
             }
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -280,7 +280,7 @@ class SalesChannelManager
                 foreach($productBatch as $variation){
                     Log::info('preparing variation properties');
                     $properties = $this->propareVariationPropertyData($variation, $salesChannel);
-                    Log::info('creaitng variation');
+                    Log::info('creating variation');
                     $variation = [
                         'regular_price' => $variation->price,
                         'sale_price' => $variation->discount,
@@ -302,18 +302,15 @@ class SalesChannelManager
                     ];
                     array_push($variations['create'], $variation);
                 }
-                Log::info('variation Data');
-                Log::info(json_encode($variations));
+
                 $externalId = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first()->external_id;
-                Log::info('external id');
-                Log::info(json_encode($externalId));
+                Log::info('posting variations');
+                Log::info(json_encode($variations));
                 $response = $woocommerce->post('products/'. $externalId . '/variations/batch', $variations);
-                Log::info('variation response');
+                Log::info('varaitions response');
                 Log::info(json_encode($response));
-
+                Log::info('setteng varation external ids');
                 foreach($response->create as $newVariation){
-
-                    Log::info('variation');
                     Log::info(json_encode($newVariation));
                     $variation = Product::find($newVariation->meta_data[1]->value); // Retrieve the variation product using the external ID
                     $variationLink = ProductSalesChannel::where('product_id', $variation->id)->where('sales_channel_id', $salesChannel->id)->first();
@@ -336,6 +333,7 @@ class SalesChannelManager
         }
     }
 
+
     protected function propareVariationPropertyData(Product $variation, SalesChannel $salesChannel){
         $data = [];
         foreach($variation->properties as $property){
@@ -347,7 +345,7 @@ class SalesChannelManager
             Log::info(json_encode($property));
             $propertyData = [
                 'id' => $propertySalesChannel->external_id,
-                'options' => $propertyValue->value
+                'option' => $propertyValue->value
             ];
             array_push($data, $propertyData);
         }
@@ -380,23 +378,30 @@ class SalesChannelManager
             }
 
             //collect all the properties of the child products
-            $childProperties = $product->childProducts->flatMap(function ($childProduct) {
-                return $childProduct->properties;
-            })->unique();
+            $childProperties = Property::whereIn('id', ProductProperty::whereIn('product_id', $product->childProducts->pluck('id'))->pluck('property_id'))->get();
             Log::info('child properties');
             Log::info(json_encode($childProperties));
-
             //through all child product properties
+
+
             foreach($childProperties as $property){
                 $propData = [
                     'id'   => null,
-                    'options' => null,
+                    'options' => [],
                     'variation' => true
                 ];
                 $externalId = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->first()->external_id;
                 $propData['id'] = $externalId;
+                $options= [];
+                $propertyLinks = ProductProperty::where('property_id', $property->id)->whereIn('product_id', $product->childProducts->pluck('id'))->get();
+                foreach ($propertyLinks as $propertyLink) {
+                    $propertyValue = json_decode($propertyLink->property_value);
+                    $propertyValue= is_array($propertyValue->value) ? implode(',', array_map('strval', $propertyValue->value)) : (string)$propertyValue->value;
+                    array_push($options, $propertyValue);
+                }
+                $propData['options'] = $options;
+                array_push($data, $propData);
             }
-
             Log::info('propdata');
             Log::info(json_encode($data));
             return $data;
@@ -480,7 +485,7 @@ class SalesChannelManager
 
     }
 
-
+    #endregion
 
     #region Properties
 
@@ -514,11 +519,11 @@ class SalesChannelManager
         foreach ($properties as $propertyBatch) {
             $data = ['create' => []];
             foreach ($propertyBatch as $property) {
-                $prop = [
+                $property = [
                     'name' => $property->name,
                     'slug' => env('XS_PREFIX', 'xs_') . $property->name //add a prefix to slug to know it is a ximostock managed property
             ];
-                array_push($data['create'], $prop);
+                array_push($data['create'], $property);
             }
             $response = $woocommerce->post('products/attributes/batch', $data);
             Log::info(json_encode($response ));
@@ -546,12 +551,12 @@ class SalesChannelManager
             $data = ['update' => []];
             foreach ($propertyBatch as $property) {
                 $propertyConnetion = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->first();
-                $prop = [
+                $property = [
                     'id' => $propertyConnetion->external_id,
                     'name' => $property->name,
                     'slug' => env('XS_PREFIX', 'xs_') . $property->name //add a prefix to slug to know it is a ximostock managed property
                 ];
-                array_push($data['update'], $prop);
+                array_push($data['update'], $property);
             }
             $response = $woocommerce->post('products/attributes/batch', $data);
             Log::info(json_encode($response ));
