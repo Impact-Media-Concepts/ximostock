@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
 
         $workSpaces = WorkSpace::factory(3)->create();
 
+        #region create users
+
         User::factory()->create([
             'role' => 'admin',
             'work_space_id' => null,
@@ -40,114 +42,138 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory()->create([
             'role' => 'manager',
-            'work_space_id' => 2,
+            'work_space_id' => 1,
             'email' => 'manager@1.com'
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'manager',
-            'work_space_id' => 2,
-            'email' => $faker->email()
-        ]);
-        User::factory()->create([
-            'role' => 'supplier',
-            'work_space_id' => null
-        ]);
-        User::factory()->create([
-            'role' => 'admin',
-            'work_space_id' => null
         ]);
         User::factory()->create([
             'role' => 'supplier',
             'work_space_id' => null,
             'email' => 'supplier@stage.com'
         ]);
+        #endregion
 
-        $categories = Category::factory(3)->create();
-
-        $products = Product::factory(50)->create([
+        $products = Product::factory(30)->create([
             'work_space_id' => 1,
-            'price' => $faker->numberBetween(1, 1000),
-            'discount' => $faker->numberBetween(0, 50),
-            'title' => $faker->word(),
         ]);
 
-        $products_second = Product::factory(50)->create([
-            'work_space_id' => 1,
-            'price' => $faker->numberBetween(1, 1000),
-            'discount' => $faker->numberBetween(0, 50),
-            'title' => $faker->word(),
+
+        #region Create categories
+        $categories = Category::factory(3)->create([
+            'work_space_id' => 1
         ]);
-
-        $primeProducts = Product::factory(25)->create([
-            'price' => $faker->numberBetween(1, 1000),
-            'discount' => $faker->numberBetween(0, 50),
-            'title' => $faker->word(). " -  PRIME",
-            'work_space_id' => 1,
-            'type' => 'main',
-            'sku' => null,
-            'ean' => null
-        ]);
-
-        $suppliers = Supplier::factory(15)->create();
-
-        $products = $products->concat($primeProducts);
+        foreach ($categories as $category) {
+            $subcategories = Category::factory(2)->create([
+                'parent_category_id' => $category,
+                'work_space_id' => 1
+            ]);
+            foreach ($subcategories as $subcategory) {
+                $subsubcategories = Category::factory(2)->create([
+                    'parent_category_id' => $subcategory,
+                    'work_space_id' => 1
+                ]);
+                foreach ($subsubcategories as $subsubcategory) {
+                    Category::factory(2)->create([
+                        'parent_category_id' => $subsubcategory,
+                        'work_space_id' => 1
+                    ]);
+                }
+            }
+        }
+        #endregion
 
         $properties = Property::factory(5)->create();
+
+        #region create Variant products
+        $primeProduct = Product::factory(10)->create([
+            'work_space_id' => 1,
+            'type' => 'main',
+            'ean' => null,
+            'sku' => null,
+        ]);
+
+        //link categories to variants
+        foreach ($products as $product) {
+            $randomCategories = Category::all()->random(2); // Adjust the number of random categories as needed
+            foreach ($randomCategories as $category) {
+                CategoryProduct::create([
+                    'product_id' => $product->id,
+                    'category_id' => $category->id,
+                    'primary' => 1
+                ]);
+            }
+        }
+
+        // Create variants
+        foreach($primeProduct as $product){
+
+            $variants = Product::factory(3)->create([
+                'work_space_id' => 1,
+                'type' => 'variation',
+                'parent_product_id' => $product->id,
+            ]);
+            //link properties to main product
+            foreach($properties as $property){
+                if(isset($property->options)){
+                    $propvalue = $property->options;
+                }else{
+                    $propvalue = ['value1', 'value2', 'value3'];
+                }
+                $value = '';
+                switch ($property->type) {
+                    case 'multiselect':
+                        $value = [
+                            $faker->randomElement($propvalue),
+                            $faker->randomElement($propvalue)
+                        ];
+                        break;
+                    case 'singleselect':
+                        $value = $faker->randomElement($propvalue);
+                        break;
+                    case 'number':
+                        $value = $faker->numberBetween(0, 16);
+                        break;
+                    case 'text':
+                        $value = $faker->word();
+                        break;
+                    case 'bool':
+                        $value = $faker->boolean();
+                        break;
+                }
+                ProductProperty::create([
+                    'product_id' => $product->id,
+                    'property_id' => $property->id,
+                    'property_value' => json_encode(['value' => $value])
+                ]);
+            }
+
+            //add categories to prime products
+            $randomCategories = Category::all()->random(2); // Adjust the number of random categories as needed
+            foreach ($randomCategories as $category) {
+                CategoryProduct::create([
+                    'product_id' => $product->id,
+                    'category_id' => $category->id,
+                    'primary' => 1
+                ]);
+            }
+            
+            //link prop to variant
+            // Create properties for variants
+            $property = Property::factory()->create([
+                'work_space_id' => 1,
+                'type' => 'singleselect',
+            ]);
+            foreach ($variants as $variant) {
+                ProductProperty::create([
+                    'product_id' => $variant->id,
+                    'property_id' => $property->id,
+                    'property_value' => json_encode(['value' => $faker->word()])
+                ]);
+            }
+        }
+
+        #endregion
+
+        $suppliers = Supplier::factory(15)->create();
 
         SalesChannel::factory()->create([
             'work_space_id' => 1,
@@ -156,38 +182,14 @@ class DatabaseSeeder extends Seeder
             'api_key' => 'ck_58c3a317b19546d15560b2cc3f19a33ad8e75880',
             'secret' => 'cs_6acaceaf1ad08b001e4532b3c9e3462879f970eb'
         ]);
-        SalesChannel::factory()->create([
-            'work_space_id' => 2,
-            'name' => 'exampleshop',
-            'url' => 'https://example.com',
-            'api_key' => 'ck_6307bb7387ba14f2b2440a3d6b4add2be3c28c69',
-            'secret' => 'cs_c6581c4eb86e71728eeee93224214b0d5594c137'
-        ]);
-        $saleschannels = SalesChannel::factory(40)->create([
-            'work_space_id' => 1,
-        ]);
-        SalesChannel::factory(30)->create([
-            'work_space_id' => 3,
-        ]);
-
-        foreach ($primeProducts as $product) {
-            $new_product = Product::factory(3)->create([
-                'parent_product_id' => $product->id,
-                'type' => 'variation',
-                'title' => $faker->word(),
-                'short_description' => null,
-                'long_description' => null,
-                'price' => $faker->numberBetween(1, 1000),
-                'discount' => $faker->numberBetween(0, 50),
-            ]);
-            $products = $products->concat($new_product);
-        }
 
         // Link properties
         foreach ($properties as $prop) {
-            Log::info('Property');
-            Log::info($prop);
-            $propvalue = $prop->options;
+            if(isset($prop->options)){
+                $propvalue = $prop->options;
+            }else{
+                $propvalue = ['value1', 'value2', 'value3'];
+            }
             foreach ($products as $product) {
                 $value = '';
                 switch ($prop->type) {
@@ -218,41 +220,9 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Create subcategories
-        foreach ($categories as $category) {
-            $subcategories = Category::factory(2)->create([
-                'parent_category_id' => $category,
-                'work_space_id' => 1
-            ]);
-            foreach ($subcategories as $subcategory) {
-                $subsubcategories = Category::factory(2)->create([
-                    'parent_category_id' => $subcategory,
-                    'work_space_id' => 1
-                ]);
-                foreach ($subsubcategories as $subsubcategory) {
-                    Category::factory(2)->create([
-                        'parent_category_id' => $subsubcategory,
-                        'work_space_id' => 1
-                    ]);
-                }
-            }
-        }
-
         // Link products and categories randomly
         foreach ($products as $product) {
             $randomCategories = Category::all()->random(2); // Adjust the number of random categories as needed
-            foreach ($randomCategories as $category) {
-                CategoryProduct::create([
-                    'product_id' => $product->id,
-                    'category_id' => $category->id,
-                    'primary' => 1
-                ]);
-            }
-        }
-
-        // Link products and categories randomly for products_second
-        foreach ($products_second as $product) {
-            $randomCategories = Category::all()->random(1); // Adjust the number of random categories as needed
             foreach ($randomCategories as $category) {
                 CategoryProduct::create([
                     'product_id' => $product->id,
