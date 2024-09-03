@@ -92,15 +92,56 @@ class SalesChannelManager
         $this->updateSimpleProducts($SimpleProductsToUpdate, $salesChannel, $woocommmerce);
 
         //upload new variable products
-        Log::info('variable products');
-        Log::info(json_encode($VariableProductsToCreate));
         $VariableProductsToCreate = Product::whereIn('id', $VariableProductsToCreate)->get(); //get the products
         $this->uploadVariableProducts($VariableProductsToCreate, $salesChannel, $woocommmerce);
-        Log::info('great success');
+
+        //update existing variable products
+        $VariableProductsToUpdate = Product::whereIn('id', $VariableProductsToUpdate)->get(); //get the products
+        $this->updateVariableProducts($VariableProductsToUpdate, $salesChannel, $woocommmerce);
     }
 
-    #region Products
+    //Delete products from a saleschannel (woocommerce)
+    public function deleteProductsFromSaleschannel(Collection $products, SalesChannel $salesChannel)
+    {
+        $woocommmerce = $this->createSalesChannelsClient($salesChannel);
+        $productIds = $products->pluck('id')->toArray();
+        $productLinks = ProductSalesChannel::whereIn('product_id', $productIds)->where('sales_channel_id', $salesChannel->id)->get();
+        foreach ($productLinks as $productLink) {
+            $woocommmerce->delete('products/' . $productLink->external_id, ['force' => true]);
+        }
+        $productLinks->delete();
+    }
 
+    //update a category name/slug on the saleschannel (run if a category is changed on the category page)
+    public function updateCategoryOnSaleschannel(Category $category, SalesChannel $salesChannel)
+    {
+        $woocommmerce = $this->createSalesChannelsClient($salesChannel);
+        $categoryLink = CategorySalesChannel::where('category_id', $category->id)->where('sales_channel_id', $salesChannel->id)->first();
+        if($categoryLink != null){
+            $data = [
+                'name' => $category->name,
+                'slug' =>  env('XS_PREFIX', 'xs_') . $category->name
+            ];
+            $response = $woocommmerce->put('products/categories/' . $categoryLink->external_id, $data);
+            $categoryLink->delete();
+        }
+    }
+
+    //delete a category from a saleschannel (run if a category is deleted on the category page)
+    public function deleteCategoryFromSaleschannel(Category $category, SalesChannel $salesChannel)
+    {
+        $woocommmerce = $this->createSalesChannelsClient($salesChannel);
+        $categoryLink = CategorySalesChannel::where('category_id', $category->id)->where('sales_channel_id', $salesChannel->id)->first();
+        if($categoryLink != null){
+            $woocommmerce->delete('products/categories/' . $categoryLink->external_id, ['force' => true]);
+            $categoryLink->delete();
+        }
+    }
+
+
+
+
+    #region Products
     //if a product is already linked to a saleschannel return false. (being linked means an entry in the pivot table exits. it is not jet live on the saleschannel)
     //Otherwise create a link and return true
     protected function productIsLinked(Product $product, SalesChannel $salesChannel)
@@ -279,7 +320,7 @@ class SalesChannelManager
             foreach($productBatchs as $productBatch){
                 foreach($productBatch as $variation){
                     Log::info('preparing variation properties');
-                    $properties = $this->propareVariationPropertyData($variation, $salesChannel);
+                    $properties = $this->prepareVariationPropertyData($variation, $salesChannel);
                     Log::info('creating variation');
                     $variation = [
                         'regular_price' => $variation->price,
@@ -333,8 +374,87 @@ class SalesChannelManager
         }
     }
 
+    protected function updateVariableProducts(Collection $products, SalesChannel $salesChannel, Client $woocommerce)
+    {
+        try{
+            foreach($products as $product){//prepare data
+                $productLink = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first();
+                //prepare properties
+                $properties = $this->prepareMainProductPropertyData($product, $salesChannel);
+                Log::info("prepared properties");
+                //prepare categories
+                $categories = $this->prepareProductCategoryData($product, $productLink);
+                $data = [
+                    'name' => isset($productLink->title) ? $productSalesChannel->title : $product->title,
+                    'short_description' => isset($productLink->short_description) ? $productSalesChannel->short_description : $product->short_description,
+                    'sku' => isset($productLink->sku) ? $productSalesChannel->sku : $product->sku,
+                    'type' => 'variable',
+                    'regular_price' => isset($productLink->price) ? $productSalesChannel->price : $product->price,
+                    'sale_price' => isset($productLink->discount) ? ($productSalesChannel->discount) : ($product->discount ? $product->discount : ''),
+                    'description' => isset($productLink->long_description) ? $productSalesChannel->long_description : $product->long_description,
+                    'categories' => $categories,
+                    'attributes' => $properties,
+                    'manage_stock' => $product->communicate_stock,
+                    'backorders' => $product->backorders ? 'yes' : 'no',
+                    'meta_data' => [
+                        [
+                            'key' => '_xs_id',
+                            'value' => $product->id
+                        ]
+                    ]
+                ];
+                $response = $woocommerce->put('products/'. $productLink->external_id, $data);
 
-    protected function propareVariationPropertyData(Product $variation, SalesChannel $salesChannel){
+                $this->uploadVariationsData($product, $salesChannel, $woocommerce);
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+        }
+    }
+
+    protected function updateVariationsData(){
+        try{
+            Log::info('preparing variations');
+            $variations = ['update' => []];
+            $productBatchs = $product->childProducts->chunk(100); //foreach child product create a variation
+            foreach($productBatchs as $productBatch){
+                foreach($productBatch as $variation){
+                    Log::info('preparing variation properties');
+                    $properties = $this->prepareVariationPropertyData($variation, $salesChannel);
+                    Log::info('creating variation');
+                    $variation = [
+                        'id'=> $variation->id,
+                        'regular_price' => $variation->price,
+                        'sale_price' => $variation->discount,
+                        'sku' => $variation->sku,
+                        'description' => $variation->long_description,
+                        'manage_stock' => $variation->communicate_stock,
+                        'stock_quantity' => $variation->stock,
+                        'attributes' => $properties,
+                        'meta_data' => [
+                            [
+                                'key' => '_ean_code',
+                                'value' => $variation->ean
+                            ],
+                            [
+                                'key' => '_xs_id',
+                                'value' => $variation->id
+                            ]
+                        ]
+                    ];
+                    array_push($variations['update'], $variation);
+                }
+
+                $externalId = ProductSalesChannel::where('product_id', $product->id)->where('sales_channel_id', $salesChannel->id)->first()->external_id;
+
+                $response = $woocommerce->put('products/'. $externalId . '/variations/batch', $variations);
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+        }
+    }
+
+    protected function prepareVariationPropertyData(Product $variation, SalesChannel $salesChannel){
         $data = [];
         foreach($variation->properties as $property){
             $propertyLink = ProductProperty::where('product_id', $variation->id)->where('property_id', $property->id)->first();
