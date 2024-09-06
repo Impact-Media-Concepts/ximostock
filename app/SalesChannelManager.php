@@ -181,6 +181,7 @@ class SalesChannelManager
                         'attributes' => $properties,
                         'manage_stock' => $product->communicate_stock,
                         'stock_quantity' => $product->stock,
+                        'images' => $this->prepareImageData($product) != [] ? $this->prepareImageData($product) : null,
                         'backorders' => $product->backorders ? 'yes' : 'no',
                         'meta_data' => [
                             [
@@ -238,6 +239,7 @@ class SalesChannelManager
                         'description' => isset($productLink->long_description) ? $productSalesChannel->long_description : $product->long_description,
                         'categories' => $categories,
                         'attributes' => $properties,
+                        'images' => $this->prepareImageData($product) != [] ? $this->prepareImageData($product) : null,
                         'manage_stock' => $product->communicate_stock,
                         'stock_quantity' => $product->stock,
                         'backorders' => $product->backorders ? 'yes' : 'no',
@@ -283,6 +285,7 @@ class SalesChannelManager
                     'description' => isset($productLink->long_description) ? $productSalesChannel->long_description : $product->long_description,
                     'categories' => $categories,
                     'attributes' => $properties,
+                    'images' => $this->prepareImageData($product) != [] ? $this->prepareImageData($product) : null,
                     'manage_stock' => $product->communicate_stock,
                     'backorders' => $product->backorders ? 'yes' : 'no',
                     'meta_data' => [
@@ -390,6 +393,7 @@ class SalesChannelManager
                     'description' => isset($productLink->long_description) ? $productSalesChannel->long_description : $product->long_description,
                     'categories' => $categories,
                     'attributes' => $properties,
+                    'images' => $this->prepareImageData($product) != [] ? $this->prepareImageData($product) : null,
                     'manage_stock' => $product->communicate_stock,
                     'backorders' => $product->backorders ? 'yes' : 'no',
                     'meta_data' => [
@@ -593,6 +597,16 @@ class SalesChannelManager
 
     }
 
+    protected function prepareImageData(Product $product)
+    {
+        $photoData = [];
+        foreach ($product->photos as $photos) {
+            $data = ['src' => $photos->url];
+            array_push($photoData, $data);
+        }
+        return $photoData;
+    }
+
     #endregion
 
     #region Properties
@@ -674,7 +688,7 @@ class SalesChannelManager
     #endregion
 
 
-   #region newCategories
+   #region Categories
     public function uploadCategoriesToSalesChannel(Collection $categories, SalesChannel $salesChannel){
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
         //collect all parent categories hierarchically
