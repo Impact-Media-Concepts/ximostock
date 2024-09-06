@@ -110,6 +110,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
     Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
     Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
+
+    Route::get('/test', [CategoryController::class, 'testSaleschannel']);
 });
 
 //authentication

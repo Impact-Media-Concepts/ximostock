@@ -64,4 +64,5 @@ class Category extends Model
         // Delete the category itself
         $this->delete();
     }
+
 }
