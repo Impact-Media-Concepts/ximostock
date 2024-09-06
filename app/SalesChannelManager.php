@@ -673,13 +673,11 @@ class SalesChannelManager
 
     #endregion
 
-  
+
    #region newCategories
-    //upload all given categories based on id.
     public function uploadCategoriesToSalesChannel(Collection $categories, SalesChannel $salesChannel){
-        Log::info('uploading categories');
         $woocommerce = $this->createSalesChannelsClient($salesChannel);
-        //collect all parent categories
+        //collect all parent categories hierarchically
         $parentCategories = $categories->pluck('parent_category_id')->unique()->filter();
         $treeCategories = $categories->pluck('id')->concat($parentCategories)->unique();
         while ($parentCategories->isNotEmpty()) {
@@ -689,24 +687,18 @@ class SalesChannelManager
         $treeCategories = Category::whereIn('id', $treeCategories)->get();
         $existingCategoryIds = CategorySalesChannel::where('sales_channel_id', $salesChannel->id)->pluck('category_id');
         $categoriesToUpload = $treeCategories->whereNotIn('id', $existingCategoryIds)->unique();
-        Log::info('categories to upload');
-        Log::info(json_encode($categoriesToUpload));
+
 
         //upload all given categories that where not uploaded yet
         $this->uploadCategories($categoriesToUpload, $salesChannel, $woocommerce);
 
         //update all categories given
         $categoriesToUpdate = $treeCategories->unique();
-        Log::info('categories to update');
-        Log::info(json_encode($categoriesToUpdate));
         $this->updateCategories($categoriesToUpdate, $salesChannel, $woocommerce);
     }
 
-
-
     private function uploadCategories(Collection $categories, Saleschannel $salesChannel, Client $woocommerce){
         $categories = $categories->chunk(100);
-        Log::info('uploading categories');
         try{
             foreach ($categories as $categoryBatch) {
                 $data = ['create' => []];
@@ -717,10 +709,7 @@ class SalesChannelManager
                     ];
                     array_push($data['create'], $category);
                 }
-                Log::info('category upload data');
-                Log::info(json_encode($data));
                 $response = $woocommerce->post('products/categories/batch', $data);
-                Log::info(json_encode($response ));
 
                 //Add external id to the categories
                 foreach ($response->create as $uploadedCategory) {
@@ -745,7 +734,6 @@ class SalesChannelManager
 
     private function updateCategories(Collection $categories, Saleschannel $salesChannel, Client $woocommerce){
         $categories = $categories->chunk(100);
-        Log::info('updating categories');
         try{
             foreach ($categories as $categoryBatch) {
             $data = ['update' => []];
@@ -759,11 +747,7 @@ class SalesChannelManager
                 ];
                 array_push($data['update'], $cat);
             }
-            Log::info('update category data');
-            Log::info(json_encode($data));
             $response = $woocommerce->post('products/categories/batch', $data);
-            Log::info('updat response');
-            Log::info(json_encode($response));
             }
         }catch(Exception $ex){
             Log::error($ex->getMessage());
