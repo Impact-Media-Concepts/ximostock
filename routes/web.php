@@ -9,7 +9,16 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkSpaceController;
+use App\Http\Controllers\WooCommerceWebhookController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\auth\PasswordController;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,83 +32,86 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 //product
 Route::middleware('auth')->group(function () {
-    Route::get('/products', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product');
-    Route::get('/products/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product');
-    Route::get('/products/export/', [ProductController::class, 'export']);//export
-    Route::get('/products/archive',[ProductController::class, 'archive'])->middleware('can:forceDelete,App\Models\Product')->middleware('can:restore,App\Models\Product');
-    Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('can:view,product');
-    Route::post('/products', [ProductController::class, 'store']);//autherized in controller
-    Route::patch('/products/{product}', [ProductController::class, 'update']);//autherized in controller
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');
-    Route::post('/products/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');//autherized in controller
-    Route::post('/products/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');//autherized in controller
-    Route::post('/products/bulkdiscountforce', [ProductController::class, 'bulkDiscountForce']);//autherized in controller
-    Route::post('/products/bulklinksaleschannel', [ProductController::class, 'bulkLinkSalesChannel'])->name('products.bulkLinkSalesChannel');//autherized in controller
-    Route::post('/products/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');//autherized in controller
-    Route::post('/products/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');//autherized in controller
-    Route::post('/products/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');//autherized in controller
-    Route::post('/products/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');//autherized in controller
-    Route::post('/products/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');//autherized in controller
-    Route::post('/products/restore', [ProductController::class, 'restore'])->middleware('can:restore,App\Models\Product');
-    Route::post('/products/forcedelete', [ProductController::class, 'forceDelete'])->middleware('can:forceDelete,App\Models\Product');
+    // Products prefixed and grouped
+    Route::prefix('/products')->middleware('auth')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->middleware('can:viewAny,App\Models\Product')->name('products.index');
+        Route::get('/create', [ProductController::class, 'create'])->middleware('can:create,App\Models\Product')->name('products.create');
+        Route::get('/export', [ProductController::class, 'export'])->name('products.export');
 
-    //variant product
-    Route::get('/products/variant/create', [ProductVariationController::class, 'create'])->middleware('can:create,App\Models\Product');
-    Route::post('/products/variant', [ProductVariationController::class, 'store']);//autherized in controller
+        // Product variations
+        Route::get('/{id}/variation/add', [ProductController::class, 'addVariation'])->name('products.addVariation');
 
-    //categories
-    Route::get('/categories', [CategoryController::class, 'index'])->middleware('can:viewAny,App\Models\Category');
-    Route::get('/categories/create', [CategoryController::class, 'create'])->middleware('can:create,App\Models\Category');
-    Route::get('/categories/archive', [CategoryController::class, 'archive'])->middleware('can:restore,App\Models\categories')->middleware('can:forceDelete,App\Models\categories');
-    Route::get('/categories/{category}', [CategoryController::class, 'show'])->middleware('can:view,category');
-    Route::post('/categories', [CategoryController::class, 'store']);//autherized in controller
-    Route::patch('/categories/{category}', [CategoryController::class, 'update']);//autherized in controller
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware('can:delete,category');
-    Route::post('/categories/restore',[CategoryController::class, 'restore'])->middleware('can:restore,App\Models\categories');
-    Route::post('/categories/forcedelete',[CategoryController::class, 'forceDelete'])->middleware('can:forceDelete,App\Models\categories');
+        Route::get('/{product}', [ProductController::class, 'show'])->middleware('can:view,product')->name('products.show');
+        Route::post('/', [ProductController::class, 'store'])->name('products.store');
+        Route::delete('/{id}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('can:delete,product');
+        Route::post('/bulkdelete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
+        Route::post('/bulkdiscount', [ProductController::class, 'bulkDiscount'])->name('products.bulkDiscount');
+        Route::post('/bulkdiscountforce', [ProductController::class, 'bulkDiscountForce'])->name('products.bulkDiscountForce');
+        Route::post('/bulkunlinksaleschannel', [ProductController::class, 'bulkUnlinkSalesChannel'])->name('products.bulkUnlinkSalesChannel');
+        Route::post('/bulkenablebackorders', [ProductController::class, 'bulkEnableBackorders'])->name('products.bulkEnableBackorders');
+        Route::post('/bulkdisablebackorders', [ProductController::class, 'bulkDisableBackorders'])->name('products.bulkDisableBackorders');
+        Route::post('/bulkenablecommunicateStock', [ProductController::class, 'bulkEnableCommunicateStock'])->name('products.bulkEnableCommunicateStock');
+        Route::post('/bulkdisablecommunicateStock', [ProductController::class, 'bulkDisableCommunicateStock'])->name('products.bulkDisableCommunicateStock');
+        Route::post('/restore', [ProductController::class, 'restore'])->middleware('can:restore,App\Models\Product')->name('products.restore');
+        Route::post('/forcedelete', [ProductController::class, 'forceDelete'])->middleware('can:forceDelete,App\Models\Product')->name('products.forceDelete');
 
-    //properties
-    Route::get('/properties', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property');
-    Route::get('/properties/create', [PropertyController::class, 'create'])->middleware('can:create,App\Models\Property');
-    Route::get('/properties/archive',[PropertyController::class, 'archive'])->middleware('can:restore,App\Models\Property')->middleware('can:forceDelete,App\Models\Property');
-    Route::get('/properties/{property}', [PropertyController::class, 'show'])->middleware('can:view,property');
-    Route::post('/properties',[PropertyController::class, 'store'])->middleware('can:create,App\Models\Property');
-    Route::patch('/properties/{property}', [PropertyController::class, 'update'])->middleware('can:update,property');
-    Route::post('/properties/bulkdelete', [PropertyController::class, 'bulkDelete']);//autherized in controller
-    Route::post('/properties/restore',[PropertyController::class, 'restore'])->middleware('can:restore,App\Models\Property');
-    Route::post('/properties/forcedelete',[PropertyController::class, 'forceDelete'])->middleware('can:foreceDelete,App\Models\Property');
+        //variant product
+        Route::get('/variant/create', [ProductVariationController::class, 'create'])->middleware('can:create,App\Models\Product')->name('products.variant.create');
+        Route::post('/variant', [ProductVariationController::class, 'store'])->name('products.variant.store');
+    });
 
-    //salesChannels
-    Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel');
-    Route::get('/saleschannels/create',[SalesChannelController::class, 'create'])->middleware('can:create,App\Models\SalesChannel');
-    Route::get('/saleschannels/archive',[SalesChannelController::class, 'archive'])->middleware('can:restore,App\Models\SalesChannel')->middleware('can:forceDelete,App\Models\SalesChannel');
-    Route::get('/saleschannels/{salesChannel}', [SalesChannelController::class, 'show'])->middleware('can:view,salesChannel');
-    Route::post('/saleschannels', [SalesChannelController::class, 'store'])->middleware('can:create,App\Models\SalesChannel');
-    Route::patch('/saleschannels/{salesChannel}', [SalesChannelController::class, 'update'])->middleware('can:update,salesChannel');
-    Route::post('/saleschannels/bulkdelete', [SalesChannelController::class, 'bulkDelete']);//autherized in controller
-    Route::post('/saleschannels/restore',[SalesChannelController::class, 'restore'])->middleware('can:restore,App\Models\SalesChannel');
-    Route::post('/saleschannels/forcedelete',[SalesChannelController::class, 'forceDelete'])->middleware('can:foreceDelete,App\Models\SalesChannel');
+    // Categories prefixed and grouped
+    Route::prefix('/categories')->middleware('auth')->group(function() {
+        Route::get('', [CategoryController::class, 'index'])->middleware('can:viewAny,App\Models\Category')->name('categories.index');
+        Route::post('/create', [CategoryController::class, 'create'])->middleware('can:create,App\Models\Category')->name('categories.create');
+    });
 
-    //InentoryLocations
-    Route::get('/locations', [InventoryLocationController::class, 'index'])->middleware('can:viewAny,App\Models\InventoryLocation');
-    Route::get('/locations/create', [InventoryLocationController::class, 'create'])->middleware('can:create,App\Models\InventoryLocation');
-    Route::get('/locations/{location}', [InventoryLocationController::class, 'show'])->middleware('can:view,location');
-    Route::post('/locations', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation');
+    // Properties prefixed and grouped
+    Route::prefix('/properties')->middleware('auth')->group(function() {
+        Route::get('', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
+    });
 
-    //Users (only admins can access these)
-    Route::get('/users', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User');
-    Route::get('/users/create', [UserController::class, 'create'])->middleware('can:create,App\Models\User');
-    Route::get('/users/{user}', [UserController::class, 'show'])->middleware('can:view,user');
-    Route::post('/users', [UserController::class, 'store'])->middleware('can:create,App\Models\User');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('can:delete,user');
-    //admins only
-    Route::get('/activity-log', [ActivityLogController::class, 'index']);
+    Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
+    Route::get('/locations', [InventoryLocationController::class, 'index'])->middleware('can:viewAny,App\Models\InventoryLocation')->name('locations.index');
+
+
+    Route::prefix('/users')->middleware('auth')->group(function() {
+        Route::get('/', [UserController::class, 'index'])->middleware('can:viewAny,App\Models\User')->name('users.index');
+        Route::get('/theme', [UserController::class, 'theme'])->name('users.theme');
+        Route::get('/create', [UserController::class, 'create'])->middleware('can:viewAny,App\Models\User')->name('users.create');
+        Route::get('/{user}', [UserController::class, 'show'])->middleware('can:viewAny,App\Models\User')->name('users.show');
+        Route::post('', [UserController::class, 'store'])->middleware('can:viewAny,App\Models\User')->name('users.store');
+
+        Route::patch('/{user}', [UserController::class, 'update'])->name('users.update');
+
+        Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('can:viewAny,App\Models\User')->name('users.destroy');
+    });
+
+    Route::prefix('/workspaces')->middleware('auth')->group(function() {
+        Route::get('/', [WorkSpaceController::class, 'index'])->name('workspaces.index');
+        Route::get('/create', [WorkSpaceController::class, 'create'])->name('workspaces.create');
+        Route::post('/', [WorkSpaceController::class, 'store'])->name('workspaces.store');
+        Route::get('/{workspace}', [WorkSpaceController::class, 'show'])->name('workspaces.show');
+        Route::get('/{workspace}/edit', [WorkSpaceController::class, 'edit'])->name('workspaces.edit');
+        Route::patch('/{workspace}', [WorkSpaceController::class, 'update'])->name('workspaces.update');
+        Route::delete('/{workspace}', [WorkSpaceController::class, 'destroy'])->name('workspaces.destroy');
+        Route::post('/switch', [WorkSpaceController::class, 'switch'])->name('workspaces.switch');
+    });
+
+    Route::prefix('/suppliers')->middleware('auth')->group(function() {
+        Route::get('/', [SupplierController::class, 'index'])->name('suppliers.index');
+    });
+
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
+    Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
+    Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
+
+    Route::get('/test', [CategoryController::class, 'testSaleschannel']);
 });
 
 //authentication
@@ -107,10 +119,15 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/reset-password', [PasswordController::class, 'view'])->middleware(['auth', 'verified'])->name('reset-password');
+Route::post('/update-password', [PasswordController::class, 'update'])->middleware(['auth', 'verified'])->name('update-password');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('/webhooks/woocommerce', [WooCommerceWebhookController::class , 'handle']);
 
 require __DIR__ . '/auth.php';

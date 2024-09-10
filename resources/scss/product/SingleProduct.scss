@@ -1,0 +1,330 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.product-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 22px;
+
+    .product-type-toggle {
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 34px;
+
+            input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+
+                &:checked {
+                    +.slider {
+                        background-color: var(--primary);
+
+                        &:before {
+                            transform: translateX(26px);
+                        }
+                    }
+                }
+
+                &:focus {
+                    +.slider {
+                        box-shadow: 0 0 1px var(--border);
+                    }
+                }
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 10px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--border);
+                transition: .4s;
+
+                &:before {
+                    position: absolute;
+                    content: "";
+                    height: 16px;
+                    width: 16px;
+                    left: 4px;
+                    bottom: 4px;
+                    background-color: var(--light);
+                    transition: .4s;
+                }
+
+                &.round {
+                    border-radius: 34px;
+
+                    &:before {
+                        border-radius: 50%;
+                    }
+                }
+            }
+
+            .type {
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translate(110%, -30%);
+            }
+        }
+    }
+
+    .main-product-info {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px 25px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background-color: var(--light);
+
+        .image-container {
+            width: 211px;
+            height: 100%;
+            min-height: 211px;
+            padding: 20px;
+            border: 1px solid var(--border);
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: 2;
+            gap: 5px 21px;
+            width: 457px;
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                grid-column: span 1;
+
+                label {
+                    @include default-label;
+                }
+
+                input {
+                    width: 100%;
+                    @include default-input;
+                }
+
+                &.row {
+                    grid-column: span 2;
+                }
+            }
+        }
+    }
+
+    .product-content {
+        display: flex;
+        gap: 31px;
+        width: 100%;
+
+        >div {
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+            background-color: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .product-tabs {
+            width: 100%;
+            max-width: 80%;
+
+            .tab-heading {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                .heading {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-grow: 1;
+                    padding: 12px;
+                    background-color: var(--light);
+                    border-right: 1px solid var(--border);
+
+                    &.active {
+                        background-color: var(--secondary);
+                    }
+
+                    &:first-child {
+                        border-radius: 10px 0 0 0;
+                    }
+
+                    &:last-child {
+                        border-radius: 0 10px 0 0;
+                        border-right: none;
+                    }
+                }
+            }
+
+            .tab-content {
+                .content-container {
+                    .title {
+                        padding: 15px 25px;
+                        border-bottom: 1px solid var(--border);
+                    }
+
+                    .content {
+                        @include content-container;
+
+                        label {
+                            @include default-label;
+                        }
+
+                        input:not([type=checkbox], [type=radio]),
+                        textarea,
+                        select {
+                            @include default-input;
+                            width: 100%;
+                        }
+
+                        ul {
+                            @include filter-list;
+                        }
+
+
+                        .foto-grid {
+                            display: grid;
+                            grid-template-columns: repeat(3, 1fr);
+                            gap: 20px;
+                            margin-top: 20px;
+
+                            .foto {
+                                position: relative;
+                                width: 100%;
+                                border: 1px solid var(--border);
+                                border-radius: 10px;
+
+                                img {
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                    object-position: center;
+                                    border-radius: 10px;
+                                }
+
+                                .delete {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    position: absolute;
+                                    right: 0;
+                                    top: 0;
+                                    transform: translate(40%, -40%);
+                                    background-color: var(--light);
+                                    width: 25px;
+                                    height: 25px;
+                                    padding: 5px;
+                                    font-size: 15px;
+                                    border-radius: 100%;
+                                    border: 1px solid var(--border);
+                                    cursor: pointer;
+                                }
+                            }
+                        }
+
+                        &.categorieen {
+                            flex-direction: row;
+
+                            section {
+                                flex-grow: 1;
+                                 input[type=text] + ul {
+                                    margin-block-start: 20px;
+                                }
+                            }
+                        }
+
+                        &.voorraad {
+                            .form-group {
+                                gap: 20px;
+                            }
+                        }
+
+                        &.variaties {
+                            .form-group {
+                                gap: 20px;
+                            }
+                        }
+
+                        &.eigenschappen {
+                            .form-group {
+                                flex-direction: row;
+                                flex-wrap: wrap;
+                                justify-content: space-between;
+                                label {
+                                    width: 100%;
+                                }
+                                select {
+                                    width: 25%;
+                                }
+                                input {
+                                    width: calc(75% - 5px);
+                                }
+                                button {
+                                    width: 100%;
+                                }
+                            }
+                            button {
+                                @include secondary-buttton;
+                                padding: 12px !important;
+                                border-width: 1px;
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+        .product-actions {
+            gap: 8px;
+            padding: 20px;
+            max-width: 265px;
+
+            button {
+                padding: 12px !important;
+                border-width: 1px;
+            }
+
+            .save {
+                @include primary-button;
+            }
+
+            .dupliceren {
+                // Your styles for the "Dupliceren" button
+                @include secondary-buttton;
+            }
+
+            .export {
+                @include secondary-buttton;
+            }
+
+            .archive {
+                @include secondary-buttton;
+            }
+
+            .delete {
+                @include dark-buttton;
+            }
+        }
+    }
+}

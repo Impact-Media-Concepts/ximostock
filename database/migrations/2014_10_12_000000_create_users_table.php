@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('primary_color')->default('#3DABD5');
+            $table->string('secondary_color')->default('#F8F8F8');
+            $table->string('background_color')->default('#FFFFFF');
+            $table->string('text_color')->default('#717171');
             $table->rememberToken();
             $table->timestamps();
         });

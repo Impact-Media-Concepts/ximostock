@@ -1,0 +1,362 @@
+@import "../../globals/_mixins";
+@import "../../globals/__variables";
+
+.product-container {
+
+    .product-table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 21px;
+        background-color: var(--primary);
+        padding: 17.5px 30px 17.5px 25px;
+        border-radius: 10px 10px 0 0;
+
+        .title {
+            font-size: 18px;
+            line-height: 21px;
+            color: var(--light);
+        }
+
+        .actions {
+            display: flex;
+            gap: 11px;
+            .button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 9px;
+                padding: 13px 12px 11px 12px;
+                border: 1px solid var(--border-light);
+                border-radius: 5px;
+                background-color: var(--primary);
+                color: var(--text-light);
+                font-size: 14px;
+                line-height: 17px;
+                cursor: pointer;
+                text-decoration: none;
+                &:hover {
+                    background-color: var(--primary-dark);
+                }
+            }
+        }
+        
+    }
+
+    .bulk-actions { 
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        padding: 12px;
+        background-color: var(--secondary);
+        color: var(--text);
+        font-size: 14px;
+        line-height: 17px;
+        .select-all {
+            cursor: pointer;
+            color: var(--primary);
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            .button {
+                padding: 9px 15px 7px 15px;
+                font-size: 14px;
+                line-height: 17px;
+                font-weight: 400;
+                color: var(--text);
+                border: 1px solid var(--text);
+                border-radius: 5px;
+                &:hover{
+                    background-color: darken($color: $secondary, $amount: 10);
+                }
+            }
+        }
+    }
+
+    .product-table {
+        display: flex;
+        flex-direction: column;
+        padding: 0 25px;
+        overflow: auto;
+
+        .product {
+            display: flex;
+            gap: 21px;
+            justify-content: space-between;
+            padding: 15px 0;
+            text-decoration: none;
+            &:hover * {
+                text-decoration: none;
+            }
+
+            >div {
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                line-height: 24px;
+                font-weight: 400;
+                color: var(--text);
+                min-width: 100px;
+            }
+
+            .checkbox {
+                min-width: unset;
+                input {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+
+            .image {
+                width: 44px;
+                height: 44px;
+                min-width: 44px;
+                border: 1px solid var(--border-dark);
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                }
+            }
+
+            .ean {
+                max-width: 100px
+            }
+
+            .title {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .price {
+                span {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    line-height: 17px;
+
+                    .crossed {
+                        font-weight: 400;
+                        text-decoration: line-through;
+                        text-align: center;
+                    }
+
+                    .price {
+                        font-weight: 700;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .status {
+                ul {
+                    margin-block-start: 0;
+                    margin-block-end: 0;
+                    padding-inline-start: 0;
+                    text-indent: -6px !important;
+                    li.on,
+                    li.on::marker {
+                        color: var(--primary);
+                    }
+                }
+            }
+        }
+    }
+    .product-table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 21px;
+        background-color: var(--primary);
+        padding: 17px 25px;
+        color: var(--light);
+        border-radius: 0 0 10px 10px ;
+        .pagination {
+            display: flex;
+            gap: 5px;
+            .link {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                color: var(--text-light);
+                border: 1px solid var(--border-light);
+                border-radius: 5px;
+                width: 42px;
+                height: 42px;
+                &:hover {
+                    color: var(--primary);
+                    background-color: var(--light);
+                }
+            }
+        }
+    }
+
+    .saleschannel-link-popup{
+        @include popup-container;
+    }
+
+    .popup-container{
+        @include popup-container;
+        .action-buttons{
+            display: flex;
+            flex-direction: row-reverse;
+            width: 100%;
+            gap: 8px;
+            .submit{
+                width: 126px;
+                height: 43px;
+                background-color: $primary;
+                border-radius: 5px;
+                border-style: none;
+                color: $text-light;
+                &:hover {
+                    background-color: darken($primary,10%);
+                }
+            }
+            .cancel{
+                width: 126px;
+                height: 43px;
+                background-color: $secondary;
+                border-radius: 5px;
+                border-style: solid;
+                border-color: $border-dark;
+                border-width: 1px;
+                color: $border-dark;
+                &:hover {
+                    background-color: darken($secondary,10%);
+                }
+            }
+        }
+            .saleschannels{
+                border-color: $border;
+                border-style:solid;
+                border-radius: 10px;
+                border-width: 1px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                .saleschannels-header{
+                    background-color: $primary;
+                    color: $text-light;
+                    font-size: 14px;
+                    line-height: 17px;
+                    text-align: left;
+                    padding: 12px 22px;
+                }
+                .saleschannels-content{
+                    padding: 10px;
+                    text-align: left;
+                    .saleschannel{
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        padding: 4px;
+                        color: $text;
+                    }
+                }
+            }
+            .discountform{
+                border-color: $border;
+                border-style:solid;
+                border-radius: 10px;
+                border-width: 1px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                .discount-header{
+                    background-color: $primary;
+                    color: $text-light;
+                    font-size: 14px;
+                    line-height: 17px;
+                    text-align: left;
+                    padding: 12px 22px;
+                }
+                .discount-content{
+                    display: flex;
+                    flex-direction: column;
+                    padding: 21px;
+                    gap: 36px;
+                    .inputs{
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 7px 19px;
+                        .textform{
+                            height: 40px;
+                            border-radius: 5px;
+                            border-color: $border;
+                            border-style: solid;
+                            border-width: 1px;
+                            text-align: center;
+
+                            -moz-appearance: textfield;
+
+                            &::placeholder{
+                                text-align: center;
+                                color: $border;
+                            }
+                            /* Verberg de spinner-pijltjes in WebKit-gebaseerde browsers (Chrome, Safari) */
+                            &::-webkit-inner-spin-button,
+                            &::-webkit-outer-spin-button {
+                                -webkit-appearance: none;
+                                margin: 0;
+                            }
+
+                            /* Verberg de clear-knop in Microsoft Edge */
+                            &::-ms-clear {
+                                display: none;
+                            }
+                        }
+                        .checkbox{
+                            display: flex;
+                            align-items: center;
+                            flex-direction: row;
+                            .label{
+                                font-size: 14px;
+                                line-height: 20px;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                    .action-buttons{
+                        display: flex;
+                        flex-direction: row-reverse;
+                        width: 100%;
+                        gap: 8px;
+                        .submit{
+                            width: 126px;
+                            height: 43px;
+                            background-color: $primary;
+                            border-radius: 5px;
+                            border-style: none;
+                            color: $text-light;
+                            &:hover {
+                                background-color: darken($primary,10%);
+                            }
+                        }
+                        .cancel{
+                            width: 126px;
+                            height: 43px;
+                            background-color: $secondary;
+                            border-radius: 5px;
+                            border-style: solid;
+                            border-color: $border-dark;
+                            border-width: 1px;
+                            color: $border-dark;
+                            &:hover {
+                                background-color: darken($secondary,10%);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+}

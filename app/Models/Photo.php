@@ -21,7 +21,6 @@ class Photo extends Model
     protected $fillable = ['url'];
 
     public function products(){
-        return $this->belongsToMany(Product::class)
-        ->using(PhotoProduct::class);
+        return $this->belongsToMany(Product::class);
     }
 }

@@ -1,4 +1,4 @@
-<x-layout._layout :sidenavActive="$sidenavActive" :activeWorkspace="$activeWorkspace" :workspaces="$workspaces">
+{{-- <x-layout._layout :sidenavActive="$sidenavActive" :activeWorkspace="$activeWorkspace" :workspaces="$workspaces">
     <form action="/products/restore" method="POST">
         @csrf
         
@@ -12,4 +12,11 @@
             <input type="submit" value="delete">
         </ul>
     </form>
-</x-layout._layout>
+</x-layout._layout> --}}
+
+{{-- @extends('layouts.app')
+
+@section('content')
+    <h1>products</h1>
+    <p>Welkom op het product archief.</p>
+@endsection --}}

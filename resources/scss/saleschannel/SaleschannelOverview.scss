@@ -1,0 +1,439 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.saleschannel-view {
+    .page-title {
+        display: block;
+        font-size: 20px;
+        line-height: 24px;
+        font-weight: bold;
+        margin-bottom: 35px;
+        margin-top: 6px;
+        margin-left: 4px;
+    }
+
+    .saleschannel-table {
+        @include table-wrapper;
+
+        .table-header {
+            span {
+                cursor: pointer;
+            }
+
+            .select-name {
+                margin-left: 30px;
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                width: 320px;
+
+                .select-all {
+                    height: 14px;
+                    width: 14px;
+                }
+            }
+
+            .orderby-type {
+                flex: 1;
+                min-width: 210px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .orderby-date {
+                min-width: 215px;
+                display: flex;
+                flex-direction: row;
+                gap: 5px;
+                align-items: center;
+            }
+
+            .orderby {
+                font-size: 14px;
+                line-height: 17px;
+                color: var(--text-light);
+                align-items: center;
+
+                .chevron {
+
+                    fill: var(--light);
+                    width: 10px;
+                    height: 6px;
+                }
+            }
+
+            .create-button-wraper {
+                display: flex;
+                flex-direction: row-reverse;
+                align-items: center;
+
+                .button-create {
+                    display: flex;
+                    align-items: center;
+                    height: 40px;
+                    margin-right: 15px;
+                    border-radius: 5px;
+                    border-color: var(--border-light);
+                    border-style: solid;
+                    background-color: var(--primary);
+                    color: var(--text-light);
+                    border-width: 1px;
+                    gap: 10px;
+                    padding: 12px;
+
+                    &:hover {
+                        background-color: var(--hover-primary);
+                    }
+
+                    .saleschannel-icon {
+                        height: 20px;
+                        width: 20px;
+                    }
+                }
+            }
+        }
+
+        .table-content {
+
+            .table-item {
+
+                &.active {
+                    height: 282px;
+                }
+
+                .table-info {
+                    .select-name {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 16px;
+                        align-items: center;
+                        margin-left: 17px;
+                        min-width: 320px;
+
+                        .name {
+                            cursor: pointer;
+                        }
+                    }
+
+                    .type {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+
+                        min-width: 200px;
+                    }
+
+                    .date {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+
+                        min-width: 200px;
+                    }
+
+                    .delete-open {
+
+                        display: flex;
+                        flex-direction: row-reverse;
+                        align-items: center;
+
+                        .dropdown-wrapper {
+                            &:hover {
+                                cursor: pointer;
+                            }
+
+                            .open {
+                                width: 17px;
+                                height: 10px;
+                                margin: 20px;
+                            }
+                        }
+
+                        .delete-button {
+                            height: 40px;
+                            width: 180px;
+                            background-color: var(--secondary);
+                            color: var(--text);
+                            border-radius: 5px;
+                            border-color: var(--border-dark);
+                            border-style: solid;
+                            border-width: 1px;
+
+                            &:hover {
+                                background-color: var(--hover-secondary);
+                            }
+                        }
+                    }
+                }
+
+                .saleschannel-form {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+
+                    .form {
+                        gap: 16px 20px;
+                        padding: 43px;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+
+                        .form-input {
+                            display: flex;
+                            flex-direction: column;
+
+                            input {
+                                height: 40px;
+                                border-radius: 5px;
+                                border-color: var(--border);
+                                border-style: solid;
+                                font-size: 14px;
+                                line-height: 17px;
+                                padding: 10px;
+                                color: $text;
+
+                                &:focus {
+                                    outline: none;
+                                    border-color: var(--border-dark);
+                                }
+                            }
+                        }
+                    }
+
+                    .save-button-wrapper {
+                        display: flex;
+                        flex-direction: row-reverse;
+                        align-items: flex-end;
+
+                        .save {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                            height: 43px;
+                            width: 126px;
+                            background-color: var(--primary);
+                            border-radius: 5px;
+                            border-style: none;
+                            color: var(--text-light);
+                            margin: 19px 17px;
+
+                            &:hover {
+                                background-color: var(--hover-primary);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 21px;
+            background-color: var(--primary);
+            padding: 17px 25px;
+            color: var(--light);
+            border-radius: 0 0 10px 10px;
+
+            .pagination {
+                display: flex;
+                gap: 5px;
+
+                .link {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    color: var(--text-light);
+                    border: 1px solid var(--border-light);
+                    border-radius: 5px;
+                    width: 42px;
+                    height: 42px;
+
+                    &:hover {
+                        color: var(--primary);
+                        background-color: var(--light);
+                    }
+                }
+            }
+        }
+
+    }
+
+    .create-popup {
+        @include popup-container;
+
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            border-color: var(--border-secondary);
+            border-width: 1px;
+            border-style: solid;
+
+            .popup-header {
+                display: flex;
+                flex-direction: row;
+                height: 40px;
+                padding-left: 22px;
+                background-color: var(--primary);
+                color: $text-light;
+                align-items: center;
+                font-size: 14px;
+                line-height: 17px;
+            }
+
+            .saleschannel-create-form {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                padding: 20px 24px;
+
+                .create-form-inputs {
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px 42px;
+
+                    .create-input {
+                        text-align: left;
+                        display: flex;
+                        flex-direction: column;
+                        font-size: 14px;
+                        line-height: 24px;
+                        color: var(--text);
+
+                        input {
+                            height: 40px;
+                            border-radius: 5px;
+                            border-style: solid;
+                            outline: none;
+                            border-color: var(--border);
+                            color: $text;
+                            padding-left: 18px;
+                            font-size: 14px;
+                            line-height: 17px;
+                            border-width: 1px;
+
+                        }
+
+                        select {
+                            height: 40px;
+                            border-radius: 5px;
+                            border-style: solid;
+                            border-width: 1px;
+                            outline: none;
+                            border-color: var(--border);
+                            color: $text;
+                            padding-left: 18px;
+                            font-size: 14px;
+                            line-height: 17px;
+                        }
+                    }
+                }
+            }
+
+            .action-buttons {
+                display: flex;
+                flex-direction: row-reverse;
+                padding: 10px 24px 20px 0px;
+                gap: 7px;
+
+                .save-button {
+                    height: 43px;
+                    width: 126px;
+                    background-color: var(--primary);
+                    color: var(--text-light);
+                    border-radius: 5px;
+                    display: flex;
+                    justify-content: center;
+                    border-style: none;
+                    align-items: center;
+                    font-size: 14px;
+                    line-height: 17px;
+
+                    &:hover {
+                        background-color: var(--hover-primary);
+                    }
+                }
+
+                .cancel-button {
+                    height: 43px;
+                    width: 126px;
+                    background-color: var(--light);
+                    color: $text;
+                    border-radius: 5px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 14px;
+                    line-height: 17px;
+                    border-style: solid;
+                    border-color: var(--border-dark);
+
+                    &:hover {
+                        background-color: var(--hover-light);
+                    }
+
+                }
+
+                .button-icon {
+                    width: 14px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+
+    .warning-delete-one-popup {
+        @include popup-container;
+
+        .title {
+            font-weight: bold;
+            font-size: 26px;
+            line-height: 26px;
+        }
+
+        .warning-icon {
+            width: 90px;
+        }
+
+        .warning-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 28px;
+
+            .confirm-button {
+                border-radius: 5px;
+                color: $text-light;
+                border-style: none;
+                background-color: var(--alert);
+                width: 215px;
+                height: 43px;
+
+                &:hover {
+                    background-color: var(--hover-alert);
+                }
+            }
+
+            .cancel-button {
+                border-radius: 5px;
+                color: $text;
+                border-style: solid;
+                background-color: var(--light);
+                border-color: var(--border-dark);
+                width: 215px;
+                height: 43px;
+
+                &:hover {
+                    background-color: var(--hover-light);
+                }
+            }
+        }
+    }
+}

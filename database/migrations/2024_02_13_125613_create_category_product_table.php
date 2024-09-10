@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('category_product', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->boolean('primary');
+            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('product_id');
+            $table->boolean('primary')->default(false);
             $table->timestamps();
+
+            // Set relationships
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 

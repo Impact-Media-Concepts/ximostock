@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use App\Enums\ProductType;
 
 class Product extends Model
 {
@@ -14,13 +15,17 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'values' => 'array',
+        'type' => ProductType::class,
+    ];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+            ->logAll()
+            ->logOnlyDirty();
     }
-
 
     // haal de varianten van een variabel product op
     public function childProducts()
@@ -36,9 +41,7 @@ class Product extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class)
-            ->using(CategoryProduct::class)
-            ->withPivot('primary');
+        return $this->belongsToMany(Category::class);
     }
 
     public function getPrimaryCategoryAttribute()
@@ -51,9 +54,7 @@ class Product extends Model
 
     public function photos()
     {
-        return $this->belongsToMany(Photo::class)
-            ->using(PhotoProduct::class)
-            ->withPivot('primary');
+        return $this->belongsToMany(Photo::class);
     }
 
     public function getPrimaryPhotoAttribute()
@@ -77,7 +78,6 @@ class Product extends Model
         $props = $this->properties;
         $decodedProps = [];
         foreach ($props as $prop) {
-
             $propjson = json_decode($prop->pivot->property_value);
             array_push($decodedProps, ['name' => $prop->name, 'value' => $propjson->value]);
         }
@@ -111,19 +111,24 @@ class Product extends Model
     protected function calculateStock(): int
     {
         $inventories = $this->locationZones;
-
         // Calculate the total stock of the current product
         $stock = $inventories->sum(function ($inventory) {
             return $inventory->pivot->stock ?? 0;
         });
 
+        // Get the quantity of open sales for the current product
+        $openSalesQuantity = $this->sales()->where('status', 'waiting_for_location')->sum('quantity');
+
+        // Subtract the quantity of open sales from the total stock
+        $stock -= $openSalesQuantity;
+
         return $stock;
     }
 
+
     public function salesChannels()
     {
-        return $this->belongsToMany(SalesChannel::class, 'product_sales_channel')
-            ->using(ProductSalesChannel::class);
+        return $this->belongsToMany(SalesChannel::class, 'product_sales_channel');
     }
 
     //is for online
@@ -141,19 +146,13 @@ class Product extends Model
     //calulate the total sales of this product
     public function getTotalSalesAttribute(): int
     {
-        $totalSales = 0;
-
-        // Loop through each sale related to the product
-        foreach ($this->sales as $sale) {
-            // Add the stock of each sale to the total sales count
-            $totalSales += $sale->stock;
-        }
-
-        return $totalSales;
+        return $this->sales()
+                    ->whereNotIn('status', ['error', 'in_progress'])
+                    ->sum('quantity');
     }
 
 
-    //returns true if the product is a concept and cant be set to online 
+    //returns true if the product is a concept and cant be set to online
     public function getConceptAttribute(): bool
     {
         if ($this->childProducts->isEmpty()) {
@@ -184,9 +183,9 @@ class Product extends Model
     {
         $query->when(
             $filters['search'] ?? false,
-            fn ($query, $search) =>
+            fn($query, $search) =>
             $query->where(
-                fn ($query) =>
+                fn($query) =>
                 $query
                     ->where('title', 'like', '%' . $search . '%')
                     ->orWhere('sku', 'like', '%' . $search . '%')
@@ -195,7 +194,7 @@ class Product extends Model
 
         $query->when(
             $filters['categories'] ?? false,
-            fn ($query, $categories) =>
+            fn($query, $categories) =>
             $query->whereHas('categories', function ($query) use ($categories) {
                 // Group by product id and count the number of distinct category IDs
                 $query->select('product_id')
@@ -220,16 +219,16 @@ class Product extends Model
                                     // Cast the property value based on its type
                                     switch ($propertyType) {
                                         case 'bool':
-                                            $query->whereJsonContains('property_value', ['value' => (bool)$propertyValue]);
+                                            $query->whereJsonContains('property_value', ['value' => (bool) $propertyValue]);
                                             break;
                                         case 'number':
-                                            $query->whereJsonContains('property_value', ['value' => (int)$propertyValue]);
+                                            $query->whereJsonContains('property_value', ['value' => (int) $propertyValue]);
                                             break;
                                         case 'text':
-                                            $query->whereJsonContains('property_value', ['value' => (string)$propertyValue]);
+                                            $query->whereJsonContains('property_value', ['value' => (string) $propertyValue]);
                                             break;
                                         case 'singleselect':
-                                            $query->whereJsonContains('property_value', ['value' => (string)$propertyValue]);
+                                            $query->whereJsonContains('property_value', ['value' => (string) $propertyValue]);
                                             break;
                                         case 'multiselect':
                                             $propertyValue = explode(',', $propertyValue);

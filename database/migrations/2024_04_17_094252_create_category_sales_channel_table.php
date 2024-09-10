@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('sales_channel_id')->constrained()->cascadeOnDelete();
-            $table->bigInteger('external_id');
+            $table->bigInteger('external_id')->nullable();
             $table->timestamps();
         });
     }

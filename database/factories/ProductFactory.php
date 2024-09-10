@@ -21,10 +21,12 @@ class ProductFactory extends Factory
             'work_space_id' => 1,
             'sku' => fake()->word() . '-' . fake()->unique()->numberBetween(0, 999999),
             'ean' => fake()->unique()->ean13(),
-            'title' => fake()->sentence(),
+            'title' => fake()->word(). '-' . fake()->word(). '-' . fake()->numberBetween(0, 999999),
             'short_description' => fake()->paragraph(),
             'long_description' => fake()->paragraph(),
-            'price' => fake()->randomNumber(3, true),
+            'price' => fake()->numberBetween(1, 1000),
+            'discount' => fake()->randomNumber(2, true),
+            'type' => 'simple'
         ];
     }
 }

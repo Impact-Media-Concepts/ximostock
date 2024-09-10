@@ -1,0 +1,43 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.edit-user {
+    display: block;
+    grid-column: span 3;
+    width: 100%;
+    padding: 20px 25px;
+    border-radius: 10px;
+    background-color: var(--light);
+
+    .form-container {
+        display: block;
+        flex-direction: column;
+        gap: 5px 21px;
+        width: 100%;
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: flex-start;
+
+            label {
+                @include default-label;
+            }
+
+            input,
+            select {
+                width: 100%;
+                @include default-input;
+            }
+            
+            .save {
+                padding: 12px 24px !important;
+                border-width: 1px;
+                margin-top: 15px;
+                @include primary-button;
+            }
+        }
+    }
+
+}

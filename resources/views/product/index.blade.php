@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="title">Hello from the product index page</h1>
-    <increment-counter></increment-counter>
-    <h2 class="title">Hello from the product index page</h2>
+<div id="app">
+    <product-overview
+        :initial-products="{{ json_encode($products) }}"
+        :initial-categories="{{ json_encode($categories) }}"
+        :initial-saleschannels="{{ json_encode($saleschannels) }}">
+    </product-overview>
+</div>
 @endsection

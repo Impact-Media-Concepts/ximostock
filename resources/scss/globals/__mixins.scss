@@ -1,0 +1,479 @@
+@import "./__variables";
+
+@mixin button($border, $background, $text, $hover-background) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 8px;
+    border: 1px solid $border;
+    border-radius: 5px;
+    background-color: $background;
+    color: $text;
+    font-size: 14px;
+    line-height: 17px;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $hover-background;
+    }
+}
+
+@mixin select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 20px 11px 20px;
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    background-color: var(--light);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 17px;
+    text-decoration: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    white-space: nowrap;
+    gap: 10px;
+}
+
+@mixin primary-button {
+    background-color: var(--primary);
+    color: var(--text-light);
+    border-radius: 5px;
+    border-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 17px;
+    gap: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--hover-primary);
+    }
+}
+
+@mixin secondary-buttton {
+    background-color: var(--light);
+    color: $text;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    line-height: 17px;
+    border-style: solid;
+    border-color: var(--border-dark);
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--hover-light);
+    }
+}
+
+@mixin dark-buttton {
+    background-color: var(--text);
+    color: $light;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    line-height: 17px;
+    border-style: solid;
+    border-color: var(--border-dark);
+    cursor: pointer;
+}
+
+@mixin text-input {
+    height: 40px;
+    border-radius: 5px;
+    border-style: solid;
+    outline: none;
+    border-color: var(--border);
+    color: $text;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 17px;
+    border-width: 1px;
+}
+
+@mixin select-options($background-color, $text-color, $hover-color) {
+    display: none;
+    position: absolute;
+    top: 115%;
+    right: 0;
+    border-radius: 10px;
+    box-shadow: 0px 3px 6px #0000001A;
+    border: 1px solid #F0F0F0;
+    background-color: $background-color;
+    z-index: 1;
+
+    a {
+        display: flex;
+        gap: 10px;
+        padding: 12px 40px 12px 20px;
+        color: $text-color;
+        text-decoration: none;
+
+        &:hover {
+            background-color: $hover-color;
+        }
+    }
+
+    .sub-options {
+        display: none;
+        position: absolute;
+        color: $text-color;
+        background-color: $background-color;
+        border-radius: 10px;
+        box-shadow: 0px 3px 6px #0000001A;
+        border: 1px solid #F0F0F0;
+        top: 0;
+        right: 100%;
+    }
+
+    .option-container:hover & {
+        display: block;
+    }
+}
+
+@mixin box-shadow {
+    -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+    -moz-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+}
+
+@mixin default-label {
+    display: block;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 5px;
+
+    &:not(:first-child) {
+        margin-top: 10px;
+    }
+}
+
+@mixin default-input {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px;
+
+    &:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+}
+
+@mixin popup-container {
+    position: fixed;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    text-align: center;
+    top: 0;
+    left: 0;
+    display: none;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, .25);
+    z-index: 1000;
+
+    &.visible {
+        display: flex;
+    }
+
+    .popup {
+        background-color: var(--light);
+        display: flex;
+        flex-direction: column;
+        border-color: var(--border);
+        border-style: solid;
+        border-width: 1px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 704px;
+        width: 80%;
+        gap: 20px;
+
+        .popup-close {
+            height: 21px;
+            width: 21px;
+            align-self: flex-end;
+            cursor: pointer;
+        }
+
+        .warning-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 28px;
+
+            button {
+                cursor: pointer;
+            }
+
+            .confirm-button {
+                border-radius: 5px;
+                color: $text-light;
+                border-style: none;
+                background-color: var(--alert);
+                width: 215px;
+                height: 43px;
+
+                &:hover {
+                    background-color: var(--hover-alert);
+                }
+            }
+
+            .cancel-button {
+                border-radius: 5px;
+                color: $text;
+                border-style: solid;
+                background-color: var(--light);
+                border-color: var(--border-dark);
+                width: 215px;
+                height: 43px;
+
+                &:hover {
+                    background-color: var(--hover-light);
+                }
+            }
+        }
+    }
+}
+
+@mixin table-wrapper {
+    border-radius: 10px;
+    background-color: var(--light);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    button {
+        cursor: pointer;
+    }
+
+    .table-header {
+        padding: 15px 25px;
+        height: 60px;
+        background-color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        span {
+            cursor: pointer;
+        }
+
+        .orderby {
+            font-size: 14px;
+            line-height: 17px;
+            color: var(--text-light);
+            align-items: center;
+            display: flex;
+            gap: 6px;
+            flex-direction: row;
+            align-items: center;
+
+            .chevron {
+                fill: var(--text-light);
+                width: 10px;
+                height: 6px;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                translate: transform 0.3s ease;
+
+                &.asc {
+                    transform: rotate(180deg);
+                }
+
+                &.active {
+                    display: flex;
+                }
+
+                path {
+                    fill: var(--text-light);
+                }
+            }
+        }
+    }
+
+    .table-bulkAction-bar {
+        height: 0px;
+        background-color: var(--secondary);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size: 14px;
+        line-height: 17px;
+        gap: 9px;
+        transition: height 0.3s ease;
+        overflow: hidden;
+
+        &.open {
+            height: 60px;
+        }
+
+        .bulkaction-text {
+            margin-left: 36px;
+
+            .select-all-text {
+                color: var(--primary);
+                cursor: pointer;
+            }
+        }
+
+        .bulkaction-button {
+            background-color: var(--secondary);
+            height: 36px;
+            width: 114px;
+            border-radius: 5px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: var(--border-dark);
+            color: $text;
+
+            &:hover {
+                background-color: darken($color: $secondary, $amount: 10);
+            }
+        }
+    }
+
+    .table-content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px 25px;
+        min-height: 70vh;
+
+        .table-item {
+            height: 60px;
+            display: block;
+            overflow: hidden;
+            background-color: var(--secondary);
+            border-radius: 10px;
+            border-width: 1px;
+            border-style: solid;
+            transition: height 0.3s ease;
+            border-color: var(--border-secondary);
+
+            .table-info {
+                height: 60px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding-left: 13px;
+                cursor: pointer;
+                button {
+                    @include dark-buttton;
+                    padding: 6px 24px;
+                }
+            }
+        }
+    }
+
+    .table-footer {
+        height: 60px;
+        background-color: var(--primary);
+    }
+}
+
+@mixin content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 25px;
+    background-color: var(--light);
+    border-radius: 10px;
+
+    section {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+
+        >span {
+            position: relative;
+            background-color: var(--primary);
+            padding: 10px 22px;
+            font-size: 14px;
+            line-height: 20px;
+            color: var(--light);
+            border-radius: 10px 10px 0 0;
+
+            small {
+                display: block;
+                margin-top: -5px;
+            }
+
+            img.remove {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+
+            input:not(.categorieen input),
+            textarea {
+                &:not(:last-child) {
+                    // margin-bottom: 15px;
+                }
+            }
+        }
+    }
+}
+
+@mixin remove-default-input {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    font: inherit;
+    box-shadow: none;
+    color: inherit;
+    line-height: normal;
+    letter-spacing: normal;
+}
+
+@mixin filter-list {
+    list-style-type: none;
+    padding-inline: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        &:not(:first-child) {
+            margin-top: 3px;
+        }
+    }
+}

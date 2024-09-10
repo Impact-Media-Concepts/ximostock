@@ -1,0 +1,298 @@
+@import "../globals/__mixins";
+@import "../globals/__variables";
+
+.supplier-overview{
+    .page-title{
+        display: block;
+        font-size: 20px;
+        line-height: 24px;
+        font-weight: bold;
+        margin-bottom: 35px;
+        margin-top: 6px;
+        margin-left: 4px;
+    }
+    .supplier-table{
+        @include table-wrapper;
+        .table-header{
+            span{
+                cursor: pointer;
+            }
+            .select-name{
+                margin-left: 12px;
+                width: 200px;
+                .select-all{
+                    height: 14px;
+                    width: 14px;
+                }
+            }
+            .company-name{
+                flex: 1;
+            }
+            .date-create{
+                display: flex;
+                flex-direction: row;
+                justify-self: right;
+                align-items: center;
+                padding-right: 26px;
+                .date{
+                    width: 140px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                }
+                .create-button{
+                    color: var(--text-light);
+                    font-size: 14px;
+                    line-height: 17px;
+                    width: 240px;
+                    height: 40px;
+                    background-color: var(--primary);
+                    border-radius: 5px;
+                    border-color: var(--light);
+                    border-style: solid;
+                    border-width: 1px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    cursor: pointer;
+                    &:hover{
+                       background-color: var(--hover-primary);
+                    }
+                    .supplier-icon{
+                        align-self: center;
+                        margin-top: 3px;
+                        path{
+                            fill: var(--text-light);
+                        }
+                    }
+                }
+            }
+            .chevron{
+                margin-left: 8px;
+            }
+        }
+        .table-content{
+            transition: height 0.3s ease;
+            flex-direction: column;
+            font-size: 14px;
+                    line-height: 17px;
+            .table-item{
+                transition: height 0.5s ease;
+
+                &.active{
+                    height: 230px;
+                }
+                .table-info{
+                    .select-name{
+                        width: 200px;
+                        display: flex;
+                        gap: 13px;
+                        font-size: 14px;
+                        line-height: 17px;
+                        span{
+                            align-self: flex-end;
+                        }
+                        input{
+                            width: 14px;
+                            height: 14px;
+                        }
+                    }
+                    .company-name{
+                        flex: 1;
+                    }
+                    .end-info-wrapper{
+                        justify-self: right;
+                        align-items: center;
+                        display: flex;
+                        flex-direction: row;
+                        .date{
+                            display: block;
+                            width: 180px;
+                        }
+                        .delete-button{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            gap: 6px;
+                            justify-content: center;
+                            width: 180px;
+                            height: 40px;
+                            background-color: var(--secondary);
+                            border-radius: 5px;
+                            border-style: solid;
+                            border-color: var(--border-dark);
+                            border-width: 1px;
+                            color: var(--text-color);
+                            &:hover{
+                                background-color: var(--hover-secondary);
+                            }
+                            .trash-icon{
+                                height: 20px;
+                                width: 20px;
+                                path {
+                                    fill: var(--border-dark);
+                                }
+                            }
+                        }
+                        .chevron-down{
+                            width: 17px;
+                            height: 10px;
+                            margin: 10px 20px 10px 14px;
+                            transition: transform 0.3s ease;
+                            cursor: pointer;
+                            &.active{
+                                transform: rotate(180deg);
+                            }
+                        }
+                    }
+                }
+                .item-content{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    padding: 20px 40px;
+
+                    .supplier-form{
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                        .form-input{
+                            display: flex;
+                            flex-direction: column;
+                            input{
+                                height: 40px;
+                                border-radius: 5px;
+                                border-color: var(--border);
+                                border-style: solid;
+                                font-size: 14px;
+                                line-height: 17px;
+                                color: $text;
+                                &:focus{
+                                    outline: none;
+                                    border-color: var(--border-dark);
+                                }
+                            }
+                        }
+                    }
+                    .save-button{
+                        height: 43px;
+                        width: 126px;
+                        align-self: flex-end;
+                        justify-self: right;
+                        @include primary-button;
+                    }
+                }
+            }
+        }
+    }
+    .delete-popup{
+        @include popup-container;
+    }
+    .delete-selected-popup{
+        @include popup-container;
+    }
+    .create-popup{
+        @include popup-container;
+        .popup{
+            .popup-content{
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                border-radius: 10px;
+                overflow: hidden;
+                border-color: var(--border-secondary);
+                border-width: 1px;
+                border-style: solid;
+                .popup-header{
+                    display: flex;
+                    flex-direction: row;
+                    height: 40px;
+                    padding-left: 22px;
+                    background-color: var(--primary);
+                    color: $text-light;
+                    align-items: center;
+                    font-size: 14px;
+                    line-height: 17px;
+                }
+                .supplier-create-form{
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 20px 24px;
+                    .create-form-inputs{
+                        flex: 1;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px 42px;
+                        .create-input{
+                            text-align: left;
+                            display: flex;
+                            flex-direction: column;
+                            font-size: 14px;
+                            line-height: 24px;
+                            color: var(--text);
+                            input{
+                                height: 40px;
+                                border-radius: 5px;
+                                border-style: solid;
+                                outline: none;
+                                border-color: var(--border);
+                                color: $text;
+                                padding-left: 18px;
+                                font-size: 14px;
+                                line-height: 17px;
+                                border-width: 1px;
+                            }
+                        }
+                    }
+                }
+                .action-buttons{
+                    display: flex;
+                    flex-direction: row-reverse;
+                    padding: 10px 24px 20px 0px;
+                    gap: 7px;
+                    .save-button{
+                        height: 43px;
+                        width: 126px;
+                        background-color: var(--primary);
+                        color: var(--text-light);
+                        border-radius: 5px;
+                        display: flex;
+                        justify-content: center;
+                        border-style: none;
+                        align-items: center;
+                        gap: 6px;
+                        font-size: 14px;
+                        line-height: 17px;
+                        &:hover{
+                            background-color: var(--hover-primary);
+                        }
+                    }
+                    .cancel-button{
+                        height: 43px;
+                        width: 126px;
+                        background-color: var(--light);
+                        color: $text;
+                        border-radius: 5px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-size: 14px;
+                        line-height: 17px;
+                        border-style: solid;
+                        border-color: var(--border-dark);;
+                        &:hover{
+                            background-color: var(--hover-light);
+                        }
+
+                    }
+                    .button-icon{
+                        width: 14px;
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+    }
+}

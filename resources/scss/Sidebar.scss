@@ -1,0 +1,59 @@
+@import "./globals/__mixins";
+@import "./globals/__variables";
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: var(--light);
+    .sidebar-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 16px 20px;
+        background-color: var(--light);
+        transition: background-color 0.1s ease-in-out;
+        text-decoration: none;
+        &:hover {
+            background-color: var(--secondary);
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+            path {
+                fill: var(--primary);
+            }
+        }
+        .text {
+            font-size: 16px;
+            line-height: 20px;
+            color: var(--text);
+            width: 195px;
+            padding-left: 20px;
+            overflow: hidden;
+            transition: all 0.25s ease-in-out;
+            white-space: nowrap;
+            &.collapsed {
+                width: 0;
+                padding-left: 0;
+            }
+        }
+    }
+
+    .close {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin-top: 30px;
+        .close-button {
+            transition: transform 0.25s ease-in-out;
+            cursor: pointer;
+            &.rotate {
+                transform: rotate(180deg);
+            }
+        }
+    }
+}

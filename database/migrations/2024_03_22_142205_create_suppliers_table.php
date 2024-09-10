@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('work_space_id')->constrained('work_spaces')->cascadeOnDelete();
             $table->string('name');
+            $table->string('company_name');
+            $table->string('website');
+            $table->bigInteger('phone_number');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

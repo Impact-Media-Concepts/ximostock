@@ -10,6 +10,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Sale extends Model
 {
     use HasFactory, LogsActivity;
+
+    protected $guarded = ['id'];
+
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -17,4 +21,7 @@ class Sale extends Model
         ->logOnlyDirty();
     }
     
+    public function product(){
+        return $this->belongsTo(Product::class);
+    }
 }

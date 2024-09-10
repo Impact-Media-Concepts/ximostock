@@ -3,6 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Helpers\EnumProductTypeHelper;
+use App\Models\Product;
+use Illuminate\Support\Facades\Log;
 
 return new class extends Migration
 {
@@ -11,22 +14,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        // Retrieve the enum values from the model
+        $enumValues = EnumProductTypeHelper::getEnumValuesFromProduct(Product::class, 'type');
+        log::info('Migration');
+        Log::info($enumValues);
+        // Ensure enum values were retrieved correctly
+        if (empty($enumValues)) {
+            throw new InvalidArgumentException('Enum values for Product Type type could not be retrieved.');
+        }
+
+        Schema::create('products', function (Blueprint $table) use ($enumValues) {
             $table->id();
             $table->foreignId('work_space_id')->constrained();
             $table->foreignId('parent_product_id')->nullable()->constrained('products')->cascadeOnDelete();
+            $table->enum('type', [$enumValues])->required();
             $table->string('sku')->unique()->nullable();
             $table->bigInteger('ean')->unique()->nullable();
             $table->string('title')->nullable();
             $table->text('short_description')->nullable();
             $table->text('long_description')->nullable();
-            $table->decimal('price')->nullable();
-            $table->decimal('discount')->nullable();
-            $table->boolean('backorders')->default(false)->nullable();
+            $table->decimal('price')->required();
+            $table->decimal('discount')->required();
+            $table->boolean('backorders')->default(false)->required();
+            $table->bigInteger('stock_quantity')->default(0)->required();
+            $table->boolean('status')->default(false)->required();
             $table->boolean('communicate_stock')->default(true)->nullable();
-            $table->integer('orderByStock')->default(0);
-            $table->integer('orderBySold')->default(0);
-            $table->boolean('orderByOnline')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

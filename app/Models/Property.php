@@ -7,38 +7,44 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use App\Enums\PropertyType;
+use InvalidArgumentException;
 
 class Property extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
-    
-    //Values begint met een type wat: multiselect, singleselect, number, text of bool kan zijn
-    //als het type multi- of singelselect is dan is er ook een options velt waar de mogenlijkheden in staan
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'values' => 'array',
+        'type' => PropertyType::class,
+    ];
     
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+            ->logAll()
+            ->logOnlyDirty();
     }
 
-
-    public function products(){
+    public function products()
+    {
         return $this->belongsToMany(Product::class)
-        ->using(ProductProperty::class)
-        ->withPivot('property_value');
+            ->using(ProductProperty::class)
+            ->withPivot('property_value');
     }
 
-    public function getTypeAttribute(){
-        $json = json_decode($this->values);
-        return $json->type;
+    // Accessor for 'options' from 'values'
+    public function getOptionsAttribute()
+    {
+        $values = $this->values ?? [];
+        return $values['options'] ?? [];
     }
 
-    public function getOptionsAttribute(){
-        $json = json_decode($this->values);
-        return $json->options;
+    // Helper method to get allowed types (now using Enum)
+    public function getAllowedTypes()
+    {
+        return PropertyType::getValues();
     }
 }
