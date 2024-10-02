@@ -155,9 +155,6 @@ class SalesChannelManager
 
     protected function uploadSimpleProducts(Collection $products, SalesChannel $salesChannel, Client $woocommerce)
     {
-        $current_workspace = (int) session('active_workspace_id');
-        Log::info('uploading simple products');
-        Log::info($products);
         $productBatchs = $products->chunk(100);
         try{
             foreach ($productBatchs as $productBatch) {
@@ -215,8 +212,6 @@ class SalesChannelManager
 
     protected function updateSimpleProducts(Collection $products, SalesChannel $salesChannel, Client $woocommerce)
     {
-        Log::info('updating simple products');
-        Log::info($products);
         $productBatchs = $products->chunk(100);
         try{
             foreach ($productBatchs as $productBatch) {

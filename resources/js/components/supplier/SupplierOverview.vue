@@ -17,7 +17,6 @@
                     <span @click="orderBySuppliers('updated_at')" class="date">Datem
                         <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'updated_at'}"><span  v-html="icons['chevron']"></span></div>
                     </span>
-
                     <button @click="isOpenCreatePopup = true" class="create-button"><span class="supplier-icon" v-html="icons['supplier']"></span>Leverancier aanmaken</button>
                 </div>
             </div>

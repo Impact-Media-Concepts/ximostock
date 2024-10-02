@@ -19,51 +19,40 @@ class PropertyController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $workspaces = WorkSpace::all();
-            $properties = Property::where('work_space_id', $request['workspace'])->get();
-            $activeWorkspace = $request['workspace'];
-            
-        }else{
-            $workspaces = null;
-            $activeWorkspace = null;
-            $properties = Property::where('work_space_id', Auth::user()->work_space_id)->get();
+        $request->validate([
+            'orderby' => ['nullable', 'string', Rule::in(['name', 'channel_type','updated_at'])],
+            'order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
+        ]);
+        $current_workspace = (int) session('active_workspace_id');
+        $request->orderby = $request->orderby ?? 'updated_at';
+        $request->order = $request->order ?? 'desc';
+
+        $query = Property::where('work_space_id', $current_workspace);
+        if ($request->orderby && $request->order) {
+            $query->orderBy($request->orderby, $request->order);
         }
 
+        $properties = $query->paginate(14);
 
-        return view('property.index', [
-            'sidenavActive' => 'properties',
+        // Only return properties in JSON if the request is an AJAX request
+        if ($request->ajax()) {
+            return response()->json([
             'properties' => $properties,
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
-        ]);
-    }
-
-    public function show(Request $request, Property $property)
-    {
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
+            'orderby' => $request->orderby,
+            'order' => $request->order,
             ]);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-        }else{
-            $workspaces = null;
-            $activeWorkspace = null;
         }
 
-        return view('property.show', [
-            'sidenavActive' => 'properties',
-            'property' => $property,
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
-        ]);
+        $results = [
+            'properties' => $properties,
+            'orderby' => $request->orderby,
+            'order' => $request->order,
+        ];
+
+        return view('property.index', $results);
     }
 
-    public function update(Property $property)
+    public function update(Property $property) //dit werkt nu zo omdat wij opties als json opslaan in de database en niet in een aparte tabel
     {
         $attributes = request()->validate([
             'options' => ['nullable', 'array'],
@@ -83,7 +72,7 @@ class PropertyController extends Controller
             //correct the values of all linked products to match the new options
             for ($x = 0; $x < Count($property->options); $x++) {
                 if ($property->options[$x] != $options[$x]) {
-                    //get all ProductsProperies. 
+                    //get all ProductsProperies.
                     //if options[x] === null remove the ProductProperty
                     //if not alter the value
                     $productProperties = ProductProperty::where('property_id', $property->id)->whereJsonContains('property_value', ['value' => $property->options[$x]])->get();
@@ -115,8 +104,6 @@ class PropertyController extends Controller
                     }
                 }
             }
-
-
             //prepare json values
             $options = array_filter($options, function ($value) {
                 return $value != null;
@@ -152,25 +139,6 @@ class PropertyController extends Controller
         return redirect('/properties');
     }
 
-    public function create(Request $request)
-    {
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-        }else{
-            $workspaces = null;
-            $activeWorkspace = null;
-        }
-        return view('property.create', [
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace,
-            'sidenavActive' => 'properties'
-        ]);
-    }
-
     public function store()
     {
         $request = request();
@@ -196,39 +164,5 @@ class PropertyController extends Controller
         ]);
 
         return redirect('/properties');
-    }
-
-    public function archive(Request $request){
-        $request->validate([
-            'workspace' => ['required', new ValidWorkspaceKeys]
-        ]);
-        $results = [
-            'perPage' => $request->input('perPage', 20),
-            'search' => $request['search'],
-            'sidenavActive' => 'archive',
-            'workspaces' => WorkSpace::all(),
-            'activeWorkspace' => $request['workspace'],
-            'properties' => Property::onlyTrashed()->get()
-        ];
-        return view('property.archive', $results);
-    }
-
-    public function restore(Request $request){
-        $attributes = $request->validate([
-            'properties' => ['array', 'required'],
-            'properties.*' => ['numeric', 'required']
-        ]);
-        Property::withTrashed()->whereIn('id', $attributes['properties'])->restore();
-        return redirect()->back();
-    }
-
-    public function forceDelete(Request $request)
-    {
-        $attributes = $request->validate([
-            'properties' => ['array', 'required'],
-            'properties.*' => ['numeric', 'required']
-        ]);
-        Property::withTrashed()->whereIn('id', $attributes['properties'])->forceDelete();
-        return redirect()->back();
     }
 }
