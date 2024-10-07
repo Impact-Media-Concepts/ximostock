@@ -91,16 +91,7 @@
                         flex-direction: row;
                         align-items: center;
 
-                        .dropdown-wrapper {
-                            width: 54px;
-                            &:hover {
-                                cursor: pointer;
-                            }
-                            .open {
-                                height: 10px;
-                                margin: 20px;
-                            }
-                        }
+
 
                         .delete-button {
                             height: 40px;
@@ -124,16 +115,27 @@
                                 }
                             }
                         }
-                        .chevron-down{
-                            width: 17px;
-                            height: 10px;
-                            margin: 10px 20px 10px 14px;
-                            transition: transform 0.3s ease;
-                            cursor: pointer;
-                            &.active{
-                                transform: rotate(180deg);
+                        .dropdown-wrapper {
+                            width: 54px;
+                            &:hover {
+                                cursor: pointer;
+                            }
+                            .open {
+                                height: 10px;
+                                margin: 20px;
+                            }
+                            .chevron-down{
+                                width: 17px;
+                                height: 10px;
+                                margin: 10px 20px 10px 14px;
+                                transition: transform 0.3s ease;
+                                cursor: pointer;
+                                &.active{
+                                    transform: rotate(180deg);
+                                }
                             }
                         }
+
                     }
                 }
                 .item-content{
@@ -195,6 +197,35 @@
                         width: 126px;
                         align-self: flex-end;
                         @include primary-button;
+                    }
+                }
+            }
+        }
+        .table-footer{
+            display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 21px;
+        background-color: var(--primary);
+        padding: 17px 25px;
+        color: var(--light);
+        border-radius: 0 0 10px 10px ;
+            .pagination {
+                display: flex;
+                gap: 5px;
+                .link {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    color: var(--text-light);
+                    border: 1px solid var(--border-light);
+                    border-radius: 5px;
+                    width: 42px;
+                    height: 42px;
+                    &:hover {
+                        color: var(--primary);
+                        background-color: var(--light);
                     }
                 }
             }

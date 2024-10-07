@@ -57,7 +57,9 @@
                             >
                                 <span class="trash-icon" v-html="icons['trash']"></span>Verwijderen
                             </button>
-                            
+                            <div class="dropdown-wrapper">
+                                <img v-if="hasOptions(property.type)" :class="{'chevron-down': true, 'active' : isActive(property.id)}" src="/images/chevron-down-dark.svg" alt="chevron-down" >
+                            </div>
                         </div>
                     </div>
                     <div :key="property.id" class="item-content">
@@ -81,7 +83,18 @@
                     </div>
                 </div>
             </div>
-            <div class="table-footer"></div>
+            <div class="table-footer">
+                <span>
+                    {{ currentPagination.current_page }} van {{ currentPagination.last_page }} pagina's.
+                </span>
+                <div class="pagination">
+                    <span v-for="link in currentPagination.links" :key="link.label"
+                        @click="changePagination(link)"
+                        :class="['link', { 'active-link': link.active }]">
+                        <span v-html="link.label"></span>
+                    </span>
+                </div>
+            </div>
         </div>
 
          <!-- Popups -->
@@ -136,6 +149,10 @@ export default defineComponent({
             required: true,
             default: () => [],
         },
+        pagination: {
+            type: Object,
+            required: true,
+        },
     },
     data(){
         return{
@@ -144,7 +161,17 @@ export default defineComponent({
             isOpenBulkDeleteSingleWaring: false,
             propertyToDelete: null,
             selectedProperties: [],
+            currentPagination: this.pagination, // Initialize with the prop value
         }
+    },
+    warch: {
+        pagination: {
+            handler(newPagination) {
+                this.currentPagination = newPagination; // Sync with parent prop
+            },
+            immediate: true,
+            deep: true,
+        },
     },
     methods:{
         formatDate(date) {
@@ -255,6 +282,22 @@ export default defineComponent({
                     console.log(error);
                 }
             );
+        },
+        changePagination(link) {
+            // Check if the link is not active (to prevent reloading the same page)
+            if (!link.active && link.url) {
+                axios.get(link.url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => {
+                    this.filteredProperties = response.data.properties;
+                })
+                .catch(error => {
+                    console.error('Error loading more products:', error);
+                });
+            }
         },
     },
     setup() {

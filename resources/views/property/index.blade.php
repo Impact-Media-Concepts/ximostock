@@ -17,6 +17,7 @@
         :properties='@json($properties)'
         :order='@json($order)'
         :orderby='@json($orderby)'
+        :pagination='@json($properties)'
     ></property-overview>
 </div>
 @endsection
