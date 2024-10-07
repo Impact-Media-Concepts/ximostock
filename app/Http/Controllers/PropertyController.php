@@ -7,12 +7,13 @@ use App\Models\Property;
 use App\Models\SalesChannel;
 use App\Models\WorkSpace;
 use App\Rules\ValidWorkspaceKeys;
-use App\WooCommerceManager;
+use App\SalesChannelManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Facades\LogBatch;
+use Illuminate\Support\Facades\Log;
 
 
 class PropertyController extends Controller
@@ -20,7 +21,7 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'orderby' => ['nullable', 'string', Rule::in(['name', 'channel_type','updated_at'])],
+            'orderby' => ['nullable', 'string', Rule::in(['name', 'type','updated_at'])],
             'order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
         ]);
         $current_workspace = (int) session('active_workspace_id');
@@ -34,12 +35,19 @@ class PropertyController extends Controller
 
         $properties = $query->paginate(14);
 
+        // Zet de options JSON om in een array
+        $properties->getCollection()->transform(function ($property) {
+            // Als de options JSON bevat, decodeer het naar een array
+            $property->options = json_decode($property->options)->options;
+            return $property;
+        });
+
         // Only return properties in JSON if the request is an AJAX request
         if ($request->ajax()) {
             return response()->json([
-            'properties' => $properties,
-            'orderby' => $request->orderby,
-            'order' => $request->order,
+                'properties' => $properties,
+                'orderby' => $request->orderby,
+                'order' => $request->order,
             ]);
         }
 
@@ -52,91 +60,75 @@ class PropertyController extends Controller
         return view('property.index', $results);
     }
 
-    public function update(Property $property) //dit werkt nu zo omdat wij opties als json opslaan in de database en niet in een aparte tabel
+    #region update
+
+    public function update(Request $request, $propertyId) // update function
     {
+        Log::debug("updating property");
+
         $attributes = request()->validate([
             'options' => ['nullable', 'array'],
             'options.*' => ['nullable', 'string'],
             'name' => ['required', 'string']
         ]);
-
         LogBatch::startBatch();
-        $options = [];
 
-        if ($property->type === 'multiselect' || $property->type === 'singleselect') {
-            foreach ($attributes['options'] as $option) {
-                array_push($options, $option);
-            }
+        try {
+            $property = Property::find($propertyId);
+            $property->update([
+                'name' => $attributes['name'],
+                'options' => json_encode(['options' => $attributes['options']])
+            ]);
+            return response()->json(['message' => 'Supplier updated successfully'], 200);
 
-
-            //correct the values of all linked products to match the new options
-            for ($x = 0; $x < Count($property->options); $x++) {
-                if ($property->options[$x] != $options[$x]) {
-                    //get all ProductsProperies.
-                    //if options[x] === null remove the ProductProperty
-                    //if not alter the value
-                    $productProperties = ProductProperty::where('property_id', $property->id)->whereJsonContains('property_value', ['value' => $property->options[$x]])->get();
-                    foreach ($productProperties as $productProperty) {
-                        if ($options[$x] == null) {
-                            // remove the option if no value left remove the entry
-                            $propValue = json_decode($productProperty->property_value);
-                            $propValue = (array)$propValue;
-                            if ($property->type === 'multiselect') {
-                                $propValue = array_filter($propValue['value'], function ($value) use ($property, $x) {
-                                    return $value != $property->options[$x];
-                                });
-                            } else {
-                                $propValue = [];
-                            }
-
-                            if (!Count($propValue)) {
-                                $productProperty->delete();
-                            } else {
-                                sort($propValue);
-                                $productProperty->property_value = json_encode(['value' => $propValue]);
-                                $productProperty->update();
-                            }
-                        } else {
-                            //alter the value of the entry to the new one
-                            $productProperty->property_value = str_replace($property->options[$x], $options[$x], $productProperty->property_value);
-                            $productProperty->update();
-                        }
-                    }
-                }
-            }
-            //prepare json values
-            $options = array_filter($options, function ($value) {
-                return $value != null;
-            });
-
-            $options = array_values($options);
+        } catch (Exception $e) {
+            Log::error('Error updating property: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Failed to update property.']);
+        }finally{
+            LogBatch::endBatch();
         }
-        $type = $property->type;
-        $values = json_encode(['type' => $type, 'options' => $options]);
-        $property->update([
-            'name' => $attributes['name'],
-            'values' => $values
-        ]);
-        $wooCommerce = new WooCommerceManager;
-        $wooCommerce->updatePropertyToSaleschannels($property);
-        LogBatch::endBatch();
-
-        return redirect()->back();
     }
+
+    #endregion
 
     public function bulkDelete(Request $request)
     {
-        Gate::authorize('bulkDelete', [Property::class, $request['properties']]);
+        // Gate::authorize('bulkDelete', [Property::class, $request['properties']]);
         LogBatch::startBatch();
+        Log::debug("bulk delete properties");
         $attributes = $request->validate([
             'properties' => ['required', 'array'],
             'properties.*' => ['required', 'numeric', Rule::exists('properties', 'id')]
         ]);
-        $woocommerce = new WooCommerceManager;
-        $woocommerce->deleteProperties($attributes['properties']);
+        Log::debug( $attributes['properties']);
+        Log::debug("validated properties");
+        $woocommerce = new SalesChannelManager;
+        $properties = Property::whereIn('id', $attributes['properties'])->get();
+
+        Log::debug($properties);
+
+        $woocommerce->deleteProperties($properties);
         Property::whereIn('id', $attributes['properties'])->delete();
         LogBatch::endBatch();
-        return redirect('/properties');
+        return response()->json(['message' => 'Properties deleted successfully'], 200);
+    }
+
+    public function deleteById(Request $request, $id)
+    {
+        //Gate::authorize('delete', $property);
+        $property = Property::find($id);
+        LogBatch::startBatch();
+        if($property){
+            $woocommerce = new SalesChannelManager;
+            $woocommerce->deleteProperty($property);
+            $property->delete();
+            LogBatch::endBatch();
+            return response()->json(['message' => 'Property deleted successfully'], 200);
+        }else{
+            LogBatch::endBatch();
+            return response()->json(['message' => 'Property not found'], 404);
+
+        }
     }
 
     public function store()

@@ -11,7 +11,6 @@
                 <div   class="orderby company-name">
                     <span @click="orderBySuppliers('company_name')">Bedrijfsnaam</span>
                     <div @click="orderBySuppliers('company_name')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'company_name'}"><span  v-html="icons['chevron']"></span></div>
-
                 </div>
                 <div class="date-create orderby">
                     <span @click="orderBySuppliers('updated_at')" class="date">Datem
@@ -144,7 +143,6 @@ import '../../../scss/supplier/SupplierOverview.scss';
 import { format, formatDate, set } from 'date-fns';
 import axios from 'axios';
 import GeneralNotification from '../GeneralNotification.vue';
-
 export default defineComponent({
     components: {
         GeneralNotification,

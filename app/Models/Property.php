@@ -9,6 +9,7 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use App\Enums\PropertyType;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Log;
 
 class Property extends Model
 {
@@ -20,7 +21,7 @@ class Property extends Model
         'values' => 'array',
         'type' => PropertyType::class,
     ];
-    
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -36,10 +37,22 @@ class Property extends Model
     }
 
     // Accessor for 'options' from 'values'
-    public function getOptionsAttribute()
+    public function getOptionsDecodedAttribute()
     {
-        $values = $this->values ?? [];
-        return $values['options'] ?? [];
+        $options = json_decode($this->options);
+        $options = $options->options;
+        Log::debug('debug options decoded');
+        Log::debug($options);
+        return $options ?? [];
+    }
+
+    public function getSaleschannelsAttribute()
+    {
+        $propertyLinks = PropertySalesChannel::where('property_id', $this->id)->get();
+        $salesChannels = $propertyLinks->map(function ($propertyLink) {
+            return $propertyLink->salesChannel;
+        })->unique();
+        return $salesChannels->values();
     }
 
     // Helper method to get allowed types (now using Enum)

@@ -7,6 +7,7 @@
         'close' => file_get_contents('images/close-icon.svg'),
         'chevron' => file_get_contents('images/chevron-down-dark.svg'),
         'warning' => file_get_contents('images/warning-icon.svg'),
+        'property' => file_get_contents('images/property-icon.svg'),
     ];
 @endphp
 @section('content')
@@ -14,7 +15,9 @@
     <property-overview
         :icons='@json($icons)'
         :properties='@json($properties)'
+        :order='@json($order)'
+        :orderby='@json($orderby)'
     ></property-overview>
 </div>
-@dump($properties)
 @endsection
+

@@ -136,6 +136,44 @@ class SalesChannelManager
         }
     }
 
+    public function deleteProperty(Property $property)
+    {
+        foreach($property->salesChannels as $salesChannel){
+
+            try {
+                $woocommmerce = $this->createSalesChannelsClient($salesChannel);
+                $propertyLink = PropertySalesChannel::where('property_id', $property->id)->where('sales_channel_id', $salesChannel->id)->first();
+                if($propertyLink != null){
+                    $woocommmerce->delete('products/attributes/' . $propertyLink->external_id, ['force' => true]);
+                    $propertyLink->delete();
+                }
+            } catch (Exception $ex) {
+                Log::error($ex->getMessage());
+            }
+        }
+    }
+
+    public function deleteProperties(Collection $properties)
+    {
+        $salesChannelProperties = [];
+
+        foreach ($properties as $property) {
+            foreach ($property->salesChannels as $salesChannel) {
+                $salesChannelId = $salesChannel->id;
+                if (!isset($salesChannelProperties[$salesChannelId])) {
+                    $salesChannelProperties[$salesChannelId] = [];
+                }
+                $salesChannelProperties[$salesChannelId][] = $property;
+            }
+        }
+
+        foreach ($salesChannelProperties as $salesChannelId => $properties) {
+            $salesChannel = SalesChannel::find($salesChannelId);
+            $woocommerce = $this->createSalesChannelsClient($salesChannel);
+            $propertyLinks = PropertySalesChannel::whereIn('property_id', collect($properties)->pluck('id'))->where('sales_channel_id', $salesChannelId)->pluck('external_id')->toArray();
+            $woocommerce->delete('products/attributes/batch', ['delete' => $propertyLinks]);
+        }
+    }
 
     #region Products
     //if a product is already linked to a saleschannel return false. (being linked means an entry in the pivot table exits. it is not jet live on the saleschannel)

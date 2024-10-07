@@ -81,6 +81,11 @@
             'image_url' => file_get_contents('images/sidebar/gebruikers.svg'),
         ],
         [
+            'url' => route('properties.index'),
+            'title' => 'Eigenschappen',
+            'image_url' => file_get_contents('images/sidebar/property-icon.svg'),
+        ],
+        [
             'url' => route('archive.index'),
             'title' => 'archief',
             'image_url' => file_get_contents('images/sidebar/archive-icon.svg'),

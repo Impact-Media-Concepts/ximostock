@@ -113,8 +113,8 @@ class DatabaseSeeder extends Seeder
             ]);
             //link properties to main product
             foreach($properties as $property){
-                if(isset($property->options)){
-                    $propvalue = $property->options;
+                if(isset($property->optionsDecoded)){
+                    $propvalue = $property->optionsDecoded;
                 }else{
                     $propvalue = ['value1', 'value2', 'value3'];
                 }
@@ -155,7 +155,7 @@ class DatabaseSeeder extends Seeder
                     'primary' => 1
                 ]);
             }
-            
+
             //link prop to variant
             // Create properties for variants
             $property = Property::factory()->create([
@@ -185,8 +185,8 @@ class DatabaseSeeder extends Seeder
 
         // Link properties
         foreach ($properties as $prop) {
-            if(isset($prop->options)){
-                $propvalue = $prop->options;
+            if(isset($prop->OptionsDecoded)){
+                $propvalue = $prop->OptionsDecoded;
             }else{
                 $propvalue = ['value1', 'value2', 'value3'];
             }
