@@ -285,19 +285,23 @@ export default defineComponent({
         },
         changePagination(link) {
             // Check if the link is not active (to prevent reloading the same page)
-            if (!link.active && link.url) {
-                axios.get(link.url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    }
-                })
-                .then(response => {
-                    this.filteredProperties = response.data.properties;
-                })
-                .catch(error => {
-                    console.error('Error loading more products:', error);
-                });
-            }
+            console.log(link);
+            window.location.href = link.url;
+            // if (!link.active && link.url) {
+            //     axios.get(link.url, {
+            //         headers: {
+            //             'X-Requested-With': 'XMLHttpRequest',
+            //         }
+            //     })
+            //     .then(response => {
+            //         console.log(response);
+            //         this.filteredProperties = response.data.properties;
+
+            //     })
+            //     .catch(error => {
+            //         console.error('Error loading more products:', error);
+            //     });
+            // }
         },
     },
     setup() {
