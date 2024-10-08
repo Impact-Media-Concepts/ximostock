@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\ProductProperty;
 use App\Models\Property;
 use App\Models\SalesChannel;
@@ -14,7 +13,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Facades\Log;
-
 
 class PropertyController extends Controller
 {
@@ -34,6 +32,8 @@ class PropertyController extends Controller
         }
 
         $properties = $query->paginate(14);
+        $properties->appends($_GET)->links();
+
 
         // Zet de options JSON om in een array
         $properties->getCollection()->transform(function ($property) {
@@ -131,30 +131,30 @@ class PropertyController extends Controller
         }
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $request = request();
-        //authorize
-
+        $current_workspace = (int) session('active_workspace_id');
         //validate
         $attributes = $request->validate([
-            'name' => ['required', 'max:255'],
+            'name' => ['required', 'string'],
             'type' => ['required', Rule::in(['singleselect', 'multiselect', 'number', 'bool', 'text'])],
             'options' => ['nullable', 'array'],
-            'options.*' => ['required', 'max:255'],
+            'options.*' => ['nullable', 'string'],
         ]);
+
         if (!isset($attributes['options'])) {
             $attributes['options'] = [];
         }
 
         //store
-        $values = json_encode(['type' => $attributes['type'], 'options' => $attributes['options']]);
+        $options = json_encode(['options' => $attributes['options']]);
         Property::create([
             'name' => $attributes['name'],
-            'work_space_id' => Auth::user()->work_space_id,
-            'values' => $values
+            'work_space_id' => $current_workspace,
+            'type' => $attributes['type'],
+            'options' => $options
         ]);
 
-        return redirect('/properties');
+        return response()->json(['message' => 'Property created successfully'], 200);
     }
 }

@@ -88,6 +88,7 @@ Route::prefix('/api/v1')->middleware(['web'])->group(function() {
         Route::delete('/delete/{property}', [PropertyController::class, 'deleteById'])->name('property.deleteById');
         Route::delete('/bulkdelete', [PropertyController::class, 'bulkDelete'])->name('property.bulkDelete');
         Route::put('/update/{property}', [PropertyController::class, 'update'])->name('property.update');
+        Route::post('', [PropertyController::class, 'store'])->name('property.store');
     });
 
 });

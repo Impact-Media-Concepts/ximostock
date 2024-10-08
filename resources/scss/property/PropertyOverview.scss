@@ -234,4 +234,104 @@
     .delete-popup{
         @include popup-container;
     }
+    .create-popup{
+        @include popup-container;
+        .popup-content{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            border-color: var(--border-secondary);
+            border-width: 1px;
+            border-style: solid;
+            .popup-header{
+                display: flex;
+                flex-direction: row;
+                height: 40px;
+                padding-left: 22px;
+                background-color: var(--primary);
+                color: $text-light;
+                align-items: center;
+                font-size: 14px;
+                line-height: 17px;
+            }
+            .create-form{
+                color: var(--text);
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                .form-input{
+                    color: var(--text);
+                    display: flex;
+                    flex-direction: column;
+                    text-align: left;
+                    padding: 20px 24px;
+                    font-size: 14px;
+                    line-height: 24px;
+                    input{
+                        @include text-input;
+                    }
+                    select{
+                        height: 40px;
+                        border-radius: 5px;
+                        border-style: solid;
+                        outline: none;
+                        border-color: var(--border);
+                        color: $text;
+                        padding-left: 18px;
+                        font-size: 14px;
+                        line-height: 17px;
+                        border-width: 1px;
+                    }
+                }
+            }
+            .options-grid{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px 48px;
+                padding: 24px;
+                .add-option-button{
+                    height: 40px;
+                    @include secondary-buttton;
+                }
+                .option-wrapper{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    height: 40px;
+                    input{
+                        flex: 1;
+                        @include text-input;
+                    }
+                    .close-icon{
+                        justify-content: center;
+                        display: flex;
+                        padding: 0px;
+                        margin-left: 10px;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .action-buttons{
+                display: flex;
+                flex-direction: row-reverse;
+                padding: 10px 24px 20px 0px;
+                gap: 7px;
+                .save-button{
+                    height: 43px;
+                    width: 126px;
+                    @include primary-button;
+                }
+                .cancel-button{
+                    height: 43px;
+                    width: 126px;
+                    @include secondary-buttton;
+                }
+                .button-icon{
+                    width: 14px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
 }

@@ -23,7 +23,7 @@
                             <span v-html="icons['chevron']"></span>
                         </div>
                     </span>
-                    <button class="create-button"> <span class="property-icon" v-html="icons['property']"></span>Eigenschap aanmaken</button>
+                    <button @click="isOpenCreateForm = true" class="create-button"> <span class="property-icon" v-html="icons['property']"></span>Eigenschap aanmaken</button>
                 </div>
             </div>
             <div :class="{'table-bulkAction-bar': true, 'open': this.selectedProperties.length}">
@@ -85,14 +85,17 @@
             </div>
             <div class="table-footer">
                 <span>
-                    {{ currentPagination.current_page }} van {{ currentPagination.last_page }} pagina's.
+                    {{ properties.current_page }} van {{ properties.last_page }} pagina's.
                 </span>
                 <div class="pagination">
-                    <span v-for="link in currentPagination.links" :key="link.label"
+                    <div v-for="link in properties.links" :key="link.label">
+                        <span v-if="!isNaN(link.label)"
                         @click="changePagination(link)"
                         :class="['link', { 'active-link': link.active }]">
-                        <span v-html="link.label"></span>
+                        <span  v-html="link.label"></span>
                     </span>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -120,6 +123,52 @@
                 </div>
             </div>
         </div>
+
+        <div :class="{'create-popup': true, 'visible': isOpenCreateForm }">
+            <div class="popup">
+                <span v-html="icons['close']" class="popup-close" @click="isOpenCreateForm = false"></span>
+                <div class="popup-content">
+                    <div class="popup-header">
+                        Eigenschap aanmaken
+                    </div>
+                    <div class="create-form">
+                        <div class="form-input">
+                            <span>Naam:</span>
+                            <input v-model="nameToCreate" type="text">
+                        </div>
+                        <div class="form-input">
+                            <span>Type:</span>
+                            <select v-model="selectedType">
+                                <option value="bool">bool</option>
+                                <option value="number">number</option>
+                                <option value="text">text</option>
+                                <option value="singleselect">singleselect</option>
+                                <option value="multiselect">multiselect</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div v-if="selectedType == 'singleselect' || selectedType == 'multiselect'" class="options-grid">
+                        <button @click="addOptionToCreate()" class="add-option-button">Optie toevoegen</button>
+                        <div v-for="(option, index) in optionsToCreate" :key="index" class="option-wrapper">
+                                <input v-model="optionsToCreate[index]" type="text" placeholder="Optie">
+                                <span @click="optionsToCreate.splice(index,1)" v-html="icons['close']" class="close-icon"></span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button @click="CreateProperty()"  class="save-button">
+                            <span class="save-icon" v-html="this.icons.save"> </span>
+                            save
+                        </button>
+                        <button @click="isOpenCreateForm = false" class="cancel-button">
+                            <img  class="button-icon" src="/images/close-icon.svg" alt="cross">
+                            Annuleren
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <general-notification :messages="messages" :isError="messageIsError" v-if="messages"/>
     </div>
 </template>
 
@@ -130,7 +179,11 @@ import '../../../scss/property/PropertyOverview.scss';
 import { add, format, formatDate, set } from 'date-fns';
 import axios from 'axios';
 import GeneralNotification from '../GeneralNotification.vue';
+import { is } from 'date-fns/locale';
 export default defineComponent({
+    components: {
+        GeneralNotification,
+    },
     props: {
         icons: {
             type: [Array, Object],
@@ -149,29 +202,21 @@ export default defineComponent({
             required: true,
             default: () => [],
         },
-        pagination: {
-            type: Object,
-            required: true,
-        },
     },
     data(){
         return{
             activeItemId: null,
             isOpenDeleteSingleWaring: false,
             isOpenBulkDeleteSingleWaring: false,
+            isOpenCreateForm: false,
             propertyToDelete: null,
             selectedProperties: [],
-            currentPagination: this.pagination, // Initialize with the prop value
+            optionsToCreate: [''],
+            nameToCreate: '',
+            selectedType: '',
+            messages: null,
+            messageIsError: false,
         }
-    },
-    warch: {
-        pagination: {
-            handler(newPagination) {
-                this.currentPagination = newPagination; // Sync with parent prop
-            },
-            immediate: true,
-            deep: true,
-        },
     },
     methods:{
         formatDate(date) {
@@ -231,6 +276,7 @@ export default defineComponent({
         },
         //methods
         addOption(property){
+            console.log(property);
             property.options.push('');
             this.$forceUpdate();
         },
@@ -247,10 +293,12 @@ export default defineComponent({
             console.log(data);
             axios.put(this.route('property.update', property.id), data)
                 .then((response) => {
-                    console.log(response);
+                    this.messageIsError = false;
+                    this.messages = response.data.message;
                 })
                 .catch((error) => {
-                    console.log(error);
+                    this.messageIsError = true;
+                    this.messages = error.response.data.errors;
                 }
             );
         },
@@ -283,28 +331,33 @@ export default defineComponent({
                 }
             );
         },
+        addOptionToCreate(){
+            this.optionsToCreate.push('');
+        },
+        CreateProperty(){
+            const data = {
+                name: this.nameToCreate,
+                type: this.selectedType,
+                options: this.optionsToCreate,
+            };
+            console.log(data);
+            axios.post(this.route('property.store'), data)
+                .then((response) => {
+                    window.location.href = this.route('properties.index');
+                })
+                .catch((error) => {
+                    console.log(error);
+                }
+            );
+        }
+        ,
         changePagination(link) {
             // Check if the link is not active (to prevent reloading the same page)
-            console.log(link);
             window.location.href = link.url;
-            // if (!link.active && link.url) {
-            //     axios.get(link.url, {
-            //         headers: {
-            //             'X-Requested-With': 'XMLHttpRequest',
-            //         }
-            //     })
-            //     .then(response => {
-            //         console.log(response);
-            //         this.filteredProperties = response.data.properties;
-
-            //     })
-            //     .catch(error => {
-            //         console.error('Error loading more products:', error);
-            //     });
-            // }
         },
     },
     setup() {
+
         const route = inject('route'); // Injecting route helper
         return {
             route,

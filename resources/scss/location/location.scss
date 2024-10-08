@@ -64,7 +64,7 @@
         }
         .table-content{
             .table-item{
-                transition: height 0.3s ease; 
+                transition: height 0.3s ease;
                 flex-direction: column;
 
                 &.active{
@@ -89,7 +89,7 @@
                         flex-direction: row;
                         .date{
                             display: block;
-                           width: 200px; 
+                           width: 200px;
                         }
                         .delete-button{
                             display: flex;
@@ -247,8 +247,8 @@
                                 cursor: pointer;
                             }
                         }
-                        
-                        
+
+
                     }
                     .add-button-container{
                         display: flex;
@@ -260,7 +260,7 @@
                             @include secondary-buttton;
                         }
                     }
-                    
+
                 }
             }
             .action-buttons{

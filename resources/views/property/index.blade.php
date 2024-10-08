@@ -14,10 +14,9 @@
 <div id="app">
     <property-overview
         :icons='@json($icons)'
-        :Properties='@json($properties)'
+        :properties='@json($properties)'
         :order='@json($order)'
         :orderby='@json($orderby)'
-        :pagination='@json($properties)'
     ></property-overview>
 </div>
 @endsection
