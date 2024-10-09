@@ -16,6 +16,8 @@
     <activity-log
         :icons='@json($icons)'
         :logs='@json($activityLogs)'
+        :order='@json($order)'
+        :orderby='@json($orderby)'
     >
     </activity-log>
 </div>

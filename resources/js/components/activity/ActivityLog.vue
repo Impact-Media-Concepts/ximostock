@@ -6,16 +6,28 @@
                 <!-- username activity model date/time
                 details -->
                 <div class="orderby name">
-                    <span>Gebruiker</span>
+                    <span @click="orderByLogs('name')">Gebruiker</span>
+                    <div @click="orderByLogs('name')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'name'}">
+                        <span v-html="icons['chevron']"></span>
+                    </div>
                 </div>
                 <div class="orderby activity">
-                    <span>Activiteit</span>
+                    <span @click="orderByLogs('event')">Activiteit</span>
+                    <div @click="orderByLogs('event')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'event'}">
+                        <span v-html="icons['chevron']"></span>
+                    </div>
                 </div>
                 <div class="orderby model">
-                    <span>Model</span>
+                    <span @click="orderByLogs('subject_type')">Model</span>
+                    <div @click="orderByLogs('subject_type')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'subject_type'}">
+                        <span v-html="icons['chevron']"></span>
+                    </div>
                 </div>
                 <div class="orderby date">
-                    <span>Datem</span>
+                    <span @click="orderByLogs('created_at')">Datem</span>
+                    <div @click="orderByLogs('created_at')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'created_at'}">
+                        <span v-html="icons['chevron']"></span>
+                    </div>
                 </div>
             </div>
             <div class="table-content">
@@ -80,7 +92,16 @@
                 required: true,
                 default: () => [],
             },
-
+            orderby: {
+                type: String,
+                required: true,
+                default: 'created_at',
+            },
+            order: {
+                type: String,
+                required: true,
+                default: 'desc',
+            },
         },
         data(){
             return {
@@ -113,6 +134,27 @@
                 // Check if the link is not active (to prevent reloading the same page)
                 window.location.href = link.url;
             },
+            orderByLogs(column) {
+                let order;
+                if(this.orderby === column) {
+                    order = this.order === 'asc' ? 'desc' : 'asc';
+                } else {
+                    order = 'asc';
+                }
+                const params = {
+                    orderby: column,
+                    order: order,
+                }
+
+                const url = this.route('activity-log.index', params);
+                window.location.href = url;
+            },
+        },
+        setup() {
+            const route = inject('route'); // Injecting route helper
+            return {
+                route,
+            };
         },
     });
 </script>

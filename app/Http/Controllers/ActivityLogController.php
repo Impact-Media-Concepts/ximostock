@@ -16,7 +16,7 @@ class ActivityLogController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'orderby' => ['nullable', 'string', Rule::in(['name', 'type','updated_at'])],
+            'orderby' => ['nullable', 'string', Rule::in(['name', 'subject_type', 'created_at', 'event'])],
             'order' => ['nullable', 'string', Rule::in(['asc', 'desc'])],
         ]);
         $current_workspace = (int) session('active_workspace_id');
@@ -24,25 +24,25 @@ class ActivityLogController extends Controller
         $request->order = $request->order ?? 'desc';
 
         // Fetch all activity log entries
-        // $query = Activity::whereHas('causer', function($query) use ($current_workspace) {
-        //     $query->where('work_space_id', $current_workspace);
-        // });
         $query = Activity::where(function($query) use ($current_workspace) {
             $query->whereJsonContains('properties->old->work_space_id', $current_workspace)
-                  ->orWhereJsonContains('properties->attributes->work_space_id', $current_workspace);
+                ->orWhereJsonContains('properties->attributes->work_space_id', $current_workspace);
         });
-        $activities = $query->paginate(14);
 
-        //order
-        if ($request->orderby && $request->order) {
+        // Check if we need to sort by name
+        if ($request->orderby === 'name') {
+            $query->leftJoin('users', 'activity_log.causer_id', '=', 'users.id')
+                ->select('activity_log.*', 'users.name as user_name') // Get user name for sorting
+                ->orderBy('user_name', $request->order);
+        } else {
+            // Order by other fields if not sorting by user name
             $query->orderBy($request->orderby, $request->order);
         }
 
-
-        //paginate
+        // Paginate the results
         $activities = $query->paginate(14);
 
-        // Replace 'causer_id' with the full user object
+        // Replace 'causer_id' with the full user object or "System"
         $activities->getCollection()->transform(function ($activity) {
             if (!$activity->causer) {
                 $activity->causer = (object) ['name' => 'System']; // Create a "System" user object
@@ -54,9 +54,10 @@ class ActivityLogController extends Controller
 
         $activities->appends($_GET)->links();
 
-
         $results = [
             'activityLogs' => $activities,
+            'orderby' => $request->orderby,
+            'order' => $request->order,
         ];
         // Pass the activities to the view
         return view('activitylog.index', $results);

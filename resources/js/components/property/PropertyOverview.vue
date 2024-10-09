@@ -95,7 +95,6 @@
                         <span  v-html="link.label"></span>
                     </span>
                     </div>
-
                 </div>
             </div>
         </div>
