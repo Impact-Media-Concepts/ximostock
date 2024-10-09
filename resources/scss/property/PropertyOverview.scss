@@ -203,13 +203,13 @@
         }
         .table-footer{
             display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 21px;
-        background-color: var(--primary);
-        padding: 17px 25px;
-        color: var(--light);
-        border-radius: 0 0 10px 10px ;
+            justify-content: space-between;
+            align-items: center;
+            gap: 21px;
+            background-color: var(--primary);
+            padding: 17px 25px;
+            color: var(--light);
+            border-radius: 0 0 10px 10px ;
             .pagination {
                 display: flex;
                 gap: 5px;

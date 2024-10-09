@@ -179,7 +179,6 @@ import '../../../scss/property/PropertyOverview.scss';
 import { add, format, formatDate, set } from 'date-fns';
 import axios from 'axios';
 import GeneralNotification from '../GeneralNotification.vue';
-import { is } from 'date-fns/locale';
 export default defineComponent({
     components: {
         GeneralNotification,

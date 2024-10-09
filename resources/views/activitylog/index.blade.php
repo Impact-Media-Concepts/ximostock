@@ -10,9 +10,14 @@
         'property' => file_get_contents('images/property-icon.svg'),
     ];
 @endphp
+
 @section('content')
 <div id="app">
-    
+    <activity-log
+        :icons='@json($icons)'
+        :logs='@json($activityLogs)'
+    >
+    </activity-log>
 </div>
 @endsection
 

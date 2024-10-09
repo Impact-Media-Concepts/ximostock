@@ -28,8 +28,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+            ->logAll()                           // Log all attributes
+            ->logOnlyDirty()                     // Log only dirty (changed) attributes
+            ->dontLogIfAttributesChangedOnly(['remember_token']);  // Exclude remember_token
     }
 
     /**
