@@ -11,12 +11,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class ProductSalesChannel extends  Model
 {
     use LogsActivity;
-    
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+        ->logAll();
     }
 
     protected $guarded = ['id'];

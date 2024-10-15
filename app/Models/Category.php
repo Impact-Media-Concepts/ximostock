@@ -14,12 +14,10 @@ class Category extends Model
 
     protected $guarded = ['id'];
 
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+        ->logAll();
     }
 
     public function products()
@@ -49,6 +47,7 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_category_id');
     }
+
     public function child_categories_recursive()
     {
         return $this->hasMany(Category::class, 'parent_category_id')->with('child_categories_recursive');

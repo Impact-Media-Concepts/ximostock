@@ -1,26 +1,23 @@
-<x-layout._layout :sidenavActive="$sidenavActive" :activeWorkspace="$activeWorkspace" :workspaces="$workspaces">
-    <div class="pt-20">
-        <form action="/properties/bulkdelete" method="POST">
-            @csrf
-            <ul>
-                @foreach ($properties as $property)
-                    <li>
-                        <input type="checkbox" name="properties[]" value="{{$property->id}}"/>
-                        {{ 'name: ' . $property->name . '  type: ' . $property->type }}
-                        <a href="/properties/{{ $property->id }}">property</a>
-                    </li>
-                @endforeach
-            </ul>
-            @if ($errors->any())
-                <div>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <input type="submit" value="bulk delete"/>
-        </form>
-    </div>
-</x-layout._layout>
+@extends('layouts.app')
+
+@php
+    $icons= [
+        'trash' => file_get_contents('images/trash-icon.svg'),
+        'save' => file_get_contents('images/save-icon.svg'),
+        'close' => file_get_contents('images/close-icon.svg'),
+        'chevron' => file_get_contents('images/chevron-down-dark.svg'),
+        'warning' => file_get_contents('images/warning-icon.svg'),
+        'property' => file_get_contents('images/property-icon.svg'),
+    ];
+@endphp
+@section('content')
+<div id="app">
+    <property-overview
+        :icons='@json($icons)'
+        :properties='@json($properties)'
+        :order='@json($order)'
+        :orderby='@json($orderby)'
+    ></property-overview>
+</div>
+@endsection
+

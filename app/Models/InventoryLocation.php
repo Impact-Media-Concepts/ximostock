@@ -18,8 +18,7 @@ class InventoryLocation extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+        ->logAll();
     }
 
     public function location_zones(){

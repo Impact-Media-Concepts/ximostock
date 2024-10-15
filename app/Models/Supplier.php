@@ -18,8 +18,7 @@ class Supplier extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+        ->logAll();
     }
 
     public function scopeFilterOrderBy($query, $column, $direction = 'asc')

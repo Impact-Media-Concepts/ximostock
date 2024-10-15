@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Facades\Log;
+use App\SalesChannelManager;
 
 class CategoryController extends Controller
 {
@@ -164,7 +165,7 @@ class CategoryController extends Controller
     public function deleteCategories(Request $request)
     {
         $categoryArray = $request->input('ids', []); // Get the IDs from the request
-        
+
         // Process each category ID or nested array
         foreach ($categoryArray as $categoryData) {
             if (is_array($categoryData)) {
@@ -244,5 +245,12 @@ class CategoryController extends Controller
                 }
             }
         }
+    }
+
+    //TEMPORARY Test function
+    public function testSaleschannel(){
+        $woocommerce = new SalesChannelManager;
+        $woocommerce->testBulkCategories();
+        return response()->json(['message' => 'great succes'],201);
     }
 }

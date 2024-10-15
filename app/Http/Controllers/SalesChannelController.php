@@ -45,6 +45,7 @@ class SalesChannelController extends Controller
             'orderby' => $request->orderby,
             'order' => $request->order,
         ];
+        
         //Log::debug($results['salesChannels']);
         return view('salesChannel.index', $results);
     }
