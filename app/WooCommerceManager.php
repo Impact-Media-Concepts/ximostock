@@ -591,7 +591,7 @@ class WooCommerceManager
         } else {
             //prepare product properies
             $propertyIds = $product->properties->pluck('id')->toArray();
-           
+
             $propertyIds = $propertySalesChannels->whereIn('property_id', $propertyIds)->pluck('property_id', 'external_id')->toArray();
             $properties = [];
             foreach ($propertyIds as $externalId => $propertyId) {

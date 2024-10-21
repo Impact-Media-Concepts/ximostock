@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
         }
         #endregion
 
-        $properties = Property::factory(5)->create();
+        $properties = Property::factory(10)->create();
 
         #region create Variant products
         $primeProduct = Product::factory(10)->create([

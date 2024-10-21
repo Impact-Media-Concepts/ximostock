@@ -94,41 +94,45 @@ class ProductController extends BaseProductController
         return view('product.index', $data);
     }
 
-
-
     public function create(Request $request)
     {
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $workspaces = WorkSpace::all();
-            $activeWorkspace = $request['workspace'];
-            $salesChannels = SalesChannel::where('work_space_id', $request['workspace'])->get();
-            $location_zones = InventoryLocation::with(['location_zones'])->where('work_space_id', $request['workspace'])->get();
-            $properties = Property::where('work_space_id', $request['workspace'])->get();
-            $categories = Category::where('work_space_id', $request['workspace']);
-        } else {
-            $workspaces = null;
-            $activeWorkspace = null;
-            $salesChannels = SalesChannel::where('work_space_id', Auth::user()->work_space_id)->get();
-            $location_zones = InventoryLocation::with(['location_zones'])->where('work_space_id', Auth::user()->work_space_id)->get();
-            $properties = Property::where('work_space_id', Auth::user()->work_space_id)->get();
-            $categories = Category::where('work_space_id', Auth::user()->work_space_id);
-        }
-        $categories = $categories
-            ->with('child_categories_recursive')
-            ->whereNull('parent_category_id')
-            ->get();
+        $current_workspace = (int) session('active_workspace_id');
+        $newProduct = Product::create([
+            'work_space_id' => $current_workspace,
+            'type' => 'simple',
+        ]);
+        Log::info($newProduct);
 
-        return view('product.create', [
-            'categories' => $categories,
+        $newProduct->load([
+            'childProducts' => function ($query) {
+                $query->with('properties');
+            },
+            'parentProduct',
+            'categories',
+            'photos',
+            'properties',
+            'locationZones',
+            'salesChannels',
+            'productSalesChannels',
+            'sales',
+        ]);
+
+        // Get all categories related to the active workspace
+        $workspaceCategories = Category::where('work_space_id', $current_workspace)->where('parent_category_id', null)->with('child_categories_recursive')->get();
+
+        // Retrieve the enum values from the model
+        $propertyTypes = EnumProductTypeHelper::getEnumValuesFromProduct(Property::class, 'type');
+        $properties = Property::where('work_space_id', $current_workspace)->get();
+        $properties->transform(function ($property) {
+            // Als de options JSON bevat, decodeer het naar een array
+            $property->options = json_decode($property->options)->options;
+            return $property;
+        });
+        return view('product.show', [
+            'product' => $newProduct,
+            'propertyTypes' => $propertyTypes,
             'properties' => $properties,
-            'locations' => $location_zones,
-            'sidenavActive' => 'products',
-            'salesChannels' => $salesChannels,
-            'workspaces' => $workspaces,
-            'activeWorkspace' => $activeWorkspace
+            'unrelatedCategories' => $workspaceCategories,
         ]);
     }
 
@@ -139,6 +143,8 @@ class ProductController extends BaseProductController
 
     public function show(Request $request, Product $product)
     {
+        $current_workspace = (int) session('active_workspace_id');
+
          // Retrieve the enum values from the model
         $propertyTypes = EnumProductTypeHelper::getEnumValuesFromProduct(Property::class, 'type');
 
@@ -157,15 +163,28 @@ class ProductController extends BaseProductController
             'sales',
         ]);
 
-        // Get the active workspace id from the session
-        $activeWorkspaceId = session('active_workspace_id');
+        $product->properties->each(function ($property) {
+            // Als de options JSON bevat, decodeer het naar een array
+            $property->options = json_decode($property->options)->options;
+        });
+
 
         // Get all categories related to the active workspace
-        $workspaceCategories = \App\Models\Category::where('work_space_id', $activeWorkspaceId)->where('parent_category_id', null)->with('child_categories_recursive')->get();
+        $workspaceCategories = Category::where('work_space_id', $current_workspace)->where('parent_category_id', null)->with('child_categories_recursive')->get();
+
+        $properties = Property::where('work_space_id', $current_workspace)->get();
+        $properties->transform(function ($property) {
+            // Als de options JSON bevat, decodeer het naar een array
+            $property->options = json_decode($property->options)->options;
+            return $property;
+        });
+
+
 
         return view('product.show', [
             'product' => $product,
             'propertyTypes' => $propertyTypes,
+            'properties' => $properties,
             'unrelatedCategories' => $workspaceCategories,
         ]);
     }
@@ -207,7 +226,7 @@ class ProductController extends BaseProductController
                     'properties.*.id' => ['nullable', 'integer', 'exists:properties,id'],
                     'properties.*.name' => ['required', 'string', 'max:255'],
                     'properties.*.type' => ['required', 'string', 'max:255'],
-                    'properties.*.pivot.property_value' => ['required', 'string', 'max:255'],
+                    'properties.*.pivot.property_value' => ['required'],
                 ]);
             } else {
                 $validatedData = $request->validate([
@@ -228,7 +247,7 @@ class ProductController extends BaseProductController
                     'properties.*.id' => ['nullable', 'integer', 'exists:properties,id'],
                     'properties.*.name' => ['required', 'string', 'max:255'],
                     'properties.*.type' => ['required', 'string', 'max:255'],
-                    'properties.*.pivot.property_value' => ['required', 'string', 'max:255'],
+                    'properties.*.pivot.property_value' => ['required'],
                     'child_products' => 'nullable|array',
                     'child_products.*.id' => 'nullable|integer|exists:products,id',
                     'child_products.*.title' => 'nullable|string|max:255',
@@ -249,51 +268,63 @@ class ProductController extends BaseProductController
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->errors();
             Log::info($errors);
+            return response()->json(['message' => 'Validation failed', 'errors' => $errors], 422);
         }
+        Log::info('validated data');
+        Log::info(json_encode($validatedData));
 
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-
-        if ($validatedData['type'] === 'variable') {
-            foreach ($validatedData['child_products'] as $childProductData) {
-                $this->updateOrCreateChildProduct($product, $childProductData);
+        if($id){
+            $product = Product::find($id);
+            if (!$product) {
+                return response()->json(['message' => 'Product not found'], 404);
             }
+
+            if ($validatedData['type'] === 'variable') {
+                foreach ($validatedData['child_products'] as $childProductData) {
+                    $this->updateOrCreateChildProduct($product, $childProductData);
+                }
+            }
+
+            // Update the main product
+            $product->update($validatedData);
+
+            // Sync categories if provided
+            if (isset($validatedData['categories'])) {
+                $product->categories()->sync($validatedData['categories']);
+            }
+
+            // Update properties
+            if (isset($validatedData['properties'])) {
+                $this->updateProductProperties($product, $validatedData['properties']);
+            }
+
+            $product->touch();
+
+            // Eager load necessary relationships
+            $product->load([
+                'childProducts.properties',
+                'parentProduct',
+                'categories',
+                'photos',
+                'properties',
+                'locationZones',
+                'salesChannels',
+                'productSalesChannels',
+                'sales',
+            ]);
+
+            Log::info($product);
+
+            return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
+        }else{
+            Log::info('test create');
+            $this->storeProduct($validatedData);
         }
+    }
 
-        // Update the main product
-        $product->update($validatedData);
-
-        // Sync categories if provided
-        if (isset($validatedData['categories'])) {
-            $product->categories()->sync($validatedData['categories']);
-        }
-
-        // Update properties
-        if (isset($validatedData['properties'])) {
-            $this->updateProductProperties($product, $validatedData['properties']);
-        }
-
-        $product->touch();
-
-        // Eager load necessary relationships
-        $product->load([
-            'childProducts.properties',
-            'parentProduct',
-            'categories',
-            'photos',
-            'properties',
-            'locationZones',
-            'salesChannels',
-            'productSalesChannels',
-            'sales',
-        ]);
-
-        Log::info($product);
-
-        return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
+    protected function storeProduct($productData)
+    {
+        Log::info($productData);
     }
 
     /**
@@ -351,22 +382,40 @@ class ProductController extends BaseProductController
             return null;
         }
 
-        Log::info($propertyData);
 
-        // If the property ID is provided, update the existing property in the pivot table.
+
+        // If the property ID is provided and the property is linked, update the existing property in the pivot table.
+
+        if (ProductProperty::where('product_id', $product->id)->where('property_id', $propertyData['id'])->exists()) {
+
+        }
         if (isset($propertyData['id'])) {
-            $product->properties()->updateExistingPivot(
-                $propertyData['id'],
-                ['property_value' => $propertyData['pivot']['property_value']]
-            );
+            if (ProductProperty::where('product_id', $product->id)->where('property_id', $propertyData['id'])->exists()) {
+                Log::debug('update');
+                Log::debug($propertyData);
+                $product->properties()->updateExistingPivot(
+                    $propertyData['id'],
+                    ['property_value' => $propertyData['pivot']['property_value']]
+                );
 
-            $property = Property::find($propertyData['id']);
-            $property->update([
-                'name' => $propertyData['name'],
-                'type' => $propertyData['type'],
-            ]);
+                $property = Property::find($propertyData['id']);
+                $property->update([
+                    'name' => $propertyData['name'],
+                    'type' => $propertyData['type'],
+                ]);
 
-            return $propertyData['id'];
+                return $propertyData['id'];
+            }else{
+                Log::debug('create');
+                Log::debug($propertyData);
+
+                //koppel bestaand prodoperty aan het product met de megegeven waarde
+                $product->properties()->attach($propertyData['id'], [
+                    'property_value' => $propertyData['pivot']['property_value'],
+                ]);
+                return $propertyData['id'];
+            }
+
         } else {
             // If no ID is provided, create a new property and attach it to the product via the pivot table.
             $newProperty = Property::create([
@@ -567,6 +616,7 @@ class ProductController extends BaseProductController
         return redirect()->back();
     }
 
+    #region oldbulk
     public function bulkEnableBackorders()
     {
         Gate::authorize('bulkUpdate', [Product::class, request('product_ids')]);
@@ -635,64 +685,43 @@ class ProductController extends BaseProductController
 
         return redirect()->back();
     }
+    #endregion
 
-    public function store(Request $request)
-    {
-        #region //authorize
-        $salesChannels = isset($request['salesChannelIds']) ? $request['salesChannelIds'] : [];
-        $categories = isset($request['categories']) ? array_keys($request['categories']) : [];
-        $properties = isset($request['properties']) ? array_keys($request['properties']) : [];
-        $location_zones = isset($request['location_zones']) ? array_keys($request['location_zones']) : [];
+    // public function store(Request $request)
+    // {
+    //     dd($request);
 
-        Gate::authorize('store', [
-            Product::class,
-            $salesChannels,
-            $categories,
-            $properties,
-            $location_zones
-        ]);
+    //     #region //validate
+    //     $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
+    //     $forOnline = false;
+    //     if (Count($saleschannelAttributes['salesChannels']) > 0) {
+    //         $forOnline = true;
+    //     }
+    //     $validationRules = [];
+    //     $validationRules += $this->validateProductAttributes($forOnline);
+    //     $validationRules += $this->validateCategoryAttributes();
+    //     $validationRules += $this->validatePhotoAttributes($forOnline);
+    //     $validationRules += $this->validatePropertyAttributes();
+    //     $validationRules += $this->validateInventoryAttributes();
+    //     $validationRules += $this->validateNewProperiesAttributes();
+    //     $attributes = $request->validate($validationRules);
+    //     #endregion
+    //     //create product and links
+    //     $product = $this->createProduct($attributes);
+    //     $this->linkCategoriesToProduct($product, $attributes);
+    //     $this->uploadAndLinkPhotosToProduct($product, $request);
+    //     $this->linkPropertiesToProduct($product, $attributes);
+    //     $this->createAndLinkProperties($product, $attributes, $workspace);
+    //     $this->createInventories($product, $request);
 
-        if (Auth::user()->role === 'admin') {
-            $request->validate([
-                'workspace' => ['required', new ValidWorkspaceKeys]
-            ]);
-            $workspace = $request['workspace'];
-        } else {
-            $workspace = Auth::user()->work_space_id;
-        }
-        #endregion
+    //     //link sales channels if there are any.
+    //     if ($forOnline) {
+    //         $this->linkSalesChannelsToProduct($product, $saleschannelAttributes);
+    //     }
 
-        #region //validate
-        $saleschannelAttributes = $this->validateSalesChannelAttributes($request);
-        $forOnline = false;
-        if (Count($saleschannelAttributes['salesChannels']) > 0) {
-            $forOnline = true;
-        }
-        $validationRules = [];
-        $validationRules += $this->validateProductAttributes($forOnline);
-        $validationRules += $this->validateCategoryAttributes();
-        $validationRules += $this->validatePhotoAttributes($forOnline);
-        $validationRules += $this->validatePropertyAttributes();
-        $validationRules += $this->validateInventoryAttributes();
-        $validationRules += $this->validateNewProperiesAttributes();
-        $attributes = $request->validate($validationRules);
-        #endregion
-        //create product and links
-        $product = $this->createProduct($attributes);
-        $this->linkCategoriesToProduct($product, $attributes);
-        $this->uploadAndLinkPhotosToProduct($product, $request);
-        $this->linkPropertiesToProduct($product, $attributes);
-        $this->createAndLinkProperties($product, $attributes, $workspace);
-        $this->createInventories($product, $request);
-
-        //link sales channels if there are any.
-        if ($forOnline) {
-            $this->linkSalesChannelsToProduct($product, $saleschannelAttributes);
-        }
-
-        //return to product page
-        return redirect('/products');
-    }
+    //     //return to product page
+    //     return redirect('/products');
+    // }
 
     public function export()
     {
@@ -742,25 +771,7 @@ class ProductController extends BaseProductController
         return view('product.archive', $results);
     }
 
-    public function restore(Request $request)
-    {
-        $attributes = $request->validate([
-            'products' => ['array', 'required'],
-            'products.*' => ['numeric', 'required']
-        ]);
-        Product::withTrashed()->whereIn('id', $attributes['products'])->restore();
-        return redirect()->back();
-    }
 
-    public function forceDelete(Request $request)
-    {
-        $attributes = $request->validate([
-            'products' => ['array', 'required'],
-            'products.*' => ['numeric', 'required']
-        ]);
-        Product::withTrashed()->whereIn('id', $attributes['products'])->forceDelete();
-        return redirect()->back();
-    }
 
     protected function createProduct($attributes): Product
     {
@@ -1160,7 +1171,6 @@ class ProductController extends BaseProductController
                 $product->save();
             }
         }
-
         return response()->json(['message' => 'Product were archived succesfully'], 200);
     }
 
@@ -1181,7 +1191,6 @@ class ProductController extends BaseProductController
                 $product->save();
             }
         }
-
         return response()->json(['message' => 'Product status were switched successfully'], 200);
     }
 

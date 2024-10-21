@@ -45,11 +45,7 @@
             'title' => 'producten',
             'image_url' => file_get_contents('images/sidebar/producten.svg'),
         ],
-        [
-            'url' => route('activity-log.index'),
-            'title' => 'Logboek',
-            'image_url' => file_get_contents('images/sidebar/logboek.svg'),
-        ],
+
         [
             'url' => route('profile.edit'),
             'title' => 'Instellingen',
@@ -86,16 +82,24 @@
             'image_url' => file_get_contents('images/sidebar/property-icon.svg'),
         ],
         [
-            'url' => route('archive.index'),
-            'title' => 'archief',
-            'image_url' => file_get_contents('images/sidebar/archive-icon.svg'),
-        ],
-        [
             'url' => route('suppliers.index'),
             'title' => 'Leveranciers',
             'image_url' => file_get_contents('images/sidebar/supplier-icon.svg'),
         ],
     ];
+    if ($user->role == 'admin') {
+        $sidebarItems[] = [
+            'url' => route('archive.index'),
+            'title' => 'archief',
+            'image_url' => file_get_contents('images/sidebar/archive-icon.svg'),
+        ];
+        $sidebarItems[] =  [
+            'url' => route('activity-log.index'),
+            'title' => 'Logboek',
+            'image_url' => file_get_contents('images/sidebar/logboek.svg'),
+    ];
+    }
+
 @endphp
 <!DOCTYPE html>
 <html lang="en">
