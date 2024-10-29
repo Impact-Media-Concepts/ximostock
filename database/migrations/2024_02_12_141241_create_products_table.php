@@ -33,8 +33,8 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->text('short_description')->nullable();
             $table->text('long_description')->nullable();
-            $table->decimal('price')->required();
-            $table->decimal('discount')->required();
+            $table->decimal('price')->nullable();
+            $table->decimal('discount')->nullable();
             $table->boolean('backorders')->default(false)->required();
             $table->bigInteger('stock_quantity')->default(0)->required();
             $table->boolean('status')->default(false)->required();

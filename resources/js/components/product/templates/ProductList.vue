@@ -11,6 +11,9 @@
                     <img src="/images/export.svg" alt="" class="icon">
                     Exporteren
                 </a>
+                <a  class="button":href="route('products.create')">
+                    product aanmaken
+                </a>
             </div>
         </div>
 

@@ -22,15 +22,15 @@ class PropertyFactory extends Factory
 
         $type = fake()->randomElement(
             [
-                0 => 'multiselect', 
-                1 => 'singleselect', 
-                2 => 'number', 
-                3 => 'text', 
+                0 => 'multiselect',
+                1 => 'singleselect',
+                2 => 'number',
+                3 => 'text',
                 4 => 'bool'
             ]
         );
         Log::info('Factory');
-        log::info($type);
+        Log::info($type);
         $options= [];
         if($type === 'multiselect' || $type === 'singleselect'){
             $options = fake()->words(4);

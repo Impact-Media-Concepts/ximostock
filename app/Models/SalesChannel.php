@@ -17,10 +17,9 @@ class SalesChannel extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+        ->logAll();
     }
-    
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'product_sales_channel')

@@ -73,7 +73,7 @@ Route::middleware('auth')->group(function () {
 
     // Properties prefixed and grouped
     Route::prefix('/properties')->middleware('auth')->group(function() {
-        Route::get('', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
+        Route::get('/', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
     });
 
     Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
@@ -110,6 +110,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
     Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
     Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
+
+    Route::get('/test', [CategoryController::class, 'testSaleschannel']);
 });
 
 //authentication

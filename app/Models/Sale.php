@@ -17,10 +17,9 @@ class Sale extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logAll()
-        ->logOnlyDirty();
+        ->logAll();
     }
-    
+
     public function product(){
         return $this->belongsTo(Product::class);
     }

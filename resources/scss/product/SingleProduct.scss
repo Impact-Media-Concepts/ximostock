@@ -121,13 +121,67 @@
                     @include default-input;
                 }
 
+
                 &.row {
                     grid-column: span 2;
                 }
             }
+
         }
     }
-
+    .prop-select{
+        display: flex;
+        padding: 10px;
+        .text{
+            width: 100%;
+        }
+        .singleselect{
+            width: 100%;
+            display: flex;
+            .select{
+                width: 100%;
+                @include default-input;
+            }
+        }
+        .multiselect{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            .select{
+                width: 100%;
+                @include default-input;
+            }
+            .add-button{
+                width: 80px;
+            }
+            .selected-options{
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+                .selected-option{
+                    display: flex;
+                    align-items: center;
+                    height: 40px;
+                    gap: 5px;
+                    padding: 10px;
+                    border: 1px solid var(--border);
+                    border-radius: 5px;
+                    .close-button{
+                        cursor: pointer;
+                        display: block;
+                        width: 30px;
+                        height: 30px;
+                        padding: 8px;
+                        svg{
+                            width: 15px;
+                            height: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }
     .product-content {
         display: flex;
         gap: 31px;
@@ -324,6 +378,47 @@
 
             .delete {
                 @include dark-buttton;
+            }
+        }
+    }
+    .add-prop-popup{
+        @include popup-container;
+        .popup-content{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            border-color: var(--border-secondary);
+            border-width: 1px;
+            border-style: solid;
+            .popup-header{
+                display: flex;
+                flex-direction: row;
+                height: 40px;
+                padding-left: 22px;
+                background-color: var(--primary);
+                color: $text-light;
+                align-items: center;
+                font-size: 14px;
+                line-height: 17px;
+            }
+            .prop-grid{
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 20px;
+                .prop{
+                    cursor: pointer;
+                    border: 1px solid var(--border);
+                    border-radius: 10px;
+                    padding: 10px;
+                    display: flex;
+                    gap: 10px;
+                    &:hover {
+                        background-color: var(--secondary);
+                    }
+                }
             }
         }
     }
