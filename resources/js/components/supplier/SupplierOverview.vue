@@ -11,13 +11,11 @@
                 <div   class="orderby company-name">
                     <span @click="orderBySuppliers('company_name')">Bedrijfsnaam</span>
                     <div @click="orderBySuppliers('company_name')" :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'company_name'}"><span  v-html="icons['chevron']"></span></div>
-
                 </div>
                 <div class="date-create orderby">
                     <span @click="orderBySuppliers('updated_at')" class="date">Datem
                         <div :class="{'chevron':true, 'asc': order == 'asc', 'active': orderby == 'updated_at'}"><span  v-html="icons['chevron']"></span></div>
                     </span>
-
                     <button @click="isOpenCreatePopup = true" class="create-button"><span class="supplier-icon" v-html="icons['supplier']"></span>Leverancier aanmaken</button>
                 </div>
             </div>
@@ -68,7 +66,6 @@
                         </button>
                     </div>
                 </div>
-
             </div>
 
             <div class="table-footer">
@@ -145,7 +142,6 @@ import '../../../scss/supplier/SupplierOverview.scss';
 import { format, formatDate, set } from 'date-fns';
 import axios from 'axios';
 import GeneralNotification from '../GeneralNotification.vue';
-
 export default defineComponent({
     components: {
         GeneralNotification,

@@ -267,7 +267,10 @@
     button {
         cursor: pointer;
     }
-
+    input[type="checkbox"]{
+        height: 14px;
+        width: 14px;
+    }
     .table-header {
         padding: 15px 25px;
         height: 60px;
@@ -288,8 +291,6 @@
             display: flex;
             gap: 6px;
             flex-direction: row;
-            align-items: center;
-
             .chevron {
                 fill: var(--text-light);
                 width: 10px;

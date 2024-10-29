@@ -11,6 +11,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\InventoryLocationController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\PropertyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,6 @@ Route::prefix('/api/v1')->middleware(['web'])->group(function() {
         Route::post('/bulkdelete', [SalesChannelController::class, 'bulkDelete'])->name('saleschannels.bulkDelete');
     });
 
-
     Route::prefix('/user')->group(function() {
         Route::patch('/theme/update/{id}', [UserController::class, 'updateThemeById'])->name('user.updateThemeById');
     });
@@ -76,11 +76,19 @@ Route::prefix('/api/v1')->middleware(['web'])->group(function() {
         Route::put('/update',[InventoryLocationController::class, 'update'])->name('locations.update');
         Route::post('', [InventoryLocationController::class, 'store'])->middleware('can:create,App\Models\InventoryLocation')->name('locations.store');
     });
+
     Route::prefix('/suppliers')->group(function(){
         Route::delete('/delete/{supplier}', [SupplierController::class, 'deleteById'])->name('suppliers.deleteById');
         Route::delete('/bulkdelete', [SupplierController::class, 'bulkDelete'])->name('suppliers.bulkDelete');
         Route::put('/update',[SupplierController::class, 'update'])->name('suppliers.update');
         Route::post('', [SupplierController::class, 'store'])->name('suppliers.store');
+    });
+
+    Route::prefix('/properties')->group(function() {
+        Route::delete('/delete/{property}', [PropertyController::class, 'deleteById'])->name('property.deleteById');
+        Route::delete('/bulkdelete', [PropertyController::class, 'bulkDelete'])->name('property.bulkDelete');
+        Route::put('/update/{property}', [PropertyController::class, 'update'])->name('property.update');
+        Route::post('', [PropertyController::class, 'store'])->name('property.store');
     });
 
 });

@@ -93,7 +93,7 @@
                 {{ this.usedSalesChannels.current_page }} van {{ this.usedSalesChannels.last_page }} pagina's.
             </span>
             <div class="pagination">
-                <span v-for="link in this.usedSalesChannels.links" :key="link.label" 
+                <span v-for="link in this.usedSalesChannels.links" :key="link.label"
                       @click="changePagination(link)"
                       :class="['link', { 'active-link': link.active }]">
                     {{ link.label }}
@@ -355,7 +355,7 @@ export default defineComponent({
             const url = this.route('saleschannels.index', params);
             window.location.href = url;
         },
-        changePagination(link) {            
+        changePagination(link) {
             // Check if the link is not active (to prevent reloading the same page)
             if (!link.active && link.url) {
                 axios.get(link.url, {
@@ -364,7 +364,7 @@ export default defineComponent({
                     }
                 })
                 .then(response => {
-                    
+
                     this.usedSalesChannels = response.data.saleschannels;
                 })
                 .catch(error => {

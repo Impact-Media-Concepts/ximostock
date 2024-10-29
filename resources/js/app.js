@@ -16,6 +16,8 @@ import EditUser from './components/user/EditUser.vue';
 import LocationOverview from './components/location/LocationOverview.vue';
 import SupplierOverview from './components/supplier/SupplierOverview.vue';
 import WorkspaceOveriew from './components/workspace/WorkspaceOverview.vue';
+import PropertyOverview from './components/property/PropertyOverview.vue';
+import ActivityLog from './components/activity/ActivityLog.vue';
 
 // Create the Vue application
 const app = createApp({});
@@ -35,6 +37,8 @@ app.component('LocationOverview', LocationOverview);
 app.component('SupplierOverview', SupplierOverview);
 app.component('EditUser', EditUser);
 app.component('WorkspaceOverview', WorkspaceOveriew);
+app.component('PropertyOverview', PropertyOverview);
+app.component('ActivityLog', ActivityLog);
 
 // Provide the route function globally
 app.provide('route', route);

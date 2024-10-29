@@ -73,7 +73,7 @@ Route::middleware('auth')->group(function () {
 
     // Properties prefixed and grouped
     Route::prefix('/properties')->middleware('auth')->group(function() {
-        Route::get('', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
+        Route::get('/', [PropertyController::class, 'index'])->middleware('can:viewAny,App\Models\Property')->name('properties.index');
     });
 
     Route::get('/saleschannels', [SalesChannelController::class, 'index'])->middleware('can:viewAny,App\Models\SalesChannel')->name('saleschannels.index');
